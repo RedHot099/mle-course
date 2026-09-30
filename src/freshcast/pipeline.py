@@ -15,6 +15,7 @@ from freshcast.features import catalog
 from freshcast.forecast import FORECAST, forecast_direct
 from freshcast.models.gbm import LightGBMForecaster
 from freshcast.split import rolling_origin_folds
+from freshcast.storage.s3 import S3Storage, publish_model
 
 logger = logging.getLogger(__name__)
 
@@ -87,6 +88,10 @@ def training_mask(table: pd.DataFrame, *, in_stock_only: bool) -> pd.Series:
 def train(settings: Settings) -> TrainResult:
     """Prepare the data, backtest, fit on everything and save the model.
 
+    When ``settings.storage`` is set, the saved model is then published to the
+    bucket under its signature. The local copy stays either way, and a failed
+    upload raises after the model has been saved.
+
     Returns:
         Where the model was saved and the per-fold backtest scores.
     """
@@ -130,7 +135,19 @@ def train(settings: Settings) -> TrainResult:
     daily.to_parquet(model_dir / "history.parquet", index=False)
     scores.to_csv(model_dir / "backtest.csv", index=False)
     logger.info("Saved model to %s", model_dir)
+    # <<< SOLUTION
+    # >>> SOLUTION 15.5
+    if settings.storage is not None:
+        storage = S3Storage.from_settings(settings.storage)
+        key_prefix = publish_model(storage, model_dir, settings.storage.prefix)
+        logger.info("Published model to s3://%s/%s", storage.bucket, key_prefix)
+    # --- STUB
+    #| # Module 15 adds the publishing step here.
+    # <<< SOLUTION
+    # >>> SOLUTION 14.4
     return TrainResult(model_dir, scores)
+    # --- STUB
+    #| # The finished function returns a TrainResult here.
     # <<< SOLUTION
 
 

@@ -225,7 +225,7 @@ Godziny to czas kursanta: wykład, quiz i lab.
 
 **14 Od notebooka do pipeline'u (8 h).** Konfiguracja w pydantic-settings i YAML, CLI, logowanie, obsługa błędów, zapis modelu z metadanymi i sygnaturą, ziarna losowości. Lab: `freshcast train` i `freshcast forecast`, przebieg na profilu `full`.
 
-**15 Dane w chmurze i SQL (10 h).** boto3, MinIO w Dockerze, klasa-serwis nad S3, testy z moto, retry z backoff, cache pobrań. SQL w DuckDB nad plikami parquet w MinIO: złączenia, grupowanie, funkcje okna. W wykładzie Feature Store, Athena i Lambda jako pojęcia. Tu kursant instaluje Dockera.
+**15 Dane w chmurze i SQL (10 h).** boto3, lokalny serwer S3 (moto server, w Dockerze albo przez `uv run moto_server`), klasa-serwis nad S3, testy z moto, retry z backoff, cache pobrań, publikacja modelu. SQL w DuckDB nad plikami parquet lokalnie i z bucketu: złączenia, grupowanie, funkcje okna. W wykładzie Feature Store, Athena i Lambda jako pojęcia. Tu kursant instaluje Dockera. MinIO, zaplanowane pierwotnie, przestało w 2025 publikować obrazy i binarki społecznościowe.
 
 **16 Docker i CI (6 h).** Dockerfile z uv, GitHub Actions (ruff, mypy, pytest), pre-commit, standard inżynierski, review cudzego diffa. **Punkt kontrolny 3.**
 

@@ -10,8 +10,10 @@ Values come from three places, the later ones winning:
 A misspelled key is an error, not a silently ignored line.
 """
 
+import re
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from pydantic_settings import (
@@ -45,6 +47,13 @@ class DataSettings(Section):
         # <<< SOLUTION
 
 
+# Amazon S3 names buckets this way. Dots are legal there but break the
+# certificates of virtual-hosted addresses, so they are not accepted here.
+BUCKET_NAME = re.compile(r"[a-z0-9][a-z0-9-]{1,61}[a-z0-9]")
+URL_SCHEMES = ("http", "https")
+DEFAULT_REGION = "us-east-1"
+
+
 class ModelSettings(Section):
     """How the forecaster is trained."""
 
@@ -60,6 +69,63 @@ class BacktestSettings(Section):
     horizon: int = Field(default=7, ge=1)
 
 
+class StorageSettings(Section):
+    """Where finished models are published: a bucket on an S3-compatible server.
+
+    Leave the whole section out and nothing is published. Credentials are not
+    part of the settings: boto3 reads them from ``AWS_ACCESS_KEY_ID`` and
+    ``AWS_SECRET_ACCESS_KEY``, so they never reach a file that is committed.
+    """
+
+    bucket: str
+    prefix: str = "models"
+    endpoint_url: str | None = None
+    region: str = DEFAULT_REGION
+
+    @field_validator("bucket")
+    @classmethod
+    def _valid_bucket(cls, bucket: str) -> str:
+        # >>> SOLUTION 15.1
+        if BUCKET_NAME.fullmatch(bucket) is None:
+            raise ValueError(
+                f"bucket {bucket!r} is not a valid name: use 3 to 63 lowercase "
+                "letters, digits and hyphens, starting and ending with a letter "
+                "or a digit."
+            )
+        return bucket
+        # <<< SOLUTION
+
+    @field_validator("prefix")
+    @classmethod
+    def _clean_prefix(cls, prefix: str) -> str:
+        # >>> SOLUTION 15.1
+        # Keys are built as prefix/signature/file, so the prefix carries no
+        # slashes at its ends. Empty means the root of the bucket.
+        cleaned = prefix.strip("/")
+        parts = cleaned.split("/") if cleaned else []
+        if any(part in ("", ".", "..") for part in parts):
+            raise ValueError(
+                f"prefix {prefix!r} has an empty, '.' or '..' part between slashes."
+            )
+        return cleaned
+        # <<< SOLUTION
+
+    @field_validator("endpoint_url")
+    @classmethod
+    def _valid_endpoint(cls, endpoint_url: str | None) -> str | None:
+        # >>> SOLUTION 15.1
+        if endpoint_url is None:
+            return None
+        parsed = urlparse(endpoint_url)
+        if parsed.scheme not in URL_SCHEMES or not parsed.netloc:
+            raise ValueError(
+                f"endpoint_url {endpoint_url!r} must look like "
+                "http://localhost:9000 (scheme, host and port)."
+            )
+        return endpoint_url
+        # <<< SOLUTION
+
+
 class Settings(BaseSettings):
     """Everything one run of the pipeline needs to know."""
 
@@ -70,6 +136,7 @@ class Settings(BaseSettings):
     data: DataSettings
     model: ModelSettings = Field(default_factory=ModelSettings)
     backtest: BacktestSettings = Field(default_factory=BacktestSettings)
+    storage: StorageSettings | None = None
     artifacts_dir: Path = Path("artifacts")
     experiment: str = "freshcast"
 
