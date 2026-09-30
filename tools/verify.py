@@ -113,6 +113,24 @@ def module_files(module: int) -> list[Path]:
     return found
 
 
+def _stub_from(view: Path, module: int) -> None:
+    """Put a scratch copy in the learner's state at the start of ``module``.
+
+    Everything before the module is solved; the module and every later one
+    are stubbed.
+    """
+    for path in release.source_files():
+        name = path.as_posix()
+        if not (name.startswith(release.STUB_ROOTS) and path.suffix == ".py"):
+            continue
+        text = (ROOT / path).read_text(encoding="utf-8")
+        if markers.task_ids(text):
+            stubbed = markers.render(
+                text, lambda task: markers.module_of(task) < module
+            )
+            (view / path).write_text(stubbed, encoding="utf-8")
+
+
 def verify_module(module: int) -> int:
     """Check one module in isolation, without touching the shared learner view.
 
@@ -163,12 +181,7 @@ def verify_module(module: int) -> int:
         for folder in ("src", "tests", "shelfwise"):
             if (ROOT / folder).is_dir():
                 shutil.copytree(ROOT / folder, view / folder)
-        for path in files:
-            text = (ROOT / path).read_text(encoding="utf-8")
-            stubbed = markers.render(
-                text, lambda task: markers.module_of(task) != module
-            )
-            (view / path).write_text(stubbed, encoding="utf-8")
+        _stub_from(view, module)
         env = {**os.environ, "PYTHONPATH": str(view / "src")}
         if not _run(sys.executable, "-c", code, "unsolved", env=env, cwd=view):
             failed.append("stubbed module does not start unsolved")

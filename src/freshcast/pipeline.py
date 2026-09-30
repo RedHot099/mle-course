@@ -11,6 +11,7 @@ from freshcast.config import Settings
 from freshcast.data.prepare import prepare_daily
 from freshcast.data.schema import DATE, OOS_HOURS, OUTCOME_COLUMNS, SERIES_KEY, TARGET
 from freshcast.evaluation.backtest import backtest
+from freshcast.evaluation.final import test_scores
 from freshcast.features import catalog
 from freshcast.forecast import FORECAST, forecast_direct
 from freshcast.models.gbm import LightGBMForecaster
@@ -174,4 +175,25 @@ def forecast(settings: Settings, model_dir: Path, future_file: Path) -> pd.DataF
     result = known[[*SERIES_KEY, DATE]].assign(**{FORECAST: predicted})
     result.to_parquet(model_dir / "forecast.parquet", index=False)
     return result
+    # <<< SOLUTION
+
+
+def evaluate(settings: Settings, model_dir: Path, test_file: Path) -> pd.DataFrame:
+    """Score a saved model's forecast on a test file that holds the outcomes.
+
+    Run once, at the very end. The test days must never have informed a
+    decision about the model: this is the number the capstone reports.
+
+    Returns:
+        The table of ``test_scores``, also written to
+        ``model_dir/test_scores.csv``.
+    """
+    # >>> SOLUTION 19.3
+    forecasts = pd.read_parquet(model_dir / "forecast.parquet")
+    history = pd.read_parquet(model_dir / "history.parquet")
+    actuals = prepare_in_chunks(test_file, settings.data.cities)
+    scores = test_scores(forecasts, actuals, history)
+    scores.to_csv(model_dir / "test_scores.csv", index_label="forecaster")
+    logger.info("Test scores:\n%s", scores.round(4).to_string())
+    return scores
     # <<< SOLUTION

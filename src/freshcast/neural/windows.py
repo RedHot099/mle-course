@@ -112,6 +112,13 @@ class WindowDataset(Dataset[dict[str, torch.Tensor]]):
             channel is not the target.
     """
 
+    spec: WindowSpec
+    windows: NDArray[np.int64]
+    data: FloatArray
+    stockouts: FloatArray
+    past_idx: list[int]
+    future_idx: list[int]
+
     def __init__(
         self, cube: PanelCube, spec: WindowSpec, windows: Sequence[tuple[int, int]]
     ) -> None:

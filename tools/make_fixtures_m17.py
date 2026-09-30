@@ -56,7 +56,8 @@ def main() -> None:
     sample = sample.sort_values(["invoice_date", "invoice"]).reset_index(drop=True)
     sample.to_parquet(OUT, index=False, compression="zstd", compression_level=19)
     print(
-        f"{OUT.name}: {len(sample)} lines, {len(chosen)} products, {OUT.stat().st_size} bytes"
+        f"{OUT.name}: {len(sample)} lines, {len(chosen)} products, "
+        f"{OUT.stat().st_size} bytes"
     )
     print(active.loc[chosen].to_string())
 

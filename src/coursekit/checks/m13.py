@@ -729,7 +729,7 @@ def check_forecaster(_target: object) -> None:
     last_week = frame["dt"].max() - pd.Timedelta(days=6)
     shifted = target.where(frame["dt"] < last_week, target + 1000.0)
     held = mlp.MLPForecaster(["a", "b"], **settings).fit(frame, shifted)
-    log = held.history_
+    log = getattr(held, "history_", None)
     expect(
         log is not None
         and float(log["valid_loss"].min()) > 1e5

@@ -29,6 +29,8 @@ class WindowModule(L.LightningModule):
         learning_rate: Peak learning rate of the one-cycle schedule.
     """
 
+    net: nn.Module
+    learning_rate: float
     stores: torch.Tensor
     products: torch.Tensor
 

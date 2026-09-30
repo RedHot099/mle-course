@@ -29,6 +29,17 @@ def build_parser() -> argparse.ArgumentParser:
     forecast.add_argument("--config", type=Path, required=True)
     forecast.add_argument("--model", type=Path, required=True, help="model directory")
     forecast.add_argument("--future", type=Path, required=True, help="raw file")
+    # <<< SOLUTION
+    # >>> SOLUTION 19.3
+    evaluate = commands.add_parser("evaluate", help="score a forecast on a test file")
+    evaluate.add_argument("--config", type=Path, required=True)
+    evaluate.add_argument("--model", type=Path, required=True, help="model directory")
+    evaluate.add_argument(
+        "--test", type=Path, required=True, help="raw file with outcomes"
+    )
+    # --- STUB
+    # <<< SOLUTION
+    # >>> SOLUTION 14.5
     return parser
     # <<< SOLUTION
 
@@ -56,14 +67,24 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "train":
             result = pipeline.train(settings)
             print(result.model_dir)
-        else:
+        elif args.command == "forecast":
             forecasts = pipeline.forecast(settings, args.model, args.future)
             print(f"{len(forecasts)} forecasts written to {args.model}")
+        # <<< SOLUTION
+        # >>> SOLUTION 19.3
+        else:
+            scores = pipeline.evaluate(settings, args.model, args.test)
+            print(scores.round(4).to_string())
+        # --- STUB
+        # <<< SOLUTION
+        # >>> SOLUTION 14.5
     except Exception:
         # The one deliberate error boundary: log everything, fail the process.
         logger.exception("The %s command failed", args.command)
         return 1
     return 0
+    # --- STUB
+    #| raise NotImplementedError("Zadanie 14.5")
     # <<< SOLUTION
 
 

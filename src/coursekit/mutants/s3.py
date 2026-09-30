@@ -74,6 +74,7 @@ def _no_retry() -> None:
 
 def _retry_everything() -> None:
     from freshcast.storage import s3
+    from freshcast.storage.retry import retry
 
     s3.is_transient = lambda error: True
     cls = _cls()
@@ -81,7 +82,7 @@ def _retry_everything() -> None:
 
     def __init__(self: Any, *args: Any, **kwargs: Any) -> None:  # noqa: N807
         original(self, *args, **kwargs)
-        self._retrying = s3.retry(
+        self._retrying = retry(
             attempts=kwargs.get("attempts", 3),
             retry_if=lambda error: True,
             sleep=kwargs.get("sleep", lambda _: None),
