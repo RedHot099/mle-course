@@ -39,7 +39,8 @@ Capstone sprawdza jedno i drugie.
 - Sprzedaż znormalizowana globalnym współczynnikiem (średnia 1,0). Brak cen, jednostek i nazw.
 - Dwie kolumny zagnieżdżone po 24 wartości: sprzedaż godzinowa i status braku towaru (1 = brak).
 - 44% wierszy ma co najmniej godzinę bez towaru między 6:00 a 22:00, 4% cały ten przedział.
-- Anomalie: `discount == 0` w 16 tys. wierszy (znacznik, nie rabat), rabat powyżej 1 w 34 wierszach, sprzedaż w godzinach bez towaru, data jako tekst.
+- Anomalie: `discount == 0` w 16 tys. wierszy, rabat powyżej 1 w 34 wierszach, sprzedaż w godzinach bez towaru, data jako tekst.
+- Zero w kolumnie `discount` ma dwa wzorce. Dwa produkty mają je prawie codziennie, sprzedają się 10-15 razy lepiej niż przeciętny i nie mają flagi akcji. Sześć innych ma je w pojedyncze dni, zawsze z flagą akcji, ze sprzedażą około trzy razy wyższą. Czy to darmowy produkt, czy znacznik, z danych nie wynika. Kurs zdejmuje zero ze skali: NaN plus flaga `discount_is_zero`.
 - `holiday_flag` to dni wolne w Chinach: weekendy plus sześć świąt w dni robocze, zgodnych z `holidays.China(2024)`. Niedziela 2024-04-07 była robocza i ma flagę 0.
 - Naiwne wczytanie całego pliku zajmuje 7,5 GB RAM. Same kolumny skalarne po zmianie typów zajmują 221 MB.
 - LightGBM bez tuningu bije prognozę naiwną sezonową o 25% MAE na jednym mieście i 19% na całości.
@@ -61,7 +62,7 @@ Profil wybiera `course doctor` na podstawie pamięci i zapisuje w `.course/confi
 - Walidacja: rolling origin, foldy po 7 dni. Przy 90 dniach i lagach do 28 mieszczą się 3-4 foldy.
 - Metryki: WAPE, MAE i bias, liczone na wszystkich wierszach oraz osobno na wierszach bez braków towaru.
 - Zmienne znane z góry: rabat, flaga akcji, święta i pogoda na horyzoncie traktujemy jako znane, tak jak autorzy zbioru. Moduł 08 nazywa to wprost ograniczeniem, bo prawdziwa prognoza pogody to nie to samo co pogoda zaobserwowana.
-- Popyt ocenzurowany: w rdzeniu prosta korekta z profilu godzinowego (moduł 09). Bez modeli neuronowych do odtwarzania popytu.
+- Popyt ocenzurowany: kursant buduje korektę z profilu godzinowego (moduł 09), sprawdza ją w symulacji i w backteście, po czym zostaje przy prostszym rozwiązaniu, które wygrywa w pomiarze: trening tylko na dniach bez braku towaru. Bez modeli neuronowych do odtwarzania popytu. Liczby w sekcji 12.
 
 ## 3. Architektura repozytorium
 
@@ -118,7 +119,7 @@ Wyniki sprawdzeń zapisują się w `.course/progress.json`. Tutor czyta ten plik
 
 ### Weryfikacja kursu
 
-`tools/verify.py` uruchamia na `solutions`: ruff, mypy, wszystkie sprawdzenia na kodzie referencyjnym (muszą przejść), te same sprawdzenia na wygenerowanym `main` (każde zadanie musi mieć status "niezaimplementowane") oraz wykonanie rozwiązanych notebooków od początku do końca.
+`tools/verify.py` uruchamia na `solutions`: ruff, mypy, wszystkie sprawdzenia na kodzie referencyjnym (muszą przejść), te same sprawdzenia na wygenerowanym `main` (każde zadanie musi zaczynać jako niezrobione, a ticket w `shelfwise` jako niezaliczony) oraz wykonanie rozwiązanych notebooków od początku do końca. `tools/verify.py --module NN` sprawdza jeden moduł w izolacji, bez dotykania wspólnego katalogu `_main/`.
 
 ## 4. Format dydaktyczny
 
@@ -139,38 +140,50 @@ Wyniki sprawdzeń zapisują się w `.course/progress.json`. Tutor czyta ten plik
 Plan plików i właścicieli. Moduł-właściciel to ten, w którym kursant pisze dany plik.
 
 ```
-data/schema.py         dany      nazwy kolumn i typy
-data/load.py           07.1      wczytanie z wyborem kolumn i filtrem
-data/validate.py       07.2      niezmienniki panelu, flagi anomalii
-data/dims.py           07.3      wymiary sklepu i produktu, merge z validate
-data/hourly.py         07.4      podsumowania z tablic godzinowych
-data/panel.py          07.5      statystyki grupowe, lagi, okna
-data/prepare.py        07.6      złożenie i zapis zbioru przetworzonego
-warmup/online_retail.py 06       czyszczenie UCI
-metrics.py             05        mae, rmse, wape, bias, z maską
-models/local.py        03, 04    LocalForecaster i prognozy naiwne dla jednej serii
-models/panel.py        08        PanelForecaster, adapter PerSeriesForecaster, model liniowy
-models/gbm.py          10        LightGBMForecaster
-models/neural.py       18        MLP i GRU
-split.py               08, 11    podział po dacie, foldy rolling origin
-features/calendar.py   09        dzień tygodnia, kodowanie cykliczne, święta
-features/lags.py       09        lagi i okna świadome horyzontu
-features/demand.py     09        korekta popytu ocenzurowanego
-features/encoding.py   09        kodowanie kategorii dopasowane tylko na train
-features/build.py      09        rejestr funkcji-cech i kolejność z grafu zależności
-evaluation/backtest.py 11        backtest modelu na foldach
-tuning.py              11        Optuna z logowaniem do MLflow
-classify/stockout.py   12        etykieta i model braku towaru
-segments.py            13        k-means i PCA
-config.py              14        pydantic-settings, YAML
-pipeline.py, cli.py    14        komendy train i forecast
-storage/s3.py          15        serwis S3
-storage/sql.py         15        zapytania DuckDB
+data/schema.py          dany      nazwy kolumn, kontrakty
+data/load.py            07.1      wczytanie z wyborem kolumn i filtrem
+data/validate.py        07.2      niezmienniki panelu, zero rabatu poza skalą
+data/dims.py            07.3      wymiary sklepu i produktu, merge z validate
+data/hourly.py          07.4      podsumowania z tablic godzinowych
+data/panel.py           07.5      lagi, okna, profil tygodnia
+data/prepare.py         07.6      złożenie i zapis zbioru przetworzonego
+warmup/*.py             06        czyszczenie UCI Online Retail II
+metrics.py              05.1-05.3 mae, rmse, wape, bias, z maską
+numeric.py              05.4      udziały w wierszach tablicy
+models/local.py         04.1      LocalForecaster i trzy prognozy lokalne
+models/panel.py         08.2, 08.4 PanelForecaster, PerSeriesForecaster, LinearForecaster
+models/gradient.py      08.3      regresja liniowa przez gradient descent
+models/tree.py          10.1      wybór podziału drzewa
+models/gbm.py           10.2, 10.3 LightGBMForecaster, ważność cech, wkłady SHAP
+models/mlp.py           13        MLP w PyTorch
+forecast.py             10.4      prognoza bezpośrednia i rekurencyjna
+split.py                08.1, 11.1 podział po dacie, foldy rolling origin
+features/calendar.py    09.1      dzień tygodnia, kodowanie cykliczne, święta
+features/lags.py        09.2      lagi i okna świadome horyzontu
+features/demand.py      09.3      profil godzinowy, pokrycie, korekta popytu
+features/encoding.py    09.4      TargetEncoder dopasowany tylko na train
+features/build.py       09.5      rejestr cech i kolejność z grafu zależności
+features/catalog.py     dany      cechy modelu kursu
+evaluation/scores.py    08.5      metryki na wszystkich wierszach i bez braków
+evaluation/backtest.py  11.2      backtest na foldach
+tuning.py               11.3      Optuna z logowaniem do MLflow
+tracking.py             dany      lokalny MLflow
+classify/*.py           12        etykieta, metryki klasyfikacji, klasyfikator
+segments.py             13        profil serii, k-means, PCA
+config.py               14.1      pydantic-settings, YAML, zmienne środowiskowe
+artifacts.py            14.2      zapis modelu z metadanymi i sygnaturą
+pipeline.py             14.3, 14.4 przygotowanie miastami, train, forecast
+cli.py                  14.5      freshcast train, freshcast forecast
+storage/*.py            15        S3, retry, SQL w DuckDB
 ```
+
+Pliki pisane przez kursanta w całości (Dockerfile, workflow CI, pre-commit) nie mają zaślepek. Ich wersje referencyjne leżą w `reference/16/` i `course catchup` kopiuje je na miejsce.
+
+Testy kursanta (`tests/`) sprawdza mechanizm mutacji: `coursekit/mutation.py` podmienia w locie fragmenty kodu kursanta na celowo zepsute i wymaga, żeby testy to wykryły. Mutanty opakowują kod kursanta z zewnątrz, więc nie zawierają rozwiązania.
 
 **Dwa interfejsy modeli.** `LocalForecaster` (moduł 03) prognozuje jedną serię: `fit(history)`, `predict(horizon)`. `PanelForecaster` (moduł 08) ma interfejs w stylu sklearn: `fit(X, y)`, `predict(X)`, gdzie `X` zawiera klucze serii i datę. Adapter `PerSeriesForecaster` stosuje prognozę lokalną do każdej serii panelu, więc prognozy naiwne z modułu 03 zostają baseline'em do końca kursu.
 
-**Zbiór przetworzony (kontrakt modułu 07).** `data/processed/daily.parquet`: klucze `store_id`, `product_id`, data `dt` jako `datetime64`, `sale_amount`, `discount` (NaN w miejscu znacznika 0), `discount_missing`, `activity_flag`, `holiday_flag`, cztery kolumny pogody, `oos_hours`, `oos_hours_total`, `sales_in_stock`. Obok `store_dim.parquet` i `product_dim.parquet`. Posortowany po kluczu i dacie.
+**Zbiór przetworzony (kontrakt modułu 07).** `data/processed/daily.parquet`: klucze `store_id`, `product_id`, `city_id`, data `dt` jako `datetime64`, `sale_amount`, `discount` (NaN w miejscu zera), `discount_is_zero`, `activity_flag`, `holiday_flag`, cztery kolumny pogody, `oos_hours`, `oos_hours_total`, `sales_in_stock`, `sales_while_oos`. Obok `store_dim.parquet` i `product_dim.parquet`. Posortowany po kluczu i dacie.
 
 ## 6. Sylabus
 
@@ -249,7 +262,7 @@ Wykład: tabela faktów i wymiary, `merge` i kardynalność (widżet: co robi zd
 | Zadanie | Plik | Co powstaje |
 |---|---|---|
 | 07.1 | `data/load.py` | `load_sales`: wybór kolumn, filtr miast przy czytaniu, mniejsze typy, data jako `datetime64`, sortowanie |
-| 07.2 | `data/validate.py` | `check_panel` (duplikaty, luki, braki, wartości ujemne) i `clean_discount` (znacznik 0 na NaN z flagą, wartości powyżej 1 przycięte) |
+| 07.2 | `data/validate.py` | `check_panel` (duplikaty, luki, braki, wartości ujemne) i `clean_discount` (zero na NaN z flagą `discount_is_zero`, reszta bez zmian) |
 | 07.3 | `data/dims.py` | `build_store_dim`, `build_product_dim`, `attach_dim` z `validate="many_to_one"` |
 | 07.4 | `data/hourly.py` | `summarise_hours`: godziny bez towaru, sprzedaż w godzinach z towarem, z tablic (n, 24) |
 | 07.5 | `data/panel.py` | `add_lag`, `add_rolling_mean` tylko z przeszłości, `dow_profile` |
@@ -274,11 +287,11 @@ Lab:
 Wykład: cechy dla szeregów, lagi i okna świadome horyzontu, kalendarz i kodowanie cykliczne, święta, kodowanie kategorii (porządkowe, one-hot, target encoding i jego leakage, natywne kategorie LightGBM), `Pipeline` i `ColumnTransformer`, cechy jako czyste funkcje z jawnymi zależnościami, popyt ocenzurowany.
 
 Lab:
-1. `features/calendar.py`: dzień tygodnia, sin/cos, dni do najbliższego święta z `holidays.China`, porównanie z `holiday_flag`.
+1. `features/calendar.py`: dzień tygodnia, sin/cos, święta i dni do najbliższego święta z pakietu `holidays`, porównanie z `holiday_flag`.
 2. `features/lags.py`: lagi i okna z warunkiem `lag >= horizon`.
-3. `features/demand.py`: popyt skorygowany o godziny bez towaru.
-4. `features/encoding.py`: target encoding dopasowany tylko na train. Pułapka: wersja dopasowana na całości daje lepszy wynik walidacji i gorszy testowy.
-5. `features/build.py`: rejestr funkcji-cech z deklaracją wejść, kolejność z sortowania topologicznego.
+3. `features/demand.py`: profil godzinowy, pokrycie i korekta popytu. Kursant sprawdza korektę dwa razy. W symulacji (sztuczne braki nałożone na dni bez braków) usuwa ona obciążenie. Jako cel treningu na prawdziwych danych zawyża prognozy. Wygrywa trening tylko na dniach bez braku towaru. Lekcja: symulacja losowała braki, a prawdziwe braki trafiają w dni wysokiego popytu.
+4. `features/encoding.py`: target encoding. Pułapka na kodowaniu seria × dzień tygodnia: dopasowane także na tygodniu walidacyjnym poprawia walidację i psuje tydzień testowy.
+5. `features/build.py`: rejestr funkcji-cech z deklaracją wejść, kolejność z grafu zależności.
 
 Wynik: `data/processed/features.parquet`.
 
@@ -332,3 +345,49 @@ Tickety: T1 bug z sumami (1), T2 nowa metryka per kategoria, T3 nowa cecha z kon
 - Pyodide ładuje się z CDN, więc wykłady 01-05 wymagają sieci dla kodu uruchamialnego. Reszta strony działa offline.
 - Nikt jeszcze nie porównał modelu neuronowego z LightGBM na tych danych.
 - Tydzień testowy jest cieplejszy niż zbiór treningowy. Wynik na nim może być gorszy niż w backteście i kurs mówi o tym otwarcie.
+
+## 12. Zmierzone wyniki referencyjne
+
+Wszystkie liczby pochodzą z kodu referencyjnego na gałęzi `solutions`. WAPE "bez braków" liczy tylko dni bez godziny braku towaru.
+
+### Profil `standard` (miasto 3), backtest 3-4 foldy po 7 dni
+
+| Model | WAPE bez braków | Bias bez braków |
+|---|---|---|
+| Prognoza naiwna sezonowa | 0,559 | -6% |
+| Średnia z 4 tych samych dni tygodnia | 0,473 | -5% |
+| LightGBM, trening na wszystkich wierszach | 0,407 | -8% |
+| LightGBM, trening tylko na dniach bez braków | 0,371-0,377 | +1 do +4% |
+| LightGBM, cel skorygowany profilem godzinowym | 0,433 | +16% |
+| LightGBM rekurencyjny (lagi 1-3) | 0,368 | +2% |
+| LightGBM po 25 próbach Optuny | 0,374 | |
+
+Profil `small` (miasto 14) daje te same relacje na niższym poziomie: 0,386, 0,339 i 0,278.
+
+Wnioski wbudowane w kurs:
+- Największy pojedynczy zysk po przejściu z baseline'u na model daje decyzja o danych treningowych (dni bez braków), nie tuning.
+- Tuning daje 0,003. Kurs mówi to wprost.
+- Prognoza rekurencyjna jest na tych danych praktycznie równa bezpośredniej.
+- Identyfikatory sklepu i produktu jako kategorie dają 0,03-0,04.
+
+### Pułapki, zmierzone
+
+- Moduł 08: Ridge z kolumną `sales_in_stock` z tego samego dnia ma WAPE 0,034 zamiast 0,490. Z samymi godzinami braku 0,466.
+- Moduł 09: target encoding seria × dzień tygodnia dopasowany także na tygodniu walidacyjnym: walidacja 0,503 (bez kodowania 0,512), test 0,537 (bez kodowania 0,501). Na `small`: 0,355 wobec 0,375 i 0,389 wobec 0,364.
+- Moduł 09: symulowane braki na dniach bez braków: korekta z profilu zmienia bias z -27% na 0%.
+
+### Profil `full`, tydzień testowy (`eval.parquet`)
+
+| Model | WAPE bez braków | Bias bez braków | WAPE wszystkie |
+|---|---|---|---|
+| Prognoza naiwna sezonowa | 0,389 | -1% | 0,418 |
+| LightGBM, ustawienia domyślne | 0,285 | -6% | 0,333 |
+
+Backtest na `full`: 0,302-0,312. Szczyt pamięci 4,9 GB. Czas około 15 minut przy obciążonej maszynie, do zmierzenia ponownie na wolnej.
+
+### Środowisko
+
+- Na czystym Ubuntu 24.04 `import lightgbm` nie działa bez pakietu `libgomp1`. Lekcja 00, `course doctor` i Dockerfile to uwzględniają.
+- Kroki Dockerfile (instalacja z `uv sync --locked --no-editable`, uruchomienie `freshcast` z samego środowiska) przećwiczone w czystym Ubuntu bez Dockera. Samego `docker build` nie uruchomiono: demon Dockera jest na maszynie autora wyłączony.
+- Workflow GitHub Actions ma poprawną składnię, ale nie był uruchomiony na GitHubie.
+

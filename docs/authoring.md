@@ -105,6 +105,23 @@ Rules:
 - Charts follow the palette and mark rules already in `course.css` (`--series-1..4`, thin bars, labels in ink not in series colour, a legend for two or more series, a hover tooltip, a table view).
 - In code blocks escape `<` and `&`. Use `language-python`, `language-bash`, `language-ini`, `language-text`.
 
+## Tasks that are not "fill in a stub"
+
+- **The learner's own tests.** The test file ships with one example test; the rest sits in a solution block. The check runs the learner's tests against mutants (`src/coursekit/mutation.py`, `src/coursekit/mutants/<group>.py`): deliberate bugs patched into the learner's code from the outside. See `checks/m04.py` and `mutants/local.py`.
+- **Files written whole** (Dockerfile, workflow). Put the reference under `reference/NN/<path>`. The check reads the reference when it exists and the learner's file otherwise. See `checks/m16.py`.
+- **Tickets in existing code** (`shelfwise`). The block holds the fix and its stub holds the original defective code. Register the check with `starts_as="fail"`.
+- **Checks of the machine** (module 00). Register with `graded=False`.
+
+## Verifying one module
+
+While other modules are in flux, check yours alone:
+
+```bash
+uv run --group authoring python tools/verify.py --module 12
+```
+
+It lints only the module's files, runs its checks on the reference, then stubs only this module's blocks in a scratch copy and expects every check to start unsolved. Modules that import torch need `--group neural` as well.
+
 ## Tutor notes
 
 `tutor/notes/NN.md`, in English: what the learner should own afterwards, facts about the data worth having at hand, per task the common mistakes with a leading question for each, what good answers to the written questions contain, a quiz bank. No solution code.
