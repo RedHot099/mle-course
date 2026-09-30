@@ -114,6 +114,8 @@ def module_files(module: int) -> list[Path]:
         name = path.as_posix()
         if not (name.startswith(release.STUB_ROOTS) and path.suffix == ".py"):
             continue
+        if name.endswith(release.LAB_SUFFIX):
+            continue
         tasks = markers.task_ids((ROOT / path).read_text(encoding="utf-8"))
         if any(markers.module_of(task) == module for task in tasks):
             found.append(path)
@@ -129,6 +131,8 @@ def _stub_from(view: Path, module: int) -> None:
     for path in release.source_files():
         name = path.as_posix()
         if not (name.startswith(release.STUB_ROOTS) and path.suffix == ".py"):
+            continue
+        if name.endswith(release.LAB_SUFFIX):
             continue
         text = (ROOT / path).read_text(encoding="utf-8")
         if markers.task_ids(text):
@@ -189,7 +193,7 @@ def verify_module(module: int) -> int:
     _step("Checks report todo once this module is stubbed")
     with tempfile.TemporaryDirectory() as scratch:
         view = Path(scratch)
-        for folder in ("src", "tests", "shelfwise"):
+        for folder in ("src", "tests", "shelfwise", "labs"):
             if (ROOT / folder).is_dir():
                 shutil.copytree(ROOT / folder, view / folder)
         _stub_from(view, module)

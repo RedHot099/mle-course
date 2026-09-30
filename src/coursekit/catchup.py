@@ -14,7 +14,9 @@ from pathlib import Path
 from coursekit import markers, paths
 
 _CANDIDATE_REFS = ("solutions", "origin/solutions", "upstream/solutions")
-_TRACKED_DIRS = ("src/freshcast", "tests", "shelfwise")
+_TRACKED_DIRS = ("src/freshcast", "tests", "shelfwise", "labs")
+# Lab notebooks are authored as jupytext files; the learner has the .ipynb.
+_LAB_SUFFIX = ".lab.py"
 
 
 def _git(*args: str) -> str | None:
@@ -57,7 +59,7 @@ def catch_up(module: int) -> list[Path]:
     rewritten = []
 
     for name in listing.splitlines():
-        if not name.endswith(".py"):
+        if not name.endswith(".py") or name.endswith(_LAB_SUFFIX):
             continue
         source = _git("show", f"{ref}:{name}")
         if source is None:

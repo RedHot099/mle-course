@@ -33,7 +33,9 @@ OVERLAY = "learner"
 LAB_SUFFIX = ".lab.py"
 # Only learner-owned code holds solution blocks. Course tooling mentions the
 # markers in its documentation and must be copied untouched.
-STUB_ROOTS = ("src/freshcast/", "tests/", "shelfwise/")
+# Files under these roots have their blocks stubbed. Under ``labs/`` this
+# means modules a lab imports; the ``.lab.py`` notebooks are handled first.
+STUB_ROOTS = ("src/freshcast/", "tests/", "shelfwise/", "labs/")
 AUTHOR_ONLY = [
     "tools/*",
     "docs/design.md",
