@@ -17,6 +17,7 @@ __pycache__/
 mlruns/
 mlartifacts/
 mlflow.db
+/artifacts/
 
 # Lokalny stan kursanta (profil danych, postęp, kopie zapasowe)
 .course/
