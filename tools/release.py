@@ -31,6 +31,9 @@ ROOT = Path(__file__).resolve().parents[1]
 MAIN_DIR = ROOT / "_main"
 OVERLAY = "learner"
 LAB_SUFFIX = ".lab.py"
+# Only learner-owned code holds solution blocks. Course tooling mentions the
+# markers in its documentation and must be copied untouched.
+STUB_ROOTS = ("src/freshcast/", "tests/", "shelfwise/")
 AUTHOR_ONLY = [
     "tools/*",
     "docs/design.md",
@@ -65,6 +68,11 @@ def is_author_only(path: Path) -> bool:
     """Tell whether a file stays out of the learner view."""
     name = path.as_posix()
     return any(fnmatch.fnmatch(name, pattern) for pattern in AUTHOR_ONLY)
+
+
+def has_blocks(source: Path) -> bool:
+    """Tell whether a Python file contains at least one solution block."""
+    return bool(markers.task_ids(source.read_text(encoding="utf-8")))
 
 
 def notebook_from_lab(text: str, *, solved: bool) -> str:
@@ -130,7 +138,9 @@ def build() -> dict[str, int]:
             counts["copied"] += 1
         elif is_author_only(path):
             counts["skipped"] += 1
-        elif path.suffix == ".py" and markers.task_ids(source.read_text("utf-8")):
+        elif (
+            name.startswith(STUB_ROOTS) and path.suffix == ".py" and has_blocks(source)
+        ):
             text = source.read_text(encoding="utf-8")
             _write(path, markers.render(text, lambda _task: False))
             stubbed.append(path)
