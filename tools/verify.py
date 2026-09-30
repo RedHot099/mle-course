@@ -129,9 +129,14 @@ def verify_module(module: int) -> int:
     failed = []
 
     _step("Lint: this module's files")
-    ok = _run("ruff", "check", *own)
-    ok &= _run("ruff", "format", "--check", *own)
-    ok &= _run("mypy", "--follow-imports=silent", *own)
+    # shelfwise is linted with its own, older settings, and not type-checked.
+    course = [name for name in own if not name.startswith("shelfwise/")]
+    ok = _run("ruff", "check", *course)
+    ok &= _run("ruff", "format", "--check", *course)
+    ok &= _run("mypy", "--follow-imports=silent", *course)
+    if len(course) < len(own):
+        ok &= _run("ruff", "check", ".", cwd=ROOT / "shelfwise")
+        ok &= _run("ruff", "format", "--check", ".", cwd=ROOT / "shelfwise")
     if not ok:
         failed.append("lint")
 
