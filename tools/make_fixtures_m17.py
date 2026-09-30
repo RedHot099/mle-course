@@ -13,7 +13,7 @@ import pandas as pd
 
 from coursekit import paths
 
-CACHE = paths.ONLINE_RETAIL.with_suffix(".parquet")
+CACHE = paths.ONLINE_RETAIL_CACHE
 OUT = paths.FIXTURES_DIR / "shelfwise_lines.parquet"
 PER_KIND = 2
 
