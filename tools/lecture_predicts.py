@@ -49,7 +49,12 @@ def main() -> int:
         page = Path(folder) / "index.html"
         source = page.read_text(encoding="utf-8")
         for block in _BLOCK.finditer(source):
-            code = _text(_CODE.search(block.group(0))["code"])
+            found = _CODE.search(block.group(0))
+            if found is None:
+                print(f"NO CODE {page.parent.name} {block['id']}")
+                failed += 1
+                continue
+            code = _text(found["code"])
             keyed = _KEYED.search(block.group(0))
             wanted = _text(keyed["text"]) if keyed else "?"
             got = run(code)
