@@ -18,6 +18,7 @@ mlruns/
 mlartifacts/
 mlflow.db
 /artifacts/
+shelfwise/output/
 
 # Lokalny stan kursanta (profil danych, postęp, kopie zapasowe)
 .course/
