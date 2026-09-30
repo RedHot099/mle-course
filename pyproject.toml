@@ -28,6 +28,7 @@ dependencies = [
 
 [project.scripts]
 course = "coursekit.cli:main"
+freshcast = "freshcast.cli:main"
 
 [dependency-groups]
 dev = [
@@ -73,6 +74,7 @@ known-first-party = ["freshcast", "coursekit"]
 
 [tool.mypy]
 python_version = "3.12"
+plugins = ["pydantic.mypy"]
 files = ["src"]
 warn_return_any = true
 show_error_codes = true
