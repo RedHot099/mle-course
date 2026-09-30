@@ -8,6 +8,7 @@ learner writes whole (a Dockerfile, a workflow) are copied from
 """
 
 import subprocess
+import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -78,8 +79,19 @@ def catch_up(module: int) -> list[Path]:
             encoding="utf-8",
         )
         rewritten.append(Path(name))
+    _format([paths.ROOT / name for name in rewritten])
     rewritten.extend(_copy_whole_files(ref, module, backup_dir))
     return rewritten
+
+
+def _format(files: list[Path]) -> None:
+    """Format rewritten files: removing block markers leaves extra blank lines."""
+    if not files:
+        return
+    subprocess.run(  # noqa: S603 - ruff on files this module just wrote
+        [sys.executable, "-m", "ruff", "format", "--quiet", *map(str, files)],
+        check=False,
+    )
 
 
 def _copy_whole_files(ref: str, module: int, backup_dir: Path) -> list[Path]:

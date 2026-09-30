@@ -9,16 +9,13 @@ import contextlib
 import inspect
 import io
 import re
-import subprocess
-import sys
 import time
 import types
-from pathlib import Path
 from typing import Any
 
-from coursekit import paths
 from coursekit.checking import CheckFailed, expect, task
 from coursekit.checks import m01
+from coursekit.checks._quality import expect_clean
 
 LAB_01 = {
     "parse_value": m01.check_parse_value,
@@ -28,19 +25,6 @@ LAB_01 = {
     "top_series": m01.check_top_series,
     "save_summary": m01.check_save_summary,
 }
-
-
-def _tool(*args: str) -> tuple[bool, str]:
-    """Run a Python tool such as ruff or mypy and return (passed, first lines)."""
-    done = subprocess.run(  # noqa: S603 - fixed tool names, the path is the learner's file
-        [sys.executable, "-m", *args],
-        capture_output=True,
-        text=True,
-        cwd=paths.ROOT,
-        check=False,
-    )
-    lines = (done.stdout + done.stderr).strip().splitlines()
-    return done.returncode == 0, "\n   ".join(lines[:6])
 
 
 def _missing_types(func: Any) -> list[str]:
@@ -86,15 +70,7 @@ def check_typed_module(module: types.ModuleType) -> None:
         name for name in LAB_01 if not inspect.getdoc(getattr(module, name))
     ]
     expect(not undocumented, f"Brakuje docstringów: {', '.join(undocumented)}.")
-    path = str(Path(module.__file__ or ""))
-    passed, output = _tool("ruff", "check", "--no-cache", path)
-    expect(passed, f"ruff check zgłasza problemy:\n   {output}")
-    passed, _ = _tool("ruff", "format", "--check", "--no-cache", path)
-    expect(
-        passed, "Plik nie jest sformatowany. Uruchom: uv run ruff format carparts.py"
-    )
-    passed, output = _tool("mypy", "--strict", "--no-error-summary", path)
-    expect(passed, f"mypy --strict zgłasza błędy:\n   {output}")
+    expect_clean(module)
 
 
 def _add(a: int, b: int = 0, *, c: int = 0) -> int:
