@@ -186,7 +186,7 @@ def check_data() -> Finding:
             f"brak lub uszkodzone: {', '.join(missing)}",
             "uv run course data",
         )
-    return Finding("Dane", "ok", "FreshRetailNet-50K pobrany, sumy kontrolne zgodne")
+    return Finding("Dane", "ok", "wszystkie zbiory pobrane, sumy kontrolne zgodne")
 
 
 def check_editor() -> Finding:

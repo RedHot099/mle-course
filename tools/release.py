@@ -95,9 +95,9 @@ def ensure_worktree() -> None:
         _git("worktree", "add", "--orphan", "-b", "main", str(MAIN_DIR))
 
 
-def clear_worktree() -> None:
-    """Remove everything from the learner view except its git link."""
-    for child in MAIN_DIR.iterdir():
+def clear(dest: Path) -> None:
+    """Remove everything from a learner view except its git link."""
+    for child in dest.iterdir():
         if child.name == ".git":
             continue
         if child.is_dir():
@@ -106,8 +106,8 @@ def clear_worktree() -> None:
             child.unlink()
 
 
-def _write(relative: Path, content: str | bytes) -> None:
-    target = MAIN_DIR / relative
+def _write(dest: Path, relative: Path, content: str | bytes) -> None:
+    target = dest / relative
     target.parent.mkdir(parents=True, exist_ok=True)
     if isinstance(content, bytes):
         target.write_bytes(content)
@@ -115,10 +115,16 @@ def _write(relative: Path, content: str | bytes) -> None:
         target.write_text(content, encoding="utf-8")
 
 
-def build() -> dict[str, int]:
-    """Write the learner view and refresh the solved notebooks."""
-    ensure_worktree()
-    clear_worktree()
+def build(dest: Path = MAIN_DIR) -> dict[str, int]:
+    """Write the learner view to ``dest`` and refresh the solved notebooks.
+
+    ``dest`` defaults to the ``_main`` worktree. Any other directory is
+    treated as a scratch copy: it is created if missing and gets no git link.
+    """
+    if dest == MAIN_DIR:
+        ensure_worktree()
+    dest.mkdir(parents=True, exist_ok=True)
+    clear(dest)
     counts = {"copied": 0, "stubbed": 0, "notebooks": 0, "skipped": 0}
     stubbed: list[Path] = []
 
@@ -129,12 +135,12 @@ def build() -> dict[str, int]:
         if name.endswith(LAB_SUFFIX):
             text = source.read_text(encoding="utf-8")
             stem = name.removesuffix(LAB_SUFFIX)
-            _write(Path(f"{stem}.ipynb"), notebook_from_lab(text, solved=False))
+            _write(dest, Path(f"{stem}.ipynb"), notebook_from_lab(text, solved=False))
             solved = ROOT / f"{stem}.solution.ipynb"
             solved.write_text(notebook_from_lab(text, solved=True), encoding="utf-8")
             counts["notebooks"] += 1
         elif path.parts[0] == OVERLAY:
-            _write(Path(*path.parts[1:]), source.read_bytes())
+            _write(dest, Path(*path.parts[1:]), source.read_bytes())
             counts["copied"] += 1
         elif is_author_only(path):
             counts["skipped"] += 1
@@ -142,18 +148,18 @@ def build() -> dict[str, int]:
             name.startswith(STUB_ROOTS) and path.suffix == ".py" and has_blocks(source)
         ):
             text = source.read_text(encoding="utf-8")
-            _write(path, markers.render(text, lambda _task: False))
+            _write(dest, path, markers.render(text, lambda _task: False))
             stubbed.append(path)
         else:
-            _write(path, source.read_bytes())
+            _write(dest, path, source.read_bytes())
             counts["copied"] += 1
 
-    tidy_stubs(stubbed)
+    tidy_stubs(dest, stubbed)
     counts["stubbed"] = len(stubbed)
     return counts
 
 
-def tidy_stubs(stubbed: list[Path]) -> None:
+def tidy_stubs(dest: Path, stubbed: list[Path]) -> None:
     """Drop imports that only the removed reference code used, then format.
 
     Without this, every stub would fail ``ruff check`` with unused imports
@@ -164,12 +170,12 @@ def tidy_stubs(stubbed: list[Path]) -> None:
     files = [str(path) for path in stubbed]
     subprocess.run(  # noqa: S603
         ["ruff", "check", "--select", "F401,I", "--fix", "--quiet", *files],  # noqa: S607
-        cwd=MAIN_DIR,
+        cwd=dest,
         check=True,
     )
     subprocess.run(  # noqa: S603
         ["ruff", "format", "--quiet", *files],  # noqa: S607
-        cwd=MAIN_DIR,
+        cwd=dest,
         check=True,
     )
 

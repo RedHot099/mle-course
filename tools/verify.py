@@ -2,7 +2,11 @@
 
     uv run --group authoring python tools/verify.py
 
-Steps:
+For one module only, while others are being written:
+
+    uv run --group authoring python tools/verify.py --module 12
+
+Steps of the full run:
 
 1. ruff and mypy on the authoring tree,
 2. build the learner view,
@@ -13,8 +17,10 @@ Steps:
 """
 
 import os
+import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 import jupytext
@@ -93,7 +99,78 @@ def notebooks_execute() -> bool:
     return ok
 
 
+def module_files(module: int) -> list[Path]:
+    """Return the source files that hold solution blocks of one module."""
+    found = []
+    for path in release.source_files():
+        name = path.as_posix()
+        if not (name.startswith(release.STUB_ROOTS) and path.suffix == ".py"):
+            continue
+        tasks = markers.task_ids((ROOT / path).read_text(encoding="utf-8"))
+        if any(markers.module_of(task) == module for task in tasks):
+            found.append(path)
+    return found
+
+
+def verify_module(module: int) -> int:
+    """Check one module in isolation, without touching the shared learner view.
+
+    Meant for working on a module while other modules are in flux: it lints
+    only this module's files and stubs only this module's blocks, in a
+    scratch copy of ``src`` and ``tests``.
+    """
+    files = module_files(module)
+    check_file = Path(f"src/coursekit/checks/m{module:02d}.py")
+    own = [str(path) for path in [*files, check_file]]
+    print(f"Module {module:02d}: {len(files)} files with solution blocks")
+    for name in own:
+        print(f"  {name}")
+    failed = []
+
+    _step("Lint: this module's files")
+    ok = _run("ruff", "check", *own)
+    ok &= _run("ruff", "format", "--check", *own)
+    ok &= _run("mypy", "--follow-imports=silent", *own)
+    if not ok:
+        failed.append("lint")
+
+    selector = f"{module:02d}"
+    code = (
+        "import sys\n"
+        "from coursekit import checking\n"
+        f"tasks = [t for t in checking.select({selector!r}) if t.graded]\n"
+        "results = checking.run(tasks)\n"
+        "print(checking.report(results))\n"
+        "wanted = sys.argv[1]\n"
+        "sys.exit(0 if results and all(r.status == wanted for r in results) else 1)\n"
+    )
+
+    _step("Checks pass on the reference")
+    if not _run(sys.executable, "-c", code, "ok"):
+        failed.append("reference does not pass")
+
+    _step("Checks report todo once this module is stubbed")
+    with tempfile.TemporaryDirectory() as scratch:
+        view = Path(scratch)
+        shutil.copytree(ROOT / "src", view / "src")
+        shutil.copytree(ROOT / "tests", view / "tests")
+        for path in files:
+            text = (ROOT / path).read_text(encoding="utf-8")
+            stubbed = markers.render(
+                text, lambda task: markers.module_of(task) != module
+            )
+            (view / path).write_text(stubbed, encoding="utf-8")
+        env = {**os.environ, "PYTHONPATH": str(view / "src")}
+        if not _run(sys.executable, "-c", code, "todo", env=env, cwd=view):
+            failed.append("stubbed module does not report todo")
+
+    print("\n" + ("MODULE GOOD" if not failed else "FAILED: " + "; ".join(failed)))
+    return 1 if failed else 0
+
+
 def main() -> int:
+    if len(sys.argv) == 3 and sys.argv[1] == "--module":
+        return verify_module(int(sys.argv[2]))
     steps = [
         ("Lint: authoring tree", lambda: lint(ROOT, "src", "tools")),
         ("Build learner view", lambda: bool(release.build())),
