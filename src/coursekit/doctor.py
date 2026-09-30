@@ -1,5 +1,6 @@
 """Environment diagnosis behind ``course doctor``."""
 
+import ctypes
 import platform
 import shutil
 import subprocess
@@ -132,6 +133,20 @@ def check_python() -> Finding:
     return Finding("Python", "ok", version)
 
 
+def check_system_libraries() -> Finding:
+    """LightGBM needs the OpenMP runtime, which minimal Ubuntu images lack."""
+    try:
+        ctypes.CDLL("libgomp.so.1")
+    except OSError:
+        return Finding(
+            "Biblioteki systemowe",
+            "fail",
+            "brak libgomp (wymaga jej LightGBM)",
+            "sudo apt install -y libgomp1",
+        )
+    return Finding("Biblioteki systemowe", "ok", "libgomp dostępna")
+
+
 def check_uv() -> Finding:
     version = _run("uv", "--version")
     if version is None:
@@ -221,6 +236,7 @@ def diagnose() -> list[Finding]:
         check_memory(),
         check_disk(),
         check_python(),
+        check_system_libraries(),
         check_uv(),
         *check_git(),
         check_data(),

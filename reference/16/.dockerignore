@@ -1,0 +1,16 @@
+# Keep the build context small and free of local state.
+.git
+.venv
+.course
+data
+artifacts
+mlruns
+mlartifacts
+mlflow.db
+**/__pycache__
+.mypy_cache
+.ruff_cache
+.pytest_cache
+lectures
+labs
+_main

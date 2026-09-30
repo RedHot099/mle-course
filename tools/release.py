@@ -38,6 +38,8 @@ AUTHOR_ONLY = [
     "tools/*",
     "docs/design.md",
     "docs/authoring.md",
+    "docs/shelfwise-solutions.md",
+    "reference/*",
     "AGENTS.md",
     "CLAUDE.md",
     "*.solution.ipynb",
