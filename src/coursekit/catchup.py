@@ -12,7 +12,7 @@ from pathlib import Path
 from coursekit import markers, paths
 
 _CANDIDATE_REFS = ("solutions", "origin/solutions", "upstream/solutions")
-_TRACKED_DIRS = ("src/freshcast", "tests")
+_TRACKED_DIRS = ("src/freshcast", "tests", "shelfwise")
 
 
 def _git(*args: str) -> str | None:

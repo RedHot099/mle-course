@@ -79,6 +79,9 @@ def notebook_from_lab(text: str, *, solved: bool) -> str:
     """Convert a percent-format lab to notebook JSON, stubbed or solved."""
     rendered = markers.render(text, lambda _task: solved)
     notebook = jupytext.reads(rendered, fmt="py:percent")
+    # Stable cell ids: without them every build would rewrite the whole file.
+    for number, cell in enumerate(notebook.cells):
+        cell["id"] = f"cell-{number:03d}"
     notebook.metadata["kernelspec"] = _KERNEL
     notebook.metadata.pop("jupytext", None)
     return str(jupytext.writes(notebook, fmt="ipynb"))

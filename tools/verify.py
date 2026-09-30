@@ -64,10 +64,11 @@ def learner_view_is_unsolved() -> bool:
         "from coursekit import checking\n"
         "graded = [t for t in checking.select(None) if t.graded]\n"
         "results = checking.run(graded)\n"
-        "bad = [r for r in results if r.status != 'todo']\n"
+        "bad = [r for r in results if r.status != r.task.starts_as]\n"
         "for r in bad:\n"
-        "    print(f'{r.task.id}: expected todo, got {r.status}: {r.message}')\n"
-        "print(f'{len(results) - len(bad)} of {len(results)} tasks report todo')\n"
+        "    print(f'{r.task.id}: expected {r.task.starts_as}, got {r.status}: '\n"
+        "          f'{r.message}')\n"
+        "print(f'{len(results) - len(bad)} of {len(results)} tasks start unsolved')\n"
         "sys.exit(1 if bad else 0)\n"
     )
     env = {**os.environ, "PYTHONPATH": str(release.MAIN_DIR / "src")}
@@ -141,8 +142,10 @@ def verify_module(module: int) -> int:
         f"tasks = [t for t in checking.select({selector!r}) if t.graded]\n"
         "results = checking.run(tasks)\n"
         "print(checking.report(results))\n"
-        "wanted = sys.argv[1]\n"
-        "sys.exit(0 if results and all(r.status == wanted for r in results) else 1)\n"
+        "solved = sys.argv[1] == 'ok'\n"
+        "wanted = [('ok' if solved else r.task.starts_as) for r in results]\n"
+        "good = [r.status == w for r, w in zip(results, wanted, strict=True)]\n"
+        "sys.exit(0 if results and all(good) else 1)\n"
     )
 
     _step("Checks pass on the reference")
@@ -152,8 +155,9 @@ def verify_module(module: int) -> int:
     _step("Checks report todo once this module is stubbed")
     with tempfile.TemporaryDirectory() as scratch:
         view = Path(scratch)
-        shutil.copytree(ROOT / "src", view / "src")
-        shutil.copytree(ROOT / "tests", view / "tests")
+        for folder in ("src", "tests", "shelfwise"):
+            if (ROOT / folder).is_dir():
+                shutil.copytree(ROOT / folder, view / folder)
         for path in files:
             text = (ROOT / path).read_text(encoding="utf-8")
             stubbed = markers.render(
@@ -161,8 +165,8 @@ def verify_module(module: int) -> int:
             )
             (view / path).write_text(stubbed, encoding="utf-8")
         env = {**os.environ, "PYTHONPATH": str(view / "src")}
-        if not _run(sys.executable, "-c", code, "todo", env=env, cwd=view):
-            failed.append("stubbed module does not report todo")
+        if not _run(sys.executable, "-c", code, "unsolved", env=env, cwd=view):
+            failed.append("stubbed module does not start unsolved")
 
     print("\n" + ("MODULE GOOD" if not failed else "FAILED: " + "; ".join(failed)))
     return 1 if failed else 0

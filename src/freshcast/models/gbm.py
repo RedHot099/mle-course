@@ -38,6 +38,14 @@ class LightGBMForecaster(PanelForecaster):
         ValueError: A categorical or monotone name is not among ``features``.
     """
 
+    features: list[str]
+    categorical: list[str]
+    params: dict[str, Any]
+    rounds: int
+    monotone: dict[str, int]
+    _categories: dict[str, pd.Index]
+    _booster: lgb.Booster | None
+
     def __init__(
         self,
         features: Sequence[str],
@@ -55,8 +63,8 @@ class LightGBMForecaster(PanelForecaster):
         self.params = {**DEFAULT_PARAMS, **(params or {})}
         self.rounds = rounds
         self.monotone = dict(monotone or {})
-        self._categories: dict[str, pd.Index] = {}
-        self._booster: lgb.Booster | None = None
+        self._categories = {}
+        self._booster = None
         # <<< SOLUTION
 
     def _matrix(self, X: pd.DataFrame) -> pd.DataFrame:

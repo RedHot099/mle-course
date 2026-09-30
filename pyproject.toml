@@ -62,7 +62,8 @@ packages = ["src/freshcast", "src/coursekit"]
 [tool.ruff]
 line-length = 88
 target-version = "py312"
-extend-exclude = ["_main", "labs"]
+# shelfwise is a separate, deliberately imperfect codebase with its own rules.
+extend-exclude = ["_main", "labs", "shelfwise"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "SIM", "PD", "C90"]
@@ -79,7 +80,7 @@ files = ["src"]
 warn_return_any = true
 show_error_codes = true
 disallow_untyped_defs = true
-exclude = ["_main/"]
+exclude = ["_main/", "shelfwise/"]
 
 [[tool.mypy.overrides]]
 module = [
