@@ -64,7 +64,7 @@ Kurs używa angielskich terminów, bo takich używa się w pracy i w dokumentacj
 | silhouette |  | Miara od −1 do 1, jak dobrze punkty pasują do swojego klastra w porównaniu z najbliższym obcym |
 | stockout | brak towaru | Okres, w którym produktu nie było na stanie |
 | target | zmienna celu | Wartość, którą model ma przewidzieć. W tym kursie `sale_amount` |
-| target encoding | kodowanie średnią celu | Zamiana kategorii na średni cel w tej kategorii. Dopasowane poza treningiem przecieka |
+| target encoding | kodowanie średnią celu | Zamiana kategorii na średni cel w tej kategorii. Dopasowane na danych spoza treningu przecieka |
 | threshold | próg | Wartość wyniku modelu, od której podnosisz alarm |
 | upstream | | Oryginalne repozytorium, z którego zrobiono fork |
 | WAPE |  | Suma błędów bezwzględnych podzielona przez sumę wartości rzeczywistych |

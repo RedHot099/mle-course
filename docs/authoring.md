@@ -66,7 +66,8 @@ def check_panel_ops(_target: object) -> None:
 - One check per task id. Inside, go from basic requirements to subtle ones, so the first failing message is the most useful one.
 - Inputs: tiny hand-made frames for logic, `fixtures/frn_sample.parquet` for realistic data. Expected values are constants you measured, never a second implementation.
 - Test the input is not mutated, the error cases named in the docstring, and the trap the module teaches (for 07.5: cross-series leak, window including today).
-- A check for notebook-only modules (01-03) receives the learner's object: `check("01.3", my_function)`.
+- A check for notebook-only modules (01-03) receives the learner's object: `check("01.3", my_function)`. Register it with `notebook=True`; `course check` then reports it as not started with a pointer to the notebook, and `verify.py` covers it by executing the solved lab in strict mode.
+- A lab may hold a module the learner writes next to the notebook (`labs/02-functions/carparts.py`). Files under `labs/` with solution blocks are stubbed, verified and caught up like package files; `.lab.py` notebooks are not. Checks that need a clean file use `checks/_quality.py` (`expect_clean`: ruff, ruff format, mypy --strict).
 - Environment checks that have no reference solution are registered with `graded=False`.
 
 ## Lab notebook
@@ -77,6 +78,8 @@ def check_panel_ops(_target: object) -> None:
 - The notebook must run top to bottom, solved, on the `standard` and `small` profiles, in under two minutes.
 - Charts use `coursekit.plotting.use_course_style()`, one y-axis per chart, a title that says what is plotted.
 - Planned traps: let the learner fall in, show the symptom, then ask for the cause.
+- Part 3 (modules 14-19): the lab README is a board of tickets (context, acceptance criteria, check command, three hints in `<details>`); the notebook only runs the pipeline and holds a short report. Module 16 has no notebook.
+- `COURSE_STRICT=1` (set by `verify.py`) makes a failing graded check stop the notebook; ungraded tasks may stay open.
 
 ## Lecture
 
@@ -121,6 +124,19 @@ uv run --group authoring python tools/verify.py --module 12
 ```
 
 It lints only the module's files, runs its checks on the reference, then stubs only this module's blocks in a scratch copy and expects every check to start unsolved. Modules that import torch need `--group neural` as well.
+
+## Checking a lecture
+
+```bash
+uv run python tools/lecture_console.py lectures/NN-slug          # console must stay silent
+uv run python tools/lecture_predicts.py lectures/NN-slug         # predict blocks in CPython vs the keyed answer
+node tools/browser_eval.mjs "file://$PWD/lectures/NN-slug/index.html" "$(cat tools/predicts_in_pyodide.js)" 240
+uv run python tools/exercises_in_pyodide.py lectures/NN-slug tools/lecture_solutions/lNN.py
+node tools/browser_shot.mjs "file://$PWD/lectures/NN-slug/index.html" "#widget-id" /tmp/widget.png
+uv run --group authoring python tools/lab_outputs.py labs/NN-slug/NN-slug.lab.py   # read what a lab prints
+```
+
+The Pyodide runs need headless Chromium and the network (the Pyodide CDN). Reference solutions of the exercises live in `tools/lecture_solutions/`. The vendored highlight.js knows `python`, `bash`, `yaml`, `ini`/`toml`, `text`; other languages log a console warning.
 
 ## Tutor notes
 
