@@ -150,5 +150,4 @@ The Pyodide runs need headless Chromium and the network (the Pyodide CDN). Refer
 
 ## Before publishing
 
-- Replace `UPSTREAM-OWNER` in `lectures/00-setup/index.html` and the setup skill with the real GitHub owner.
 - Walk the Windows steps of lesson 00 once on a real Windows machine.
