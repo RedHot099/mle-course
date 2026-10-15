@@ -146,7 +146,7 @@ print(f"Równe dokładnie: {exact:.1%}, równe z tolerancją: {close:.1%}")
 # <details>
 # <summary>Podpowiedź 2: podejście</summary>
 #
-# `np.lexsort((days, ids))` zwraca kolejność sortowania po `ids`, a przy remisie po `days` (ostatni klucz jest najważniejszy). `np.unique(..., return_counts=True)` powie, ile wierszy ma każda seria. Poprawne dni po sortowaniu to `0, 1, ..., n_days - 1` powtórzone dla każdej serii: `np.tile(np.arange(n_days), liczba_serii)`.
+# `np.lexsort((days, ids))` zwraca kolejność sortowania po `ids`, a przy remisie po `days` (ostatni klucz jest najważniejszy). `np.unique` da listę serii. Poprawne dni po sortowaniu to `0, 1, ..., n_days - 1` powtórzone dla każdej serii: `np.tile(np.arange(n_days), liczba_serii)`.
 #
 # </details>
 #
@@ -155,7 +155,7 @@ print(f"Równe dokładnie: {exact:.1%}, równe z tolerancją: {close:.1%}")
 #
 # ```python
 # order = np.lexsort((days, ids))
-# series, counts = np.unique(ids[order], return_counts=True)
+# series = np.unique(ids[order])
 # if not np.array_equal(days[order], np.tile(np.arange(n_days), len(series))):
 #     raise ValueError(...)
 # return series, values[order].reshape(len(series), n_days)
@@ -278,7 +278,7 @@ print("Zgadza się.")
 # 4. Sprawdź, czy coś zostało.
 # 5. Policz `NaN` w tym, co zostało. Kolejność kroków 3 i 5 ma znaczenie: braki sprawdzasz dopiero po masce.
 #
-# **Sprawdzenie:** `check("05.1")` w komórce pod 05.3a albo `uv run course check 05.1` w terminalu. Sprawdzenie woła `prepare` na krótkich listach, z maską i bez, oraz na każdym przypadku błędu z listy.
+# **Sprawdzenie:** `check("05.1")` w komórce pod 05.3a albo `uv run course check 05.1` w terminalu. Sprawdzenie woła `prepare` na krótkich listach, z maską i bez, oraz na każdym przypadku błędu z listy. Sprawdzenie patrzy tylko na to, czy poleciał `ValueError`. Treść komunikatu wybierasz sam. Napisz w nim, co się nie zgadza (na przykład słowo NaN albo oba kształty): w 05.5 Twoje testy dopasują `match=` właśnie do tych słów.
 #
 # ### 05.2 `mae` i `rmse`
 #
@@ -584,7 +584,7 @@ check("05.4")
 # **Wynik:**
 #
 # - `profiles`: `np.ndarray` `(wiersze, 24)`, udziały godzin w sprzedaży dnia. Dzień bez sprzedaży to wiersz `NaN`.
-# - `no_profile`: `np.ndarray` typu `bool`, kształt `(wiersze,)`. `True` dla dnia bez sprzedaży, czyli bez profilu.
+# - `no_profile`: `np.ndarray` typu `bool`, kształt `(wiersze,)`. `True` dla dnia bez sprzedaży, czyli bez profilu. Wiersz `hours` to jeden dzień jednej serii, więc to maska dni, nie serii.
 # - `mean_profile`: `np.ndarray` `(24,)`, średni udział każdej godziny, liczony tylko z dni, które mają profil. Każdy taki dzień waży tyle samo, niezależnie od tego, ile sprzedał. To nie jest udział godziny w sumie całej sprzedaży. Sumuje się do 1.
 #
 # **Skorzystaj z:** `row_shares` z 05.4a (import jest w komórce), `np.isnan` na jednej kolumnie `profiles` (wiersz bez profilu ma `NaN` w każdej kolumnie), `np.nanmean` z `axis` (sekcje "Osie" i "NaN i typy liczbowe").
@@ -633,6 +633,8 @@ print("Zgadza się.")
 # - `NaN` w danych jest po cichu liczony jako zero,
 # - przy różnej długości wejść metryki obcinają dłuższe wejście zamiast zgłosić błąd.
 #
+# Cztery pierwsze błędy psują jedną metrykę, trzy ostatnie wszystkie cztery naraz. Do wykrycia każdego z trzech ostatnich wystarczy test jednej metryki, ale parametryzacja po czterech metrykach nic nie kosztuje.
+#
 # **Skorzystaj z:** wzoru gotowego testu (małe dane widoczne w teście, wynik policzony w głowie), `pytest.approx` do porównania liczb, `pytest.raises(ValueError, match=...)` do błędów, `@pytest.mark.parametrize` (lab 04).
 #
 # **Kroki:**
@@ -679,7 +681,7 @@ check("05.5")
 # %% [markdown]
 # ## 05.8 Eksploracja
 #
-# Bez sprawdzeń. Odpowiedz jednym, dwoma zdaniami pod pytaniami, w miejscu *Twoje odpowiedzi*.
+# Bez sprawdzeń. Pytania są trzy i stoją poniżej, w tej komórce: odpowiadasz na nie, a nie na własne. Odpowiedz jednym, dwoma zdaniami pod pytaniami, w miejscu *Twoje odpowiedzi*.
 #
 # **Skorzystaj z:** wydruku komórki 05.3b (WAPE na wszystkich dniach i bez braków, bias) i wydruku 05.4b (udział dni bez profilu).
 #
