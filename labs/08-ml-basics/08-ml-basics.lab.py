@@ -149,7 +149,7 @@ panel[FEATURES].describe().T[["count", "mean", "min", "max"]]
 # **Wejście.**
 #
 # - `df`: `pd.DataFrame` z kolumną `dt`, jak w 08.1a. Pozostałe kolumny przechodzą do wyniku bez zmian.
-# - `cutoff`: `pd.Timestamp`; pierwszy dzień drugiej części. Zwykle to wynik `last_days_start`.
+# - `cutoff`: `pd.Timestamp`; gotowa data, pierwszy dzień drugiej części. To nie jest liczba dni: liczbę dni zamienia na datę `last_days_start` z 08.1a, a `split_by_date` jej nie woła, tylko porównuje daty z `cutoff`.
 #
 # **Wynik.** Krotka dwóch ramek `(before, after)`. `before` to wiersze z datą wcześniejszą niż `cutoff`, `after` to wiersze z datą `cutoff` i późniejszą. Obie mają wszystkie kolumny `df`, jego kolejność wierszy i jego indeks: bez sortowania i bez `reset_index`. Razem mają tyle wierszy co `df`. Gdy któraś część wyszłaby pusta, funkcja zgłasza `ValueError`.
 #
@@ -467,7 +467,7 @@ assert gd_loss <= 1.01 * sklearn_loss, "Gradient descent nie doszedł blisko min
 #
 # **Wejście.** `X`: `pd.DataFrame`; wiersze panelu, w których są wszystkie kolumny z `self.features`. Inne kolumny mogą mieć `NaN`, to nie błąd.
 #
-# **Wynik.** `pd.DataFrame` z samymi kolumnami `self.features`, w tej kolejności, z tymi samymi wierszami. Gdy któraś z tych kolumn ma `NaN` w choć jednym wierszu, `ValueError` z liczbą takich wierszy w komunikacie. Metoda niczego nie usuwa (ani kolumn, ani wierszy) i niczego nie wypełnia. Wiersze bez kompletu cech odfiltrowuje kod, który woła model, jak przy `fit_rows` niżej.
+# **Wynik.** `pd.DataFrame` z samymi kolumnami `self.features`, w tej kolejności, z tymi samymi wierszami. Gdy któraś z tych kolumn ma `NaN` w choć jednym wierszu, `ValueError` z liczbą takich wierszy w komunikacie. Metoda nie zmienia `X`, nie usuwa wierszy z `NaN` i niczego nie wypełnia: zwraca wybór kolumn z listy, a przy brakach zgłasza błąd. Wiersze bez kompletu cech odfiltrowuje kod, który woła model, jak przy `fit_rows` niżej.
 #
 # **Kroki.** Wybierz kolumny z listy. Policz wiersze, w których któraś z nich ma `NaN` (`isna()`, potem `any(axis=1)` i `sum()`). Jeśli jest ich więcej niż zero, zgłoś błąd.
 #
@@ -477,7 +477,7 @@ assert gd_loss <= 1.01 * sklearn_loss, "Gradient descent nie doszedł blisko min
 #
 # **Wynik.** `self`. Po `fit` w `self._pipeline` jest dopasowany `Pipeline`: skaler, potem `Ridge(alpha=self.alpha)`.
 #
-# **Kroki.** Zbuduj nowy pipeline (w `fit`, nie w `__init__`: każde `fit` zaczyna od zera) i dopasuj go do kolumn z `_checked(X)` i do `y`.
+# **Kroki.** Zbuduj nowy pipeline przez `make_pipeline` (w `fit`, nie w `__init__`: każde `fit` zaczyna od zera) i dopasuj go do kolumn z `_checked(X)` i do `y`. `make_pipeline` nazywa kroki od nazw klas, małymi literami: `standardscaler` i `ridge`. Gotowa metoda `coefficients` szuka kroku `ridge`, więc nie nadawaj krokom własnych nazw.
 #
 # ### 08.4c `predict(X)`
 #
