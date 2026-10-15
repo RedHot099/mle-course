@@ -62,7 +62,7 @@ print(XLSX.name, f"{XLSX.stat().st_size / 1e6:.0f} MB")
 #
 # ## Plik tak, jak przychodzi
 #
-# Najpierw wczytaj skoroszyt bez żadnych ustawień, tak jak robi to większość tutoriali. To potrwa od pół minuty do półtorej minuty, zależnie od komputera. Zapamiętaj ten czas: porównasz go z odczytem z Parquet w komórce pod sprawdzeniem 06.1. Nigdzie go nie wpisujesz.
+# Najpierw wczytaj skoroszyt bez żadnych ustawień, tak jak robi to większość tutoriali. To potrwa do około półtorej minuty. Zapamiętaj ten czas: porównasz go z odczytem z Parquet w komórce pod sprawdzeniem 06.1. Nigdzie go nie wpisujesz.
 
 # %%
 start = time.perf_counter()
