@@ -263,8 +263,8 @@ print("Zgadza się.")
 #
 # `ValueError`, gdy:
 #
-# - `actual` i `predicted` mają po spłaszczeniu różną długość,
-# - maska ma po spłaszczeniu inną długość niż dane,
+# - `actual` i `predicted` mają różny kształt (także (2, 3) wobec (3, 2): tyle samo elementów, inny układ),
+# - maska ma inny kształt niż dane,
 # - po zastosowaniu maski nie zostaje żaden element,
 # - wśród elementów, które zostały, jest `NaN`. `NaN` w elemencie odrzuconym przez maskę nie jest błędem.
 #
@@ -272,9 +272,9 @@ print("Zgadza się.")
 #
 # **Kroki:**
 #
-# 1. Zamień `actual` i `predicted` na płaskie tablice `float64`.
-# 2. Porównaj ich kształty po spłaszczeniu, czyli liczbę elementów. Różne: `ValueError`. Sprawdzenie nie odróżni macierzy (2, 3) od (3, 2), więc pilnujesz sam, żeby prognoza miała ten sam układ co dane.
-# 3. Jeśli jest maska, zamień ją na płaską tablicę `bool`, porównaj jej kształt z danymi i wybierz nią elementy z obu tablic.
+# 1. Zamień `actual` i `predicted` na tablice `float64`, jeszcze bez spłaszczania.
+# 2. Porównaj ich kształty (`.shape`). Różne: `ValueError`. Dopiero potem spłaszcz obie tablice.
+# 3. Jeśli jest maska, zamień ją na tablicę `bool`, porównaj jej kształt z kształtem danych sprzed spłaszczenia, spłaszcz ją i wybierz nią elementy z obu tablic.
 # 4. Sprawdź, czy coś zostało.
 # 5. Policz `NaN` w tym, co zostało. Kolejność kroków 3 i 5 ma znaczenie: braki sprawdzasz dopiero po masce.
 #
@@ -365,9 +365,9 @@ check("05.3")
 #
 # - `history`: `np.ndarray` o kształcie `(liczba serii, liczba dni historii)`. Wiersz to jedna seria, kolumny to kolejne dni, ostatnia kolumna to ostatni dzień przed prognozą. W labie to `sales` bez ostatnich 7 dni.
 # - `horizon`: `int`, ile dni do przodu prognozujesz, co najmniej 1.
-# - `season`: `int`, długość sezonu w dniach, co najmniej 1, domyślnie 7 (tydzień). Wartości mniejszej od 1 funkcja nie musi sprawdzać.
+# - `season`: `int`, długość sezonu w dniach, co najmniej 1, domyślnie 7 (tydzień).
 #
-# **Wynik:** `np.ndarray` o kształcie `(liczba serii, horizon)`. Kolumna `h` prognozy to wartość z pozycji `h % season` ostatniego sezonu historii. Przykład: historia jednej serii `[0, 1, 2, 3, 4, 5]`, sezon 3, horyzont 4. Ostatni sezon to `[3, 4, 5]`, prognoza to `[3, 4, 5, 3]`. `ValueError`, gdy `horizon` jest mniejszy od 1 albo historia ma mniej kolumn niż `season`.
+# **Wynik:** `np.ndarray` o kształcie `(liczba serii, horizon)`. Kolumna `h` prognozy to wartość z pozycji `h % season` ostatniego sezonu historii. Przykład: historia jednej serii `[0, 1, 2, 3, 4, 5]`, sezon 3, horyzont 4. Ostatni sezon to `[3, 4, 5]`, prognoza to `[3, 4, 5, 3]`. `ValueError`, gdy `horizon` albo `season` jest mniejszy od 1 albo historia ma mniej kolumn niż `season`.
 #
 # **Skorzystaj z:** wycinków 2-D z wykładu (`history[:, ...]` bierze kolumny wszystkich wierszy naraz), indeksowania listą albo tablicą numerów kolumn, `np.arange` i reszty z dzielenia `%`. `SeasonalNaiveForecaster` z labu 04 (`from freshcast.models.local import SeasonalNaiveForecaster`) daje wzorcowe wyniki: komórka pod sprawdzeniem porówna z nim Twoją funkcję.
 #
@@ -377,7 +377,7 @@ check("05.3")
 # 2. Wytnij ostatnie `season` kolumn wszystkich wierszy.
 # 3. Wybierz z nich kolumny w kolejności `0, 1, ..., season - 1, 0, 1, ...`, aż będzie ich `horizon`. Taki ciąg numerów daje reszta z dzielenia przez `season`.
 #
-# **Sprawdzenie:** `check("05.7", seasonal_naive)` przekazuje samą funkcję. Sprawdzenie używa przykładu z punktu **Wynik** (dla dwóch serii) i obu przypadków błędu. Komórka pod nim wypisuje `Te same prognozy: True`, gdy wynik zgadza się z klasą z labu 04 na wszystkich seriach.
+# **Sprawdzenie:** `check("05.7", seasonal_naive)` przekazuje samą funkcję. Sprawdzenie używa przykładu z punktu **Wynik** (dla dwóch serii) i trzech przypadków błędu. Komórka pod nim wypisuje `Te same prognozy: True`, gdy wynik zgadza się z klasą z labu 04 na wszystkich seriach.
 #
 # <details>
 # <summary>Podpowiedź 1: kierunek</summary>
@@ -415,19 +415,20 @@ def seasonal_naive(history, horizon, season=7):
         history: 2-D array, one row per series, one column per day in time
             order; the last column is the last day before the forecast.
         horizon: Number of steps to forecast, at least 1.
-        season: Length of the season in columns, at least 1; smaller values
-            are not checked.
+        season: Length of the season in columns, at least 1.
 
     Returns:
         An array of shape ``(history.shape[0], horizon)``.
 
     Raises:
-        ValueError: ``horizon`` is below 1, or ``history`` has fewer than
-            ``season`` columns.
+        ValueError: ``horizon`` or ``season`` is below 1, or ``history`` has
+            fewer than ``season`` columns.
     """
     # >>> SOLUTION 05.7
     if horizon < 1:
         raise ValueError(f"horizon must be at least 1, got {horizon}.")
+    if season < 1:
+        raise ValueError(f"season must be at least 1, got {season}.")
     if history.shape[1] < season:
         raise ValueError(f"History of {history.shape[1]} columns is shorter than {season}.")
     return history[:, -season:][:, np.arange(horizon) % season]
