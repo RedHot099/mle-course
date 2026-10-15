@@ -68,14 +68,22 @@ PATH = paths.CAR_PARTS
 #
 # Nie kopiuj komórek z `check(...)`, zmiennych z eksploracji (`series`, `stats`, ...) ani `PATH`. W module stoją tylko definicje i stałe (wykład 02, sekcja "Moduły i importy").
 #
-# **Wynik.** Plik z sześcioma funkcjami, które działają tak samo jak w labie 01. Importy stoją na górze pliku, razem z tymi, które już tam są.
+# **Wynik.** Plik z sześcioma funkcjami, które działają tak samo jak w labie 01. Importy stoją na górze pliku, w jednym bloku z tymi, które już tam są, w kolejności, której wymaga `ruff check`.
 #
 # **Skorzystaj z.** `ruff check` w komórce z komendami poniżej. Brakujący import zgłasza jako nieznaną nazwę (`F821 Undefined name`).
 #
 # **Kroki.**
 #
 # 1. Skopiuj sześć funkcji w kolejności z tabeli.
-# 2. Dopisz na górze pliku importy, których potrzebują: `json` i `Path` z `pathlib`.
+# 2. Dopisz na górze pliku importy, których potrzebują: `json` i `Path` z `pathlib`. Kolejności importów pilnuje `ruff check` (reguła `I`), a nie `ruff format`. Import dopisany w złym miejscu daje uwagę `I001 Import block is un-sorted or un-formatted`. Po tym kroku blok importów ma wyglądać tak:
+#
+#    ```python
+#    import json
+#    from collections.abc import Callable, Mapping, Sequence
+#    from pathlib import Path
+#    ```
+#
+#    Gdy `ruff check` zgłosi `I001`, uruchom w terminalu `uv run ruff check --fix labs/02-functions/carparts.py` (albo w notebooku `!uv run ruff check --fix carparts.py`). Gwiazdka `[*]` przy kodzie uwagi znaczy, że ruff umie ją naprawić sam.
 # 3. Uruchom komórkę z komendami. `ruff check` nie ma mieć uwag. Uwagi mypy o brakujących typach są na tym etapie spodziewane.
 #
 # **Sprawdzenie.** Komórka z `assert` pod komendami nie zgłasza błędu: wczytuje Twoim `carparts.read_series` cały plik.
@@ -88,7 +96,7 @@ PATH = paths.CAR_PARTS
 #
 # - `Values`: alias na górze pliku. Sekwencja tylko do odczytu (lista albo krotka) wartości jednej serii, każda `float` albo `None`. To typ `values` w `demand_stats`.
 # - `Stats`: alias. Słownik statystyk jednej serii: nazwa statystyki (`str`) → wartość (`float` albo `None`). To wynik `demand_stats`.
-# - `Mapping`, `Sequence`, `Iterator` z `collections.abc` (wykład 02, sekcja "Typy", tabela zapisów). `Mapping` i `Sequence` są już zaimportowane. `Iterator` dopisz do tego samego importu.
+# - `Mapping`, `Sequence`, `Iterator` z `collections.abc` (wykład 02, sekcja "Typy", tabela zapisów). `Mapping` i `Sequence` są już zaimportowane. `Iterator` dopisz do tej samej linii, w kolejności alfabetycznej: `from collections.abc import Callable, Iterator, Mapping, Sequence`. Nie dodawaj drugiej linii `from collections.abc import ...`, bo `ruff check` zgłosi `I001`.
 #
 # **Wynik.** Każdy parametr i każdy wynik sześciu funkcji ma adnotację. Zasada z wykładu: parametry typujesz szeroko (czego funkcja potrzebuje), wynik wąsko (co dokładnie zwraca).
 #
@@ -176,7 +184,15 @@ check("02.1", carparts)
 #
 # Sygnatura z `[**P, R]` jest już w pliku. Mówi mypy: "opakowana funkcja przyjmuje te same argumenty i zwraca to samo co oryginał". Bez niej każda udekorowana funkcja traciłaby typy.
 #
-# **Skorzystaj z.** Wykład 02, sekcja "Dekoratory": kształt dekoratora z `functools.wraps` i część "Typ dekoratora". Zegar do mierzenia odcinków czasu to `time.perf_counter()`, a kod, który ma się wykonać także przy wyjątku, stawiasz w `finally` (ta sama sekcja wykładu, część "Kod, który działa zawsze"). Dopisz importy `functools` i `time` na górze pliku.
+# **Skorzystaj z.** Wykład 02, sekcja "Dekoratory": kształt dekoratora z `functools.wraps` i część "Typ dekoratora". Zegar do mierzenia odcinków czasu to `time.perf_counter()`, a kod, który ma się wykonać także przy wyjątku, stawiasz w `finally` (ta sama sekcja wykładu, część "Kod, który działa zawsze"). Dopisz importy `functools` i `time` na górze pliku. Po tym zadaniu cały blok importów wygląda tak (kolejność poprawi też `ruff check --fix`, jak w 02.1a):
+#
+# ```python
+# import functools
+# import json
+# import time
+# from collections.abc import Callable, Iterator, Mapping, Sequence
+# from pathlib import Path
+# ```
 #
 # **Kroki.**
 #
@@ -548,7 +564,7 @@ print(len(steady), steady[:5])
 #
 # **Pytanie 1.** Dopisz nową statystykę `peak` (największa znana wartość) tu, w notebooku, dekoratorem `@carparts.register("peak")`. Policz ją dla wszystkich serii i wybierz serie z `peak` co najmniej 10.
 #
-# **Gdzie.** Komórka poniżej: funkcja `peak` i zmienne `peaks`, `spiky`.
+# **Gdzie.** Komórka poniżej: najpierw funkcja `peak` z dekoratorem `@carparts.register("peak")` (napisz ją nad `peaks`, w miejscu komentarza), potem zmienne `peaks` i `spiky`.
 #
 # **Wynik.**
 #
@@ -570,6 +586,8 @@ def peak(values):
 peaks = {name: carparts.summarise(values, ["peak"]) for name, values in series.items()}
 spiky = carparts.select(peaks, carparts.at_least("peak", 10))
 # --- STUB
+#| # tu funkcja peak z dekoratorem @carparts.register("peak")
+#|
 #| peaks = ...
 #| spiky = ...
 # <<< SOLUTION
