@@ -62,7 +62,7 @@ print(XLSX.name, f"{XLSX.stat().st_size / 1e6:.0f} MB")
 #
 # ## Plik tak, jak przychodzi
 #
-# Najpierw wczytaj skoroszyt bez żadnych ustawień, tak jak robi to większość tutoriali. To potrwa od pół minuty do półtorej minuty, zależnie od komputera: zanotuj ile.
+# Najpierw wczytaj skoroszyt bez żadnych ustawień, tak jak robi to większość tutoriali. To potrwa od pół minuty do półtorej minuty, zależnie od komputera. Zapamiętaj ten czas: porównasz go z odczytem z Parquet w komórce pod sprawdzeniem 06.1. Nigdzie go nie wpisujesz.
 
 # %%
 start = time.perf_counter()
@@ -125,7 +125,7 @@ except Exception as error:  # noqa: BLE001 - the error is what we want to see
 #
 # **Kroki:**
 #
-# 1. Wczytaj wszystkie arkusze naraz, podając `dtype` jako słownik nagłówek → typ. Klucze to nagłówki ze skoroszytu (`"Invoice"`, `"Customer ID"`), bo typy działają przy czytaniu, przed zmianą nazw. Tekst dla numeru faktury, kodu, opisu i kraju, `"Int64"` dla klienta. Data, ilość i cena wczytują się dobrze same.
+# 1. Wczytaj wszystkie arkusze naraz, podając `dtype` jako słownik nagłówek → typ. Klucze to nagłówki ze skoroszytu (`"Invoice"`, `"Customer ID"`), bo typy działają przy czytaniu, przed zmianą nazw. Tekst dla numeru faktury, kodu, opisu i kraju, `"Int64"` dla klienta. Data, ilość i cena wczytują się dobrze same. Typ tekstowy podany przy czytaniu zostawia pustą komórkę jako brak, a liczbę z komórki zamienia na napis bez `.0` (`489434` → `"489434"`). Sprawdź po wczytaniu: `isna().sum()` dla `description` ma dać liczbę z docstringu.
 # 2. Przejdź po słowniku arkuszy. Dla każdego sprawdź, czy ma wszystkie nagłówki z `SHEET_HEADERS`. Brak: `ValueError` z nazwą arkusza i brakującymi nagłówkami.
 # 3. Zmień nazwy kolumn według `SHEET_HEADERS` i dodaj kolumnę `sheet` z nazwą arkusza.
 # 4. Sklej arkusze jeden pod drugim, z nowym indeksem.
@@ -222,7 +222,7 @@ raw.dtypes
 #
 # 1. Reguła 1: lista kolumn `raw` równa `RAW_COLUMNS`.
 # 2. Reguła 2: policz wiersze (nie komórki) z brakiem w którejś z `REQUIRED_COLUMNS`.
-# 3. Reguła 3: policz numery faktur, które nie pasują w całości do `INVOICE_PATTERN`.
+# 3. Reguła 3: policz wiersze, w których numer faktury nie pasuje w całości do `INVOICE_PATTERN`. Liczysz wiersze, nie różne numery: trzy wiersze tej samej złej faktury to 3. Tylko reguła 8 liczy faktury.
 # 4. Reguła 4: policz kody towarów, które różnią się od siebie samych po usunięciu odstępów i zamianie na wielkie litery.
 #
 # Każda reguła to maska złych wierszy, jej suma i jeden `if` z `raise`.
@@ -232,7 +232,7 @@ raw.dtypes
 # **Kroki:**
 #
 # 1. Reguła 5: ilość równa 0.
-# 2. Reguła 6: ilość ujemna, a faktura nie zaczyna się od `C` i cena jest różna od 0. Takich wierszy ma nie być. Uruchom tę regułę na prawdziwym `raw`, zanim jej zaufasz.
+# 2. Reguła 6: ujemna ilość jest dozwolona, gdy faktura to anulowanie (`C`) albo gdy cena wynosi 0. Zły wiersz ma więc trzy cechy naraz: ilość ujemna, faktura nie zaczyna się od `C`, cena różna od 0. Na prawdziwym `raw` ta reguła ma dać 0 wierszy. Jeśli daje tysiące, pomyliłeś się w łączeniu trzech warunków: każdy warunek weź w nawias, a `~` postaw przed tym, który odwracasz.
 # 3. Reguła 7: cena ujemna, a faktura nie zaczyna się od `A`.
 # 4. Reguła 8: w obrębie jednej faktury więcej niż jeden klient albo więcej niż jeden kraj. Liczysz faktury, nie wiersze: grupuj po `invoice` i licz różne wartości w grupie.
 #
@@ -559,8 +559,8 @@ print(f"Gdyby każda ujemna ilość była zwrotem: {naive_returns:,} szt.")
 #
 # 1. Reguły 1 i 2: lista kolumn, potem typy przez `_wrong_dtypes`.
 # 2. Reguły 3-6: każda to maska złych wierszy, jej suma i `raise`. Data "bez godziny" to data równa sobie po `.dt.normalize()`.
-# 3. Reguła 7: porównaj klucz tabeli z tym samym kluczem posortowanym.
-# 4. Reguła 8: suma sprzedanych i zwróconych sztuk w wierszu większa od 0.
+# 3. Reguła 7: weź kolumny klucza i porównaj je z tymi samymi kolumnami po `sort_values`. Różnią się, gdy choć jeden wiersz stoi nie na swoim miejscu. Ten błąd nie ma liczby w komunikacie.
+# 4. Reguła 8: zły wiersz to taki, w którym suma sprzedanych i zwróconych sztuk wynosi 0 albo mniej. Policz takie wiersze.
 #
 # **Sprawdzenie 06.6a i 06.6b:** `check("06.6")` albo `uv run course check 06.6`. Z 6 linii ma powstać 4 wiersze. Potem sprawdzenie psuje poprawną tabelę na jedenaście sposobów i oczekuje `ValueError` przy każdym. Komórki pod nim liczą tabelę na całym pliku i uzgadniają sumy przed i po `groupby`.
 #
@@ -731,7 +731,7 @@ summary.round(3)
 # **3. Co znaczy brakujący dzień?** Ile z 739 dni kalendarzowych ma jakąkolwiek linię? Które dni tygodnia i które okresy roku są puste? Czy brak wiersza w tabeli dziennej to zerowy popyt?
 #
 # - **Gdzie:** komórka pod pytaniem.
-# - **Wynik:** wydruk: liczba dni, które mają choć jeden wiersz w `built` (sprzedaż albo zwrot towaru), na tle wszystkich dni kalendarza od pierwszej do ostatniej daty, liczba pustych dni według dnia tygodnia, lista pustych dni w grudniu i styczniu.
+# - **Wynik:** wydruk: liczba dni, które mają choć jeden wiersz w `built` (sprzedaż albo zwrot towaru), na tle wszystkich dni kalendarza od pierwszej do ostatniej daty, liczba pustych dni według dnia tygodnia, lista pustych dni w grudniu i styczniu, bez sobót (soboty widać już w liczbie według dnia tygodnia). Wystarczy pierwszych 20.
 # - **Skorzystaj z:** kolumny `date` w `built` (06.7). `pd.date_range(start, end, freq="D")` daje wszystkie dni kalendarza między dwiema datami. `pd.DatetimeIndex(...)` robi indeks dat z kolumny unikalnych dat, a `a.difference(b)` zwraca daty z `a`, których nie ma w `b`. `.day_name()` daje nazwę dnia tygodnia, `.value_counts()` liczy wystąpienia.
 
 # %%
@@ -753,7 +753,7 @@ print("Puste dni w grudniu i styczniu:", [str(d.date()) for d in empty if d.mont
 #
 # - **Gdzie:** komórka pod pytaniem.
 # - **Wynik:** wydruk dla każdej z dwóch linii: kod towaru, ilość, data i godzina, a obok pierwsza późniejsza linia anulowania tego samego towaru (numer faktury, ilość, czas).
-# - **Skorzystaj z:** `deduplicated` (06.4c). `nlargest(2, "quantity")` zwraca dwa wiersze z największą ilością, `itertuples()` przechodzi po wierszach jak po krotkach z polami o nazwach kolumn. Anulowania tego samego towaru wybierasz maską: ten sam `stock_code`, `is_cancellation`, `invoice_date` nie wcześniejsza niż sprzedaż.
+# - **Skorzystaj z:** `deduplicated` (06.4c). `nlargest(2, "quantity")` zwraca dwa wiersze z największą ilością, `itertuples()` przechodzi po wierszach jak po krotkach z polami o nazwach kolumn. Anulowania tego samego towaru wybierasz maską: ten sam `stock_code`, `is_cancellation`, `invoice_date` nie wcześniejsza niż sprzedaż. `deduplicated` ma kolejność pliku, a plik idzie chronologicznie, więc pierwszy wiersz spełniający maskę to najwcześniejsze takie anulowanie. Przy równym czasie bierzesz ten, który stoi wyżej.
 
 # %%
 # >>> SOLUTION 06.8
