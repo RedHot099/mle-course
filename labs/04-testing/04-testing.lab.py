@@ -294,12 +294,14 @@ check("04.2")
 # **1. Sprawdź wszystko lokalnie** (reguła G3). W katalogu repozytorium:
 #
 # ```bash
-# uv run ruff format --check .
-# uv run ruff check .
-# uv run mypy
-# uv run pytest
+# uv run ruff format --check . labs/02-functions/carparts.py labs/03-classes/demand.py
+# uv run ruff check . labs/02-functions/carparts.py labs/03-classes/demand.py
+# uv run mypy --strict src/freshcast/models/local.py labs/02-functions/carparts.py labs/03-classes/demand.py
+# uv run pytest tests/models
 # uv run course check 04
 # ```
+#
+# Polecenia obejmują tylko kod modułów 01-04. Reszta repozytorium to zadania kolejnych modułów: ich funkcje zgłaszają jeszcze `NotImplementedError`, a ich gotowe testy (np. `tests/test_metrics.py`, zadanie 05.2) nie przejdą, dopóki ich nie zrobisz. Pliki z `labs/` podajesz jawnie, bo `ruff` sam ich nie sprawdza: konfiguracja repozytorium wyłącza katalog `labs/`. Wszystkie pięć poleceń ma przejść bez błędów.
 #
 # **2. Wyczyść wyjścia notebooków** (reguła G4: w repozytorium nie ma wyjść z danymi):
 #
