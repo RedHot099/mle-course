@@ -133,8 +133,9 @@ def wape(
         actual total.
 
     Raises:
-        ValueError: The inputs break a rule of ``prepare``, or the kept
-            actual values sum to zero.
+        ValueError: The inputs break a rule of ``prepare``, or the absolute values
+            of the kept actual values sum to zero (the denominator of the formula
+            above).
     """
     # >>> SOLUTION 05.3
     a, p = prepare(actual, predicted, mask)
