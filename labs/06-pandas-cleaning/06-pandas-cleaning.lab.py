@@ -184,6 +184,8 @@ except Exception as error:  # noqa: BLE001 - the error is what we want to see
 # raw = pd.concat(frames, ignore_index=True)
 # ```
 #
+# Słownik `dtype` w pierwszej linii jest niepełny: dopisz do niego pozostałe typy z kroku 1, czyli tekst dla kraju i `"Int64"` dla klienta.
+#
 # </details>
 
 # %%
@@ -426,7 +428,7 @@ check("06.4")
 # - `all_duplicates`: `int`, ile wierszy `raw` powtarza wcześniejszy wiersz we wszystkich kolumnach oprócz `sheet`. Tyle usunęłoby `drop_duplicates()` na kolumnach linii.
 # - `deduplicated`: `pd.DataFrame`, `flagged` bez kopii z eksportu. Ma kolumny `flagged`, razem z flagami. Używasz jej w 06.5 i 06.8.
 # - `copies`: `int`, ile wierszy usunęło `drop_sheet_overlap`.
-# - `repeats`: `int`, ile wierszy `deduplicated` ma `True` w `is_repeat_line`.
+# - `repeats`: `int`, ile wierszy `deduplicated` oznaczyłoby `flag_repeat_lines` jako powtórzone (`True` w `is_repeat_line`). Flagę liczysz na boku, w osobnym wyniku: sama `deduplicated` zostaje z kolumnami `flagged`, bez `is_repeat_line`.
 #
 # **Skorzystaj z:** `drop_sheet_overlap` (06.4a) i `flag_repeat_lines` (06.4b) przez moduł `lines`, `lines.LINE_COLUMNS`, `online_retail.REPEAT_FLAG`, `duplicated(subset=...)`, `len`. Liczby zamieniasz na zwykły `int` przez `int(...)`.
 #
