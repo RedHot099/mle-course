@@ -113,7 +113,7 @@ print(f"Profil danych: {PROFILE.name}, miasta w tym labie: {CITIES}")
 #
 # Plik `train.parquet` ma około 100 MB. To nic nie mówi o tym, ile zajmie w pamięci. Parquet jest skompresowany i kolumnowy, a pandas trzyma dane rozpakowane.
 #
-# Parquet pozwala przeczytać metadane bez dotykania danych. Zacznij od tego.
+# Parquet pozwala przeczytać metadane bez dotykania danych. Zacznij od tego. Z metadanych weźmiesz liczbę wierszy pliku. Pamięć zmierzysz potem w pandas, na próbce `first`, bo metadane mówią o rozmiarze skompresowanym na dysku.
 
 # %%
 info = pq.ParquetFile(RAW)
@@ -158,7 +158,7 @@ first.head(3).T
 # **Kroki:**
 #
 # 1. `scalar_bytes`: suma `memory_usage(deep=True)` wszystkich kolumn poza dwiema zagnieżdżonymi, podzielona przez liczbę wierszy `first`. Domyślnie wynik zawiera też indeks. Możesz go wliczyć albo pominąć: na tych 1000 wierszach to 132 bajty, czyli ułamek bajta na wiersz.
-# 2. `nested_bytes`: dla jednej komórki zagnieżdżonej to nagłówek obiektu (120 bajtów według pandas) plus dane tablicy (`.nbytes`). Kolumny są dwie, więc dodajesz obie.
+# 2. `nested_bytes`: nagłówek plus dane, dla obu kolumn zagnieżdżonych razem. Nagłówek zmierz: `memory_usage(deep=True, index=False)` dwóch kolumn zagnieżdżonych, zsumowane i podzielone przez liczbę wierszy `first` (wyjdzie około 120 bajtów na komórkę). Dane to `.nbytes` pierwszej komórki każdej z dwóch kolumn. Każda komórka ma 24 liczby tego samego typu, więc pierwsza wystarczy.
 # 3. `total_gb`: bajty jednego wiersza (obie części) razy liczba wierszy pliku, przeliczone na GB.
 #
 # To oszacowanie samej ramki w pandas, a nie szczytu pamięci procesu podczas wczytywania. O szczycie jest mowa pod sprawdzeniem.
@@ -404,7 +404,7 @@ assert list(days_distribution.index) == [90], "Każda seria ma 90 dni. Sprawdź,
 print("Zgadza się.")
 
 # %% [markdown]
-# **Pytanie 3.** `discount` to mnożnik ceny: 1.0 to cena regularna, 0.8 to 20% taniej. Zakres, czyli minimum i maksimum, zobaczysz w wydruku `describe()`. Do zmiennych zapisujesz tylko dwa liczniki. **Gdzie:** `n_zero`, `n_above_one`. **Wynik:** dwa `int`: liczba wierszy z `discount` równym dokładnie 0 i liczba wierszy z `discount` większym niż 1. **Skorzystaj z:** `describe()` pokazuje minimum, maksimum i kwartyle kolumny. Porównanie kolumny z liczbą daje Series True/False, a jej `.sum()` liczy wartości True.
+# **Pytanie 3.** `discount` to mnożnik ceny: 1.0 to cena regularna, 0.8 to 20% taniej. Zakres, czyli minimum i maksimum, wypisz sam w tej samej komórce: `print(daily["discount"].describe())`. Do zmiennych zapisujesz tylko dwa liczniki. **Gdzie:** `n_zero`, `n_above_one`. **Wynik:** dwa `int`: liczba wierszy z `discount` równym dokładnie 0 i liczba wierszy z `discount` większym niż 1. **Skorzystaj z:** `describe()` pokazuje minimum, maksimum i kwartyle kolumny. Porównanie kolumny z liczbą daje Series True/False, a jej `.sum()` liczy wartości True.
 
 # %%
 # Pytanie 3: jaki jest zakres kolumny discount? Ile wierszy ma dokładnie 0,
@@ -551,6 +551,8 @@ comparison
 #
 # **Sprawdzenie:** `check("07.2")` pokazuje ✅. W próbce są 3 wiersze z zerem i rabat 1.088, który ma zostać. Komórki pod sprawdzeniem uruchamiają obie funkcje na `daily` i potwierdzają wynik.
 #
+# Komórka z `daily = clean_discount(daily)` nadpisuje `daily`. Drugie uruchomienie zgłosi `ValueError`, bo w `discount` są już braki (`NaN`). Wtedy uruchom ponownie komórkę z `load_sales` w 07.1b, a dopiero potem tę.
+#
 # <details>
 # <summary>Podpowiedź 1: kierunek</summary>
 #
@@ -682,7 +684,7 @@ except pd.errors.MergeError as error:
 #
 # **Wejście:** `df`: `pd.DataFrame` z kolumnami `product_id`, `store_id` i czterema kolumnami `HIERARCHY` (`management_group_id`, `first_category_id`, `second_category_id`, `third_category_id`). W notebooku to `hierarchy`, nie `daily`.
 #
-# **Wynik:** nowy `pd.DataFrame`, jeden wiersz na produkt, kolumny w tej kolejności: `product_id`, cztery kolumny hierarchii, `n_stores` (liczba różnych sklepów, `int`). Wiersze posortowane po `product_id`, indeks 0..n-1. Produkt z więcej niż jedną ścieżką w hierarchii: `ValueError` z liczbą takich produktów.
+# **Wynik:** nowy `pd.DataFrame`, jeden wiersz na produkt, kolumny w tej kolejności: `product_id`, cztery kolumny hierarchii, `n_stores` (liczba różnych sklepów, `int`). Wiersze posortowane po `product_id`, indeks 0..n-1. Produkt z więcej niż jedną ścieżką w hierarchii: `ValueError`. Liczba w komunikacie to liczba powtórzeń `product_id` wśród unikalnych ścieżek, czyli ścieżek nadmiarowych: produkt z dwiema ścieżkami daje 1, z trzema daje 2.
 #
 # **Skorzystaj z:**
 #
@@ -697,7 +699,7 @@ except pd.errors.MergeError as error:
 # **Kroki:**
 #
 # 1. Wyciągnij unikalne ścieżki: produkt i jego cztery kolumny hierarchii.
-# 2. Jeśli `product_id` powtarza się wśród ścieżek, rzuć błąd z liczbą takich produktów.
+# 2. Policz powtórzenia `product_id` wśród unikalnych ścieżek (pierwsze wystąpienie się nie liczy). Jeśli są, rzuć błąd z tą liczbą.
 # 3. Policz różne sklepy każdego produktu.
 # 4. Dołącz te liczby do ścieżek po `product_id`, posortuj i ponumeruj wiersze od zera.
 #
@@ -1153,7 +1155,7 @@ demo.loc[boundary - 2 : boundary + 1]
 #
 # ### 07.5d `dow_profile`
 #
-# **Cel:** typowy kształt tygodnia: o ile w każdy dzień tygodnia sprzedaż jest wyższa albo niższa od zwykłej. "dow" to skrót od day of week (dzień tygodnia).
+# **Cel:** typowy kształt tygodnia: o ile w każdy dzień tygodnia sprzedaż jest wyższa albo niższa od zwykłej. "dow" to skrót od day of week (dzień tygodnia). Wynik to jedna krótka Series z siedmioma liczbami dla wszystkich serii razem, a nie nowa kolumna w ramce ani profil osobno dla każdej serii.
 #
 # **Gdzie:** `src/freshcast/data/panel.py`, funkcja `dow_profile(df)`.
 #
