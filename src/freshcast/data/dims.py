@@ -70,7 +70,9 @@ def build_product_dim(df: pd.DataFrame) -> pd.DataFrame:
     paths = df[["product_id", *HIERARCHY]].drop_duplicates()
     ambiguous = int(paths["product_id"].duplicated().sum())
     if ambiguous:
-        raise ValueError(f"{ambiguous} products have more than one hierarchy path.")
+        raise ValueError(
+            f"{ambiguous} extra hierarchy paths: some products have more than one."
+        )
 
     n_stores = df.groupby("product_id", as_index=False).agg(
         n_stores=("store_id", "nunique")
