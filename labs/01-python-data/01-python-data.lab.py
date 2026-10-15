@@ -487,7 +487,7 @@ check("01.4", demand_stats)
 # - `missing_share`: liczba (`float`) od 0 do 1. Liczba wszystkich brakujących miesięcy ze wszystkich serii podzielona przez liczbę wszystkich miesięcy (znanych i brakujących).
 # - `zero_share`: liczba (`float`) od 0 do 1. Liczba znanych miesięcy z zerową sprzedażą ze wszystkich serii podzielona przez liczbę wszystkich znanych miesięcy.
 #
-# Nie licz średniej z `zero_share` poszczególnych serii. Serie mają różną liczbę znanych miesięcy, więc średnia udziałów to nie jest udział w całości. Liczbę zer w jednej serii odtworzysz jako `zero_share * months`.
+# Nie licz średniej z `zero_share` poszczególnych serii. Serie mają różną liczbę znanych miesięcy, więc średnia udziałów to nie jest udział w całości. Liczbę zer w jednej serii odtworzysz jako `zero_share * months`. Seria bez znanych miesięcy ma `zero_share` równe `None`. Nie wnosi ani zer, ani znanych miesięcy, więc pomijasz ją w tej sumie. W tym pliku takiej serii nie ma, ale kod ma działać i bez tej gwarancji.
 #
 # **Skorzystaj z.** `series` z 01.3b, `demand_stats` z 01.4a, funkcji `sum()` na comprehension.
 #
@@ -675,7 +675,7 @@ print(f"Zapisano {written.relative_to(paths.ROOT)}")
 # %% [markdown]
 # ## 01.7 Eksploracja
 #
-# Bez sprawdzeń. Odpowiedz kodem, a pod spodem jednym, dwoma zdaniami.
+# Bez sprawdzeń. Na pytanie 1 odpowiadasz kodem, a pod nim jednym zdaniem: która grupa przeważa i czy zgadza się to ze wstępem labu. Na pytanie 2 odpowiadasz samymi słowami.
 #
 # **Pytanie 1.** Popyt dzieli się czasem na "regularny" (ADI do 1.32) i "przerywany" (ADI powyżej 1.32). Ile serii jest w każdej grupie?
 #
