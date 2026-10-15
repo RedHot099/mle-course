@@ -57,7 +57,7 @@ PATH = paths.CAR_PARTS
 #
 # **Gdzie.** `demand.py`, klasa `DemandSeries`. Szkielet klasy z umową w docstringu już jest; piszesz jej ciało.
 #
-# **Skorzystaj z.** Wzorów na ADI i CV² z labu 02 (różnica w kroku 03.1c). Dopisz na górze `demand.py` importy: `from datetime import date`, `from collections.abc import Sequence`, `from typing import Self`. `dataclass` jest już zaimportowany.
+# **Skorzystaj z.** Wzorów na ADI i CV² z labu 02 (różnica w kroku 03.1c). Na górze `demand.py` dopisz importy tak, żeby blok importów wyglądał tak: `from collections.abc import Iterator, Sequence` (dopisujesz `Sequence` do istniejącej linii, nie w osobnej), `from dataclasses import dataclass`, `from datetime import date`, `from pathlib import Path`, `from typing import Self`, w tej kolejności. Kolejności importów pilnuje `ruff check` (reguła `I`), nie `ruff format`, a sprawdzenie 03.5 uruchamia `ruff check` na całym pliku. Gdy ruff zgłosi `I001 Import block is un-sorted`, uruchom w katalogu repozytorium `uv run ruff check --fix labs/03-classes/demand.py`: ruff sam ułoży importy.
 #
 # **Sprawdzenie.** `check("03.1", demand)` po kroku 03.1c. Wynik `✅ 03.1` znaczy, że całe zadanie przechodzi. Przy `❌` komunikat mówi, które wymaganie nie jest spełnione i na jakich danych.
 #
@@ -216,7 +216,7 @@ series[0]
 #
 # **Gdzie.** `demand.py`, klasa `DemandType` i funkcja `classify`, pod `DemandSeries` (komentarz `# 03.2`).
 #
-# **Skorzystaj z.** Stałych `ADI_CUTOFF` (1.32) i `CV2_CUTOFF` (0.49), które są już w pliku. Wartości ADI i CV² dadzą `one.adi` i `one.cv2` z 03.1. Dopisz import `from enum import StrEnum`.
+# **Skorzystaj z.** Stałych `ADI_CUTOFF` (1.32) i `CV2_CUTOFF` (0.49), które są już w pliku. Wartości ADI i CV² dadzą `one.adi` i `one.cv2` z 03.1. Dopisz linię `from enum import StrEnum` między importem z `datetime` a importem z `pathlib` (moduły idą alfabetycznie; przy `I001` pomoże `uv run ruff check --fix labs/03-classes/demand.py`).
 #
 # **Sprawdzenie.** `check("03.2", demand)`. Sprawdzenie podaje `classify` m.in. wartości równe progom, `None` na każdej z dwóch pozycji i liczby całkowite.
 #
@@ -235,7 +235,7 @@ series[0]
 # 1. Napisz funkcję z instrukcją `match adi, cv2:` (wykład, sekcja "StrEnum i match").
 # 2. Pierwszy `case` łapie `None` na którejkolwiek pozycji.
 # 3. Kolejne trzy przypadki odpowiadają trzem komórkom tabeli, każdy ze strażnikiem `if ...` porównującym liczby z progami przez `<=`.
-# 4. Ostatni `case _:` zwraca czwarty typ.
+# 4. Ostatni `case _:` zwraca `LUMPY`: to jedyna komórka tabeli, w której obie liczby są powyżej progów, więc nie opiszesz jej porównaniem `<=`.
 #
 # <details>
 # <summary>Podpowiedź 1: kierunek</summary>
@@ -300,7 +300,7 @@ for kind, count in counts.most_common():
 #
 # **Gdzie.** `demand.py`, klasy `LocalForecaster` i `NaiveForecaster`, pod `classify` (komentarz `# 03.3`).
 #
-# **Skorzystaj z.** Wykładu, sekcja "Dziedziczenie i umowy", podsekcja "Klasa abstrakcyjna". Dopisz import `from abc import ABC, abstractmethod`. `Sequence` i `Self` masz już z 03.1.
+# **Skorzystaj z.** Wykładu, sekcja "Dziedziczenie i umowy", podsekcja "Klasa abstrakcyjna". Dopisz linię `from abc import ABC, abstractmethod` na samej górze bloku importów, przed importem z `collections.abc`. `Sequence` i `Self` masz już z 03.1.
 #
 # **Sprawdzenie.** `check("03.3", demand)`. Sprawdzenie dopisuje też wartość do listy już po `fit` i patrzy, czy prognoza się zmieniła: nie może.
 #
@@ -441,7 +441,7 @@ check("03.4", demand)
 #
 # **Gdzie.** `demand.py`, klasa `Forecaster` i funkcje `mae` i `evaluate`, pod `MovingAverageForecaster` (komentarz `# 03.5`).
 #
-# **Skorzystaj z.** `DemandSeries.is_complete` i `DemandSeries.known` z 03.1. Dopisz importy: `Protocol` z `typing` (obok `Self`) oraz `Callable` i `Iterable` z `collections.abc` (obok `Sequence`).
+# **Skorzystaj z.** `DemandSeries.is_complete` i `DemandSeries.known` z 03.1. Nie dopisuj nowych linii importu, tylko rozszerz istniejące: `from collections.abc import Callable, Iterable, Iterator, Sequence` i `from typing import Protocol, Self`. Przy `I001` uruchom `uv run ruff check --fix labs/03-classes/demand.py`.
 #
 # **Sprawdzenie.** `check("03.5", demand)`. To sprawdzenie uruchamia też `ruff check`, `ruff format --check` i `mypy --strict` na całym pliku `demand.py`, więc pokaże też błędy z wcześniejszych zadań.
 #
@@ -596,7 +596,7 @@ for name, total in forecast_totals.items():
     print(f"{name:>18}: {total:.0f} sztuk ({total / actual_total:.0%})")
 
 # %% [markdown]
-# Dlaczego prognoza zerowa wygrywa w MAE? Czego potrzebuje magazyn, który na jej podstawie zamawia części? Jaką własność powinna mieć metryka, której użyjesz do wyboru modelu?
+# Dlaczego prognoza zerowa wygrywa w MAE? Czego potrzebuje magazyn, który na jej podstawie zamawia części? Jaką własność powinna mieć metryka, której użyjesz do wyboru modelu? Odpowiedz własnymi słowami, bez nazwy fachowej. Punkt wyjścia: porównaj w wydruku powyżej sumę prognoz każdego modelu z tym, co sprzedano. Jakiego rodzaju pomyłki MAE nie zauważa?
 #
 # *Twoja odpowiedź:*
 #
