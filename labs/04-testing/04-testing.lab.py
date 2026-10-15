@@ -140,7 +140,7 @@ for model in (NaiveForecaster(), SeasonalNaiveForecaster(), MovingAverageForecas
 #
 # **Wynik.** W pliku co najmniej sześć testów, licząc gotowy. Żeby wykryć wszystkie błędy z kroku 04.2d, napiszesz ich więcej. Każdy przypadek parametryzacji liczy się jako osobny test, więc `@pytest.mark.parametrize("horizon", [0, -1])` to dwa testy.
 #
-# **Skorzystaj z.** Docstringów w `local.py`: każde zdanie, które mówi, co metoda zwraca albo kiedy zgłasza błąd, to kandydat na test. Z wykładu 04: `pytest.raises(..., match=...)`, `@pytest.mark.parametrize`, `pytest.approx`. Dopisz na górze pliku `import pytest` i dopisz do importu z `freshcast.models.local` klasy, których używasz (gotowy import ma tylko `NaiveForecaster`).
+# **Skorzystaj z.** Docstringów w `local.py`: każde zdanie, które mówi, co metoda zwraca albo kiedy zgłasza błąd, to kandydat na test. Z wykładu 04: `pytest.raises(..., match=...)`, `@pytest.mark.parametrize`, `pytest.approx`. Dopisz na górze pliku `import pytest` i dopisz do importu z `freshcast.models.local` klasy, których używasz (gotowy import ma tylko `NaiveForecaster`). Kolejność importów sprawdza `ruff check` w punkcie kontrolnym; gdy zgłosi `I001`, uruchom `uv run ruff check --fix tests/models/test_local.py`.
 #
 # **Sprawdzenie.** `check("04.2")` w notebooku albo `uv run course check 04.2` w terminalu. Opis, co dokładnie robi, jest w kroku 04.2d.
 #
@@ -173,7 +173,7 @@ for model in (NaiveForecaster(), SeasonalNaiveForecaster(), MovingAverageForecas
 #
 # ### 04.2c Błędy
 #
-# Docstringi `fit` i `predict` w `LocalForecaster` wymieniają sytuacje, w których kod ma zgłosić błąd, i jego typ (`ValueError`, `RuntimeError`). Na każdą napisz test z `pytest.raises(TypBłędu, match="...")`. W `match` podaj słowo z komunikatu, który napisałeś w 04.1. `SeasonalNaiveForecaster.fit` dodaje jeszcze jeden przypadek.
+# Docstringi `fit` i `predict` w `LocalForecaster` wymieniają sytuacje, w których kod ma zgłosić błąd, i jego typ (`ValueError`, `RuntimeError`). Na każdą napisz test z `pytest.raises(TypBłędu, match="...")`. W `match` podaj słowo z komunikatu, który napisałeś w 04.1. `SeasonalNaiveForecaster.fit` dodaje jeszcze jeden przypadek. Docstringi klas `SeasonalNaiveForecaster` i `MovingAverageForecaster` wymieniają też błędy konstruktora (`season` i `window` mniejsze od 1). Testy na nie też są dobre, choć sprawdzenie 04.2 ich nie wymaga.
 #
 # ### 04.2d Uruchom testy, potem sprawdzenie
 #
@@ -248,6 +248,8 @@ check("04.2")
 # poetry --version
 # ```
 #
+# Opis dotyczy Poetry 2 (wersja 2.x). W Poetry 2 `poetry new` tworzy układ `src/` i katalog `tests/`, a `poetry lock` nie podnosi wersji bez osobnej opcji. Starsze poradniki w internecie opisują Poetry 1, które działało inaczej.
+#
 # **Krok 2.** Dwa puste pakiety obok siebie:
 #
 # ```bash
@@ -317,7 +319,7 @@ check("04.2")
 #
 # **4. Review.** W Claude Code w katalogu repozytorium wpisz `/review`. Tutor przeczyta cały diff według `docs/standard.md` i powie "do scalenia" albo "do poprawy". Poprawki robisz sam, kolejnymi commitami na tej samej gałęzi, i prosisz o review jeszcze raz.
 #
-# Bez tutora zrób review sam: otwórz `docs/standard.md`, weź reguły z kolumną "Od" do 04 włącznie i dla każdej przejrzyj zakładkę "Files changed" pull requesta. Zapisz w opisie PR, które reguły sprawdziłeś.
+# Bez tutora zrób review sam: otwórz `docs/standard.md`, weź reguły z kolumną "Od" do 04 włącznie i dla każdej przejrzyj zakładkę "Files changed" pull requesta. Dopisz do opisu PR (na stronie pull requesta przycisk edycji opisu albo `gh pr edit --body "..."`) listę identyfikatorów reguł, które sprawdziłeś, np. `K1, K2, T1, G3`, a przy każdej znalezionej uwadze jedno zdanie, co poprawiłeś.
 #
 # **5.** Gdy werdykt to "do scalenia", scal pull request: przycisk **Merge pull request** na jego stronie w Twoim forku albo `gh pr merge` w terminalu. Dopiero potem wróć lokalnie na `main` i pobierz scalone zmiany:
 #
