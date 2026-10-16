@@ -71,26 +71,32 @@ with PATH.open(encoding="utf-8") as handle:
 # %% [markdown]
 # ## 01.1 Jedna wartość
 #
-# **Cel.** Każda wartość w pliku to tekst: `"0"`, `"2"` albo `"?"`. Żeby liczyć sumy i średnie, potrzebujesz liczb, a brak pomiaru musi zostać brakiem, a nie zerem. Ta funkcja zamienia jeden kawałek tekstu na liczbę albo na `None`.
+# **Cel:** Każda wartość w pliku to tekst: `"0"`, `"2"` albo `"?"`. Żeby liczyć sumy i średnie, potrzebujesz liczb, a brak pomiaru musi zostać brakiem, a nie zerem. Ta funkcja zamienia jeden kawałek tekstu na liczbę albo na `None`.
 #
-# **Gdzie.** Funkcja `parse_value` w komórce poniżej. Piszesz jej ciało w miejscu `raise NotImplementedError`.
+# **Gdzie:** Funkcja `parse_value` w komórce poniżej. Piszesz jej ciało w miejscu `raise NotImplementedError`.
 #
-# **Wejście.** `text`: napis (`str`), jedna wartość wycięta z linii danych, na przykład `"3"`, `" 12 "`, `"2.5"` albo `"?"`. Dookoła mogą być spacje.
+# **Wejście:** `text`: napis (`str`), jedna wartość wycięta z linii danych, na przykład `"3"`, `" 12 "`, `"2.5"` albo `"?"`. Dookoła mogą być spacje.
 #
-# **Wynik.** Liczba zmiennoprzecinkowa (`float`), także dla tekstu z liczbą całkowitą: `"3"` daje `3.0`. Dla `"?"` wynik to `None`.
+# **Wynik:** Liczba zmiennoprzecinkowa (`float`), także dla tekstu z liczbą całkowitą: `"3"` daje `3.0`. Dla `"?"` wynik to `None`.
 #
-# Błąd: tekst, który nie jest liczbą (`"abc"`), albo liczba ujemna (`"-1"`, popyt nie bywa ujemny) to `ValueError` z komunikatem, który pokazuje ten tekst.
+# Funkcja zgłasza `ValueError` z komunikatem, który pokazuje ten tekst, gdy:
 #
-# **Skorzystaj z.** Stałej `MISSING` zdefiniowanej w tej samej komórce, nad funkcją: to znak braku, `"?"`. Wykład 01, sekcja "Wyjątki", pokazuje prawie tę samą funkcję. Brakuje w niej spacji i sprawdzenia znaku.
+# - tekst nie jest liczbą, na przykład `"abc"`,
+# - tekst to liczba ujemna, na przykład `"-1"`. Popyt nie bywa ujemny.
 #
-# **Kroki.**
+# **Skorzystaj z:**
+#
+# - `MISSING` z tej samej komórki, nad funkcją. To znak braku, `"?"`.
+# - wykładu 01, sekcja "Wyjątki". Pokazuje prawie tę samą funkcję, ale bez usuwania spacji i bez sprawdzenia znaku.
+#
+# **Kroki:**
 #
 # 1. Usuń spacje z obu końców tekstu. Robi to metoda napisu `strip()`.
 # 2. Jeśli tekst to `MISSING`, zwróć `None`.
 # 3. Zamień tekst na liczbę funkcją `float()`. Gdy tekst nie jest liczbą, `float()` sam zgłasza `ValueError`. Złap go i zgłoś własny `ValueError`, którego komunikat pokazuje tekst.
 # 4. Jeśli liczba jest mniejsza od zera, zgłoś `ValueError`. W przeciwnym razie ją zwróć.
 #
-# **Sprawdzenie.** Komórka `check("01.1", parse_value)` pod funkcją wypisuje ✅. Sprawdza `"0"`, `"3"`, `" 12 "`, `"?"`, `"2.5"`, `"abc"` i `"-1"`.
+# **Sprawdzenie:** Komórka `check("01.1", parse_value)` pod funkcją wypisuje ✅. Sprawdza `"0"`, `"3"`, `" 12 "`, `"?"`, `"2.5"`, `"abc"` i `"-1"`.
 #
 # <details>
 # <summary>Podpowiedź 1: kierunek</summary>
@@ -160,11 +166,11 @@ check("01.1", parse_value)
 # %% [markdown]
 # ## 01.2 Jedna linia serii
 #
-# **Cel.** Jedna linia pliku po `@data` to cała historia jednej części. Ta funkcja rozbiera taką linię na trzy pola, z którymi da się dalej pracować: nazwę serii, datę startu i listę miesięcznych wartości.
+# **Cel:** Jedna linia pliku po `@data` to cała historia jednej części. Ta funkcja rozbiera taką linię na trzy pola, z którymi da się dalej pracować: nazwę serii, datę startu i listę miesięcznych wartości.
 #
-# **Gdzie.** Funkcja `parse_series_line` w komórce poniżej.
+# **Gdzie:** Funkcja `parse_series_line` w komórce poniżej.
 #
-# **Wejście.** `line`: napis (`str`), jedna linia danych w postaci `nazwa:data startu:wartości`, na przykład
+# **Wejście:** `line`: napis (`str`), jedna linia danych w postaci `nazwa:data startu:wartości`, na przykład
 #
 # ```
 # T7:1998-01-01 00-00-00:0,2,?,1
@@ -172,7 +178,7 @@ check("01.1", parse_value)
 #
 # Na końcu linii może stać znak nowej linii `\n`, tak jak przy czytaniu pliku.
 #
-# **Wynik.** Krotka (`tuple`) trzech pól, w tej kolejności:
+# **Wynik:** Krotka (`tuple`) trzech pól, w tej kolejności:
 #
 # 1. nazwa serii, napis: `"T7"`,
 # 2. data startu, napis z samą datą, bez godziny: `"1998-01-01"`,
@@ -182,17 +188,21 @@ check("01.1", parse_value)
 #
 # Dlaczego krotka, a nie lista? Te trzy pola mają stałe, różne znaczenia. Krotka mówi czytelnikowi: "to jest jeden rekord, nie ciąg podobnych rzeczy".
 #
-# **Skorzystaj z.** `parse_value` z 01.1, dla każdej wartości z listy. Funkcja zdefiniowana w komórce wyżej jest już dostępna, bez importu. Nie pisz drugiego parsera liczb. Błędy z `parse_value` (na przykład ujemna wartość) przepuszczasz dalej, nie łapiesz ich.
+# **Skorzystaj z:**
 #
-# **Kroki.**
+# - `parse_value` z 01.1, dla każdej wartości z listy. Funkcja jest w komórce wyżej, więc wołasz ją bez importu.
 #
-# 1. Usuń białe znaki z końców linii (`strip()`) i podziel ją na części metodą `split(":", 2)`. Liczba 2 mówi: podziel najwyżej dwa razy, więc wyjdą najwyżej trzy części.
+# Nie pisz drugiego parsera liczb. Błędów z `parse_value`, na przykład o ujemnej wartości, nie łapiesz. Przepuszczasz je dalej.
+#
+# **Kroki:**
+#
+# 1. Usuń białe znaki z końców linii metodą `strip()`. Potem podziel linię metodą `split(":", 2)`. Liczba 2 znaczy "podziel najwyżej dwa razy", więc wyjdą najwyżej trzy części.
 # 2. Jeśli części nie są dokładnie trzy, zgłoś `ValueError`.
-# 3. Z drugiej części weź tekst przed spacją: to data bez godziny.
-# 4. Trzecią część podziel po przecinku i każdy kawałek zamień przez `parse_value`. Pasuje tu list comprehension.
+# 3. Z drugiej części weź tekst przed spacją. To data bez godziny.
+# 4. Trzecią część podziel po przecinku. Każdy kawałek zamień przez `parse_value`. Pasuje tu list comprehension.
 # 5. Zwróć krotkę trzech pól.
 #
-# **Sprawdzenie.** `check("01.2", parse_series_line)` wypisuje ✅. Sprawdza linię z przykładu, zakończoną `\n`, i linię `"T7 0,1,2"` bez dwukropków.
+# **Sprawdzenie:** `check("01.2", parse_series_line)` wypisuje ✅. Sprawdza linię z przykładu, zakończoną `\n`, i linię `"T7 0,1,2"` bez dwukropków.
 #
 # <details>
 # <summary>Podpowiedź 1: kierunek</summary>
@@ -256,26 +266,35 @@ check("01.2", parse_series_line)
 #
 # ### 01.3a Generator `read_series`
 #
-# **Cel.** Masz funkcję na jedną linię. Teraz potrzebujesz wszystkich serii z pliku, z pominięciem komentarzy i nagłówka. Zamiast budować od razu wielką listę, piszesz **generator**: oddaje serie po jednej, gdy pętla o nie prosi (wykład 01, sekcja "Iteracja i generatory").
+# **Cel:** Masz funkcję na jedną linię. Teraz potrzebujesz wszystkich serii z pliku, z pominięciem komentarzy i nagłówka. Zamiast budować od razu wielką listę, piszesz generator. Generator oddaje serie po jednej, gdy pętla o nie prosi. Opisuje go wykład 01, sekcja "Iteracja i generatory".
 #
 # Generator nie trzyma w pamięci całego pliku. Ten plik jest mały, ale ten sam wzorzec przeczyta plik z milionem serii.
 #
-# **Gdzie.** Funkcja `read_series` w komórce poniżej.
+# **Gdzie:** Funkcja `read_series` w komórce poniżej.
 #
-# **Wejście.** `path`: położenie pliku `.tsf`, obiekt `Path` (jak `PATH`) albo napis ze ścieżką.
+# **Wejście:** `path`: położenie pliku `.tsf`, obiekt `Path` (jak `PATH`) albo napis ze ścieżką.
 #
-# **Wynik.** Generator. Każdy element, który oddaje (`yield`), to krotka z 01.2: `(nazwa, data startu, lista wartości)`. Serie wychodzą w kolejności z pliku. Komentarze (linie od `#`), nagłówek (linie od `@` przed `@data`, razem z samą linią `@data`) i puste linie są pominięte.
+# **Wynik:** Generator, który oddaje (`yield`) serie z pliku:
 #
-# **Skorzystaj z.** `parse_series_line` z 01.2 dla każdej linii danych. Otwieranie pliku przez `with` i `encoding="utf-8"` widzisz w komórce "Jak wygląda plik" powyżej.
+# - każdy element to krotka z 01.2, `(nazwa, data startu, lista wartości)`,
+# - serie wychodzą w kolejności z pliku,
+# - komentarze, czyli linie od `#`, są pominięte,
+# - nagłówek, czyli linie od `@` przed `@data` razem z samą linią `@data`, jest pominięty,
+# - puste linie są pominięte.
 #
-# **Kroki.**
+# **Skorzystaj z:**
+#
+# - `parse_series_line` z 01.2. Wołasz ją dla każdej linii danych.
+# - `with` i `encoding="utf-8"` z komórki "Jak wygląda plik" powyżej. Tak otwierasz plik.
+#
+# **Kroki:**
 #
 # 1. Utwórz zmienną, która pamięta, czy jesteś już za linią `@data`. Na początku `False`.
 # 2. Otwórz plik przez `with` i przejdź pętlą `for` po jego liniach.
 # 3. Każdą linię oczyść `strip()`. Pustą linię i linię zaczynającą się od `#` pomiń (`continue`).
 # 4. Jeśli jesteś już za `@data`, oddaj `yield` wynik `parse_series_line`. Jeśli nie, a linia to `@data`, przestaw zmienną z kroku 1 na `True`.
 #
-# **Sprawdzenie.** `check("01.3", read_series)` wypisuje ✅. Sprawdzenie 01.3 dotyczy kroku 01.3a. Sprawdza, że funkcja jest generatorem i że z małego pliku z trzema seriami (A, B, C), komentarzami, nagłówkiem i pustą linią oddaje tylko te trzy serie.
+# **Sprawdzenie:** `check("01.3", read_series)` wypisuje ✅. Sprawdzenie 01.3 dotyczy kroku 01.3a. Sprawdza, że funkcja jest generatorem i że z małego pliku z trzema seriami (A, B, C), komentarzami, nagłówkiem i pustą linią oddaje tylko te trzy serie.
 #
 # <details>
 # <summary>Podpowiedź 1: kierunek</summary>
@@ -344,18 +363,22 @@ check("01.3", read_series)
 # %% [markdown]
 # ### 01.3b Wszystkie serie w słowniku
 #
-# **Gdzie.** Zmienne `series` i `lengths` w komórce poniżej, w miejscu `...`.
+# **Gdzie:** Zmienne `series` i `lengths` w komórce poniżej, w miejscu `...`.
 #
-# **Wynik.**
+# **Wynik:**
 #
 # - `series`: słownik (`dict`). Klucz to nazwa serii (napis, np. `"T1"`), wartość to lista miesięcznych wartości tej serii (liczby i `None`). Datę startu pomijasz.
 # - `lengths`: zbiór (`set`) długości tych list, czyli liczb całkowitych. Zbiór zostawia każdą długość raz, więc od razu widać, czy wszystkie serie są równie długie.
 #
-# **Skorzystaj z.** `read_series(PATH)` i dict comprehension, który z każdej krotki bierze nazwę i wartości. Potem set comprehension po `series.values()`.
+# **Skorzystaj z:**
 #
-# Generator przejdziesz tylko raz. Dlatego zapisujesz serie do słownika: z niego skorzystasz w 01.4b i dalej.
+# - `read_series(PATH)` z 01.3a. Oddaje wszystkie serie z pliku.
+# - dict comprehension, który z każdej krotki bierze nazwę i wartości. Buduje `series`.
+# - set comprehension po `series.values()`. Buduje `lengths`.
 #
-# **Sprawdzenie.** Wypisana liczba serii zgadza się z liczbą części ze wstępu labu. Komórka z `assert` pod spodem nie zgłasza błędu.
+# Generator przejdziesz tylko raz. Dlatego zapisujesz serie do słownika. Ze słownika skorzystasz w 01.4b i dalej.
+#
+# **Sprawdzenie:** Wypisana liczba serii zgadza się z liczbą części ze wstępu labu. Komórka z `assert` pod spodem nie zgłasza błędu.
 
 # %%
 # >>> SOLUTION 01.3
@@ -379,36 +402,39 @@ assert len(series) == 2674, "W pliku jest 2 674 serii. Czy pomijasz nagłówek i
 #
 # ### 01.4a Funkcja `demand_stats`
 #
-# **Cel.** Żeby powiedzieć, jak sprzedaje się jedna część, liczysz dla jej serii kilka liczb: ile miesięcy znasz, ile brakuje, ile sprzedano razem i jak rzadko ktoś kupuje. Te liczby posłużą w 01.5 do wyboru serii, a w 01.6 trafią do pliku.
+# **Cel:** Żeby powiedzieć, jak sprzedaje się jedna część, liczysz dla jej serii kilka liczb: ile miesięcy znasz, ile brakuje, ile sprzedano razem i jak rzadko ktoś kupuje. Te liczby posłużą w 01.5 do wyboru serii, a w 01.6 trafią do pliku.
 #
-# **Gdzie.** Funkcja `demand_stats` w komórce poniżej.
+# **Gdzie:** Funkcja `demand_stats` w komórce poniżej.
 #
-# **Wejście.** `values`: lista wartości jednej serii, miesiąc po miesiącu, jak trzecie pole z 01.2. Każdy element to liczba (`float`) albo `None` dla braku pomiaru. Listy nie zmieniasz.
+# **Wejście:** `values`: lista wartości jednej serii, miesiąc po miesiącu, jak trzecie pole z 01.2. Każdy element to liczba (`float`) albo `None` dla braku pomiaru. Listy nie zmieniasz.
 #
-# **Wynik.** Słownik (`dict`) z pięcioma kluczami:
+# **Wynik:** Słownik (`dict`) z pięcioma kluczami:
 #
 # | Klucz | Znaczenie | Typ |
 # |---|---|---|
 # | `months` | liczba znanych miesięcy (bez `None`) | liczba całkowita (`int`) |
 # | `missing` | liczba miesięcy z brakiem | liczba całkowita (`int`) |
 # | `total` | suma znanych wartości, czyli sprzedane sztuki | liczba (`float`) |
-# | `zero_share` | udział zer wśród znanych miesięcy, od 0 do 1; `None`, gdy znanych miesięcy nie ma | `float` albo `None` |
-# | `adi` | średni odstęp między popytami: znane miesiące podzielone przez miesiące z popytem większym od zera; `None`, gdy popytu nie było | `float` albo `None` |
+# | `zero_share` | udział zer wśród znanych miesięcy, od 0 do 1. `None`, gdy znanych miesięcy nie ma | `float` albo `None` |
+# | `adi` | średni odstęp między popytami: znane miesiące podzielone przez miesiące z popytem większym od zera. `None`, gdy popytu nie było | `float` albo `None` |
 #
 # ADI (average demand interval) to klasyczna miara przerywanego popytu. ADI 1 oznacza sprzedaż co miesiąc, ADI 4 sprzedaż średnio co cztery miesiące.
 #
 # Przykład: dla `[0.0, 2.0, None, 0.0, 6.0]` wynik to `{"months": 4, "missing": 1, "total": 8.0, "zero_share": 0.5, "adi": 2.0}`.
 #
-# **Skorzystaj z.** Comprehensions z wykładu 01 i pułapki z tej samej sekcji: `if v is not None`, a nie `if v`, bo zero to prawdziwa obserwacja.
+# **Skorzystaj z:**
 #
-# **Kroki.**
+# - comprehensions z wykładu 01. Budujesz nimi listę znanych wartości i listę miesięcy z popytem.
+# - `if v is not None`, a nie `if v`, z pułapki w tej samej sekcji wykładu 01. Zero to prawdziwa obserwacja.
+#
+# **Kroki:**
 #
 # 1. Zbuduj listę znanych wartości (bez `None`).
 # 2. Z niej zbuduj listę wartości większych od zera, czyli miesięcy z popytem.
 # 3. Policz pięć pól z długości i sum tych dwóch list oraz długości `values`.
 # 4. Przy dzieleniu sprawdź, czy mianownik nie jest zerem. Jeśli jest, pole ma wartość `None`.
 #
-# **Sprawdzenie.** `check("01.4", demand_stats)` wypisuje ✅. Sprawdzenie 01.4 dotyczy kroku 01.4a. Sprawdza przykład z tabeli, serię bez popytu `[0.0, None, 0.0]` i serię z samymi brakami `[None, None]`.
+# **Sprawdzenie:** `check("01.4", demand_stats)` wypisuje ✅. Sprawdzenie 01.4 dotyczy kroku 01.4a. Sprawdza przykład z tabeli, serię bez popytu `[0.0, None, 0.0]` i serię z samymi brakami `[None, None]`.
 #
 # <details>
 # <summary>Podpowiedź 1: kierunek</summary>
@@ -479,9 +505,9 @@ check("01.4", demand_stats)
 #
 # Odpowiadasz na dwa pytania: jaki odsetek wszystkich komórek pliku to braki, a jaki odsetek znanych miesięcy to zera?
 #
-# **Gdzie.** Zmienne `stats`, `missing_share` i `zero_share` w komórce poniżej.
+# **Gdzie:** Zmienne `stats`, `missing_share` i `zero_share` w komórce poniżej.
 #
-# **Wynik.**
+# **Wynik:**
 #
 # - `stats`: słownik. Klucz to nazwa serii, wartość to słownik statystyk tej serii z `demand_stats`. Ten słownik dostaną funkcje z 01.5 i 01.6.
 # - `missing_share`: liczba (`float`) od 0 do 1. Liczba wszystkich brakujących miesięcy ze wszystkich serii podzielona przez liczbę wszystkich miesięcy (znanych i brakujących).
@@ -489,9 +515,13 @@ check("01.4", demand_stats)
 #
 # Nie licz średniej z `zero_share` poszczególnych serii. Serie mają różną liczbę znanych miesięcy, więc średnia udziałów to nie jest udział w całości. Liczbę zer w jednej serii odtworzysz jako `zero_share * months`. Seria bez znanych miesięcy ma `zero_share` równe `None`. Nie wnosi ani zer, ani znanych miesięcy, więc pomijasz ją w tej sumie. W tym pliku takiej serii nie ma, ale kod ma działać i bez tej gwarancji.
 #
-# **Skorzystaj z.** `series` z 01.3b, `demand_stats` z 01.4a, funkcji `sum()` na comprehension.
+# **Skorzystaj z:**
 #
-# **Sprawdzenie.** Wypisane `zera` są bliskie temu, co mówi wstęp labu: trzy na cztery miesiące. Komórka z `assert` pod spodem nie zgłasza błędu.
+# - `series` z 01.3b. Daje wartości każdej serii.
+# - `demand_stats` z 01.4a. Liczy statystyki jednej serii.
+# - `sum()` na comprehension. Sumuje miesiące ze wszystkich serii.
+#
+# **Sprawdzenie:** Wypisane `zera` są bliskie temu, co mówi wstęp labu: trzy na cztery miesiące. Komórka z `assert` pod spodem nie zgłasza błędu.
 
 # %%
 # >>> SOLUTION 01.4
@@ -516,29 +546,37 @@ assert 0 < zero_share < 1, "zero_share to udział: liczba od 0 do 1."
 # %% [markdown]
 # ## 01.5 Najlepsze serie
 #
-# **Cel.** Ze statystyk 2 674 serii chcesz szybko zobaczyć kilka skrajnych: które części sprzedały się najlepiej, które sprzedają się najrzadziej. Ta funkcja robi taki ranking dla dowolnej statystyki.
+# **Cel:** Ze statystyk 2 674 serii chcesz zobaczyć kilka skrajnych: które części sprzedały się najlepiej, które sprzedają się najrzadziej. Ta funkcja robi taki ranking dla dowolnej statystyki.
 #
-# **Gdzie.** Funkcja `top_series` w komórce poniżej.
+# **Gdzie:** Funkcja `top_series` w komórce poniżej.
 #
-# **Wejście.**
+# **Wejście:**
 #
 # - `stats`: słownik w kształcie wyniku 01.4b. Klucz to nazwa serii, wartość to słownik statystyk tej serii. Słownika nie zmieniasz.
-# - `key`: napis, nazwa statystyki, po której układasz ranking, np. `"total"` albo `"adi"`. Uwaga na nazwę: `sorted()` też ma argument `key`, ale tamten przyjmuje funkcję. Twój `key` to tylko napis, którym odczytujesz wartość ze słownika statystyk serii.
+# - `key`: napis, nazwa statystyki, po której układasz ranking, np. `"total"` albo `"adi"`. Nie myl go z argumentem `key` funkcji `sorted()`, który przyjmuje funkcję. Twój `key` to tylko napis, którym odczytujesz wartość ze słownika statystyk serii.
 # - `n`: liczba całkowita, ile serii chcesz dostać.
 #
-# **Wynik.** Lista (`list`) najwyżej `n` krotek `(nazwa, wartość)`, od największej wartości do najmniejszej. Serie, dla których ta statystyka to `None`, pomijasz. Przy remisie pierwsza jest nazwa wcześniejsza alfabetycznie, żeby wynik był zawsze taki sam. Gdy serii z wartością jest mniej niż `n`, lista jest krótsza.
+# **Wynik:** Lista (`list`) najwyżej `n` krotek `(nazwa, wartość)`:
+#
+# - krotki idą od największej wartości do najmniejszej,
+# - serie, dla których ta statystyka to `None`, pomijasz,
+# - przy remisie pierwsza jest nazwa wcześniejsza alfabetycznie, żeby wynik był zawsze taki sam,
+# - gdy serii z wartością jest mniej niż `n`, lista jest krótsza.
 #
 # Przykład: dla `{"T1": {"total": 5.0}, "T2": {"total": 9.0}, "T3": {"total": 9.0}}`, `key="total"` i `n=2` wynik to `[("T2", 9.0), ("T3", 9.0)]`.
 #
-# **Skorzystaj z.** Funkcji `sorted()` z argumentem `key` i krótkiej funkcji `lambda` (wykład 01, sekcja "Cztery kolekcje", część "Sortowanie po kluczu"). Wycinek `[:n]` bierze pierwsze `n` elementów listy.
+# **Skorzystaj z:**
 #
-# **Kroki.**
+# - `sorted()` z argumentem `key` i krótką funkcją `lambda`, z wykładu 01, sekcja "Cztery kolekcje", część "Sortowanie po kluczu". Układa pary w kolejności rankingu.
+# - wycinka `[:n]`. Bierze pierwsze `n` elementów listy.
+#
+# **Kroki:**
 #
 # 1. Zbuduj nową listę par `(nazwa, wartość)` dla serii, w których wartość `key` nie jest `None`.
 # 2. Posortuj ją tak, żeby większa wartość była wcześniej, a przy równych wartościach nazwa rosnąco.
 # 3. Zwróć pierwsze `n` elementów.
 #
-# **Sprawdzenie.** `check("01.5", top_series)` wypisuje ✅. Sprawdza remis, pomijanie `None` i to, że słownik wejściowy się nie zmienił. Komórka pod sprawdzeniem wypisuje ranking na prawdziwych danych.
+# **Sprawdzenie:** `check("01.5", top_series)` wypisuje ✅. Sprawdza remis, pomijanie `None` i to, że słownik wejściowy się nie zmienił. Komórka pod sprawdzeniem wypisuje ranking na prawdziwych danych.
 #
 # <details>
 # <summary>Podpowiedź 1: kierunek</summary>
@@ -594,29 +632,38 @@ print("Najrzadszy popyt (ADI):     ", top_series(stats, "adi", 5))
 # %% [markdown]
 # ## 01.6 Zapis wyniku
 #
-# **Cel.** Statystyki istnieją tylko w pamięci notebooka i znikną po jego zamknięciu. Zapisujesz je do pliku JSON, który przeczyta człowiek i każdy inny program.
+# **Cel:** Statystyki istnieją tylko w pamięci notebooka i znikną po jego zamknięciu. Zapisujesz je do pliku JSON, który przeczyta człowiek i każdy inny program.
 #
 # Posortowane klucze i wcięcia sprawiają, że dwa zapisy tych samych danych dają identyczne pliki, a różnica między wersjami jest czytelna w gicie.
 #
-# **Gdzie.** Funkcja `save_summary` w komórce poniżej.
+# **Gdzie:** Funkcja `save_summary` w komórce poniżej.
 #
-# **Wejście.**
+# **Wejście:**
 #
 # - `stats`: słownik do zapisania, w kształcie wyniku 01.4b (nazwa serii → słownik statystyk). Słownika nie zmieniasz.
 # - `path`: gdzie zapisać plik, obiekt `Path` albo napis. Katalog, w którym ma leżeć plik, może jeszcze nie istnieć. Istniejący plik zostaje nadpisany.
 #
-# **Wynik.** Funkcja zapisuje plik tekstowy w kodowaniu UTF-8 z JSON: wcięcie 2 spacje, klucze posortowane alfabetycznie. Zwraca ścieżkę zapisanego pliku jako obiekt `Path`.
+# **Wynik:** Funkcja zapisuje plik i zwraca jego ścieżkę:
 #
-# **Skorzystaj z.** Modułu `json` zaimportowanego w pierwszej komórce i z `Path`. Wykład 01, sekcja "Pliki i `with`", część "Zapis do pliku JSON", pokazuje wszystkie trzy potrzebne kroki na wymyślonym słowniku.
+# - plik to tekst JSON w kodowaniu UTF-8,
+# - wcięcie ma 2 spacje,
+# - klucze są posortowane alfabetycznie,
+# - zwrócona ścieżka to obiekt `Path`.
 #
-# **Kroki.**
+# **Skorzystaj z:**
+#
+# - `json` z pierwszej komórki. Zamienia słownik na tekst JSON.
+# - `Path` z pierwszej komórki. Tworzy katalog i zapisuje tekst do pliku.
+# - wykładu 01, sekcja "Pliki i `with`", część "Zapis do pliku JSON". Pokazuje wszystkie trzy potrzebne kroki na wymyślonym słowniku.
+#
+# **Kroki:**
 #
 # 1. Zamień `path` na obiekt `Path`, żeby działał też napis.
 # 2. Utwórz katalog, w którym ma leżeć plik, razem z brakującymi katalogami wyżej.
 # 3. Zamień słownik na tekst JSON z wcięciem i posortowanymi kluczami.
 # 4. Zapisz ten tekst do pliku i zwróć ścieżkę.
 #
-# **Sprawdzenie.** `check("01.6", save_summary)` wypisuje ✅. Komórka pod sprawdzeniem zapisuje Twoje statystyki do `data/processed/car_parts_summary.json`. Otwórz ten plik w edytorze i zobacz, jak wygląda.
+# **Sprawdzenie:** `check("01.6", save_summary)` wypisuje ✅. Komórka pod sprawdzeniem zapisuje Twoje statystyki do `data/processed/car_parts_summary.json`. Otwórz ten plik w edytorze i zobacz, jak wygląda.
 #
 # <details>
 # <summary>Podpowiedź 1: kierunek</summary>
@@ -679,11 +726,19 @@ print(f"Zapisano {written.relative_to(paths.ROOT)}")
 #
 # **Pytanie 1.** Popyt dzieli się czasem na "regularny" (ADI do 1.32) i "przerywany" (ADI powyżej 1.32). Ile serii jest w każdej grupie?
 #
-# **Gdzie.** Zmienne `regular` i `intermittent` w komórce poniżej.
+# **Gdzie:** Zmienne `regular` i `intermittent` w komórce poniżej.
 #
-# **Wynik.** Dwie listy nazw serii (napisów). `regular`: serie z `adi` mniejszym albo równym 1.32. `intermittent`: serie z `adi` większym niż 1.32. Serie z `adi` równym `None` nie trafiają do żadnej listy.
+# **Wynik:** Dwie listy nazw serii (napisów):
 #
-# **Skorzystaj z.** Słownika `stats` z 01.4b i list comprehension z warunkiem.
+# - `regular`: serie z `adi` mniejszym albo równym 1.32,
+# - `intermittent`: serie z `adi` większym niż 1.32.
+#
+# Serie z `adi` równym `None` nie trafiają do żadnej listy.
+#
+# **Skorzystaj z:**
+#
+# - `stats` z 01.4b. Z niego czytasz `adi` każdej serii.
+# - list comprehension z warunkiem. Buduje każdą z dwóch list.
 
 # %%
 # >>> SOLUTION 01.7

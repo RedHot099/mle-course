@@ -27,7 +27,7 @@
 # Na końcu zadania uruchamiasz komórkę `check("07.x")`. Sprawdzenie działa na małej próbce danych z repozytorium (8 serii po 90 dni) i testuje funkcje w kolejności kroków. Możesz je uruchomić po każdym kroku:
 #
 # - ✅ wszystkie funkcje zadania działają,
-# - ⬜ „jeszcze nie zrobione”: sprawdzenie doszło do funkcji, która wciąż ma `raise NotImplementedError`. Jeśli to funkcja z następnego kroku, Twój krok przeszedł,
+# - ⬜ "jeszcze nie zrobione": sprawdzenie doszło do funkcji, która wciąż ma `raise NotImplementedError`. Jeśli to funkcja z następnego kroku, Twój krok przeszedł,
 # - ❌ komunikat mówi, który warunek nie jest spełniony.
 #
 # To samo zrobisz z terminala: `uv run course check 07.1` dla jednego zadania, `uv run course check 07` dla całego modułu.
@@ -97,7 +97,7 @@ print(f"Profil danych: {PROFILE.name}, miasta w tym labie: {CITIES}")
 # | Nazwa | Co to jest |
 # |---|---|
 # | `RAW` | ścieżka (`Path`) do surowego pliku `data/raw/freshretailnet/train.parquet` |
-# | `CITIES` | krotka identyfikatorów miast, na przykład `(3,)` w profilu `standard`; `None` w profilu `full` (wszystkie miasta) |
+# | `CITIES` | krotka identyfikatorów miast, na przykład `(3,)` w profilu `standard`. `None` w profilu `full` (wszystkie miasta) |
 # | `SERIES_KEY` | `["store_id", "product_id"]`, klucz serii. Seria to jeden produkt w jednym sklepie |
 # | `DATE` | `"dt"`, kolumna z datą dnia |
 # | `TARGET` | `"sale_amount"`, sprzedaż w danym dniu. Tę liczbę będziesz prognozować od modułu 08 |
@@ -106,7 +106,7 @@ print(f"Profil danych: {PROFILE.name}, miasta w tym labie: {CITIES}")
 #
 # Funkcje w pakiecie nie widzą zmiennych notebooka (`daily`, `CITIES`, `RAW`). Wszystko, czego potrzebują, dostają przez argumenty, a inne funkcje pakietu importują.
 #
-# Wszystkie te stałe są w `src/freshcast/data/schema.py`. W plikach pakietu importujesz je stamtąd, na przykład `from freshcast.data.schema import DATE, SERIES_KEY`, zamiast pisać nazwy kolumn w cudzysłowie. Na górze pliku z zadaniem są tylko importy potrzebne sygnaturom funkcji (na przykład `import pandas as pd`, `from pathlib import Path`). Importy dla Twojego rozwiązania dopisujesz sam: każdy krok podaje w „Skorzystaj z” linię, którą dopisać i do którego pliku. Dopisuj nazwy wtedy, gdy ich używasz, bo `ruff` zgłasza import, którego nic nie używa.
+# Wszystkie te stałe są w `src/freshcast/data/schema.py`. W plikach pakietu importujesz je stamtąd, na przykład `from freshcast.data.schema import DATE, SERIES_KEY`, zamiast pisać nazwy kolumn w cudzysłowie. Na górze pliku z zadaniem są tylko importy potrzebne sygnaturom funkcji (na przykład `import pandas as pd`, `from pathlib import Path`). Importy dla Twojego rozwiązania dopisujesz sam. Każdy krok podaje w "Skorzystaj z" linię importu i plik, do którego ją dopisujesz. Dopisuj nazwy wtedy, gdy ich używasz, bo `ruff` zgłasza import, którego nic nie używa.
 
 # %% [markdown]
 # ## 07.0 Rozpoznanie pliku, zanim go wczytasz
@@ -153,17 +153,21 @@ first.head(3).T
 # - `nested_bytes`: bajty na wiersz w dwóch kolumnach zagnieżdżonych razem, nagłówek i dane,
 # - `total_gb`: oszacowanie dla wszystkich wierszy pliku, w GB (1 GB to 10⁹ bajtów).
 #
-# **Skorzystaj z:** `memory_usage(deep=True)` i `.sum()`; `.nbytes` tablicy NumPy (moduł 05) daje rozmiar jej danych w bajtach. Pojedynczą komórkę wyjmiesz przez `.iloc[0]`.
+# **Skorzystaj z:**
+#
+# - `memory_usage(deep=True)` i `.sum()` z pandas. Dają bajty każdej kolumny i ich sumę.
+# - `.nbytes` tablicy NumPy z modułu 05. Daje rozmiar danych tablicy w bajtach.
+# - `.iloc[0]`. Wyjmuje pojedynczą komórkę kolumny.
 #
 # **Kroki:**
 #
-# 1. `scalar_bytes`: suma `memory_usage(deep=True)` wszystkich kolumn poza dwiema zagnieżdżonymi, podzielona przez liczbę wierszy `first`. Domyślnie wynik zawiera też indeks. Możesz go wliczyć albo pominąć: na tych 1000 wierszach to 132 bajty, czyli ułamek bajta na wiersz.
-# 2. `nested_bytes`: nagłówek plus dane, dla obu kolumn zagnieżdżonych razem. Nagłówek zmierz: `memory_usage(deep=True, index=False)` dwóch kolumn zagnieżdżonych, zsumowane i podzielone przez liczbę wierszy `first` (wyjdzie około 120 bajtów na komórkę). Dane to `.nbytes` pierwszej komórki każdej z dwóch kolumn. Każda komórka ma 24 liczby tego samego typu, więc pierwsza wystarczy.
-# 3. `total_gb`: bajty jednego wiersza (obie części) razy liczba wierszy pliku, przeliczone na GB.
+# 1. Policz `scalar_bytes`. To suma `memory_usage(deep=True)` wszystkich kolumn poza dwiema zagnieżdżonymi, podzielona przez liczbę wierszy `first`. Domyślnie wynik `memory_usage` zawiera też indeks. Możesz go wliczyć albo pominąć. Na tych 1000 wierszach indeks to 132 bajty, czyli ułamek bajta na wiersz.
+# 2. Policz `nested_bytes` dla obu kolumn zagnieżdżonych razem. To nagłówek plus dane. Nagłówek zmierz przez `memory_usage(deep=True, index=False)` dwóch kolumn zagnieżdżonych, zsumuj i podziel przez liczbę wierszy `first`. Wyjdzie około 120 bajtów na komórkę. Dane to `.nbytes` pierwszej komórki każdej z dwóch kolumn. Każda komórka ma 24 liczby tego samego typu, więc pierwsza wystarczy.
+# 3. Policz `total_gb`. To bajty jednego wiersza, obu części razem, razy liczba wierszy pliku, przeliczone na GB.
 #
 # To oszacowanie samej ramki w pandas, a nie szczytu pamięci procesu podczas wczytywania. O szczycie jest mowa pod sprawdzeniem.
 #
-# **Sprawdzenie:** komórka z `assert` pod spodem wypisuje „Zgadza się.”. Jeśli nie, komunikat mówi, którą liczbę poprawić.
+# **Sprawdzenie:** komórka z `assert` pod spodem wypisuje "Zgadza się.". Jeśli nie, komunikat mówi, którą liczbę poprawić.
 
 # %%
 nested = ["hours_sale", "hours_stock_status"]
@@ -215,15 +219,20 @@ print("Zgadza się.")
 #
 # **Wejście:** `df`: `pd.DataFrame`, dowolna ramka. W tym labie to wiersze sprzedaży prosto z pliku Parquet. Kolumny całkowite (`store_id`, `product_id`, `city_id`, flagi) mają tam typ `int64` albo `int32`.
 #
-# **Wynik:** nowy `pd.DataFrame` z tymi samymi wierszami, indeksem, wartościami i kolejnością kolumn. Każda kolumna całkowita ma najmniejszy typ całkowity ze znakiem, który mieści jej wartości: `int8`, `int16`, `int32` albo `int64`. Kolumny `float64`, daty i tekst zostają bez zmian. Ramki wejściowej nie zmieniasz.
+# **Wynik:** nowy `pd.DataFrame`:
+#
+# - te same wiersze, indeks, wartości i kolejność kolumn,
+# - każda kolumna całkowita ma najmniejszy typ całkowity ze znakiem, który mieści jej wartości: `int8`, `int16`, `int32` albo `int64`,
+# - kolumny `float64`, daty i tekst zostają bez zmian,
+# - ramki wejściowej nie zmieniasz.
 #
 # **Skorzystaj z:**
 #
-# - `pd.to_numeric(kolumna, downcast="integer")` z wykładu (sekcja „Typy”): zwraca kolumnę w najmniejszym pasującym typie,
-# - `df.select_dtypes("integer")`: ramka złożona tylko z kolumn całkowitych; jej `.columns` to ich nazwy,
-# - `df.assign(...)` z modułu 06: zwraca nową ramkę z podmienionymi lub dodanymi kolumnami.
+# - `pd.to_numeric(kolumna, downcast="integer")` z wykładu, sekcja "Typy". Zwraca kolumnę w najmniejszym pasującym typie.
+# - `df.select_dtypes("integer")`. Zwraca ramkę złożoną tylko z kolumn całkowitych. Jej `.columns` to ich nazwy.
+# - `df.assign(...)` z modułu 06. Zwraca nową ramkę z podmienionymi albo dodanymi kolumnami.
 #
-# Importu nie dopisujesz: `import pandas as pd` jest już na górze `load.py`.
+# Importu nie dopisujesz. `import pandas as pd` jest już na górze `load.py`.
 #
 # **Kroki:**
 #
@@ -243,8 +252,8 @@ print("Zgadza się.")
 # **Wejście:**
 #
 # - `path`: `Path`, surowy plik Parquet. W notebooku to `RAW`. Jeden wiersz pliku to sprzedaż jednego produktu w jednym sklepie w jednym dniu. Kolumna `dt` jest w pliku tekstem, na przykład `"2024-03-28"`.
-# - `cities`: `Sequence[int] | None`, identyfikatory miast (`city_id`) do zostawienia. W notebooku to `CITIES`. `None` znaczy: wszystkie miasta.
-# - `columns`: `Sequence[str]`, nazwy kolumn do wczytania, w kolejności, którą chcesz mieć w wyniku. Domyślnie `DAILY_COLUMNS`. Zawsze zawiera `store_id`, `product_id` i `dt`. `city_id` nie musi być na liście: filtr miast działa i bez niej.
+# - `cities`: `Sequence[int] | None`, identyfikatory miast (`city_id`) do zostawienia. W notebooku to `CITIES`. `None` znaczy wszystkie miasta.
+# - `columns`: `Sequence[str]`, nazwy kolumn do wczytania, w kolejności, którą chcesz mieć w wyniku. Domyślnie `DAILY_COLUMNS`. Zawsze zawiera `store_id`, `product_id` i `dt`. `city_id` nie musi być na liście. Filtr miast działa i bez tej kolumny.
 #
 # **Wynik:** `pd.DataFrame`, jeden wiersz na serię i dzień:
 #
@@ -256,13 +265,14 @@ print("Zgadza się.")
 # **Skorzystaj z:**
 #
 # - `shrink_integers` z kroku 07.1a. Jest w tym samym pliku, więc wywołujesz ją po nazwie.
-# - Stałych `CITY`, `DATE`, `SERIES_KEY` z `schema.py`. Na górze `load.py` jest już `from freshcast.data.schema import DAILY_COLUMNS`. Rozszerz tę linię do `from freshcast.data.schema import CITY, DAILY_COLUMNS, DATE, SERIES_KEY`.
-# - `pd.read_parquet` z argumentami `columns` i `filters` oraz `pd.to_datetime(..., format="%Y-%m-%d")` z wykładu (sekcja „Czytaj mniej, niż jest w pliku”).
-# - `sort_values` i `reset_index(drop=True)` z modułu 06.
+# - `CITY`, `DATE`, `SERIES_KEY` z `schema.py`. Na górze `load.py` jest już `from freshcast.data.schema import DAILY_COLUMNS`. Rozszerz tę linię do `from freshcast.data.schema import CITY, DAILY_COLUMNS, DATE, SERIES_KEY`.
+# - `pd.read_parquet` z argumentami `columns` i `filters`, z wykładu, sekcja "Czytaj mniej, niż jest w pliku".
+# - `pd.to_datetime(..., format="%Y-%m-%d")` z tej samej sekcji wykładu. Zamienia tekst w `dt` na datę.
+# - `sort_values` i `reset_index(drop=True)` z modułu 06. Ustawiają kolejność wierszy i numerują je od zera.
 #
 # **Kroki:**
 #
-# 1. Zbuduj filtr miast w formie z wykładu: lista warunków `(kolumna, operator, wartość)`. Gdy `cities` to `None`, filtra nie ma (`None`).
+# 1. Zbuduj filtr miast w formie z wykładu. To lista warunków `(kolumna, operator, wartość)`. Gdy `cities` to `None`, filtr też jest `None`.
 # 2. Wczytaj plik: tylko kolumny z `columns`, z tym filtrem.
 # 3. Zamień `dt` z tekstu na datę.
 # 4. Zmniejsz typy całkowite funkcją z 07.1a.
@@ -327,13 +337,23 @@ print(f"daily: {daily.groupby(SERIES_KEY).ngroups:,} serii, {daily[DATE].nunique
 #
 # **Gdzie:** komórka poniżej, zmienna `saving`.
 #
-# **Wejście:** `plain`: te same wiersze i kolumny wczytane bez zmian typów (komórka tworzy ją za Ciebie); `daily`: wynik `load_sales`.
+# **Wejście:**
 #
-# **Wynik:** `saving`: `float` od 0 do 1, ułamek pamięci zaoszczędzony względem `plain`. 0.25 znaczy: `daily` zajmuje o 25% mniej niż `plain`.
+# - `plain`: te same wiersze i kolumny wczytane bez zmian typów. Komórka tworzy tę ramkę za Ciebie.
+# - `daily`: wynik `load_sales`.
 #
-# **Skorzystaj z:** `memory_usage(deep=True).sum()`, jak w 07.0, tak samo dla obu ramek. Porównujesz cały efekt `load_sales` (data i typy całkowite), a nie rozmiar pliku Parquet.
+# **Wynik:** `saving`: `float` od 0 do 1, ułamek pamięci zaoszczędzony względem `plain`. 0.25 znaczy, że `daily` zajmuje o 25% mniej niż `plain`.
 #
-# **Kroki:** policz pamięć obu ramek w bajtach. Oszczędność to 1 minus stosunek pamięci `daily` do pamięci `plain`.
+# **Skorzystaj z:**
+#
+# - `memory_usage(deep=True).sum()` z 07.0. Liczysz ją tak samo dla obu ramek.
+#
+# Porównujesz cały efekt `load_sales`, czyli datę i typy całkowite. Rozmiar pliku Parquet nie ma tu znaczenia.
+#
+# **Kroki:**
+#
+# 1. Policz pamięć obu ramek w bajtach.
+# 2. Policz oszczędność: 1 minus stosunek pamięci `daily` do pamięci `plain`.
 #
 # **Sprawdzenie:** wydruk pokazuje procent, a komórka pod nim sprawdza, czy to ułamek od 0 do 1.
 
@@ -373,7 +393,16 @@ print("Zgadza się.")
 #
 # Wszystkie pytania zadajesz ramce `daily` z 07.1: jeden wiersz to sprzedaż jednej serii w jednym dniu. Para (seria, dzień) to trzy kolumny: `[*SERIES_KEY, DATE]`.
 #
-# **Pytanie 1.** **Gdzie:** `n_duplicated`. **Wynik:** `int`, liczba wierszy, które powtarzają parę (seria, dzień) z wcześniejszego wiersza. Pierwsze wystąpienie pary się nie liczy. **Skorzystaj z:** `df.duplicated(lista_kolumn)` z wykładu (sekcja „Reguły zamiast nadziei”) daje True przy każdym powtórzeniu, a `.sum()` liczy wartości True.
+# **Pytanie 1.**
+#
+# **Gdzie:** `n_duplicated`.
+#
+# **Wynik:** `int`, liczba wierszy, które powtarzają parę (seria, dzień) z wcześniejszego wiersza. Pierwsze wystąpienie pary się nie liczy.
+#
+# **Skorzystaj z:**
+#
+# - `df.duplicated(lista_kolumn)` z wykładu, sekcja "Reguły zamiast nadziei". Daje True przy każdym powtórzeniu.
+# - `.sum()`. Liczy wartości True.
 
 # %%
 # Pytanie 1: ile wierszy powtarza parę (seria, dzień)?
@@ -385,7 +414,16 @@ n_duplicated = int(daily.duplicated([*SERIES_KEY, DATE]).sum())
 print(n_duplicated)
 
 # %% [markdown]
-# **Pytanie 2.** **Gdzie:** `days_distribution`. **Wynik:** `pd.Series`: indeks to liczba dni w serii, wartość to liczba serii, które mają tyle dni. Pytanie 1 pokazało, że żadna para (seria, dzień) się nie powtarza, więc liczba wierszy serii to liczba jej dni. **Skorzystaj z:** `groupby(SERIES_KEY).size()` daje liczbę wierszy każdej serii. `value_counts()` na tym wyniku liczy, ile razy występuje każda wartość.
+# **Pytanie 2.**
+#
+# **Gdzie:** `days_distribution`.
+#
+# **Wynik:** `pd.Series`. Indeks to liczba dni w serii, wartość to liczba serii, które mają tyle dni. Pytanie 1 pokazało, że żadna para (seria, dzień) się nie powtarza, więc liczba wierszy serii to liczba jej dni.
+#
+# **Skorzystaj z:**
+#
+# - `groupby(SERIES_KEY).size()`. Daje liczbę wierszy każdej serii.
+# - `value_counts()` na tym wyniku. Liczy, ile razy występuje każda wartość.
 
 # %%
 # Pytanie 2: ile dni ma każda seria? Pokaż rozkład (ile serii ma ile dni).
@@ -404,7 +442,19 @@ assert list(days_distribution.index) == [90], "Każda seria ma 90 dni. Sprawdź,
 print("Zgadza się.")
 
 # %% [markdown]
-# **Pytanie 3.** `discount` to mnożnik ceny: 1.0 to cena regularna, 0.8 to 20% taniej. Zakres, czyli minimum i maksimum, wypisz sam w tej samej komórce: `print(daily["discount"].describe())`. Do zmiennych zapisujesz tylko dwa liczniki. **Gdzie:** `n_zero`, `n_above_one`. **Wynik:** dwa `int`: liczba wierszy z `discount` równym dokładnie 0 i liczba wierszy z `discount` większym niż 1. **Skorzystaj z:** `describe()` pokazuje minimum, maksimum i kwartyle kolumny. Porównanie kolumny z liczbą daje Series True/False, a jej `.sum()` liczy wartości True.
+# **Pytanie 3.** `discount` to mnożnik ceny. 1.0 to cena regularna, 0.8 to 20% taniej. Zakres, czyli minimum i maksimum, wypisz sam w tej samej komórce poleceniem `print(daily["discount"].describe())`. Do zmiennych zapisujesz tylko dwa liczniki.
+#
+# **Gdzie:** `n_zero`, `n_above_one`.
+#
+# **Wynik:** dwa `int`:
+#
+# - `n_zero`: liczba wierszy z `discount` równym dokładnie 0,
+# - `n_above_one`: liczba wierszy z `discount` większym niż 1.
+#
+# **Skorzystaj z:**
+#
+# - `describe()`. Pokazuje minimum, maksimum i kwartyle kolumny.
+# - porównania kolumny z liczbą i `.sum()`. Porównanie daje Series z wartościami True i False, a `.sum()` liczy wartości True.
 
 # %%
 # Pytanie 3: jaki jest zakres kolumny discount? Ile wierszy ma dokładnie 0,
@@ -425,7 +475,22 @@ print(f"discount == 0: {n_zero}, discount > 1: {n_above_one}")
 # Zero może znaczyć dwie rzeczy: produkt rozdawany za darmo albo znacznik "nie zapisano". Zbierz dowody, zanim zdecydujesz.
 
 # %% [markdown]
-# **Pytanie 4.** **Gdzie:** `zero_days`. **Wynik:** `pd.DataFrame` z kolumnami `store_id`, `product_id`, `zero_days`. Jeden wiersz na serię, tylko serie, które mają choć jeden dzień z `discount == 0`. `zero_days` to liczba takich dni w serii (`int`). **Skorzystaj z:** kolumna pomocnicza True/False dodana przez `assign`, potem `groupby(SERIES_KEY, as_index=False)` z nazwaną agregacją (wykład, sekcja „groupby”). Suma kolumny True/False to liczba wartości True. Na końcu zostaw wiersze z `zero_days > 0`.
+# **Pytanie 4.**
+#
+# **Gdzie:** `zero_days`.
+#
+# **Wynik:** `pd.DataFrame`:
+#
+# - kolumny `store_id`, `product_id`, `zero_days`,
+# - jeden wiersz na serię, tylko serie, które mają choć jeden dzień z `discount == 0`,
+# - `zero_days` to liczba takich dni w serii (`int`).
+#
+# **Skorzystaj z:**
+#
+# - `assign`. Dodaje kolumnę pomocniczą z wartościami True i False.
+# - `groupby(SERIES_KEY, as_index=False)` z nazwaną agregacją, z wykładu, sekcja "groupby". Suma kolumny z wartościami True i False to liczba wartości True.
+#
+# Na końcu zostaw wiersze z `zero_days > 0`.
 
 # %%
 # Pytanie 4: weź serie, które mają choć jeden wiersz z discount == 0.
@@ -445,7 +510,23 @@ print(f"Serie z zerem: {len(zero_days)}")
 print(zero_days["zero_days"].value_counts().sort_index())
 
 # %% [markdown]
-# **Pytanie 5.** **Gdzie:** `comparison`. **Wynik:** `pd.DataFrame` o dwóch wierszach: dni z `discount == 0` i pozostałe dni tych samych serii. Kolumny: `mean_sales` (średnia `sale_amount`), `rows` (liczba wierszy), `activity_share` (ułamek od 0 do 1 wierszy z `activity_flag == 1`; ta flaga znaczy, że w tym dniu produkt był objęty akcją promocyjną). Etykiety wierszy możesz zostawić jako True/False albo nadać im czytelne nazwy. **Skorzystaj z:** `zero_days[SERIES_KEY]` z pytania 4 jako listy serii. `merge` z jawnym `on`, `how` i `validate` (wykład, sekcja „Fakty, wymiary i merge”) zostawi w `daily` tylko wiersze tych serii. Potem `groupby` po warunku `discount == 0` i nazwane agregacje. Średnia kolumny z zerami i jedynkami to udział jedynek.
+# **Pytanie 5.**
+#
+# **Gdzie:** `comparison`.
+#
+# **Wynik:** `pd.DataFrame` o dwóch wierszach: dni z `discount == 0` i pozostałe dni tych samych serii. Kolumny:
+#
+# - `mean_sales`: średnia `sale_amount`,
+# - `rows`: liczba wierszy,
+# - `activity_share`: ułamek od 0 do 1 wierszy z `activity_flag == 1`. Ta flaga znaczy, że w tym dniu produkt był objęty akcją promocyjną.
+#
+# Etykiety wierszy możesz zostawić jako True i False albo nadać im czytelne nazwy.
+#
+# **Skorzystaj z:**
+#
+# - `zero_days[SERIES_KEY]` z pytania 4. To lista serii.
+# - `merge` z jawnym `on`, `how` i `validate`, z wykładu, sekcja "Fakty, wymiary i merge". Zostawi w `daily` tylko wiersze tych serii.
+# - `groupby` po warunku `discount == 0` z nazwanymi agregacjami. Średnia kolumny z zerami i jedynkami to udział jedynek.
 
 # %%
 # Pytanie 5: w tych samych seriach porównaj dni z discount == 0 z pozostałymi:
@@ -475,7 +556,15 @@ comparison
 #
 # Drugi wzorzec wygląda jak prawdziwe rozdawnictwo w ramach akcji. Pierwszy może być produktem zawsze darmowym albo produktem, dla którego rabatu nikt nie zapisuje. Z danych tego nie rozstrzygniesz.
 #
-# **Gdzie:** komórka „Twój wniosek” poniżej. **Wynik:** dwa do czterech zdań własnymi słowami: co wiesz na pewno, czego nie wiesz i co w związku z tym zrobisz z wartością 0. **Sprawdzenie:** nie ma automatycznego. Jeśli pracujesz z tutorem, omów z nim swój wniosek.
+# **Gdzie:** komórka "Twój wniosek" poniżej.
+#
+# **Wynik:** dwa do czterech zdań własnymi słowami:
+#
+# - co wiesz na pewno,
+# - czego nie wiesz,
+# - co w związku z tym zrobisz z wartością 0.
+#
+# **Sprawdzenie:** nie ma automatycznego. Jeśli pracujesz z tutorem, omów z nim swój wniosek.
 
 # %% [markdown]
 # *Twój wniosek:*
@@ -499,28 +588,33 @@ comparison
 #
 # **Wynik:** nic (`None`). Funkcja niczego nie zwraca i niczego nie zmienia. Gdy reguła jest złamana, rzuca `ValueError` z liczbą w komunikacie. Reguły sprawdzasz w kolejności z docstringa:
 #
-# 1. brak wartości (NaN) w kluczu serii, dacie albo sprzedaży: liczysz wiersze,
-# 2. powtórzona para (seria, dzień): liczysz wiersze po pierwszym wystąpieniu pary, jak w pytaniu 1. Dwa identyczne klucze dają liczbę 1,
-# 3. seria bez kompletu dni od najwcześniejszej do najpóźniejszej daty całej ramki, oba końce włącznie: liczysz serie,
-# 4. ujemna sprzedaż: liczysz wiersze.
+# 1. Brak wartości (NaN) w kluczu serii, dacie albo sprzedaży. Liczysz wiersze.
+# 2. Powtórzona para (seria, dzień). Liczysz wiersze po pierwszym wystąpieniu pary, jak w pytaniu 1. Dwa identyczne klucze dają liczbę 1.
+# 3. Seria bez kompletu dni od najwcześniejszej do najpóźniejszej daty całej ramki, oba końce włącznie. Liczysz serie.
+# 4. Ujemna sprzedaż. Liczysz wiersze.
 #
 # Kolejności wierszy ta funkcja nie sprawdza. Tym zajmie się `is_sorted_panel` w 07.5a.
 #
 # **Skorzystaj z:**
 #
-# - pytań 1 i 2 ze śledztwa 07.2a: to prawie reguły 2 i 3,
-# - wzorca „policz, sprawdź, rzuć” z wykładu (sekcja „Reguły zamiast nadziei”) i z `check_raw` w labie 06 (06.2),
-# - `isna()` z modułu 06; `.any(axis=1)` daje True dla wiersza, w którym choć jedna kolumna ma True,
-# - odejmowania dat: różnica dwóch dat to odstęp czasu, a jego `.days` to liczba dni,
-# - stałych `SERIES_KEY`, `DATE`, `TARGET` z `schema.py`. W `validate.py` jest tylko `import pandas as pd`. Dopisz pod nim `from freshcast.data.schema import DATE, SERIES_KEY, TARGET`.
+# - pytań 1 i 2 ze śledztwa 07.2a. To prawie reguły 2 i 3.
+# - wzorca "policz, sprawdź, rzuć" z wykładu, sekcja "Reguły zamiast nadziei", i z `check_raw` w labie 06 (06.2).
+# - `isna()` z modułu 06 i `.any(axis=1)`. `.any(axis=1)` daje True dla wiersza, w którym choć jedna kolumna ma True.
+# - odejmowania dat. Różnica dwóch dat to odstęp czasu, a jego `.days` to liczba dni.
+# - `SERIES_KEY`, `DATE`, `TARGET` z `schema.py`. W `validate.py` jest tylko `import pandas as pd`. Dopisz pod nim `from freshcast.data.schema import DATE, SERIES_KEY, TARGET`.
 #
 # **Kroki:**
 #
-# 1. Dla każdej reguły policz jedną liczbę: ile wierszy (w regule 3: serii) ją łamie. Zamień ją na `int`.
+# 1. Dla każdej reguły policz, ile wierszy ją łamie. W regule 3 policz serie. Zamień tę liczbę na `int`.
 # 2. Jeśli liczba jest większa od zera, rzuć `ValueError` z tą liczbą w komunikacie.
-# 3. W regule 3 najpierw ustal, ile dni powinna mieć każda seria (od najwcześniejszej do najpóźniejszej daty ramki), potem porównaj z liczbą wierszy każdej serii. To wystarcza, bo reguła 2 wykluczyła już duplikaty.
+# 3. W regule 3 ustal najpierw, ile dni powinna mieć każda seria, od najwcześniejszej do najpóźniejszej daty ramki. Porównaj tę liczbę z liczbą wierszy każdej serii. Porównanie wystarcza, bo reguła 2 wykluczyła już duplikaty.
 #
-# **Sprawdzenie:** `check("07.2")` testuje najpierw `check_panel`. Poprawny panel z próbki ma przejść bez błędu. Cztery zepsute wersje mają rzucić `ValueError`: powtórzony wiersz, brak jednego dnia w środku serii, NaN w sprzedaży, ujemna sprzedaż.
+# **Sprawdzenie:** `check("07.2")` testuje najpierw `check_panel`. Poprawny panel z próbki ma przejść bez błędu. Cztery zepsute wersje mają rzucić `ValueError`:
+#
+# - powtórzony wiersz,
+# - brak jednego dnia w środku serii,
+# - NaN w sprzedaży,
+# - ujemna sprzedaż.
 #
 # ### 07.2d `clean_discount`
 #
@@ -528,7 +622,7 @@ comparison
 #
 # **Gdzie:** `src/freshcast/data/validate.py`, funkcja `clean_discount(df)`.
 #
-# **Wejście:** `df`: `pd.DataFrame`, dzienna sprzedaż z kolumną `discount` (`float`, mnożnik ceny: 1.0 to cena regularna, 0.8 to 20% taniej). W notebooku to `daily` po `check_panel`.
+# **Wejście:** `df`: `pd.DataFrame`, dzienna sprzedaż z kolumną `discount`. `discount` to `float`, mnożnik ceny. 1.0 to cena regularna, 0.8 to 20% taniej. W notebooku to `daily` po `check_panel`.
 #
 # **Wynik:** nowy `pd.DataFrame`, te same wiersze, kolejność i indeks:
 #
@@ -539,14 +633,14 @@ comparison
 #
 # **Skorzystaj z:**
 #
-# - stałych `DISCOUNT` i `DISCOUNT_IS_ZERO` z `schema.py`. Rozszerz linię importu z 07.2c w `validate.py` do `from freshcast.data.schema import DATE, DISCOUNT, DISCOUNT_IS_ZERO, SERIES_KEY, TARGET`,
-# - `Series.mask(warunek)`: zwraca kopię, w której tam, gdzie warunek jest True, stoi `NaN` (wykład, sekcja „Wartość, która nie pasuje do skali”),
-# - `df.assign(**{NAZWA: wartości})`: `assign`, gdy nazwa kolumny siedzi w zmiennej (wykład, sekcja „Typy”).
+# - `DISCOUNT` i `DISCOUNT_IS_ZERO` z `schema.py`. Rozszerz linię importu z 07.2c w `validate.py` do `from freshcast.data.schema import DATE, DISCOUNT, DISCOUNT_IS_ZERO, SERIES_KEY, TARGET`.
+# - `Series.mask(warunek)` z wykładu, sekcja "Wartość, która nie pasuje do skali". Zwraca kopię, w której tam, gdzie warunek jest True, stoi `NaN`.
+# - `df.assign(**{NAZWA: wartości})` z wykładu, sekcja "Typy". Tak wołasz `assign`, gdy nazwa kolumny siedzi w zmiennej.
 #
 # **Kroki:**
 #
 # 1. Sprawdź wejście: policz wiersze z rabatem ujemnym albo brakującym. Jeśli są, rzuć błąd.
-# 2. Zbuduj maskę True/False „rabat równy 0”.
+# 2. Zbuduj maskę "rabat równy 0" z wartościami True i False.
 # 3. Zwróć kopię, w której `discount` ma `NaN` pod maską, a sama maska jest nową kolumną.
 #
 # **Sprawdzenie:** `check("07.2")` pokazuje ✅. W próbce są 3 wiersze z zerem i rabat 1.088, który ma zostać. Komórki pod sprawdzeniem uruchamiają obie funkcje na `daily` i potwierdzają wynik.
@@ -660,21 +754,31 @@ except pd.errors.MergeError as error:
 # - `n_products`: liczba różnych produktów w sklepie (`int`),
 # - `mean_sales`: średnia `sale_amount` ze wszystkich wierszy sklepu, czyli średnia dzienna sprzedaż jednej jego serii (`float`).
 #
-# Wiersze posortowane po `store_id`, indeks 0..n-1. `city_id` jest stałą cechą sklepu. `n_products` i `mean_sales` to statystyki policzone na ramce, którą dostajesz: dla innego okresu albo innych miast wyjdą inne. `mean_sales` nie jest średnim dziennym obrotem całego sklepu. Sklep, który występuje w więcej niż jednym mieście: `ValueError` z liczbą takich sklepów.
+# Wiersze są posortowane po `store_id`, indeks to 0..n-1.
+#
+# `city_id` jest stałą cechą sklepu. `n_products` i `mean_sales` to statystyki policzone na ramce, którą dostajesz. Dla innego okresu albo innych miast wyjdą inne. `mean_sales` nie jest średnim dziennym obrotem całego sklepu.
+#
+# Gdy sklep występuje w więcej niż jednym mieście, funkcja rzuca `ValueError` z liczbą takich sklepów.
 #
 # **Skorzystaj z:**
 #
-# - `groupby("store_id", as_index=False).agg(...)` z nazwanymi agregacjami. Wykład (sekcja „groupby”) pokazuje prawie ten sam przykład,
-# - `nunique`: liczba różnych wartości w grupie,
-# - stałych `CITY` i `TARGET` z `schema.py`. W `dims.py` jest tylko `import pandas as pd`. Dopisz pod nim `from freshcast.data.schema import CITY, TARGET`.
+# - `groupby("store_id", as_index=False).agg(...)` z nazwanymi agregacjami, z wykładu, sekcja "groupby". Wykład pokazuje prawie ten sam przykład.
+# - `nunique`. Liczy różne wartości w grupie.
+# - `CITY` i `TARGET` z `schema.py`. W `dims.py` jest tylko `import pandas as pd`. Dopisz pod nim `from freshcast.data.schema import CITY, TARGET`.
 #
 # **Kroki:**
 #
-# 1. Sprawdź regułę: policz różne miasta w każdym sklepie. Sklepy z więcej niż jednym miastem to błąd.
-# 2. Zwiń ramkę do jednego wiersza na sklep: miasto (skoro jest jedno, wystarczy pierwsze), liczba różnych produktów, średnia sprzedaż.
+# 1. Sprawdź regułę. Policz różne miasta w każdym sklepie. Sklepy z więcej niż jednym miastem to błąd.
+# 2. Zwiń ramkę do jednego wiersza na sklep: miasto, liczba różnych produktów, średnia sprzedaż. Miasto w sklepie jest jedno, więc wystarczy pierwsze.
 # 3. Posortuj po `store_id` i ponumeruj wiersze od zera.
 #
-# **Sprawdzenie:** `check("07.3")` testuje najpierw tę funkcję: kolumny, kolejność sklepów, miasto i liczbę produktów, `mean_sales` sklepu 70, błąd dla sklepu w dwóch miastach.
+# **Sprawdzenie:** `check("07.3")` testuje najpierw tę funkcję. Sprawdza:
+#
+# - kolumny,
+# - kolejność sklepów,
+# - miasto i liczbę produktów,
+# - `mean_sales` sklepu 70,
+# - błąd dla sklepu w dwóch miastach.
 #
 # ### 07.3b `build_product_dim`
 #
@@ -684,22 +788,27 @@ except pd.errors.MergeError as error:
 #
 # **Wejście:** `df`: `pd.DataFrame` z kolumnami `product_id`, `store_id` i czterema kolumnami `HIERARCHY` (`management_group_id`, `first_category_id`, `second_category_id`, `third_category_id`). W notebooku to `hierarchy`, nie `daily`.
 #
-# **Wynik:** nowy `pd.DataFrame`, jeden wiersz na produkt, kolumny w tej kolejności: `product_id`, cztery kolumny hierarchii, `n_stores` (liczba różnych sklepów, `int`). Wiersze posortowane po `product_id`, indeks 0..n-1. Produkt z więcej niż jedną ścieżką w hierarchii: `ValueError`. Liczba w komunikacie to liczba powtórzeń `product_id` wśród unikalnych ścieżek, czyli ścieżek nadmiarowych: produkt z dwiema ścieżkami daje 1, z trzema daje 2.
+# **Wynik:** nowy `pd.DataFrame`, jeden wiersz na produkt:
+#
+# - kolumny w tej kolejności: `product_id`, cztery kolumny hierarchii, `n_stores` (liczba różnych sklepów, `int`),
+# - wiersze posortowane po `product_id`, indeks 0..n-1.
+#
+# Gdy produkt ma więcej niż jedną ścieżkę w hierarchii, funkcja rzuca `ValueError`. Liczba w komunikacie to liczba powtórzeń `product_id` wśród unikalnych ścieżek, czyli liczba ścieżek nadmiarowych. Produkt z dwiema ścieżkami daje 1, z trzema daje 2.
 #
 # **Skorzystaj z:**
 #
-# - `drop_duplicates()` z modułu 06: na kolumnach produkt + hierarchia daje unikalne ścieżki,
-# - `duplicated()` na samej kolumnie `product_id`, jak w pytaniu 1 z 07.2a,
-# - `groupby` z `nunique`, jak w 07.3a,
-# - `merge` z `validate="one_to_one"`: obie części mają po jednym wierszu na produkt,
-# - stałej `HIERARCHY` z `schema.py`. Rozszerz linię importu z 07.3a w `dims.py` do `from freshcast.data.schema import CITY, HIERARCHY, TARGET`.
+# - `drop_duplicates()` z modułu 06. Na kolumnach produktu i hierarchii daje unikalne ścieżki.
+# - `duplicated()` na samej kolumnie `product_id`, jak w pytaniu 1 z 07.2a.
+# - `groupby` z `nunique`, jak w 07.3a.
+# - `merge` z `validate="one_to_one"`. Obie części mają po jednym wierszu na produkt.
+# - `HIERARCHY` z `schema.py`. Rozszerz linię importu z 07.3a w `dims.py` do `from freshcast.data.schema import CITY, HIERARCHY, TARGET`.
 #
 # Nie wybieraj jednej ścieżki z grupy (na przykład pierwszej). Produkt pod dwiema ścieżkami ma dać błąd, a nie po cichu jedną z nich.
 #
 # **Kroki:**
 #
 # 1. Wyciągnij unikalne ścieżki: produkt i jego cztery kolumny hierarchii.
-# 2. Policz powtórzenia `product_id` wśród unikalnych ścieżek (pierwsze wystąpienie się nie liczy). Jeśli są, rzuć błąd z tą liczbą.
+# 2. Policz powtórzenia `product_id` wśród unikalnych ścieżek. Pierwsze wystąpienie się nie liczy. Jeśli powtórzenia są, rzuć błąd z ich liczbą.
 # 3. Policz różne sklepy każdego produktu.
 # 4. Dołącz te liczby do ścieżek po `product_id`, posortuj i ponumeruj wiersze od zera.
 #
@@ -717,12 +826,23 @@ except pd.errors.MergeError as error:
 # - `dim`: `pd.DataFrame`, wymiar, dokładnie jeden wiersz na klucz, na przykład `product_dim` z 07.3b.
 # - `on`: `str`, nazwa kolumny klucza, obecna w obu ramkach, na przykład `"product_id"`.
 #
-# **Wynik:** nowy `pd.DataFrame`: wszystkie kolumny `fact`, za nimi pozostałe kolumny `dim`. Tyle wierszy co `fact`, w tej samej kolejności, indeks 0..n-1, bez kolumn pomocniczych. Błędy:
+# **Wynik:** nowy `pd.DataFrame`:
 #
-# - klucz powtórzony w `dim`: `pd.errors.MergeError`. Rzuca go sam `merge`, gdy podasz `validate`,
-# - klucz z `fact`, którego nie ma w `dim`: `ValueError` z liczbą wierszy faktów bez pary.
+# - wszystkie kolumny `fact`, za nimi pozostałe kolumny `dim`,
+# - tyle wierszy co `fact`, w tej samej kolejności, indeks 0..n-1,
+# - bez kolumn pomocniczych.
 #
-# **Skorzystaj z:** demonstracji powyżej (`validate`) i wzorca z `indicator=True` z wykładu (sekcja „Fakty, wymiary i merge”). Importu nie dopisujesz: `pd.errors.MergeError` rzuca sam `merge`.
+# Błędy:
+#
+# - Klucz powtórzony w `dim` daje `pd.errors.MergeError`. Rzuca go sam `merge`, gdy podasz `validate`.
+# - Klucz z `fact`, którego nie ma w `dim`, daje `ValueError` z liczbą wierszy faktów bez pary.
+#
+# **Skorzystaj z:**
+#
+# - `validate` z demonstracji powyżej.
+# - wzorca z `indicator=True` z wykładu, sekcja "Fakty, wymiary i merge".
+#
+# Importu nie dopisujesz. `pd.errors.MergeError` rzuca sam `merge`.
 #
 # **Kroki:**
 #
@@ -794,7 +914,12 @@ print("Zgadza się.")
 #
 # **Wynik:** `top_category`: `int`, identyfikator `first_category_id` tej kategorii, której wiersze (seria × dzień) mają najwyższą średnią `sale_amount`.
 #
-# **Skorzystaj z:** `attach_dim` z 07.3c (klucz `"product_id"`), `groupby` ze średnią, `idxmax()` (zwraca etykietę indeksu przy największej wartości, wykład, sekcja „groupby”) i `int(...)`.
+# **Skorzystaj z:**
+#
+# - `attach_dim` z 07.3c, z kluczem `"product_id"`.
+# - `groupby` ze średnią.
+# - `idxmax()` z wykładu, sekcja "groupby". Zwraca etykietę indeksu przy największej wartości.
+# - `int(...)`. Zamienia etykietę na `int`.
 #
 # **Kroki:**
 #
@@ -865,9 +990,19 @@ print(f"Cały zbiór: około {per_row * n_rows_file / 60:.1f} min")
 #
 # **Wejście:** `path` i `cities` znaczą to samo co w `load_sales` (07.1b). W notebooku to `RAW` i `CITIES`.
 #
-# **Wynik:** `pd.DataFrame`, jeden wiersz na serię i dzień, dokładnie kolumny `HOURLY_COLUMNS`: `store_id`, `product_id`, `dt`, `hours_sale`, `hours_stock_status`. Każda komórka dwóch ostatnich kolumn to tablica NumPy z 24 liczbami (sprzedaż jako `float`, status jako `int`). Wiersze posortowane po `store_id`, `product_id`, `dt`, indeks 0..n-1, `dt` jako `datetime64`. Dzięki temu wiersz `i` odpowiada wierszowi `i` w `daily`. Typów całkowitych nie musisz tu zmniejszać.
+# **Wynik:** `pd.DataFrame`, jeden wiersz na serię i dzień:
 #
-# **Skorzystaj z:** kroków z `load_sales` (07.1b): filtr miast, wczytanie wybranych kolumn, zamiana daty, sortowanie. Stałe `CITY`, `DATE`, `SERIES_KEY`, `HOURLY_COLUMNS` są w `schema.py`. W `hourly.py` są tylko importy sygnatur (`Sequence`, `Path`, `numpy`, `pandas`). Dopisz pod nimi `from freshcast.data.schema import CITY, DATE, HOURLY_COLUMNS, SERIES_KEY`.
+# - dokładnie kolumny `HOURLY_COLUMNS`: `store_id`, `product_id`, `dt`, `hours_sale`, `hours_stock_status`,
+# - każda komórka dwóch ostatnich kolumn to tablica NumPy z 24 liczbami, sprzedaż jako `float`, status jako `int`,
+# - wiersze posortowane po `store_id`, `product_id`, `dt`, indeks 0..n-1,
+# - `dt` jako `datetime64`.
+#
+# Dzięki takiemu sortowaniu wiersz `i` odpowiada wierszowi `i` w `daily`. Typów całkowitych nie musisz tu zmniejszać.
+#
+# **Skorzystaj z:**
+#
+# - kroków z `load_sales` (07.1b): filtr miast, wczytanie wybranych kolumn, zamiana daty, sortowanie.
+# - `CITY`, `DATE`, `SERIES_KEY`, `HOURLY_COLUMNS` z `schema.py`. W `hourly.py` są tylko importy sygnatur (`Sequence`, `Path`, `numpy`, `pandas`). Dopisz pod nimi `from freshcast.data.schema import CITY, DATE, HOURLY_COLUMNS, SERIES_KEY`.
 #
 # **Kroki:** jak w 07.1b, tylko z listą kolumn `HOURLY_COLUMNS` i bez zmniejszania typów.
 #
@@ -881,9 +1016,21 @@ print(f"Cały zbiór: około {per_row * n_rows_file / 60:.1f} min")
 #
 # **Wejście:** `column`: `pd.Series`, w której każda komórka to jednowymiarowa tablica NumPy z wartościami godzinowymi, na przykład `hourly["hours_sale"]`.
 #
-# **Wynik:** `np.ndarray` o kształcie `(len(column), 24)`. Wiersz `i` to komórka `i`, kolumna `h` to godzina od `h`:00. Typ elementów taki jak w tablicach: `float` dla sprzedaży, `int` dla statusu. Wiersz z inną liczbą wartości niż 24: `ValueError` z liczbą takich wierszy.
+# **Wynik:** `np.ndarray`:
 #
-# **Skorzystaj z:** `np.stack` z wykładu (sekcja „Tablice w komórkach”); `Series.map(len)` daje długość każdej komórki; stała `HOURS_PER_DAY` (24) z `schema.py`: dopisz ją do linii importu z 07.4a w `hourly.py`. Lab 05 (05.6a) też miał funkcję `to_matrix`, ale to inna funkcja: miała cztery argumenty i układała długą tabelę w macierz seria × dzień. Nie przenoś jej. Ta przyjmuje jedną Series, niczego nie sortuje, a każda komórka jest już gotowym wierszem macierzy wiersz × godzina.
+# - kształt `(len(column), 24)`,
+# - wiersz `i` to komórka `i`, kolumna `h` to godzina od `h`:00,
+# - typ elementów taki jak w tablicach w komórkach: `float` dla sprzedaży, `int` dla statusu.
+#
+# Gdy któryś wiersz ma inną liczbę wartości niż 24, funkcja rzuca `ValueError` z liczbą takich wierszy.
+#
+# **Skorzystaj z:**
+#
+# - `np.stack` z wykładu, sekcja "Tablice w komórkach". Skleja listę tablic w jedną tablicę.
+# - `Series.map(len)`. Daje długość każdej komórki.
+# - `HOURS_PER_DAY` (24) z `schema.py`. Dopisz tę stałą do linii importu z 07.4a w `hourly.py`.
+#
+# Lab 05 (05.6a) też miał funkcję `to_matrix`, ale to inna funkcja. Miała cztery argumenty i układała długą tabelę w macierz seria × dzień. Nie przenoś jej. Nowa `to_matrix` przyjmuje jedną Series i niczego nie sortuje. Każda komórka jest już gotowym wierszem tablicy wiersz × godzina.
 #
 # **Kroki:**
 #
@@ -911,11 +1058,11 @@ print(f"Cały zbiór: około {per_row * n_rows_file / 60:.1f} min")
 #
 # **Skorzystaj z:**
 #
-# - `to_matrix` z 07.4b, dla obu kolumn godzinowych,
-# - `.astype(bool)`: zamienia status 0/1 na False/True,
-# - `OOS_WINDOW` z `schema.py`: gotowy wycinek `slice(6, 22)`, czyli pozycje 6 do 21,
-# - `sum(axis=1)` i `np.where` z modułu 05 i z wykładu (sekcja „Tablice w komórkach”),
-# - stałych nazw `HOURLY_SALES`, `HOURLY_STOCKOUT`, `OOS_HOURS`, `OOS_HOURS_TOTAL`, `SALES_IN_STOCK`, `SALES_WHILE_OOS` i `OOS_WINDOW` z `schema.py`. Dopisz je do linii importu w `hourly.py`. Po krokach 07.4a-c ta linia to `from freshcast.data.schema import CITY, DATE, HOURLY_COLUMNS, HOURLY_SALES, HOURLY_STOCKOUT, HOURS_PER_DAY, OOS_HOURS, OOS_HOURS_TOTAL, OOS_WINDOW, SALES_IN_STOCK, SALES_WHILE_OOS, SERIES_KEY` (`ruff format` może ją potem rozbić na kilka wierszy w nawiasach).
+# - `to_matrix` z 07.4b, dla obu kolumn godzinowych.
+# - `.astype(bool)`. Zamienia status 0 i 1 na False i True.
+# - `OOS_WINDOW` z `schema.py`. To gotowy wycinek `slice(6, 22)`, czyli pozycje 6 do 21.
+# - `sum(axis=1)` i `np.where` z modułu 05 i z wykładu, sekcja "Tablice w komórkach".
+# - stałych nazw `HOURLY_SALES`, `HOURLY_STOCKOUT`, `OOS_HOURS`, `OOS_HOURS_TOTAL`, `SALES_IN_STOCK` i `SALES_WHILE_OOS` z `schema.py`. Dopisz je razem z `OOS_WINDOW` do linii importu w `hourly.py`. Po krokach 07.4a-c ta linia to `from freshcast.data.schema import CITY, DATE, HOURLY_COLUMNS, HOURLY_SALES, HOURLY_STOCKOUT, HOURS_PER_DAY, OOS_HOURS, OOS_HOURS_TOTAL, OOS_WINDOW, SALES_IN_STOCK, SALES_WHILE_OOS, SERIES_KEY`. `ruff format` może ją potem rozbić na kilka wierszy w nawiasach.
 #
 # **Kroki:**
 #
@@ -989,7 +1136,16 @@ print("Zgadza się.")
 #
 # Surowe dane mają kolumnę `stock_hour6_22_cnt`: liczbę godzin bez towaru między 6:00 a 22:00, policzoną przez autorów zbioru. Twoje `oos_hours` powinno dawać to samo.
 #
-# **Gdzie:** `n_disagree`. **Wynik:** `int`, liczba wierszy, w których `summary["oos_hours"]` różni się od `daily["stock_hour6_22_cnt"]`. Oczekiwane 0: komórka ma `assert`. **Skorzystaj z:** obie ramki są posortowane tak samo (07.1b i 07.4a), więc porównujesz je pozycja po pozycji. `.to_numpy()` zamienia kolumnę w tablicę bez indeksu; porównanie `!=` daje tablicę True/False.
+# **Gdzie:** `n_disagree`.
+#
+# **Wynik:** `int`, liczba wierszy, w których `summary["oos_hours"]` różni się od `daily["stock_hour6_22_cnt"]`. Oczekiwane 0. Komórka sprawdza to przez `assert`.
+#
+# **Skorzystaj z:**
+#
+# - `.to_numpy()`. Zamienia kolumnę w tablicę bez indeksu.
+# - porównania `!=`. Daje tablicę z wartościami True i False.
+#
+# Obie ramki są posortowane tak samo (07.1b i 07.4a), więc porównujesz je pozycja po pozycji.
 
 # %%
 # >>> SOLUTION 07.4
@@ -1004,12 +1160,18 @@ assert n_disagree == 0
 # %% [markdown]
 # ### 07.4e Sprzedaż mimo braku towaru
 #
-# **Gdzie:** `share_rows`, `share_sales`. **Wynik:** dwa `float` od 0 do 1:
+# **Gdzie:** `share_rows`, `share_sales`.
+#
+# **Wynik:** dwa `float` od 0 do 1:
 #
 # - `share_rows`: ułamek wierszy `summary`, w których `sales_while_oos > 0`,
 # - `share_sales`: suma `sales_while_oos` podzielona przez całą sprzedaż, czyli przez sumę `sales_in_stock` plus sumę `sales_while_oos`.
 #
-# Wydruk pokazuje je jako procenty. **Skorzystaj z:** średnia kolumny True/False to ułamek wartości True.
+# Wydruk pokazuje je jako procenty.
+#
+# **Skorzystaj z:**
+#
+# - `.mean()` na kolumnie z wartościami `True` i `False`. Ta średnia to ułamek wartości `True`.
 
 # %%
 # >>> SOLUTION 07.4
@@ -1085,9 +1247,19 @@ demo.loc[boundary - 2 : boundary + 1]
 #
 # **Wejście:** `df`: `pd.DataFrame` z kolumnami `store_id`, `product_id`, `dt`.
 #
-# **Wynik:** `bool`, zwykłe Pythonowe `True` albo `False` (nie Series i nie `np.bool_`; sprawdzenie porównuje wynik przez `is True`). `True`, gdy wiersze od góry do dołu są ułożone rosnąco po `store_id`, potem `product_id`, potem `dt`. Powtórzony wiersz nie psuje porządku: duplikaty łapie `check_panel`. Ramki nie zmieniasz.
+# **Wynik:** `bool`, zwykłe Pythonowe `True` albo `False`:
 #
-# **Skorzystaj z:** `sort_values` z `kind="stable"` (sortowanie stabilne: równe wiersze zostają w dotychczasowej kolejności) i porównania indeksów przed sortowaniem i po nim; `bool(...)` zamienia wynik na zwykłe `True`/`False`. W `panel.py` jest tylko `import pandas as pd`. Dopisz pod nim `from freshcast.data.schema import DATE, SERIES_KEY`.
+# - `True`, gdy wiersze od góry do dołu są ułożone rosnąco po `store_id`, potem `product_id`, potem `dt`,
+# - wynik to nie Series i nie `np.bool_`, bo sprawdzenie porównuje go przez `is True`,
+# - powtórzony wiersz nie psuje porządku, bo duplikaty łapie `check_panel`,
+# - ramki nie zmieniasz.
+#
+# **Skorzystaj z:**
+#
+# - `sort_values` z `kind="stable"`. Sortowanie stabilne zostawia równe wiersze w dotychczasowej kolejności.
+# - porównania indeksów przed sortowaniem i po nim.
+# - `bool(...)`. Zamienia wynik na zwykłe `True` albo `False`.
+# - `DATE` i `SERIES_KEY` z `schema.py`. W `panel.py` jest tylko `import pandas as pd`. Dopisz pod nim `from freshcast.data.schema import DATE, SERIES_KEY`.
 #
 # **Kroki:**
 #
@@ -1099,7 +1271,7 @@ demo.loc[boundary - 2 : boundary + 1]
 #
 # ### 07.5b `add_lag`
 #
-# **Cel:** cecha „wartość sprzed `lag` dni w tej samej serii”, na przykład sprzedaż sprzed tygodnia.
+# **Cel:** cecha "wartość sprzed `lag` dni w tej samej serii", na przykład sprzedaż sprzed tygodnia.
 #
 # **Gdzie:** `src/freshcast/data/panel.py`, funkcja `add_lag(df, column, lag)`.
 #
@@ -1109,19 +1281,29 @@ demo.loc[boundary - 2 : boundary + 1]
 # - `column`: `str`, nazwa kolumny, z której bierzesz wartości, na przykład `TARGET`.
 # - `lag`: `int`, o ile dni wstecz, co najmniej 1.
 #
-# **Wynik:** nowy `pd.DataFrame`: wszystkie kolumny `df` i na końcu nowa kolumna `{column}_lag_{lag}`, na przykład `sale_amount_lag_7`. Te same wiersze, kolejność i indeks. Pierwsze `lag` dni każdej serii mają `NaN`: wcześniejszej wartości nie ma, a wartość z innej serii nie może jej zastąpić. Ramki wejściowej nie zmieniasz. `lag` mniejszy od 1 albo nieposortowana ramka: `ValueError`.
+# **Wynik:** nowy `pd.DataFrame`:
+#
+# - wszystkie kolumny `df` i na końcu nowa kolumna `{column}_lag_{lag}`, na przykład `sale_amount_lag_7`,
+# - te same wiersze, kolejność i indeks,
+# - pierwsze `lag` dni każdej serii mają `NaN`, bo wcześniejszej wartości nie ma, a wartość z innej serii nie może jej zastąpić,
+# - ramki wejściowej nie zmieniasz.
+#
+# `ValueError`, gdy:
+#
+# - `lag` jest mniejszy od 1,
+# - ramka nie jest posortowana.
 #
 # **Skorzystaj z:**
 #
-# - `is_sorted_panel` z 07.5a (ten sam plik),
-# - `groupby(SERIES_KEY)[column].shift(lag)` z wykładu (sekcja „Czas w panelu: shift i rolling”),
+# - `is_sorted_panel` z 07.5a. Jest w tym samym pliku.
+# - `groupby(SERIES_KEY)[column].shift(lag)` z wykładu, sekcja "Czas w panelu: shift i rolling".
 # - `df.assign(**{nazwa: wartości})` i f-stringa do zbudowania nazwy kolumny.
 #
-# Nowego importu nie dopisujesz: `SERIES_KEY` masz z 07.5a.
+# Nowego importu nie dopisujesz. `SERIES_KEY` masz z 07.5a.
 #
 # **Kroki:**
 #
-# 1. Sprawdź argumenty: za mały `lag` albo nieposortowana ramka to błąd. Nie sortuj ramki w funkcji, żeby błąd ominąć: umowa wymaga `ValueError`.
+# 1. Sprawdź argumenty. Za mały `lag` albo nieposortowana ramka to błąd. Nie sortuj ramki w funkcji, żeby ominąć błąd. Umowa wymaga `ValueError`.
 # 2. Przesuń kolumnę o `lag` wierszy w obrębie każdej serii.
 # 3. Zwróć kopię ramki z nową kolumną.
 #
@@ -1129,7 +1311,7 @@ demo.loc[boundary - 2 : boundary + 1]
 #
 # ### 07.5c `add_rolling_mean`
 #
-# **Cel:** cecha „średnia z ostatnich `window` dni tej samej serii”, policzona wyłącznie z przeszłości.
+# **Cel:** cecha "średnia z ostatnich `window` dni tej samej serii", policzona wyłącznie z przeszłości.
 #
 # **Gdzie:** `src/freshcast/data/panel.py`, funkcja `add_rolling_mean(df, column, window, lag=1)`.
 #
@@ -1139,16 +1321,33 @@ demo.loc[boundary - 2 : boundary + 1]
 # - `window`: `int`, liczba dni w oknie, co najmniej 1,
 # - `lag`: `int`, ile dni przed wierszem kończy się okno, co najmniej 1. Domyślne 1 znaczy: okno kończy się wczoraj.
 #
-# **Wynik:** nowy `pd.DataFrame`: wszystkie kolumny `df` i na końcu kolumna `{column}_mean_{window}_lag_{lag}`, na przykład `sale_amount_mean_7_lag_1`. Dla wiersza z dnia t okno obejmuje dni od t − lag − window + 1 do t − lag. Wiersze, które nie mają w swojej serii `window` pełnych dni przeszłości, mają `NaN`. Te same wiersze, kolejność i indeks, wejście bez zmian. `window` albo `lag` mniejsze od 1 albo nieposortowana ramka: `ValueError`.
+# **Wynik:** nowy `pd.DataFrame`:
 #
-# **Skorzystaj z:** `is_sorted_panel` z 07.5a, przesunięcia z 07.5b i wzorca „najpierw przesuń, potem licz okno” z wykładu (sekcja „Czas w panelu: shift i rolling”, pułapka druga). `reset_index(level=..., drop=True)` usuwa wybrane poziomy indeksu. Nowego importu nie dopisujesz.
+# - wszystkie kolumny `df` i na końcu kolumna `{column}_mean_{window}_lag_{lag}`, na przykład `sale_amount_mean_7_lag_1`,
+# - dla wiersza z dnia t okno obejmuje dni od t − lag − window + 1 do t − lag,
+# - wiersze, których okno zaczyna się przed pierwszym dniem ich serii, mają `NaN`. To pierwsze `lag + window - 1` wierszy każdej serii, a przy `lag=1` pierwsze `window` wierszy,
+# - te same wiersze, kolejność i indeks, wejście bez zmian.
+#
+# `ValueError`, gdy:
+#
+# - `window` albo `lag` jest mniejsze od 1,
+# - ramka nie jest posortowana.
+#
+# **Skorzystaj z:**
+#
+# - `is_sorted_panel` z 07.5a.
+# - przesunięcia z 07.5b.
+# - wzorca "najpierw przesuń, potem licz okno" z wykładu, sekcja "Czas w panelu: shift i rolling", pułapka druga.
+# - `reset_index(level=..., drop=True)`. Usuwa wybrane poziomy indeksu.
+#
+# Nowego importu nie dopisujesz.
 #
 # **Kroki:**
 #
 # 1. Sprawdź argumenty i sortowanie, jak w 07.5b.
 # 2. Przesuń kolumnę o `lag` w obrębie serii. To ustawia koniec okna w przeszłości.
-# 3. Na przesuniętych wartościach policz średnią kroczącą z `window` wierszy, znowu w obrębie serii. Przesunięta Series nie pamięta podziału na serie: `groupby` trzeba podać jeszcze raz.
-# 4. Wynik ma indeks z dodatkowymi poziomami (klucze serii). Usuń je, żeby indeks pasował do ramki.
+# 3. Na przesuniętych wartościach policz średnią kroczącą z `window` wierszy, znowu w obrębie serii. Przesunięta Series nie pamięta podziału na serie, więc `groupby` trzeba podać jeszcze raz.
+# 4. Usuń z wyniku dodatkowe poziomy indeksu, czyli klucze serii. Bez tego indeks nie pasuje do ramki.
 # 5. Zwróć kopię ramki z nową kolumną.
 #
 # **Sprawdzenie:** `check("07.5")` liczy okno 2 dni na tych samych dwóch seriach. Jeśli trzeci wynik to 2.5 zamiast 1.5, okno obejmuje bieżący dzień.
@@ -1161,9 +1360,20 @@ demo.loc[boundary - 2 : boundary + 1]
 #
 # **Wejście:** `df`: `pd.DataFrame`, dzienna sprzedaż z kluczem serii, `dt` (data) i `sale_amount`. W notebooku to `daily`.
 #
-# **Wynik:** `pd.Series` z 7 liczbami `float`, indeks od 0 (poniedziałek) do 6 (niedziela), nazwa `dow_profile`. 1.2 znaczy: sprzedaż o 20% wyższa od średniej serii. Seria ze średnią sprzedażą równą 0: `ValueError` z liczbą wierszy takich serii, bo dzielenie przez 0 nie ma sensu.
+# **Wynik:** `pd.Series`:
 #
-# **Skorzystaj z:** `groupby(...).transform("mean")` z wykładu (sekcja „groupby”, przykład z `relative_sales`), `.dt.dayofweek` (dzień tygodnia z daty, 0 to poniedziałek) i `rename`. Potrzebujesz `TARGET`: rozszerz linię importu w `panel.py` do `from freshcast.data.schema import DATE, SERIES_KEY, TARGET`.
+# - 7 liczb `float`,
+# - indeks od 0 (poniedziałek) do 6 (niedziela),
+# - nazwa `dow_profile`.
+#
+# Wartość 1.2 znaczy, że sprzedaż jest o 20% wyższa od średniej serii. Gdy któraś seria ma średnią sprzedaż równą 0, funkcja rzuca `ValueError` z liczbą wierszy takich serii. Dzielenie przez 0 nie ma sensu.
+#
+# **Skorzystaj z:**
+#
+# - `groupby(...).transform("mean")` z wykładu, sekcja "groupby", przykład z `relative_sales`.
+# - `.dt.dayofweek`. Daje dzień tygodnia z daty, 0 to poniedziałek.
+# - `rename`. Nadaje Series nazwę.
+# - `TARGET` z `schema.py`. Rozszerz linię importu w `panel.py` do `from freshcast.data.schema import DATE, SERIES_KEY, TARGET`.
 #
 # **Kroki:**
 #
@@ -1240,7 +1450,22 @@ print("Zgadza się.")
 #
 # Czy te dwie kolumny coś mówią o sprzedaży? Policz korelację każdej z nich z `sale_amount`.
 #
-# **Gdzie:** `corr_lag`, `corr_mean`. **Wynik:** dwa `float` od -1 do 1: korelacja `sale_amount` z `sale_amount_lag_7` i z `sale_amount_mean_7_lag_1` w ramce `panel`. 1 znaczy: kolumny rosną i maleją razem, 0: brak związku liniowego. **Skorzystaj z:** `Series.corr(inna_series)` (wykład, sekcja „Czas w panelu: shift i rolling”). Wiersze z `NaN` w którejkolwiek kolumnie pomija sama, więc braków na początku serii nie wypełniaj. Wysoka korelacja mówi, że cecha niesie informację, a nie że jest przyczyną sprzedaży.
+# **Gdzie:** `corr_lag`, `corr_mean`.
+#
+# **Wynik:** dwa `float` od -1 do 1, policzone w ramce `panel`:
+#
+# - `corr_lag`: korelacja `sale_amount` z `sale_amount_lag_7`,
+# - `corr_mean`: korelacja `sale_amount` z `sale_amount_mean_7_lag_1`.
+#
+# Korelacja 1 znaczy, że kolumny rosną i maleją razem. Korelacja 0 znaczy brak związku liniowego.
+#
+# **Skorzystaj z:**
+#
+# - `Series.corr(inna_series)` z wykładu, sekcja "Czas w panelu: shift i rolling". Liczy korelację dwóch kolumn.
+#
+# `corr` sama pomija wiersze z `NaN` w którejkolwiek z dwóch kolumn. Braków na początku serii nie wypełniaj.
+#
+# Wysoka korelacja mówi, że cecha niesie informację, a nie że jest przyczyną sprzedaży.
 
 # %%
 # >>> SOLUTION 07.5
@@ -1293,11 +1518,30 @@ print("Zgadza się.")
 #
 # **Gdzie:** `src/freshcast/data/prepare.py`, funkcja `prepare_daily(raw_path, cities=...)`.
 #
-# **Wejście:** `raw_path`: `Path`, surowy plik (w notebooku `RAW`); `cities`: identyfikatory miast albo `None`, jak w `load_sales` (w notebooku `CITIES`).
+# **Wejście:**
 #
-# **Wynik:** `pd.DataFrame`, jeden wiersz na serię i dzień, dokładnie kolumny `PROCESSED_COLUMNS`, w tej kolejności: `store_id`, `product_id`, `city_id`, `dt`, `sale_amount`, `discount`, `discount_is_zero`, `holiday_flag`, `activity_flag`, `precpt`, `avg_temperature`, `avg_humidity`, `avg_wind_level`, `oos_hours`, `oos_hours_total`, `sales_in_stock`, `sales_while_oos`. Wiersze posortowane po serii i dacie, indeks 0..n-1. `ValueError`, gdy dane łamią regułę panelu, rabat jest ujemny albo brakuje go, albo `stock_hour6_22_cnt` różni się od `oos_hours`.
+# - `raw_path`: `Path`, surowy plik. W notebooku to `RAW`.
+# - `cities`: identyfikatory miast albo `None`, jak w `load_sales`. W notebooku to `CITIES`.
 #
-# **Skorzystaj z:** funkcji, które już masz. W `prepare.py` są tylko importy sygnatur (`Sequence`, `Path`, `pandas`) i stała `DAILY_FILE`. Dopisz na górze pliku:
+# **Wynik:** `pd.DataFrame`, jeden wiersz na serię i dzień:
+#
+# - dokładnie kolumny `PROCESSED_COLUMNS`, w tej kolejności: `store_id`, `product_id`, `city_id`, `dt`, `sale_amount`, `discount`, `discount_is_zero`, `holiday_flag`, `activity_flag`, `precpt`, `avg_temperature`, `avg_humidity`, `avg_wind_level`, `oos_hours`, `oos_hours_total`, `sales_in_stock`, `sales_while_oos`,
+# - wiersze posortowane po serii i dacie, indeks 0..n-1.
+#
+# `ValueError`, gdy:
+#
+# - dane łamią regułę panelu,
+# - rabat jest ujemny albo go brakuje,
+# - `stock_hour6_22_cnt` różni się od `oos_hours`.
+#
+# **Skorzystaj z:**
+#
+# - `load_sales` z 07.1b,
+# - `check_panel` i `clean_discount` z 07.2c i 07.2d,
+# - `load_hourly` i `summarise_hours` z 07.4a i 07.4c,
+# - stałych `RAW_OOS_HOURS` (`"stock_hour6_22_cnt"`), `OOS_HOURS`, `PROCESSED_COLUMNS`, `SERIES_KEY` i `DATE`.
+#
+# W `prepare.py` są tylko importy sygnatur (`Sequence`, `Path`, `pandas`) i stała `DAILY_FILE`. Dopisz na górze pliku te linie:
 #
 # ```python
 # from freshcast.data.hourly import load_hourly, summarise_hours
@@ -1306,14 +1550,7 @@ print("Zgadza się.")
 # from freshcast.data.validate import check_panel, clean_discount
 # ```
 #
-# Te linie dają Ci:
-#
-# - `load_sales` (07.1b),
-# - `check_panel` i `clean_discount` (07.2c, 07.2d),
-# - `load_hourly` i `summarise_hours` (07.4a, 07.4c),
-# - stałe `RAW_OOS_HOURS` (`"stock_hour6_22_cnt"`), `OOS_HOURS`, `PROCESSED_COLUMNS`, `SERIES_KEY`, `DATE`.
-#
-# `attach_dim` z 07.3c tu nie pasuje: łączy po jednej kolumnie i zakłada wiele wierszy faktów na klucz. Tu klucz to trzy kolumny `[*SERIES_KEY, DATE]`, a relacja jest jeden do jednego, więc `merge` piszesz sam, z jawnym `on`, `how` i `validate`.
+# `attach_dim` z 07.3c tu nie pasuje. Ta funkcja łączy po jednej kolumnie i zakłada wiele wierszy faktów na klucz. Tu klucz to trzy kolumny `[*SERIES_KEY, DATE]`, a relacja jest jeden do jednego. Dlatego `merge` piszesz sam, z jawnym `on`, `how` i `validate`.
 #
 # `prepare_daily` musi działać sama, w nowym procesie, bez zmiennych tego notebooka (`daily`, `summary`). Oba odczyty, dzienny i godzinowy, robisz z tego samego `raw_path` i z tymi samymi `cities`.
 #
@@ -1325,7 +1562,7 @@ print("Zgadza się.")
 # 4. Wczytaj tablice godzinowe i zrób z nich podsumowanie.
 # 5. Dołącz podsumowanie do sprzedaży po serii i dacie, jeden do jednego.
 # 6. Policz wiersze, w których surowa liczba godzin braku różni się od `oos_hours`. Jeśli są, rzuć błąd.
-# 7. Wybierz kolumny listą `PROCESSED_COLUMNS`. To ustawia ich kolejność i wyrzuca surową kolumnę.
+# 7. Wybierz kolumny listą `PROCESSED_COLUMNS`. Ten wybór ustawia ich kolejność i wyrzuca surową kolumnę.
 #
 # **Sprawdzenie:** `check("07.6")` uruchamia `prepare_daily` na próbce. Korzysta przy tym z Twoich funkcji z 07.1, 07.2 i 07.4, więc te zadania muszą już przechodzić.
 #
@@ -1335,11 +1572,25 @@ print("Zgadza się.")
 #
 # **Gdzie:** `src/freshcast/data/prepare.py`, funkcja `save_processed(daily, directory)`.
 #
-# **Wejście:** `daily`: `pd.DataFrame`, zbiór z 07.6a; `directory`: `Path`, katalog docelowy (w notebooku `paths.PROCESSED_DIR`, czyli `data/processed`).
+# **Wejście:**
 #
-# **Wynik:** `Path` zapisanego pliku: `directory / "daily.parquet"` (stała `DAILY_FILE` w `prepare.py`). Plik bez indeksu. Brakujący katalog tworzysz, istniejący plik nadpisujesz. Kolumny inne niż `PROCESSED_COLUMNS` (nazwy albo kolejność): `ValueError` i nic nie zapisujesz.
+# - `daily`: `pd.DataFrame`, zbiór z 07.6a.
+# - `directory`: `Path`, katalog docelowy. W notebooku to `paths.PROCESSED_DIR`, czyli `data/processed`.
 #
-# **Skorzystaj z:** `PROCESSED_COLUMNS` z linii importu dopisanej w 07.6a (nic nowego nie dopisujesz); `save_daily` z labu 06 (06.7b) to ten sam wzorzec; `Path.mkdir(parents=True, exist_ok=True)`; `to_parquet(path, index=False)`.
+# **Wynik:** `Path` zapisanego pliku, `directory / "daily.parquet"` (stała `DAILY_FILE` w `prepare.py`):
+#
+# - plik jest bez indeksu,
+# - brakujący katalog tworzysz,
+# - istniejący plik nadpisujesz.
+#
+# Gdy kolumny różnią się od `PROCESSED_COLUMNS` nazwami albo kolejnością, rzucasz `ValueError` i nic nie zapisujesz.
+#
+# **Skorzystaj z:**
+#
+# - `PROCESSED_COLUMNS` z linii importu dopisanej w 07.6a. Nic nowego nie dopisujesz.
+# - `save_daily` z labu 06 (06.7b). To ten sam wzorzec.
+# - `Path.mkdir(parents=True, exist_ok=True)`. Tworzy katalog.
+# - `to_parquet(path, index=False)`. Zapisuje plik bez indeksu.
 #
 # **Kroki:**
 #
@@ -1357,9 +1608,17 @@ print("Zgadza się.")
 #
 # **Wejście:** `directory`: `Path`, ten sam katalog, który dostało `save_processed`.
 #
-# **Wynik:** `pd.DataFrame` z pliku `directory / "daily.parquet"`, z kolumnami `PROCESSED_COLUMNS` w tej kolejności. Brak pliku: `FileNotFoundError`. Kolumny inne niż kontrakt: `ValueError`.
+# **Wynik:** `pd.DataFrame` z pliku `directory / "daily.parquet"`, z kolumnami `PROCESSED_COLUMNS` w tej kolejności. Błędy:
 #
-# **Skorzystaj z:** `PROCESSED_COLUMNS` i `DAILY_FILE`, które już masz w `prepare.py` po 07.6a; `load_daily` z labu 06 (06.7b); `Path.is_file()`; `pd.read_parquet`.
+# - brak pliku: `FileNotFoundError`,
+# - kolumny inne niż kontrakt: `ValueError`.
+#
+# **Skorzystaj z:**
+#
+# - `PROCESSED_COLUMNS` i `DAILY_FILE`, które już masz w `prepare.py` po 07.6a.
+# - `load_daily` z labu 06 (06.7b).
+# - `Path.is_file()`. Sprawdza, czy plik istnieje.
+# - `pd.read_parquet`. Wczytuje plik.
 #
 # **Kroki:**
 #
@@ -1428,13 +1687,18 @@ print("Zgadza się.")
 #
 # **Cel:** obejrzeć czysty zbiór, zanim zaczniesz cokolwiek przewidywać. Ta część nie ma sprawdzeń.
 #
-# **Gdzie:** komórki „Twoja odpowiedź” pod wykresami.
+# **Gdzie:** komórki "Twoja odpowiedź" pod wykresami.
 #
 # **Wejście:** `data`: zbiór wczytany Twoim `load_processed` (07.6c). Trzy wykresy są gotowe.
 #
-# **Wynik:** odpowiedzi na cztery pytania, każda w jednym, dwóch zdaniach.
+# **Wynik:** odpowiedzi na cztery pytania, każda w jednym albo dwóch zdaniach.
 #
-# **Skorzystaj z:** wykresów i tego, co wiesz o brakach towaru z 07.4. Jeśli pracujesz z tutorem, omów z nim swoje odpowiedzi.
+# **Skorzystaj z:**
+#
+# - wykresów poniżej,
+# - tego, co wiesz o brakach towaru z 07.4.
+#
+# Jeśli pracujesz z tutorem, omów z nim swoje odpowiedzi.
 
 # %%
 data = load_processed(paths.PROCESSED_DIR)

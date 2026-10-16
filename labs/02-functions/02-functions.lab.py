@@ -47,19 +47,19 @@ PATH = paths.CAR_PARTS
 # %% [markdown]
 # ## 02.1 Moduł z typami
 #
-# **Cel.** Funkcje z labu 01 mają żyć w jednym pliku, który da się zaimportować i sprawdzić narzędziami. Typy mówią czytelnikowi i mypy, co każda funkcja przyjmuje i zwraca. Każdy kolejny lab zakłada, że kod przechodzi `ruff` i `mypy --strict` (reguła K1 i K9 w `docs/standard.md`).
+# **Cel:** Funkcje z labu 01 mają żyć w jednym pliku, który da się zaimportować i sprawdzić narzędziami. Typy mówią czytelnikowi i mypy, co każda funkcja przyjmuje i zwraca. Każdy kolejny lab zakłada, że kod przechodzi `ruff` i `mypy --strict` (reguła K1 i K9 w `docs/standard.md`).
 #
 # Zadanie ma dwa kroki: 02.1a przenosi funkcje bez zmian, 02.1b dodaje typy. Sprawdzenie `check("02.1", carparts)` przejdzie dopiero po obu.
 #
 # ### 02.1a Przeniesienie
 #
-# **Gdzie.** `carparts.py`, w miejscu komentarza `# 02.1: paste your six functions from lab 01 here...`, między aliasami typów a funkcją `timed`. Komentarz usuń.
+# **Gdzie:** `carparts.py`, w miejscu komentarza `# 02.1: paste your six functions from lab 01 here...`, między aliasami typów a funkcją `timed`. Komentarz usuń.
 #
-# **Wejście.** Twoje funkcje z notebooka `labs/01-python-data/01-python-data.ipynb`. Każdą kopiujesz w całości: linię `def`, docstring i ciało.
+# **Wejście:** Twoje funkcje z notebooka `labs/01-python-data/01-python-data.ipynb`. Każdą kopiujesz w całości: linię `def`, docstring i ciało.
 #
 # | Funkcja z labu 01 | Zadanie w labie 01 | Czego potrzebuje w `carparts.py` |
 # |---|---|---|
-# | `parse_value` | 01.1 | stałej `MISSING`: już jest na górze pliku, nie kopiuj jej drugi raz |
+# | `parse_value` | 01.1 | stałej `MISSING`. Już jest na górze pliku, nie kopiuj jej drugi raz |
 # | `parse_series_line` | 01.2 | `parse_value` |
 # | `read_series` | 01.3a | `parse_series_line`, `Path` z `pathlib` |
 # | `demand_stats` | 01.4a | niczego |
@@ -68,14 +68,16 @@ PATH = paths.CAR_PARTS
 #
 # Nie kopiuj komórek z `check(...)`, zmiennych z eksploracji (`series`, `stats`, ...) ani `PATH`. W module stoją tylko definicje i stałe (wykład 02, sekcja "Moduły i importy").
 #
-# **Wynik.** Plik z sześcioma funkcjami, które działają tak samo jak w labie 01. Importy stoją na górze pliku, w jednym bloku z tymi, które już tam są, w kolejności, której wymaga `ruff check`.
+# **Wynik:** Plik z sześcioma funkcjami, które działają tak samo jak w labie 01. Importy stoją na górze pliku, w jednym bloku z importami, które już tam są. Ich kolejność jest taka, jakiej wymaga `ruff check`.
 #
-# **Skorzystaj z.** `ruff check` w komórce z komendami poniżej. Brakujący import zgłasza jako nieznaną nazwę (`F821 Undefined name`).
+# **Skorzystaj z:**
 #
-# **Kroki.**
+# - `ruff check` w komórce z komendami poniżej. Brakujący import zgłasza jako nieznaną nazwę (`F821 Undefined name`).
+#
+# **Kroki:**
 #
 # 1. Skopiuj sześć funkcji w kolejności z tabeli.
-# 2. Dopisz na górze pliku importy, których potrzebują: `json` i `Path` z `pathlib`. Kolejności importów pilnuje `ruff check` (reguła `I`), a nie `ruff format`. Import dopisany w złym miejscu daje uwagę `I001 Import block is un-sorted or un-formatted`. Po tym kroku blok importów ma wyglądać tak:
+# 2. Dopisz na górze pliku importy `json` i `Path` z `pathlib`. Kolejności importów pilnuje `ruff check` (reguła `I`), a nie `ruff format`. Import dopisany w złym miejscu daje uwagę `I001 Import block is un-sorted or un-formatted`. Po tym kroku blok importów ma wyglądać tak:
 #
 #    ```python
 #    import json
@@ -83,38 +85,44 @@ PATH = paths.CAR_PARTS
 #    from pathlib import Path
 #    ```
 #
-#    Gdy `ruff check` zgłosi `I001`, uruchom w terminalu `uv run ruff check --fix labs/02-functions/carparts.py` (albo w notebooku `!uv run ruff check --fix carparts.py`). Gwiazdka `[*]` przy kodzie uwagi znaczy, że ruff umie ją naprawić sam.
+#    Gdy `ruff check` zgłosi `I001`, uruchom w terminalu `uv run ruff check --fix labs/02-functions/carparts.py`. W notebooku ta sama komenda to `!uv run ruff check --fix carparts.py`. Gwiazdka `[*]` przy kodzie uwagi znaczy, że ruff umie ją naprawić sam.
 # 3. Uruchom komórkę z komendami. `ruff check` nie ma mieć uwag. Uwagi mypy o brakujących typach są na tym etapie spodziewane.
 #
-# **Sprawdzenie.** Komórka z `assert` pod komendami nie zgłasza błędu: wczytuje Twoim `carparts.read_series` cały plik.
+# **Sprawdzenie:** Komórka z `assert` pod komendami nie zgłasza błędu. Ta komórka wczytuje cały plik Twoją funkcją `carparts.read_series`.
 #
 # ### 02.1b Typy
 #
-# **Gdzie.** Te same sześć funkcji w `carparts.py`: ich linie `def`.
+# **Gdzie:** Te same sześć funkcji w `carparts.py`: ich linie `def`.
 #
-# **Wejście.** Co przyjmują i zwracają, mówią docstringi, które przeniosłeś. Twoje zadanie to zapisać to samo adnotacjami. Pomocne nazwy:
+# **Wejście:** Co przyjmują i zwracają, mówią docstringi, które przeniosłeś. Twoje zadanie to zapisać to samo adnotacjami. Pomocne nazwy:
 #
 # - `Values`: alias na górze pliku. Sekwencja tylko do odczytu (lista albo krotka) wartości jednej serii, każda `float` albo `None`. To typ `values` w `demand_stats`.
 # - `Stats`: alias. Słownik statystyk jednej serii: nazwa statystyki (`str`) → wartość (`float` albo `None`). To wynik `demand_stats`.
 # - `Mapping`, `Sequence`, `Iterator` z `collections.abc` (wykład 02, sekcja "Typy", tabela zapisów). `Mapping` i `Sequence` są już zaimportowane. `Iterator` dopisz do tej samej linii, w kolejności alfabetycznej: `from collections.abc import Callable, Iterator, Mapping, Sequence`. Nie dodawaj drugiej linii `from collections.abc import ...`, bo `ruff check` zgłosi `I001`.
 #
-# **Wynik.** Każdy parametr i każdy wynik sześciu funkcji ma adnotację. Zasada z wykładu: parametry typujesz szeroko (czego funkcja potrzebuje), wynik wąsko (co dokładnie zwraca).
+# **Wynik:** Każdy parametr i każdy wynik sześciu funkcji ma adnotację. Zasada z wykładu: parametry typujesz szeroko (czego funkcja potrzebuje), wynik wąsko (co dokładnie zwraca).
 #
 # Co się zmienia poza sygnaturami:
 #
-# - **Docstringi.** Zostają, bo sprawdzenie wymaga docstringu w każdej z sześciu funkcji. Opisują typy słowami. Jeśli adnotacja jest szersza niż te słowa, popraw słowa. Przykład: gdy `values` w `demand_stats` dostaje typ `Values`, napisz "a sequence (list or tuple)" zamiast "a list".
-# - **Ciało `top_series`.** Może wymagać drobnej zmiany, bo mypy nie zawęża typu wyrażenia `s[key]` liczonego drugi raz (wykład 02, sekcja "Typy", część "Zawężanie"). Zachowanie funkcji ma zostać takie samo.
+# - Docstringi zostają, bo sprawdzenie wymaga docstringu w każdej z sześciu funkcji. Docstringi opisują typy słowami. Jeśli adnotacja jest szersza niż te słowa, popraw słowa. Przykład: gdy `values` w `demand_stats` dostaje typ `Values`, napisz "a sequence (list or tuple)" zamiast "a list".
+# - Ciało `top_series` może wymagać drobnej zmiany, bo mypy nie zawęża typu wyrażenia `s[key]` liczonego drugi raz (wykład 02, sekcja "Typy", część "Zawężanie"). Zachowanie funkcji ma zostać takie samo.
 # - Ciała pozostałych pięciu funkcji zwykle zostają bez zmian.
 #
-# **Skorzystaj z.** Wykładu 02, sekcja "Typy": tabela zapisów, aliasy typów i zawężanie.
+# **Skorzystaj z:**
 #
-# **Kroki.**
+# - wykładu 02, sekcja "Typy". Są tam tabela zapisów typów, aliasy typów i zawężanie.
+#
+# **Kroki:**
 #
 # 1. Dopisz typy po kolei, od `parse_value` do `save_summary`. Po każdej funkcji uruchom komórkę z komendami.
 # 2. Czytaj komunikaty mypy od góry: pierwszy błąd często wywołuje kolejne.
 # 3. Na koniec komórka nie pokazuje żadnej uwagi `ruff check` ani `mypy`.
 #
-# **Sprawdzenie.** `check("02.1", carparts)` wypisuje ✅. Uruchamia na Twoich funkcjach te same sprawdzenia co w labie 01, potem sprawdza, że każda funkcja ma typy i docstring, a na końcu uruchamia `ruff check`, `ruff format --check` i `mypy --strict` na całym pliku. Trwa kilka sekund.
+# **Sprawdzenie:** `check("02.1", carparts)` wypisuje ✅. Sprawdzenie trwa kilka sekund i po kolei:
+#
+# - uruchamia na Twoich funkcjach te same sprawdzenia co w labie 01,
+# - sprawdza, że każda funkcja ma typy i docstring,
+# - uruchamia `ruff check`, `ruff format --check` i `mypy --strict` na całym pliku.
 #
 # <details>
 # <summary>Podpowiedź 1: kierunek</summary>
@@ -169,13 +177,13 @@ check("02.1", carparts)
 # %% [markdown]
 # ## 02.2 Ile to trwa: `timed`
 #
-# **Cel.** Zanim przyspieszysz kod, musisz wiedzieć, która część trwa długo. Dekorator `timed` mierzy czas każdego wywołania dowolnej funkcji, bez zmieniania jej kodu.
+# **Cel:** Zanim przyspieszysz kod, musisz wiedzieć, która część trwa długo. Dekorator `timed` mierzy czas każdego wywołania dowolnej funkcji, bez zmieniania jej kodu.
 #
-# **Gdzie.** Funkcja `timed` w `carparts.py`, w miejscu `raise NotImplementedError("Zadanie 02.2")`. Sygnatura i docstring są gotowe.
+# **Gdzie:** Funkcja `timed` w `carparts.py`, w miejscu `raise NotImplementedError("Zadanie 02.2")`. Sygnatura i docstring są gotowe.
 #
-# **Wejście.** `func`: dowolna funkcja. Typ `Callable[P, R]` mówi: funkcja z jakimiś argumentami `P`, zwracająca coś typu `R`.
+# **Wejście:** `func`: dowolna funkcja. Typ `Callable[P, R]` mówi: funkcja z jakimiś argumentami `P`, zwracająca coś typu `R`.
 #
-# **Wynik.** Nowa funkcja (`Callable[P, R]`), która:
+# **Wynik:** Nowa funkcja (`Callable[P, R]`), która:
 #
 # - przyjmuje te same argumenty co `func` i zwraca to samo,
 # - ma nazwę i docstring `func`,
@@ -184,7 +192,14 @@ check("02.1", carparts)
 #
 # Sygnatura z `[**P, R]` jest już w pliku. Mówi mypy: "opakowana funkcja przyjmuje te same argumenty i zwraca to samo co oryginał". Bez niej każda udekorowana funkcja traciłaby typy.
 #
-# **Skorzystaj z.** Wykład 02, sekcja "Dekoratory": kształt dekoratora z `functools.wraps` i część "Typ dekoratora". Zegar do mierzenia odcinków czasu to `time.perf_counter()`, a kod, który ma się wykonać także przy wyjątku, stawiasz w `finally` (ta sama sekcja wykładu, część "Kod, który działa zawsze"). Dopisz importy `functools` i `time` na górze pliku. Po tym zadaniu cały blok importów wygląda tak (kolejność poprawi też `ruff check --fix`, jak w 02.1a):
+# **Skorzystaj z:**
+#
+# - `functools.wraps` z wykładu 02, sekcja "Dekoratory". Ta sekcja pokazuje kształt dekoratora z `functools.wraps`, a jej część "Typ dekoratora" pokazuje jego typ.
+# - `time.perf_counter()`. To zegar do mierzenia odcinków czasu.
+# - `finally` z tej samej sekcji wykładu, część "Kod, który działa zawsze". W `finally` stawiasz kod, który ma się wykonać także przy wyjątku.
+# - `functools` i `time`. Dopisz ich importy na górze pliku.
+#
+# Po tym zadaniu cały blok importów wygląda tak. Kolejność poprawi też `ruff check --fix`, jak w 02.1a:
 #
 # ```python
 # import functools
@@ -194,14 +209,22 @@ check("02.1", carparts)
 # from pathlib import Path
 # ```
 #
-# **Kroki.**
+# **Kroki:**
 #
 # 1. Wewnątrz `timed` zdefiniuj funkcję opakowującą, która przyjmuje `*args, **kwargs` i przekazuje je do `func`.
 # 2. Zapamiętaj czas przed wywołaniem `func`.
 # 3. Wywołaj `func` i zwróć jej wynik. Wypisanie linii z czasem umieść tak, żeby wykonało się także przy wyjątku.
 # 4. Opakowanie oznacz `@functools.wraps(func)` i zwróć je z `timed`.
 #
-# **Sprawdzenie.** `check("02.2", carparts.timed)` wypisuje ✅. Sprawdza wynik, format linii, zachowaną nazwę, czas funkcji, która śpi 0,05 s, i funkcję, która zgłasza wyjątek. Na koniec komórka z komendami z 02.1 nadal nie ma uwag.
+# **Sprawdzenie:** `check("02.2", carparts.timed)` wypisuje ✅. Sprawdza:
+#
+# - wynik,
+# - format linii,
+# - zachowaną nazwę,
+# - czas funkcji, która śpi 0,05 s,
+# - funkcję, która zgłasza wyjątek.
+#
+# Na koniec komórka z komendami z 02.1 nadal nie ma uwag.
 #
 # <details>
 # <summary>Podpowiedź 1: kierunek</summary>
@@ -263,30 +286,33 @@ print(len(series), "serii")
 # %% [markdown]
 # ## 02.3 Za krótka historia: `requires_history`
 #
-# **Cel.** Niektórych statystyk nie warto liczyć dla serii, która ma mało danych. Zmienność policzona z trzech miesięcy więcej mówi o przypadku niż o produkcie. Zamiast powtarzać ten warunek w każdej statystyce, piszesz go raz, jako dekorator z parametrem.
+# **Cel:** Niektórych statystyk nie warto liczyć dla serii, która ma mało danych. Zmienność policzona z trzech miesięcy więcej mówi o przypadku niż o produkcie. Zamiast powtarzać ten warunek w każdej statystyce, piszesz go raz, jako dekorator z parametrem.
 #
-# **Gdzie.** Funkcja `requires_history` w `carparts.py`, w miejscu `raise NotImplementedError("Zadanie 02.3")`.
+# **Gdzie:** Funkcja `requires_history` w `carparts.py`, w miejscu `raise NotImplementedError("Zadanie 02.3")`.
 #
-# **Wejście.** `min_months`: liczba całkowita (`int`), najmniejsza liczba znanych miesięcy, przy której statystyka ma sens. Znany miesiąc to wartość różna od `None`. Zero też jest znanym miesiącem.
+# **Wejście:** `min_months`: liczba całkowita (`int`), najmniejsza liczba znanych miesięcy, przy której statystyka ma sens. Znany miesiąc to wartość różna od `None`. Zero też jest znanym miesiącem.
 #
-# **Wynik.** Dekorator (`Callable[[Statistic], Statistic]`). `Statistic` to alias z góry pliku: funkcja, która dostaje wartości jednej serii (`Values`) i zwraca `float | None`. Dekorator opakowuje statystykę tak, że:
+# **Wynik:** Dekorator (`Callable[[Statistic], Statistic]`). `Statistic` to alias z góry pliku. Oznacza funkcję, która dostaje wartości jednej serii (`Values`) i zwraca `float | None`. Dekorator opakowuje statystykę tak, że:
 #
 # - dla serii z mniej niż `min_months` znanymi miesiącami zwraca `None` i w ogóle nie wywołuje statystyki,
 # - dla pozostałych zwraca wynik statystyki,
 # - opakowana statystyka ma nazwę i docstring oryginału.
 #
-# Błąd: `min_months` mniejsze od 1 to `ValueError`. `requires_history(0)` to błąd programisty, więc `ValueError` ma polecieć od razu, już przy wywołaniu `requires_history(0)`, zanim dekorator dostanie jakąkolwiek statystykę. Nie przy pierwszym liczeniu statystyki gdzieś w środku przeliczenia.
+# Błąd: `min_months` mniejsze od 1 to `ValueError`. `requires_history(0)` to błąd programisty. Dlatego `ValueError` ma polecieć od razu przy wywołaniu `requires_history(0)`, zanim dekorator dostanie jakąkolwiek statystykę. Nie może polecieć dopiero przy pierwszym liczeniu statystyki gdzieś w środku przeliczenia.
 #
-# **Skorzystaj z.** Wykład 02, sekcja "Dekoratory", część "Dekorator z parametrem": fabryka `repeat` ma ten sam kształt trzech poziomów. Liczenie znanych miesięcy znasz z `demand_stats`.
+# **Skorzystaj z:**
 #
-# **Kroki.**
+# - `repeat` z wykładu 02, sekcja "Dekoratory", część "Dekorator z parametrem". Ta fabryka ma ten sam kształt trzech poziomów.
+# - `demand_stats` z 02.1. Tak samo liczy znane miesiące.
+#
+# **Kroki:**
 #
 # 1. Na początku `requires_history` sprawdź `min_months` i zgłoś `ValueError` z wartością w komunikacie.
 # 2. Zdefiniuj `decorator(statistic)`, a w nim opakowanie `wrapper(values)` z `@functools.wraps(statistic)`.
-# 3. W opakowaniu policz znane miesiące. Za mało: zwróć `None`. Dosyć: zwróć `statistic(values)`.
+# 3. W opakowaniu policz znane miesiące. Jeśli jest ich mniej niż `min_months`, zwróć `None`. W przeciwnym razie zwróć `statistic(values)`.
 # 4. Zwróć opakowanie z `decorator`, a `decorator` z `requires_history`.
 #
-# **Sprawdzenie.** `check("02.3", carparts.requires_history)` wypisuje ✅. Sprawdza `requires_history(0)`, serię z dwoma i serię z trzema znanymi miesiącami (z zerem w środku) oraz zachowaną nazwę.
+# **Sprawdzenie:** `check("02.3", carparts.requires_history)` wypisuje ✅. Sprawdza `requires_history(0)`, serię z dwoma i serię z trzema znanymi miesiącami (z zerem w środku) oraz zachowaną nazwę.
 #
 # <details>
 # <summary>Podpowiedź 1: kierunek</summary>
@@ -327,27 +353,43 @@ check("02.3", carparts.requires_history)
 # %% [markdown]
 # ## 02.4 Rejestr statystyk
 #
-# **Cel.** `demand_stats` liczy pięć statystyk w jednej funkcji. Każda nowa statystyka to zmiana w środku tej funkcji i ryzyko, że zepsujesz pozostałe. Rejestr odwraca to: każda statystyka to osobna mała funkcja, która sama się zapisuje do słownika `STATISTICS`, a `summarise` liczy wszystko, co w nim jest.
+# **Cel:** `demand_stats` liczy pięć statystyk w jednej funkcji. Każda nowa statystyka to zmiana w środku tej funkcji i ryzyko, że zepsujesz pozostałe. Rejestr odwraca ten układ. Każda statystyka to osobna mała funkcja, która sama zapisuje się do słownika `STATISTICS`. Funkcja `summarise` liczy wszystko, co jest w tym słowniku.
 #
 # Zadanie ma cztery kroki: 02.4a `register`, 02.4b sześć statystyk, 02.4c `summarise`, 02.4d użycie w notebooku. `demand_stats` z 02.1 zostaje w pliku bez zmian.
 #
 # ### 02.4a `register`
 #
-# **Gdzie.** Funkcja `register` w `carparts.py`, w miejscu `raise NotImplementedError("Zadanie 02.4")`.
+# **Gdzie:** Funkcja `register` w `carparts.py`, w miejscu `raise NotImplementedError("Zadanie 02.4")`.
 #
-# **Wejście.** `name`: napis (`str`), nazwa, pod którą statystyka trafi do `STATISTICS` i do wyniku `summarise`, np. `"total"`.
+# **Wejście:** `name`: napis (`str`), nazwa, pod którą statystyka trafi do `STATISTICS` i do wyniku `summarise`, np. `"total"`.
 #
-# **Wynik.** Dekorator. Dostaje statystykę, zapisuje ją w `STATISTICS[name]` i zwraca **tę samą** funkcję, bez opakowania. Gdy w `STATISTICS` jest już coś pod tą nazwą: `ValueError`.
+# **Wynik:** Dekorator, który:
 #
-# **Skorzystaj z.** Kształtu fabryki z 02.3. Słownik `STATISTICS` jest już w pliku, nad `register`.
+# - dostaje statystykę,
+# - zapisuje ją w `STATISTICS[name]`,
+# - zwraca tę samą funkcję, bez opakowania.
+#
+# Gdy w `STATISTICS` jest już coś pod tą nazwą, dekorator zgłasza `ValueError`.
+#
+# **Skorzystaj z:**
+#
+# - `requires_history` z 02.3. `register` to fabryka o tym samym kształcie.
+# - `STATISTICS`, słownika, który jest już w pliku, nad `register`. Do niego zapisujesz statystyki.
 #
 # ### 02.4b Sześć statystyk
 #
-# **Gdzie.** `carparts.py`, w miejscu komentarza `# 02.4: register the statistics here...`, między `register` a `summarise`.
+# **Gdzie:** `carparts.py`, w miejscu komentarza `# 02.4: register the statistics here...`, między `register` a `summarise`.
 #
-# **Wejście.** Każda statystyka to osobna funkcja z jednym parametrem `values: Values` (wartości jednej serii) i wynikiem `float | None`, z docstringiem. Nazwę funkcji wybierasz sam. Nazwa w rejestrze musi być dokładnie taka jak w tabeli.
+# **Wejście:** Każda statystyka to osobna funkcja:
 #
-# **Wynik.** Sześć funkcji, każda oznaczona `@register("nazwa")`:
+# - ma jeden parametr `values: Values`, czyli wartości jednej serii,
+# - zwraca `float | None`,
+# - ma docstring,
+# - ma nazwę, którą wybierasz sam.
+#
+# Nazwa w rejestrze musi być dokładnie taka jak w tabeli.
+#
+# **Wynik:** Sześć funkcji, każda oznaczona `@register("nazwa")`:
 #
 # | Nazwa w rejestrze | Co zwraca | Kiedy `None` |
 # |---|---|---|
@@ -360,42 +402,60 @@ check("02.3", carparts.requires_history)
 #
 # Pierwsze pięć daje te same liczby co odpowiednie pola `demand_stats`. Kolejność rejestracji to kolejność kluczy w wyniku `summarise`.
 #
-# **`cv2`** to kwadrat współczynnika zmienności niezerowych sprzedaży. Mówi, jak bardzo różnią się wielkości zamówień: 0 znaczy, że w każdym miesiącu z popytem sprzedano tyle samo sztuk. Liczysz ją tak:
+# `cv2` to kwadrat współczynnika zmienności niezerowych sprzedaży. Mówi, jak bardzo różnią się wielkości zamówień. Wartość 0 znaczy, że w każdym miesiącu z popytem sprzedano tyle samo sztuk. Liczysz ją tak:
 #
-# 1. Weź **wielkości popytu**: znane wartości większe od zera. Miesiące z zerem i braki pomijasz.
-# 2. **Średnia**: suma wielkości podzielona przez ich liczbę.
-# 3. **Wariancja** (variance, miara rozrzutu): dla każdej wielkości odległość od średniej, podniesiona do kwadratu, potem średnia tych kwadratów. To wariancja populacyjna: dzielisz przez liczbę wielkości, nie przez liczbę mniejszą o jeden.
-# 4. **`cv2`** = wariancja podzielona przez kwadrat średniej.
+# 1. Weź wielkości popytu, czyli znane wartości większe od zera. Miesiące z zerem i braki pomijasz.
+# 2. Policz średnią. Średnia to suma wielkości podzielona przez ich liczbę.
+# 3. Policz wariancję (variance, miara rozrzutu). Dla każdej wielkości weź odległość od średniej i podnieś ją do kwadratu. Wariancja to średnia tych kwadratów. To wariancja populacyjna, więc dzielisz przez liczbę wielkości, nie przez liczbę mniejszą o jeden.
+# 4. Podziel wariancję przez kwadrat średniej. Wynik to `cv2`.
 #
-# Wynik to jedna liczba albo `None`, jak w każdej statystyce. `None` daje seria z mniej niż 12 znanymi miesiącami (użyj `requires_history`) albo z mniej niż dwoma miesiącami z popytem.
+# Wynik to jedna liczba albo `None`, jak w każdej statystyce. `cv2` to `None`, gdy:
+#
+# - seria ma mniej niż 12 znanych miesięcy. Do tego warunku użyj `requires_history`.
+# - seria ma mniej niż dwa miesiące z popytem.
 #
 # Przykład `cv2`: dla `[0, 2, 0, 4]` powtórzonego 3 razy (12 miesięcy) wielkości popytu to 2 i 4, średnia 3, wariancja 1, więc `cv2` to 1/9.
 #
-# **Skorzystaj z.** `register` z 02.4a, `requires_history` z 02.3, logiki `demand_stats` z labu 01. Kolejność dwóch dekoratorów nad `cv2` ma znaczenie (wykład 02, sekcja "Dekoratory": nakładają się od dołu).
+# **Skorzystaj z:**
 #
-# **Sprawdzenie.** Komórka z `assert` pod opisem 02.4c nie zgłasza błędu.
+# - `register` z 02.4a. Oznaczasz nim każdą z sześciu statystyk.
+# - `requires_history` z 02.3. Daje `cv2` próg 12 znanych miesięcy.
+# - `demand_stats` z labu 01. Jej logika daje pięć pierwszych statystyk.
+#
+# Kolejność dwóch dekoratorów nad `cv2` ma znaczenie. Dekoratory nakładają się od dołu (wykład 02, sekcja "Dekoratory").
+#
+# **Sprawdzenie:** Komórka z `assert` pod opisem 02.4c nie zgłasza błędu.
 #
 # ### 02.4c `summarise`
 #
-# **Gdzie.** Funkcja `summarise` w `carparts.py`, w miejscu `raise NotImplementedError("Zadanie 02.4")`.
+# **Gdzie:** Funkcja `summarise` w `carparts.py`, w miejscu `raise NotImplementedError("Zadanie 02.4")`.
 #
-# **Wejście.**
+# **Wejście:**
 #
 # - `values: Values`: wartości jednej serii.
 # - `names: Sequence[str] | None`: nazwy statystyk z rejestru, które chcesz policzyć, w wybranej kolejności. Domyślnie `None`, czyli wszystkie z `STATISTICS`, w kolejności rejestracji.
 #
-# **Wynik.** Słownik `Stats`: nazwa statystyki → jej wynik dla tej serii, klucze w kolejności `names`. Nazwa, której nie ma w `STATISTICS`, to `ValueError`, którego komunikat wymienia znane nazwy.
+# **Wynik:** Słownik `Stats`: nazwa statystyki → jej wynik dla tej serii. Klucze idą w kolejności `names`.
+#
+# Błąd: nazwa, której nie ma w `STATISTICS`, to `ValueError`. Komunikat tego błędu wymienia znane nazwy.
 #
 # Przykład: `summarise([0.0, 2.0, None, 0.0, 6.0])` daje `{"months": 4, "missing": 1, "total": 8.0, "zero_share": 0.5, "adi": 2.0, "cv2": None}`. `cv2` to `None`, bo seria ma tylko 4 znane miesiące.
 #
-# **Kroki (02.4a-02.4c).**
+# **Kroki 02.4a-02.4c:**
 #
-# 1. `register`: fabryka, której dekorator sprawdza nazwę, zapisuje funkcję w słowniku i ją zwraca.
-# 2. Pięć prostych statystyk, każda w kilku liniach.
-# 3. `cv2`: najpierw wielkości popytu (znane wartości większe od zera), potem średnia, wariancja i wynik. Nad funkcją dwa dekoratory w dobrej kolejności.
-# 4. `summarise`: ustal listę nazw, sprawdź nieznane, zbuduj słownik wyników dict comprehension.
+# 1. Napisz `register`. To fabryka, której dekorator sprawdza nazwę, zapisuje funkcję w słowniku i ją zwraca.
+# 2. Napisz pięć prostych statystyk, każdą w kilku liniach.
+# 3. Napisz `cv2`. Policz najpierw wielkości popytu, czyli znane wartości większe od zera, potem średnią, wariancję i wynik. Nad funkcją postaw dwa dekoratory w dobrej kolejności.
+# 4. Napisz `summarise`. Ustal listę nazw, sprawdź nieznane nazwy i zbuduj słownik wyników przez dict comprehension.
 #
-# **Sprawdzenie.** `check("02.4", carparts)` wypisuje ✅. Sprawdza `register` (także drugą rejestrację pod tą samą nazwą), obecność sześciu nazw, `cv2` na 12 i na 11 miesiącach oraz `summarise` z przykładu, z jedną nazwą i z nieznaną nazwą. Komórka z komendami z 02.1 nadal nie ma uwag.
+# **Sprawdzenie:** `check("02.4", carparts)` wypisuje ✅. Sprawdza:
+#
+# - `register`, także drugą rejestrację pod tą samą nazwą,
+# - obecność sześciu nazw,
+# - `cv2` na 12 i na 11 miesiącach,
+# - `summarise` z przykładu, z jedną nazwą i z nieznaną nazwą.
+#
+# Komórka z komendami z 02.1 nadal nie ma uwag.
 #
 # <details>
 # <summary>Podpowiedź 1: kierunek</summary>
@@ -450,14 +510,17 @@ check("02.4", carparts)
 #
 # Policz `summarise` dla wszystkich serii. Dla ilu serii `cv2` jest znane?
 #
-# **Gdzie.** Zmienne `stats` i `with_cv2` w komórce poniżej.
+# **Gdzie:** Zmienne `stats` i `with_cv2` w komórce poniżej.
 #
-# **Wynik.**
+# **Wynik:**
 #
 # - `stats`: słownik nazwa serii → wynik `carparts.summarise` dla jej wartości, czyli słownik sześciu statystyk. Ten sam kształt co `stats` w labie 01, z dodatkowym kluczem `cv2`.
 # - `with_cv2`: lista nazw serii (napisów), dla których `cv2` nie jest `None`.
 #
-# **Skorzystaj z.** Słownika `series` z komórki z `load_all` (02.2) i dict comprehension.
+# **Skorzystaj z:**
+#
+# - `series` z komórki z `load_all` w 02.2. Daje wartości każdej serii.
+# - dict comprehension. Buduje `stats`.
 
 # %%
 # >>> SOLUTION 02.4
@@ -472,41 +535,56 @@ print(f"cv2 znane dla {len(with_cv2)} z {len(stats)} serii")
 # %% [markdown]
 # ## 02.5 Filtry jako funkcje: `at_least` i `select`
 #
-# **Cel.** Pytania typu "które serie mają pełną historię i sprzedały co najmniej 60 sztuk" zadasz w tym kursie wiele razy. Zamiast pisać za każdym razem nową pętlę z warunkami, budujesz małe testy i jedną funkcję, która je łączy.
+# **Cel:** Pytania typu "które serie mają pełną historię i sprzedały co najmniej 60 sztuk" zadasz w tym kursie wiele razy. Zamiast pisać za każdym razem nową pętlę z warunkami, budujesz małe testy i jedną funkcję, która je łączy.
 #
 # ### 02.5a `at_least`
 #
-# **Gdzie.** Funkcja `at_least` w `carparts.py`, w miejscu `raise NotImplementedError("Zadanie 02.5")`.
+# **Gdzie:** Funkcja `at_least` w `carparts.py`, w miejscu `raise NotImplementedError("Zadanie 02.5")`.
 #
-# **Wejście.**
+# **Wejście:**
 #
 # - `key`: napis, nazwa statystyki, np. `"total"`.
 # - `threshold`: liczba (`float`, liczba całkowita też pasuje), najmniejsza wartość, która przechodzi.
 #
-# **Wynik.** **Test**: funkcja (`Callable[[Stats], bool]`). "Test" znaczy tu warunek do filtrowania, a nie sprawdzenie `check`. Ta funkcja dostaje słownik statystyk jednej serii (`Stats`, jak jeden wpis `stats` z 02.4d) i zwraca `True`, gdy wartość `key` jest w słowniku, nie jest `None` i jest nie mniejsza niż `threshold`. W każdym innym przypadku `False`, także gdy klucza brak.
+# **Wynik:** Test, czyli funkcja (`Callable[[Stats], bool]`). "Test" znaczy tu warunek do filtrowania, a nie sprawdzenie `check`. Test dostaje słownik statystyk jednej serii (`Stats`, jak jeden wpis `stats` z 02.4d). Test zwraca `True`, gdy wartość `key`:
 #
-# **Skorzystaj z.** Wykład 02, sekcja "Domknięcia": wewnętrzna funkcja pamięta `key` i `threshold`. Ćwiczenie `between` z tego wykładu ma ten sam kształt.
+# - jest w słowniku,
+# - nie jest `None`,
+# - jest nie mniejsza niż `threshold`.
+#
+# W każdym innym przypadku test zwraca `False`, także gdy klucza brak.
+#
+# **Skorzystaj z:**
+#
+# - domknięcia z wykładu 02, sekcja "Domknięcia". Wewnętrzna funkcja pamięta `key` i `threshold`.
+# - `between`, ćwiczenia z tego samego wykładu. Ma ten sam kształt.
 #
 # ### 02.5b `select`
 #
-# **Gdzie.** Funkcja `select` w `carparts.py`, w miejscu `raise NotImplementedError("Zadanie 02.5")`.
+# **Gdzie:** Funkcja `select` w `carparts.py`, w miejscu `raise NotImplementedError("Zadanie 02.5")`.
 #
-# **Wejście.**
+# **Wejście:**
 #
 # - `stats`: słownik nazwa serii → `Stats`, jak `stats` z 02.4d. Nie zmieniasz go.
 # - `*tests`: dowolna liczba testów, np. z `at_least`, podanych po przecinku: `select(stats, test_1, test_2)`.
 #
-# **Wynik.** Lista nazw serii (`list[str]`), dla których każdy test zwraca `True`, posortowana rosnąco. Bez testów: wszystkie nazwy, posortowane.
+# **Wynik:** Lista nazw serii (`list[str]`), dla których każdy test zwraca `True`, posortowana rosnąco. Bez testów funkcja zwraca wszystkie nazwy, posortowane.
 #
-# **Skorzystaj z.** Wykład 02, sekcja "Sygnatura to umowa": `*args` zbiera argumenty pozycyjne w krotkę.
+# **Skorzystaj z:**
 #
-# **Kroki (02.5a-02.5b).**
+# - `*args` z wykładu 02, sekcja "Sygnatura to umowa". Zbiera argumenty pozycyjne w krotkę.
 #
-# 1. W `at_least` zdefiniuj wewnętrzną funkcję z jednym parametrem `stats: Stats`. Odczytaj wartość tak, żeby brak klucza nie zgłaszał `KeyError`, i porównaj z progiem.
-# 2. Zwróć tę funkcję.
-# 3. W `select` przejdź po seriach, zostaw te, które przechodzą wszystkie testy, i posortuj nazwy.
+# **Kroki 02.5a-02.5b:**
 #
-# **Sprawdzenie.** `check("02.5", carparts)` wypisuje ✅. Sprawdza progi, brak klucza i `None`, `select` bez testów i z dwoma testami.
+# 1. W `at_least` zdefiniuj wewnętrzną funkcję z jednym parametrem `stats: Stats`. Odczytaj w niej wartość tak, żeby brak klucza nie zgłaszał `KeyError`. Porównaj tę wartość z progiem.
+# 2. Zwróć wewnętrzną funkcję.
+# 3. W `select` przejdź po seriach. Zostaw serie, które przechodzą wszystkie testy, i posortuj ich nazwy.
+#
+# **Sprawdzenie:** `check("02.5", carparts)` wypisuje ✅. Sprawdza:
+#
+# - progi,
+# - brak klucza i `None`,
+# - `select` bez testów i z dwoma testami.
 #
 # <details>
 # <summary>Podpowiedź 1: kierunek</summary>
@@ -541,13 +619,17 @@ check("02.5", carparts)
 # %% [markdown]
 # ### 02.5c Wybór serii
 #
-# Które serie mają pełną historię i sprzedały co najmniej 60 sztuk? Każda seria w pliku ma 51 miesięcy, więc pełna historia to co najmniej 51 znanych miesięcy: próg 51 w `at_least` przepuszcza dokładnie serie bez braków.
+# Które serie mają pełną historię i sprzedały co najmniej 60 sztuk? Każda seria w pliku ma 51 miesięcy, więc pełna historia to co najmniej 51 znanych miesięcy. Próg 51 w `at_least` przepuszcza więc dokładnie serie bez braków.
 #
-# **Gdzie.** Zmienna `steady` w komórce poniżej.
+# **Gdzie:** Zmienna `steady` w komórce poniżej.
 #
-# **Wynik.** Posortowana lista nazw serii (napisów), wynik jednego wywołania `carparts.select`.
+# **Wynik:** Posortowana lista nazw serii (napisów), wynik jednego wywołania `carparts.select`.
 #
-# **Skorzystaj z.** `stats` z 02.4d, `carparts.select` i dwóch testów z `carparts.at_least`, dla statystyk `"months"` i `"total"`.
+# **Skorzystaj z:**
+#
+# - `stats` z 02.4d. Z tego słownika wybierasz serie.
+# - `carparts.select` z 02.5b. Łączy testy w jeden wybór.
+# - `carparts.at_least` z 02.5a, dwa razy. Jeden test dla statystyki `"months"`, drugi dla `"total"`.
 
 # %%
 # >>> SOLUTION 02.5
@@ -564,15 +646,20 @@ print(len(steady), steady[:5])
 #
 # **Pytanie 1.** Dopisz nową statystykę `peak` (największa znana wartość) tu, w notebooku, dekoratorem `@carparts.register("peak")`. Policz ją dla wszystkich serii i wybierz serie z `peak` co najmniej 10.
 #
-# **Gdzie.** Komórka poniżej: najpierw funkcja `peak` z dekoratorem `@carparts.register("peak")` (napisz ją nad `peaks`, w miejscu komentarza), potem zmienne `peaks` i `spiky`.
+# **Gdzie:** Komórka poniżej. Najpierw napisz funkcję `peak` z dekoratorem `@carparts.register("peak")`, w miejscu komentarza nad `peaks`. Potem uzupełnij zmienne `peaks` i `spiky`.
 #
-# **Wynik.**
+# **Wynik:**
 #
-# - `peak(values)`: największa znana wartość serii (`float`), `None`, gdy znanych miesięcy nie ma.
+# - `peak(values)`: największa znana wartość serii (`float`) albo `None`, gdy znanych miesięcy nie ma.
 # - `peaks`: słownik nazwa serii → wynik `carparts.summarise` z samą statystyką `"peak"`, czyli słownik z jednym kluczem.
 # - `spiky`: posortowana lista nazw serii z `peak` co najmniej 10.
 #
-# **Skorzystaj z.** `series` z 02.2, `carparts.register`, `carparts.summarise` z argumentem `names`, `carparts.select` i `carparts.at_least`.
+# **Skorzystaj z:**
+#
+# - `series` z 02.2. Daje wartości każdej serii.
+# - `carparts.register` z 02.4a. Zapisuje `peak` w rejestrze.
+# - `carparts.summarise` z 02.4c, z argumentem `names`. Liczy samą statystykę `"peak"`.
+# - `carparts.select` i `carparts.at_least` z 02.5. Razem wybierają serie z `peak` co najmniej 10.
 
 # %%
 # >>> SOLUTION 02.6

@@ -103,7 +103,10 @@ except Exception as error:  # noqa: BLE001 - the error is what we want to see
 #
 # **Gdzie:** `online_retail.py`, funkcja `read_sheets`.
 #
-# **Wejście:** `path`: `Path`, ścieżka do skoroszytu `.xlsx`. W notebooku `XLSX`. Skoroszyt ma dwa arkusze, "Year 2009-2010" i "Year 2010-2011", z tymi samymi ośmioma nagłówkami. Jeden wiersz to jedna linia faktury: jeden towar na jednej fakturze.
+# **Wejście:** `path`: `Path`, ścieżka do skoroszytu `.xlsx`. W notebooku `XLSX`. Co jest w skoroszycie:
+#
+# - dwa arkusze, "Year 2009-2010" i "Year 2010-2011", z tymi samymi ośmioma nagłówkami,
+# - jeden wiersz to jedna linia faktury, czyli jeden towar na jednej fakturze.
 #
 # **Wynik:** `pd.DataFrame` z kolumnami `RAW_COLUMNS`, w tej kolejności, z indeksem 0..n-1. Najpierw wiersze pierwszego arkusza, potem drugiego, w kolejności pliku.
 #
@@ -111,8 +114,8 @@ except Exception as error:  # noqa: BLE001 - the error is what we want to see
 # |---|---|---|
 # | `invoice` | `str` | numer faktury: sześć cyfr, z literą `C` dla anulowania, `A` dla korekty |
 # | `stock_code` | `str` | kod towaru, bez odstępów na brzegach, wielkimi literami |
-# | `description` | `str` | opis towaru; brak zostaje brakiem, a nie napisem `"nan"` |
-# | `quantity` | liczba całkowita | ilość sztuk; ujemna na anulowaniach |
+# | `description` | `str` | opis towaru. Brak zostaje brakiem, a nie napisem `"nan"` |
+# | `quantity` | liczba całkowita | ilość sztuk, ujemna na anulowaniach |
 # | `invoice_date` | `datetime64` | data i godzina faktury |
 # | `price` | `float64` | cena jednej sztuki w funtach |
 # | `customer_id` | `Int64` | numer klienta, liczba całkowita z brakami |
@@ -121,15 +124,24 @@ except Exception as error:  # noqa: BLE001 - the error is what we want to see
 #
 # `ValueError`, gdy któremuś arkuszowi brakuje nagłówka z `SHEET_HEADERS`.
 #
-# **Skorzystaj z:** `SHEET_HEADERS` (nagłówek w skoroszycie → nazwa kolumny), `SHEET` (nazwa kolumny `"sheet"`), `RAW_COLUMNS`. Z wykładu: sekcja "Typy" (`dtype` w `pd.read_excel`, typ `"Int64"`) i sekcja "Narzędzia, których użyjesz w labie" (`sheet_name=None`, `pd.concat`, `rename`, `.str.strip()`, `.str.upper()`).
+# **Skorzystaj z:**
+#
+# - `SHEET_HEADERS` z góry pliku. Przypisuje nagłówkowi w skoroszycie nazwę kolumny.
+# - `SHEET` z góry pliku. To nazwa kolumny `"sheet"`.
+# - `RAW_COLUMNS` z góry pliku. Wyznacza kolejność kolumn wyniku.
+# - `dtype` w `pd.read_excel` i typ `"Int64"` z wykładu, sekcja "Typy". Razem ustawiają typy już przy czytaniu.
+# - `sheet_name=None` z wykładu, sekcja "Narzędzia, których użyjesz w labie". Wczytuje wszystkie arkusze naraz.
+# - `rename` z tej samej sekcji. Zmienia nazwy kolumn według `SHEET_HEADERS`.
+# - `pd.concat` z tej samej sekcji. Skleja arkusze jeden pod drugim.
+# - `.str.strip()` i `.str.upper()` z tej samej sekcji. Razem porządkują `stock_code`.
 #
 # **Kroki:**
 #
-# 1. Wczytaj wszystkie arkusze naraz, podając `dtype` jako słownik nagłówek → typ. Klucze to nagłówki ze skoroszytu (`"Invoice"`, `"Customer ID"`), bo typy działają przy czytaniu, przed zmianą nazw. Tekst dla numeru faktury, kodu, opisu i kraju, `"Int64"` dla klienta. Data, ilość i cena wczytują się dobrze same. Typ tekstowy podany przy czytaniu zostawia pustą komórkę jako brak, a liczbę z komórki zamienia na napis bez `.0` (`489434` → `"489434"`). Sprawdź po wczytaniu: `isna().sum()` dla `description` ma dać liczbę z docstringu.
-# 2. Przejdź po słowniku arkuszy. Dla każdego sprawdź, czy ma wszystkie nagłówki z `SHEET_HEADERS`. Brak: `ValueError` z nazwą arkusza i brakującymi nagłówkami.
-# 3. Zmień nazwy kolumn według `SHEET_HEADERS` i dodaj kolumnę `sheet` z nazwą arkusza.
+# 1. Wczytaj wszystkie arkusze naraz i podaj `dtype` jako słownik nagłówek → typ. Klucze to nagłówki ze skoroszytu (`"Invoice"`, `"Customer ID"`), bo typy działają przy czytaniu, przed zmianą nazw. Numer faktury, kod, opis i kraj dostają typ tekstowy, a klient typ `"Int64"`. Data, ilość i cena wczytują się dobrze same. Typ tekstowy podany przy czytaniu zostawia pustą komórkę jako brak. Liczbę z komórki ten typ zamienia na napis bez `.0` (`489434` → `"489434"`). Po wczytaniu sprawdź `isna().sum()` dla kolumny `Description`. Wynik ma się zgadzać z liczbą z docstringu.
+# 2. Przejdź po słowniku arkuszy. Dla każdego arkusza sprawdź, czy ma wszystkie nagłówki z `SHEET_HEADERS`. Jeśli brakuje nagłówka, zgłoś `ValueError` z nazwą arkusza i brakującymi nagłówkami.
+# 3. Zmień nazwy kolumn według `SHEET_HEADERS`. Dodaj kolumnę `sheet` z nazwą arkusza.
 # 4. Sklej arkusze jeden pod drugim, z nowym indeksem.
-# 5. Uporządkuj `stock_code`: bez odstępów na brzegach, wielkie litery. Ustaw kolumny w kolejności `RAW_COLUMNS`.
+# 5. W `stock_code` usuń odstępy na brzegach i zamień litery na wielkie. Potem ustaw kolumny w kolejności `RAW_COLUMNS`.
 #
 # ### 06.1b `build_cache`
 #
@@ -137,11 +149,24 @@ except Exception as error:  # noqa: BLE001 - the error is what we want to see
 #
 # **Gdzie:** `online_retail.py`, funkcja `build_cache`.
 #
-# **Wejście:** `xlsx`: `Path` do skoroszytu (w notebooku `XLSX`), `cache`: `Path` pliku Parquet do zapisania (w notebooku `CACHE`).
+# **Wejście:**
 #
-# **Wynik:** zwraca `cache`. Po wywołaniu plik istnieje i zawiera tabelę z `read_sheets`, bez indeksu. Brakujące katalogi powstają, istniejący plik jest nadpisany. Błędy jak w `read_sheets`.
+# - `xlsx`: `Path` do skoroszytu. W notebooku `XLSX`.
+# - `cache`: `Path` pliku Parquet do zapisania. W notebooku `CACHE`.
 #
-# **Skorzystaj z:** `read_sheets` z 06.1a, `to_parquet(..., index=False)` i `mkdir(parents=True, exist_ok=True)` (wykład, "Zapis i odczyt Parquet").
+# **Wynik:** funkcja zwraca `cache`. Po wywołaniu:
+#
+# - plik istnieje i zawiera tabelę z `read_sheets`, bez indeksu,
+# - brakujące katalogi już istnieją,
+# - wcześniejszy plik pod tą ścieżką jest nadpisany.
+#
+# Błędy jak w `read_sheets`.
+#
+# **Skorzystaj z:**
+#
+# - `read_sheets` z 06.1a. Daje tabelę do zapisania.
+# - `to_parquet(..., index=False)` z wykładu, sekcja "Zapis i odczyt Parquet". Zapisuje tabelę bez indeksu.
+# - `mkdir(parents=True, exist_ok=True)` z tej samej sekcji. Tworzy brakujące katalogi.
 #
 # ### 06.1c `load_raw`
 #
@@ -151,11 +176,24 @@ except Exception as error:  # noqa: BLE001 - the error is what we want to see
 #
 # **Wejście:** `cache`: `Path` pliku Parquet zapisanego przez `build_cache`.
 #
-# **Wynik:** `pd.DataFrame` taka sama jak z `read_sheets`: te same kolumny, typy i kolejność. `FileNotFoundError`, gdy pliku nie ma. `ValueError`, gdy kolumny pliku (lista, w kolejności) różnią się od `RAW_COLUMNS`.
+# **Wynik:** `pd.DataFrame` taka sama jak z `read_sheets`: te same kolumny, typy i kolejność.
 #
-# **Skorzystaj z:** `Path.is_file()`, `pd.read_parquet`, `RAW_COLUMNS`.
+# Błędy:
 #
-# **Sprawdzenie 06.1a-06.1c:** `check("06.1")` albo `uv run course check 06.1`. Sprawdzenie czyta małą próbkę skoroszytu (40 wierszy w dwóch arkuszach, z tymi samymi typami komórek), sprawdza kolumny, typy i kody towarów, a potem zapisuje i czyta cache w katalogu tymczasowym.
+# - `FileNotFoundError`, gdy pliku nie ma,
+# - `ValueError`, gdy lista kolumn pliku, razem z kolejnością, różni się od `RAW_COLUMNS`.
+#
+# **Skorzystaj z:**
+#
+# - `Path.is_file()`. Sprawdza, czy plik istnieje.
+# - `pd.read_parquet`. Wczytuje cache.
+# - `RAW_COLUMNS` z góry pliku. Z tą listą porównujesz kolumny pliku.
+#
+# **Sprawdzenie 06.1a-06.1c:** `check("06.1")` albo `uv run course check 06.1`. Sprawdzenie kolejno:
+#
+# - czyta małą próbkę skoroszytu: 40 wierszy w dwóch arkuszach, z tymi samymi typami komórek,
+# - sprawdza kolumny, typy i kody towarów,
+# - zapisuje i czyta cache w katalogu tymczasowym.
 #
 # <details>
 # <summary>Podpowiedź 1: kierunek</summary>
@@ -214,15 +252,32 @@ raw.dtypes
 #
 # **Wejście:** `raw`: `pd.DataFrame`, surowa tabela z `load_raw`, z kolumnami `RAW_COLUMNS`.
 #
-# **Wynik:** funkcja niczego nie zwraca (`None`), gdy wszystkie reguły są spełnione. Przy pierwszej złamanej regule, w kolejności z docstringu, zgłasza `ValueError`. Komunikat mówi, która reguła jest złamana. Przy regule 1 wymienia kolumny. Przy regułach 2-7 podaje liczbę wierszy, które ją łamią, a przy regule 8 liczbę faktur, jako liczbę w tekście. Możesz dodać przykład pierwszego złego wiersza. Sprawdzasz dokładnie osiem reguł z docstringu: anulowanie z dodatnią ilością i faktura bez klienta są dozwolone.
+# **Wynik:** funkcja niczego nie zwraca (`None`), gdy wszystkie reguły są spełnione. Przy pierwszej złamanej regule, w kolejności z docstringu, zgłasza `ValueError`. Komunikat błędu:
 #
-# **Skorzystaj z:** stałych z góry pliku: `RAW_COLUMNS`, `REQUIRED_COLUMNS`, `INVOICE_PATTERN`, `CANCELLATION_PREFIX`, `ADJUSTMENT_PREFIX`. Z wykładu: sekcje "Braki" (`isna`, `any(axis=1)`), "Założenie to kod, który zgłasza błąd" (wzór maski i komunikatu, `.str.fullmatch`), "Narzędzia, których użyjesz w labie" (`groupby(...).nunique()`).
+# - mówi, która reguła jest złamana,
+# - przy regule 1 wymienia kolumny,
+# - przy regułach 2-7 podaje liczbę wierszy, które łamią regułę,
+# - przy regule 8 podaje liczbę faktur.
+#
+# Liczbę wierszy albo faktur podajesz jako liczbę w tekście. Możesz dodać przykład pierwszego złego wiersza. Sprawdzasz dokładnie osiem reguł z docstringu. Anulowanie z dodatnią ilością i faktura bez klienta są dozwolone.
+#
+# **Skorzystaj z:**
+#
+# - `RAW_COLUMNS` z góry pliku. Reguła 1 porównuje z tą listą kolumny `raw`.
+# - `REQUIRED_COLUMNS` z góry pliku. Kolumny, w których reguła 2 szuka braków.
+# - `INVOICE_PATTERN` z góry pliku. Wzorzec numeru faktury dla reguły 3.
+# - `CANCELLATION_PREFIX` z góry pliku. Prefiks anulowania dla reguły 6.
+# - `ADJUSTMENT_PREFIX` z góry pliku. Prefiks korekty dla reguły 7.
+# - `isna` i `any(axis=1)` z wykładu, sekcja "Braki". Razem znajdują wiersze z brakiem.
+# - wzoru maski i komunikatu z wykładu, sekcja "Założenie to kod, który zgłasza błąd".
+# - `.str.fullmatch` z tej samej sekcji. Sprawdza, czy cały numer faktury pasuje do wzorca.
+# - `groupby(...).nunique()` z wykładu, sekcja "Narzędzia, których użyjesz w labie". Liczy różne wartości w obrębie faktury.
 #
 # ### 06.2a Reguły 1-4: kolumny, braki, formaty
 #
 # **Kroki:**
 #
-# 1. Reguła 1: lista kolumn `raw` równa `RAW_COLUMNS`.
+# 1. Reguła 1: sprawdź, czy lista kolumn `raw` jest równa `RAW_COLUMNS`.
 # 2. Reguła 2: policz wiersze (nie komórki) z brakiem w którejś z `REQUIRED_COLUMNS`.
 # 3. Reguła 3: policz wiersze, w których numer faktury nie pasuje w całości do `INVOICE_PATTERN`. Liczysz wiersze, nie różne numery: trzy wiersze tej samej złej faktury to 3. Tylko reguła 8 liczy faktury.
 # 4. Reguła 4: policz kody towarów, które różnią się od siebie samych po usunięciu odstępów i zamianie na wielkie litery.
@@ -233,12 +288,17 @@ raw.dtypes
 #
 # **Kroki:**
 #
-# 1. Reguła 5: ilość równa 0.
-# 2. Reguła 6: ujemna ilość jest dozwolona, gdy faktura to anulowanie (`C`) albo gdy cena wynosi 0. Zły wiersz ma więc trzy cechy naraz: ilość ujemna, faktura nie zaczyna się od `C`, cena różna od 0. Na prawdziwym `raw` ta reguła ma dać 0 wierszy. Jeśli daje tysiące, pomyliłeś się w łączeniu trzech warunków: każdy warunek weź w nawias, a `~` postaw przed tym, który odwracasz.
-# 3. Reguła 7: cena ujemna, a faktura nie zaczyna się od `A`.
-# 4. Reguła 8: w obrębie jednej faktury więcej niż jeden klient albo więcej niż jeden kraj. Liczysz faktury, nie wiersze: grupuj po `invoice` i licz różne wartości w grupie.
+# 1. Reguła 5: policz wiersze z ilością równą 0.
+# 2. Reguła 6: policz wiersze z ujemną ilością, która nie jest dozwolona. Ujemna ilość jest dozwolona, gdy faktura to anulowanie (`C`) albo gdy cena wynosi 0. Zły wiersz ma więc trzy cechy naraz: ilość ujemna, faktura nie zaczyna się od `C`, cena różna od 0. Na prawdziwym `raw` ta reguła ma dać 0 wierszy. Jeśli daje tysiące, pomyliłeś się w łączeniu trzech warunków. Każdy warunek weź w nawias, a `~` postaw przed warunkiem, który odwracasz.
+# 3. Reguła 7: policz wiersze, w których cena jest ujemna, a faktura nie zaczyna się od `A`.
+# 4. Reguła 8: policz faktury, które mają więcej niż jednego klienta albo więcej niż jeden kraj. Liczysz faktury, nie wiersze. Grupuj po `invoice` i licz różne wartości w grupie.
 #
-# **Sprawdzenie 06.2a i 06.2b:** `check("06.2")` albo `uv run course check 06.2`. Sprawdzenie podaje próbkę prawdziwych danych, na której wszystkie reguły są spełnione, a potem małe ramki, z których każda łamie jedną regułę w trzech wierszach. Komunikat ma wtedy zawierać liczbę 3. Ta sama komórka uruchamia `check_raw(raw)` na całym pliku: brak wydruku i brak błędu znaczy, że reguły są spełnione.
+# **Sprawdzenie 06.2a i 06.2b:** `check("06.2")` albo `uv run course check 06.2`. Sprawdzenie podaje dwa rodzaje danych:
+#
+# - próbkę prawdziwych danych, na której wszystkie reguły są spełnione,
+# - małe ramki, z których każda łamie jedną regułę w trzech wierszach. Komunikat ma wtedy zawierać liczbę 3.
+#
+# Ta sama komórka uruchamia `check_raw(raw)` na całym pliku. Brak wydruku i brak błędu znaczy, że reguły są spełnione.
 #
 # <details>
 # <summary>Podpowiedź 1: kierunek</summary>
@@ -273,13 +333,16 @@ online_retail.check_raw(raw)
 # %% [markdown]
 # ## 06.3 Flagi zamiast usuwania
 #
-# **Cel:** opisać każdą linię czterema flagami (prawda albo fałsz), nic nie usuwając. Co zrobić z oflagowanymi liniami, zdecydujesz w 06.5, a do tego czasu możesz je policzyć i obejrzeć.
+# **Cel:** opisać każdą linię czterema flagami (prawda albo fałsz), nic nie usuwając. O tym, co zrobić z oflagowanymi liniami, zdecydujesz w 06.5. Do tego czasu możesz te linie policzyć i obejrzeć.
 #
 # **Gdzie:** `src/freshcast/warmup/lines.py`, funkcja `add_flags`.
 #
 # **Wejście:** `raw`: `pd.DataFrame`, surowa tabela z `load_raw` (w notebooku `raw`).
 #
-# **Wynik:** nowa `pd.DataFrame`: wszystkie kolumny `raw`, a za nimi cztery kolumny typu `bool`, w kolejności `FLAG_COLUMNS`. Te same wiersze, ta sama kolejność, ten sam indeks. `raw` zostaje bez zmian.
+# **Wynik:** nowa `pd.DataFrame`. `raw` zostaje bez zmian. Nowa tabela ma:
+#
+# - wszystkie kolumny `raw`, a za nimi cztery kolumny typu `bool`, w kolejności `FLAG_COLUMNS`,
+# - te same wiersze, w tej samej kolejności, z tym samym indeksem.
 #
 # | Flaga | `True`, gdy |
 # |---|---|
@@ -288,14 +351,23 @@ online_retail.check_raw(raw)
 # | `is_missing_customer` | brak `customer_id` |
 # | `is_bad_price` | cena wynosi 0 albo mniej |
 #
-# **Skorzystaj z:** stałych `CANCELLATION_PREFIX` i `PRODUCT_CODE_PATTERN` z `online_retail.py`. W `lines.py` dopisz je do importu z `freshcast.warmup.online_retail` na górze pliku. Flaga `is_non_product` to umowny podział według wzorca kodu, nie pewność, że linia nie dotyczy żadnego towaru. Z wykładu: `assign` (sekcja ".loc, assign i łańcuchy"), `.str.startswith`, `.str.fullmatch`, `isna`, `~` (zaprzeczenie maski).
+# **Skorzystaj z:**
+#
+# - `CANCELLATION_PREFIX` z `online_retail.py`. Rozpoznaje anulowanie po numerze faktury.
+# - `PRODUCT_CODE_PATTERN` z `online_retail.py`. Wzorzec kodu dla flagi `is_non_product`.
+# - `assign` z wykładu, sekcja ".loc, assign i łańcuchy". Dodaje cztery flagi w nowej tabeli.
+# - `.str.startswith`, `.str.fullmatch`, `isna` i `~` (zaprzeczenie maski) z wykładu. Razem budują maski flag.
+#
+# Obie stałe dopisz w `lines.py` do importu z `freshcast.warmup.online_retail` na górze pliku. Flaga `is_non_product` to umowny podział według wzorca kodu, nie pewność, że linia nie dotyczy żadnego towaru.
 #
 # **Kroki:**
 #
 # 1. Dla każdej flagi zbuduj maskę z tabeli powyżej.
-# 2. Zwróć `raw.assign(...)` z czterema maskami. Nie przypisuj do `raw[...]`: to zmieniłoby tabelę wołającego.
+# 2. Zwróć `raw.assign(...)` z czterema maskami. Nie przypisuj do `raw[...]`, bo takie przypisanie zmieniłoby tabelę wołającego.
 #
-# **Sprawdzenie:** `check("06.3")` albo `uv run course check 06.3`. Sprawdzenie podaje 11 ręcznie napisanych linii (między innymi kody `POST`, `DCGS0058`, `85123ABC`, `8512`, `79323LP`) i porównuje flagi z oczekiwanymi. Komórka pod nim tworzy `flagged` na całym pliku i wypisuje liczbę `True` w każdej fladze: porównaj z liczbami w docstringu `add_flags`.
+# **Sprawdzenie:** `check("06.3")` albo `uv run course check 06.3`. Sprawdzenie podaje 11 ręcznie napisanych linii i porównuje ich flagi z oczekiwanymi. Wśród tych linii są między innymi kody `POST`, `DCGS0058`, `85123ABC`, `8512`, `79323LP`.
+#
+# Komórka pod sprawdzeniem tworzy `flagged` na całym pliku i wypisuje liczbę `True` w każdej fladze. Porównaj te liczby z liczbami w docstringu `add_flags`.
 #
 # <details>
 # <summary>Podpowiedź 1: kierunek</summary>
@@ -360,16 +432,30 @@ flagged.loc[negative & ~flagged["is_cancellation"], ["invoice", "stock_code", "d
 #
 # **Wejście:** `raw`: `pd.DataFrame` z kolumnami `invoice`, `sheet` i `quantity`, z flagami albo bez. W notebooku `flagged` z 06.3.
 #
-# **Wynik:** nowa `pd.DataFrame` z tymi samymi kolumnami, bez wierszy późniejszych kopii, w pierwotnej kolejności, z indeksem 0..n-1. Z faktury, która jest w kilku arkuszach, zostaje kopia z arkusza pierwszego według nazwy (`"Year 2009-2010"` przed `"Year 2010-2011"`), także wtedy, gdy jego wiersze stoją w tabeli później. Tabela bez takich faktur wraca z wszystkimi wierszami. `ValueError`, gdy kopie jednej faktury różnią się liczbą linii albo sumą ilości: wtedy to nie są kopie. Komunikat podaje, ile faktur.
+# **Wynik:** nowa `pd.DataFrame` z tymi samymi kolumnami, bez wierszy późniejszych kopii. Wiersze stoją w pierwotnej kolejności, z indeksem 0..n-1. Które wiersze zostają:
 #
-# **Skorzystaj z:** z wykładu: sekcja "Narzędzia, których użyjesz w labie" (`groupby(...)["sheet"].nunique()` i `transform`), `.loc[maska]`, `reset_index(drop=True)` (sekcja "Series i DataFrame").
+# - Z faktury, która jest w kilku arkuszach, zostaje kopia z arkusza pierwszego według nazwy (`"Year 2009-2010"` przed `"Year 2010-2011"`). Ta kopia zostaje także wtedy, gdy jej wiersze stoją w tabeli później.
+# - Tabela bez takich faktur wraca z wszystkimi wierszami.
+#
+# `ValueError`, gdy kopie jednej faktury różnią się:
+#
+# - liczbą linii,
+# - sumą ilości.
+#
+# Takie wiersze nie są wtedy kopiami. Komunikat podaje, ile jest takich faktur.
+#
+# **Skorzystaj z:**
+#
+# - `groupby(...)["sheet"].nunique()` i `transform` z wykładu, sekcja "Narzędzia, których użyjesz w labie". Razem dają każdemu wierszowi wynik policzony dla jego faktury.
+# - `.loc[maska]`. Zostawia wiersze, które nie są późniejszą kopią.
+# - `reset_index(drop=True)` z wykładu, sekcja "Series i DataFrame". Nadaje nowy indeks.
 #
 # **Kroki:**
 #
-# 1. Dla każdego wiersza ustal, w ilu arkuszach jest jego faktura. Więcej niż jeden: wiersz należy do wspólnej faktury.
+# 1. Dla każdego wiersza ustal, w ilu arkuszach jest jego faktura. Jeśli arkuszy jest więcej niż jeden, wiersz należy do wspólnej faktury.
 # 2. Dla każdego wiersza ustal pierwszy według nazwy arkusz jego faktury. Wiersz wspólnej faktury z innego arkusza to późniejsza kopia.
-# 3. Sprawdź, że kopie są kopiami: dla każdej wspólnej faktury i każdego arkusza policz linie i sumę ilości. W obrębie faktury te liczby muszą być takie same we wszystkich arkuszach. Policz faktury, w których nie są, i zgłoś `ValueError`.
-# 4. Zostaw wiersze, które nie są późniejszą kopią, i nadaj nowy indeks.
+# 3. Sprawdź, że kopie są kopiami. Dla każdej wspólnej faktury i każdego arkusza policz linie i sumę ilości. W obrębie faktury te liczby muszą być takie same we wszystkich arkuszach. Policz faktury, w których liczby się różnią, i zgłoś `ValueError`.
+# 4. Zostaw wiersze, które nie są późniejszą kopią. Potem nadaj nowy indeks.
 #
 # ### 06.4b `flag_repeat_lines`
 #
@@ -379,11 +465,20 @@ flagged.loc[negative & ~flagged["is_cancellation"], ["invoice", "stock_code", "d
 #
 # **Wejście:** `raw`: `pd.DataFrame`, surowa tabela z flagami albo bez. W notebooku `deduplicated` z 06.4c.
 #
-# **Wynik:** nowa `pd.DataFrame`: kolumny `raw` i za nimi kolumna `is_repeat_line` (`bool`). `True` dla każdego wiersza, który ma te same wartości we wszystkich ośmiu `LINE_COLUMNS` co któryś wcześniejszy wiersz. Pierwsze wystąpienie ma `False`. Kolumna `sheet` nie jest porównywana. Brak w tej samej kolumnie liczy się jako równy brakowi. Te same wiersze, kolejność i indeks.
+# **Wynik:** nowa `pd.DataFrame` z kolumnami `raw` i za nimi kolumną `is_repeat_line` (`bool`). Te same wiersze, kolejność i indeks. Wartości `is_repeat_line`:
 #
-# **Skorzystaj z:** `LINE_COLUMNS` (osiem kolumn linii, bez `sheet`, zdefiniowane na górze `lines.py`), `REPEAT_FLAG` (nazwa kolumny `"is_repeat_line"`, do zaimportowania z `online_retail.py` albo wpisania wprost), `duplicated` z `subset` i `keep` (wykład, sekcja "Duplikaty").
+# - `True` dla każdego wiersza, który ma te same wartości we wszystkich ośmiu `LINE_COLUMNS` co któryś wcześniejszy wiersz,
+# - `False` dla pierwszego wystąpienia.
 #
-# **Sprawdzenie 06.4a i 06.4b:** `check("06.4")` albo `uv run course check 06.4`. Sprawdzenie buduje dwa arkusze po kilka linii: faktura 500001 jest w obu, a w każdym arkuszu jest też linia powtórzona. Z 10 wierszy ma zostać 7.
+# Kolumna `sheet` nie jest porównywana. Brak w tej samej kolumnie liczy się jako równy brakowi.
+#
+# **Skorzystaj z:**
+#
+# - `LINE_COLUMNS`, zdefiniowane na górze `lines.py`. Osiem kolumn linii, bez `sheet`.
+# - `REPEAT_FLAG` z `online_retail.py`. To nazwa kolumny `"is_repeat_line"`. Zaimportuj stałą albo wpisz nazwę wprost.
+# - `duplicated` z `subset` i `keep` z wykładu, sekcja "Duplikaty". Oznacza wiersze powtórzone.
+#
+# **Sprawdzenie 06.4a i 06.4b:** `check("06.4")` albo `uv run course check 06.4`. Sprawdzenie buduje dwa arkusze po kilka linii. Faktura 500001 jest w obu arkuszach, a w każdym arkuszu jest też linia powtórzona. Z 10 wierszy `drop_sheet_overlap` ma zostawić 7.
 #
 # <details>
 # <summary>Podpowiedź 1: kierunek</summary>
@@ -428,9 +523,17 @@ check("06.4")
 # - `all_duplicates`: `int`, ile wierszy `raw` powtarza wcześniejszy wiersz we wszystkich kolumnach oprócz `sheet`. Tyle usunęłoby `drop_duplicates()` na kolumnach linii.
 # - `deduplicated`: `pd.DataFrame`, `flagged` bez kopii z eksportu. Ma kolumny `flagged`, razem z flagami. Używasz jej w 06.5 i 06.8.
 # - `copies`: `int`, ile wierszy usunęło `drop_sheet_overlap`.
-# - `repeats`: `int`, ile wierszy `deduplicated` oznaczyłoby `flag_repeat_lines` jako powtórzone (`True` w `is_repeat_line`). Flagę liczysz na boku, w osobnym wyniku: sama `deduplicated` zostaje z kolumnami `flagged`, bez `is_repeat_line`.
+# - `repeats`: `int`, ile wierszy `deduplicated` oznaczyłoby `flag_repeat_lines` jako powtórzone (`True` w `is_repeat_line`). Flagę liczysz na boku, w osobnym wyniku. Sama `deduplicated` zostaje z kolumnami `flagged`, bez `is_repeat_line`.
 #
-# **Skorzystaj z:** `drop_sheet_overlap` (06.4a) i `flag_repeat_lines` (06.4b) przez moduł `lines`, `lines.LINE_COLUMNS`, `online_retail.REPEAT_FLAG`, `duplicated(subset=...)`, `len`. Liczby zamieniasz na zwykły `int` przez `int(...)`.
+# **Skorzystaj z:**
+#
+# - `lines.drop_sheet_overlap` z 06.4a. Usuwa kopie z eksportu.
+# - `lines.flag_repeat_lines` z 06.4b. Oznacza powtórzenia w źródle.
+# - `lines.LINE_COLUMNS` i `duplicated(subset=...)`. Razem znajdują identyczne wiersze `raw`.
+# - `online_retail.REPEAT_FLAG`. To nazwa kolumny z flagą powtórzenia.
+# - `len`. Liczy wiersze.
+#
+# Liczby zamieniasz na zwykły `int` przez `int(...)`.
 #
 # **Sprawdzenie:** komórka wypisuje trzy liczby, a następna sprawdza asercjami, że kopie i powtórzenia razem dają wszystkie identyczne wiersze.
 
@@ -475,19 +578,37 @@ print("Zgadza się.")
 # | `units_returned` | liczba całkowita | 0 | minus ilość, czyli liczba dodatnia |
 # | `revenue` | `float64` | ilość razy cena, w funtach | 0.0 |
 #
-# Zostaje linia, która jest towarem i jest albo sprzedażą (nie anulowanie, cena powyżej 0), albo zwrotem (anulowanie). Reszta odpada: nietowary, wydania za darmo i odpisy magazynowe. Ujemna ilość poza fakturą C to odpis, a nie zwrot. Gdy odpadną wszystkie linie, wynik ma te kolumny i zero wierszy. `ValueError`, gdy zachowana linia sprzedaży ma ilość 0 albo mniej, albo zachowany zwrot ma ilość 0 albo więcej. Komunikat podaje, ile takich linii.
+# Zostaje linia, która jest towarem i jest jednym z dwóch rodzajów:
 #
-# **Skorzystaj z:** flag z 06.3. Z wykładu: `.loc[maska]`, `&`, `|`, `~` (sekcja ".loc, assign i łańcuchy"), `.dt.normalize()` i `Series.where` (sekcja "Narzędzia, których użyjesz w labie"), `reset_index(drop=True)`.
+# - sprzedażą: nie jest anulowaniem i ma cenę powyżej 0,
+# - zwrotem: jest anulowaniem.
+#
+# Reszta odpada: nietowary, wydania za darmo i odpisy magazynowe. Ujemna ilość poza fakturą C to odpis, a nie zwrot. Gdy odpadną wszystkie linie, wynik ma te kolumny i zero wierszy.
+#
+# `ValueError`, gdy:
+#
+# - zachowana linia sprzedaży ma ilość 0 albo mniej,
+# - zachowany zwrot ma ilość 0 albo więcej.
+#
+# Komunikat podaje, ile jest takich linii.
+#
+# **Skorzystaj z:**
+#
+# - flag z 06.3. Z nich budujesz maskę linii, które zostają.
+# - `.loc[maska]`, `&`, `|` i `~` z wykładu, sekcja ".loc, assign i łańcuchy". Razem wybierają linie, które zostają.
+# - `.dt.normalize()` z wykładu, sekcja "Narzędzia, których użyjesz w labie". Daje dzień faktury o północy.
+# - `Series.where` z tej samej sekcji. Wstawia ilość albo 0 zależnie od rodzaju linii.
+# - `reset_index(drop=True)`. Nadaje nowy indeks.
 #
 # **Kroki:**
 #
 # 1. Zbuduj maskę linii, które zostają, z trzech flag.
 # 2. Wybierz te linie.
-# 3. Wśród nich policz sprzedaże z ilością nie większą od 0 i zwroty z ilością nie mniejszą od 0. Którakolwiek liczba większa od 0: `ValueError`. Sprawdzasz dopiero po wyborze, bo w pliku jest anulowanie z dodatnią ilością na kodzie `M` (nietowar), które ma po prostu odpaść.
-# 4. Zbuduj pięć kolumn według tabeli. Każda z miar to ilość (albo ilość razy cena) tam, gdzie linia jest danego rodzaju, a 0 gdzie indziej.
+# 3. Wśród nich policz sprzedaże z ilością nie większą od 0 i zwroty z ilością nie mniejszą od 0. Jeśli którakolwiek liczba jest większa od 0, zgłoś `ValueError`. Sprawdzasz dopiero po wyborze linii. W pliku jest anulowanie z dodatnią ilością na kodzie `M`, czyli na nietowarze, i to anulowanie ma odpaść.
+# 4. Zbuduj pięć kolumn według tabeli. Każda miara to ilość albo ilość razy cena tam, gdzie linia jest danego rodzaju, a 0 gdzie indziej.
 # 5. Zwróć tylko te pięć kolumn, w tej kolejności, z nowym indeksem.
 #
-# **Sprawdzenie:** `check("06.5")` albo `uv run course check 06.5`. Z 7 ręcznie napisanych linii mają zostać 3: sprzedaż, zwrot i sprzedaż bez klienta. Komórka pod nim porównuje zwroty z faktur C z wynikiem, który dałoby liczenie każdej ujemnej ilości jako zwrotu.
+# **Sprawdzenie:** `check("06.5")` albo `uv run course check 06.5`. Z 7 ręcznie napisanych linii mają zostać 3: sprzedaż, zwrot i sprzedaż bez klienta. Komórka pod sprawdzeniem porównuje zwroty z faktur C z wynikiem, który dałoby liczenie każdej ujemnej ilości jako zwrotu.
 #
 # <details>
 # <summary>Podpowiedź 1: kierunek</summary>
@@ -541,9 +662,22 @@ print(f"Gdyby każda ujemna ilość była zwrotem: {naive_returns:,} szt.")
 #
 # **Wejście:** `lines`: `pd.DataFrame` z `product_lines`, z kolumnami `DAILY_COLUMNS`. Ten sam towar i dzień może mieć wiele linii. W notebooku `products` z 06.5.
 #
-# **Wynik:** nowa `pd.DataFrame` z kolumnami `DAILY_COLUMNS`, jeden wiersz na parę (`stock_code`, `date`), która występuje w `lines`, posortowana po `stock_code`, potem po `date`, z indeksem 0..n-1. Miary to sumy i zachowują typ: sztuki całkowite, przychód zmiennoprzecinkowy. Linia z brakiem w `stock_code` albo `date` nie znika: tworzy własny wiersz z brakiem w kluczu, żeby `check_daily` mogło go odrzucić.
+# **Wynik:** nowa `pd.DataFrame` z kolumnami `DAILY_COLUMNS`. Tabela ma:
 #
-# **Skorzystaj z:** `PRODUCT_KEY` (`["stock_code", "date"]`) i `MEASURE_COLUMNS` (trzy miary) z `online_retail.py`. `daily.py` nie ma importów stałych: dopisz je na górze pliku. Z wykładu: `groupby` z `dropna=False` (sekcja "Uzgodnienie po groupby"). `as_index=False` zostawia klucz jako zwykłe kolumny, a `groupby` domyślnie sortuje grupy po kluczu.
+# - jeden wiersz na parę (`stock_code`, `date`), która występuje w `lines`,
+# - wiersze posortowane po `stock_code`, potem po `date`, z indeksem 0..n-1,
+# - miary, które są sumami i zachowują typ: sztuki całkowite, przychód zmiennoprzecinkowy.
+#
+# Linia z brakiem w `stock_code` albo `date` nie znika. Tworzy własny wiersz z brakiem w kluczu, żeby `check_daily` mogło ten wiersz odrzucić.
+#
+# **Skorzystaj z:**
+#
+# - `PRODUCT_KEY` z `online_retail.py`, czyli `["stock_code", "date"]`. Klucz grupowania.
+# - `MEASURE_COLUMNS` z `online_retail.py`, czyli trzy miary. Kolumny do zsumowania.
+# - `groupby` z `dropna=False` z wykładu, sekcja "Uzgodnienie po groupby". Grupuje linie i nie gubi wierszy z brakiem w kluczu.
+# - `as_index=False`. Zostawia klucz jako zwykłe kolumny.
+#
+# `daily.py` nie ma importów stałych. Dopisz je na górze pliku. `groupby` domyślnie sortuje grupy po kluczu.
 #
 # ### 06.6b `check_daily`
 #
@@ -553,18 +687,42 @@ print(f"Gdyby każda ujemna ilość była zwrotem: {naive_returns:,} szt.")
 #
 # **Wejście:** `daily`: `pd.DataFrame`, kandydat na tabelę dzienną.
 #
-# **Wynik:** `None`, gdy kontrakt jest spełniony. Inaczej `ValueError` przy pierwszej złamanej regule z docstringu, w tej kolejności: kolumny, typy, braki, ujemne miary, godzina w dacie, powtórzony klucz, sortowanie, wiersz bez sprzedaży i bez zwrotu. Komunikat podaje liczbę złych wierszy, oprócz reguł 1, 2 i 7.
+# **Wynik:** `None`, gdy kontrakt jest spełniony. Inaczej `ValueError` przy pierwszej złamanej regule z docstringu. Reguły idą w tej kolejności:
 #
-# **Skorzystaj z:** gotowej funkcji pomocniczej `_wrong_dtypes(daily)` nad `check_daily`: zwraca listę kolumn o złym typie. Przyjmuje każdą szerokość liczby całkowitej i zmiennoprzecinkowej (na przykład `int32`), a tabela z `daily_totals` i tak ma `int64` i `float64`. `DAILY_COLUMNS`, `MEASURE_COLUMNS`, `PRODUCT_KEY`. Wzoru reguł z `check_raw` (06.2). Z wykładu i labu: `isna().any(axis=1)`, `.dt.normalize()`, `duplicated(subset=...)`, `sort_values`.
+# 1. kolumny,
+# 2. typy,
+# 3. braki,
+# 4. ujemne miary,
+# 5. godzina w dacie,
+# 6. powtórzony klucz,
+# 7. sortowanie,
+# 8. wiersz bez sprzedaży i bez zwrotu.
+#
+# Komunikat podaje liczbę złych wierszy, oprócz reguł 1, 2 i 7.
+#
+# **Skorzystaj z:**
+#
+# - `_wrong_dtypes(daily)`, gotowej funkcji pomocniczej nad `check_daily`. Zwraca listę kolumn o złym typie. Przyjmuje każdą szerokość liczby całkowitej i zmiennoprzecinkowej, na przykład `int32`. Tabela z `daily_totals` i tak ma `int64` i `float64`.
+# - `DAILY_COLUMNS`, `MEASURE_COLUMNS` i `PRODUCT_KEY`. Razem opisują kontrakt tabeli dziennej.
+# - wzoru reguł z `check_raw` z 06.2.
+# - `isna().any(axis=1)` z wykładu i labu. Znajduje wiersze z brakiem.
+# - `.dt.normalize()` z wykładu i labu. Ucina godzinę z daty.
+# - `duplicated(subset=...)` z wykładu i labu. Znajduje powtórzony klucz.
+# - `sort_values` z wykładu i labu. Daje kolejność, z którą porównujesz tabelę.
 #
 # **Kroki:**
 #
-# 1. Reguły 1 i 2: lista kolumn, potem typy przez `_wrong_dtypes`.
-# 2. Reguły 3-6: każda to maska złych wierszy, jej suma i `raise`. Data "bez godziny" to data równa sobie po `.dt.normalize()`.
-# 3. Reguła 7: weź kolumny klucza i porównaj je z tymi samymi kolumnami po `sort_values`. Różnią się, gdy choć jeden wiersz stoi nie na swoim miejscu. Ten błąd nie ma liczby w komunikacie.
-# 4. Reguła 8: zły wiersz to taki, w którym suma sprzedanych i zwróconych sztuk wynosi 0 albo mniej. Policz takie wiersze.
+# 1. Reguły 1 i 2: sprawdź listę kolumn, potem typy przez `_wrong_dtypes`.
+# 2. Reguły 3-6: dla każdej reguły zbuduj maskę złych wierszy, policz jej sumę i użyj `raise`. Data "bez godziny" to data równa sobie po `.dt.normalize()`.
+# 3. Reguła 7: weź kolumny klucza i porównaj je z tymi samymi kolumnami po `sort_values`. Kolumny różnią się, gdy choć jeden wiersz stoi nie na swoim miejscu. Ten błąd nie ma liczby w komunikacie.
+# 4. Reguła 8: policz wiersze, w których suma sprzedanych i zwróconych sztuk wynosi 0 albo mniej.
 #
-# **Sprawdzenie 06.6a i 06.6b:** `check("06.6")` albo `uv run course check 06.6`. Z 6 linii ma powstać 4 wiersze. Potem sprawdzenie psuje poprawną tabelę na jedenaście sposobów i oczekuje `ValueError` przy każdym. Komórki pod nim liczą tabelę na całym pliku i uzgadniają sumy przed i po `groupby`.
+# **Sprawdzenie 06.6a i 06.6b:** `check("06.6")` albo `uv run course check 06.6`. Sprawdzenie ma dwie części:
+#
+# - Z 6 linii mają powstać 4 wiersze.
+# - Sprawdzenie psuje poprawną tabelę na jedenaście sposobów i oczekuje `ValueError` przy każdym.
+#
+# Komórki pod sprawdzeniem liczą tabelę na całym pliku i uzgadniają sumy przed `groupby` i po nim.
 #
 # <details>
 # <summary>Podpowiedź 1: kierunek</summary>
@@ -618,14 +776,29 @@ print("Zgadza się.")
 #
 # **Wejście:** `cache`: `Path` pliku Parquet z `build_cache`. W notebooku `CACHE`.
 #
-# **Wynik:** `pd.DataFrame` spełniająca `check_daily`. `FileNotFoundError`, gdy cache nie istnieje. `ValueError`, gdy surowe dane łamią regułę albo wynik łamie kontrakt.
+# **Wynik:** `pd.DataFrame` spełniająca `check_daily`.
 #
-# **Skorzystaj z:** funkcji z 06.1-06.6: `load_raw`, `check_raw` (z `online_retail.py`), `add_flags`, `drop_sheet_overlap`, `product_lines` (z `lines.py`), a z tego pliku `daily_totals` i `check_daily`. Importy z dwóch pierwszych modułów dopisujesz na górze `daily.py`. `pipe` z wykładu (sekcja ".loc, assign i łańcuchy").
+# Błędy:
+#
+# - `FileNotFoundError`, gdy cache nie istnieje,
+# - `ValueError`, gdy surowe dane łamią regułę,
+# - `ValueError`, gdy wynik łamie kontrakt.
+#
+# **Skorzystaj z:**
+#
+# - `load_raw` z 06.1c, z `online_retail.py`. Wczytuje cache.
+# - `check_raw` z 06.2, z `online_retail.py`. Sprawdza reguły surowej tabeli.
+# - `add_flags`, `drop_sheet_overlap` i `product_lines` z 06.3-06.5, z `lines.py`. Kolejne kroki łańcucha.
+# - `daily_totals` z 06.6a, z tego pliku. Ostatni krok łańcucha.
+# - `check_daily` z 06.6b, z tego pliku. Sprawdza kontrakt wyniku.
+# - `pipe` z wykładu, sekcja ".loc, assign i łańcuchy". Łączy kroki w łańcuch.
+#
+# Importy z `online_retail.py` i `lines.py` dopisujesz na górze `daily.py`.
 #
 # **Kroki:**
 #
 # 1. Wczytaj cache i sprawdź reguły surowej tabeli.
-# 2. Zbuduj łańcuch `pipe`: flagi, usunięcie kopii, linie towarowe, sumy dzienne. `flag_repeat_lines` nie wchodzi do łańcucha: powtórzenia zostają w danych.
+# 2. Zbuduj łańcuch `pipe`: flagi, usunięcie kopii, linie towarowe, sumy dzienne. `flag_repeat_lines` nie wchodzi do łańcucha, bo powtórzenia zostają w danych.
 # 3. Sprawdź kontrakt i zwróć tabelę.
 #
 # ### 06.7b `save_daily` i `load_daily`
@@ -634,13 +807,40 @@ print("Zgadza się.")
 #
 # **Gdzie:** `daily.py`, funkcje `save_daily` i `load_daily`.
 #
-# **Wejście:** `save_daily(daily, path)`: tabela dzienna i `Path` pliku Parquet. `load_daily(path)`: `Path` pliku zapisanego przez `save_daily`. W notebooku ścieżka to `paths.ONLINE_RETAIL_DAILY`, czyli `data/processed/online_retail_daily.parquet`.
+# **Wejście:**
 #
-# **Wynik:** `save_daily` najpierw sprawdza kontrakt (zła tabela: `ValueError` i żaden plik nie powstaje), potem tworzy brakujące katalogi, zapisuje bez indeksu i zwraca `path`. `load_daily` zwraca tabelę równą zapisanej. `FileNotFoundError`, gdy pliku nie ma, `ValueError`, gdy plik łamie kontrakt.
+# - `save_daily(daily, path)`: tabela dzienna i `Path` pliku Parquet.
+# - `load_daily(path)`: `Path` pliku zapisanego przez `save_daily`.
 #
-# **Skorzystaj z:** `check_daily` (06.6b), `to_parquet(..., index=False)`, `pd.read_parquet`, `mkdir`, `is_file` (wykład, "Zapis i odczyt Parquet"). Wzór masz w `build_cache` i `load_raw` (06.1b, 06.1c).
+# W notebooku ścieżka to `paths.ONLINE_RETAIL_DAILY`, czyli `data/processed/online_retail_daily.parquet`.
 #
-# **Sprawdzenie 06.7a i 06.7b:** `check("06.7")` albo `uv run course check 06.7`. Sprawdzenie buduje tabelę z próbki cache (1263 wiersze), porównuje liczby wierszy, towarów i sztuk ze zmierzonymi, a potem zapisuje i czyta plik w katalogu tymczasowym. Komórka pod nim buduje tabelę z całego pliku, zapisuje ją i wypisuje `True` ze ścieżką, gdy odczyt daje tę samą tabelę.
+# **Wynik:** `save_daily` robi kolejno trzy rzeczy:
+#
+# - sprawdza kontrakt. Zła tabela daje `ValueError` i żaden plik nie powstaje,
+# - tworzy brakujące katalogi,
+# - zapisuje tabelę bez indeksu i zwraca `path`.
+#
+# `load_daily` zwraca tabelę równą zapisanej. `load_daily` zgłasza:
+#
+# - `FileNotFoundError`, gdy pliku nie ma,
+# - `ValueError`, gdy plik łamie kontrakt.
+#
+# **Skorzystaj z:**
+#
+# - `check_daily` z 06.6b. Sprawdza kontrakt przed zapisem i po odczycie.
+# - `to_parquet(..., index=False)` z wykładu, sekcja "Zapis i odczyt Parquet". Zapisuje tabelę bez indeksu.
+# - `pd.read_parquet` z tej samej sekcji. Czyta plik.
+# - `mkdir` z tej samej sekcji. Tworzy brakujące katalogi.
+# - `is_file` z tej samej sekcji. Sprawdza, czy plik istnieje.
+# - `build_cache` i `load_raw` z 06.1b i 06.1c. To wzór zapisu i odczytu.
+#
+# **Sprawdzenie 06.7a i 06.7b:** `check("06.7")` albo `uv run course check 06.7`. Sprawdzenie kolejno:
+#
+# - buduje tabelę z próbki cache, czyli z 1263 wierszy linii faktur,
+# - porównuje liczby wierszy, towarów i sztuk ze zmierzonymi,
+# - zapisuje i czyta plik w katalogu tymczasowym.
+#
+# Komórka pod sprawdzeniem buduje tabelę z całego pliku i zapisuje ją. Gdy odczyt daje tę samą tabelę, komórka wypisuje `True` ze ścieżką.
 #
 # <details>
 # <summary>Podpowiedź 1: kierunek</summary>
@@ -680,13 +880,25 @@ print(daily.load_daily(paths.ONLINE_RETAIL_DAILY).equals(built), paths.ONLINE_RE
 # %% [markdown]
 # ## 06.8 Eksploracja
 #
-# Bez sprawdzeń. Przy pytaniach 1-4 policz coś w komórce pod spodem i odpowiedz dwoma, trzema zdaniami, z liczbami, w miejscu *Twoja odpowiedź*. Korzystasz ze zmiennych z wcześniejszych zadań: `deduplicated` (06.4c), `built` (06.7).
+# Bez sprawdzeń. Przy pytaniach 1-4 policz coś w komórce pod pytaniem. Potem odpowiedz dwoma albo trzema zdaniami, z liczbami, w miejscu *Twoja odpowiedź*. Korzystasz ze zmiennych z wcześniejszych zadań: `deduplicated` (06.4c), `built` (06.7).
 #
 # **1. Czy powtórzona linia to błąd?** Porównaj powtórzone linie z resztą: jaki mają udział w sztukach i przychodzie? Czy są w obu kopiach nakładających się faktur?
 #
-# - **Gdzie:** komórka pod pytaniem. Zmienne `sale_lines`, `units` i `revenue` utwórz pod tymi nazwami: użyjesz ich w pytaniu 2.
-# - **Wynik:** wydruk dwóch udziałów (ułamek 0-1, wypisany jako procent): linii z `is_repeat_line` (tylko wystąpienia po pierwszym) w sztukach i w przychodzie wszystkich linii sprzedaży `deduplicated`. Po drodze `sale_lines`: `pd.DataFrame`, linie sprzedaży towarów (nie anulowanie, towar, cena powyżej 0) z kolumną `is_repeat_line`; `units`: `pd.Series`, ich `quantity`; `revenue`: `pd.Series`, ilość razy cena.
-# - **Skorzystaj z:** `lines.flag_repeat_lines(deduplicated)`, flag z 06.3, `online_retail.REPEAT_FLAG`, maski w `.loc`. Udział to suma po maskowanych wierszach przez sumę wszystkich. Do drugiej części pytania wystarczy docstring `flag_repeat_lines`.
+# - **Gdzie:** komórka pod pytaniem. Zmienne `sale_lines`, `units` i `revenue` utwórz pod tymi nazwami. Użyjesz ich w pytaniu 2.
+# - **Wynik:** wydruk dwóch udziałów, każdy jako ułamek 0-1 wypisany w procentach. Liczysz udział linii z `is_repeat_line` (tylko wystąpienia po pierwszym) w sztukach i w przychodzie wszystkich linii sprzedaży `deduplicated`. Po drodze tworzysz trzy zmienne:
+#
+#   - `sale_lines`: `pd.DataFrame`, linie sprzedaży towarów (nie anulowanie, towar, cena powyżej 0) z kolumną `is_repeat_line`,
+#   - `units`: `pd.Series`, `quantity` tych linii,
+#   - `revenue`: `pd.Series`, ilość razy cena.
+#
+# - **Skorzystaj z:**
+#
+#   - `lines.flag_repeat_lines(deduplicated)`. Dodaje kolumnę `is_repeat_line`.
+#   - flag z 06.3. Wybierają linie sprzedaży towarów.
+#   - `online_retail.REPEAT_FLAG`. To nazwa kolumny z flagą powtórzenia.
+#   - masek w `.loc`.
+#
+#   Udział to suma po maskowanych wierszach przez sumę wszystkich. Do drugiej części pytania wystarczy docstring `flag_repeat_lines`.
 
 # %%
 # >>> SOLUTION 06.8
@@ -706,8 +918,20 @@ print(f"Udział powtórzeń: {units[is_repeat].sum() / units.sum():.2%} sztuk, {
 # **2. Kim są klienci bez identyfikatora?** Porównaj linie sprzedaży z klientem i bez: udział w liniach, sztukach i przychodzie, mediana ilości i ceny, kraj.
 #
 # - **Gdzie:** zmienna `summary` w komórce pod pytaniem. Linię `summary.round(3)` pod nią zostawiasz.
-# - **Wynik:** `pd.DataFrame` z dwoma wierszami, "z klientem" i "bez klienta", i kolumnami: `linie`, `sztuki`, `przychód` (udziały 0-1, w każdej kolumnie sumują się do 1), `mediana ilości`, `mediana ceny` (w funtach), `UK` (udział linii z krajem `"United Kingdom"`, 0-1).
-# - **Skorzystaj z:** `sale_lines`, `units`, `revenue` z pytania 1 i flagi `is_missing_customer`. Seria z maską grupuje się przez `groupby(maska)`: grupy to `False` i `True`. `pd.DataFrame({nazwa: seria, ...})` składa serie o tym samym indeksie w kolumny, a `rename(index={False: "z klientem", True: "bez klienta"})` nazywa wiersze.
+# - **Wynik:** `pd.DataFrame` z dwoma wierszami, "z klientem" i "bez klienta". Kolumny:
+#
+#   - `linie`, `sztuki`, `przychód`: udziały 0-1, w każdej kolumnie sumują się do 1,
+#   - `mediana ilości`,
+#   - `mediana ceny`, w funtach,
+#   - `UK`: udział linii z krajem `"United Kingdom"`, 0-1.
+#
+# - **Skorzystaj z:**
+#
+#   - `sale_lines`, `units` i `revenue` z pytania 1.
+#   - `is_missing_customer`, flagi z 06.3. Dzieli linie na dwie grupy.
+#   - `groupby(maska)`. Grupuje serię według maski. Grupy to `False` i `True`.
+#   - `pd.DataFrame({nazwa: seria, ...})`. Składa serie o tym samym indeksie w kolumny.
+#   - `rename(index={False: "z klientem", True: "bez klienta"})`. Nazywa wiersze.
 
 # %%
 # >>> SOLUTION 06.8
@@ -733,8 +957,20 @@ summary.round(3)
 # **3. Co znaczy brakujący dzień?** Ile z 739 dni kalendarzowych ma jakąkolwiek linię? Które dni tygodnia i które okresy roku są puste? Czy brak wiersza w tabeli dziennej to zerowy popyt?
 #
 # - **Gdzie:** komórka pod pytaniem.
-# - **Wynik:** wydruk: liczba dni, które mają choć jeden wiersz w `built` (sprzedaż albo zwrot towaru), na tle wszystkich dni kalendarza od pierwszej do ostatniej daty, liczba pustych dni według dnia tygodnia, lista pustych dni w grudniu i styczniu, bez sobót (soboty widać już w liczbie według dnia tygodnia). Wystarczy pierwszych 20.
-# - **Skorzystaj z:** kolumny `date` w `built` (06.7). `pd.date_range(start, end, freq="D")` daje wszystkie dni kalendarza między dwiema datami. `pd.DatetimeIndex(...)` robi indeks dat z kolumny unikalnych dat, a `a.difference(b)` zwraca daty z `a`, których nie ma w `b`. `.day_name()` daje nazwę dnia tygodnia, `.value_counts()` liczy wystąpienia.
+# - **Wynik:** wydruk trzech rzeczy:
+#
+#   - liczba dni, które mają choć jeden wiersz w `built` (sprzedaż albo zwrot towaru), na tle wszystkich dni kalendarza od pierwszej do ostatniej daty,
+#   - liczba pustych dni według dnia tygodnia,
+#   - lista pustych dni w grudniu i styczniu, bez sobót. Soboty widać już w liczbie według dnia tygodnia. Z listy wystarczy pierwszych 20.
+#
+# - **Skorzystaj z:**
+#
+#   - `date`, kolumny `built` z 06.7.
+#   - `pd.date_range(start, end, freq="D")`. Daje wszystkie dni kalendarza między dwiema datami.
+#   - `pd.DatetimeIndex(...)`. Robi indeks dat z kolumny unikalnych dat.
+#   - `a.difference(b)`. Zwraca daty z `a`, których nie ma w `b`.
+#   - `.day_name()`. Daje nazwę dnia tygodnia.
+#   - `.value_counts()`. Liczy wystąpienia.
 
 # %%
 # >>> SOLUTION 06.8
@@ -755,7 +991,14 @@ print("Puste dni w grudniu i styczniu:", [str(d.date()) for d in empty if d.mont
 #
 # - **Gdzie:** komórka pod pytaniem.
 # - **Wynik:** wydruk dla każdej z dwóch linii: kod towaru, ilość, data i godzina, a obok pierwsza późniejsza linia anulowania tego samego towaru (numer faktury, ilość, czas).
-# - **Skorzystaj z:** `deduplicated` (06.4c). `nlargest(2, "quantity")` zwraca dwa wiersze z największą ilością, `itertuples()` przechodzi po wierszach jak po krotkach z polami o nazwach kolumn. Anulowania tego samego towaru wybierasz maską: ten sam `stock_code`, `is_cancellation`, `invoice_date` nie wcześniejsza niż sprzedaż. `deduplicated` ma kolejność pliku, a plik idzie chronologicznie, więc pierwszy wiersz spełniający maskę to najwcześniejsze takie anulowanie. Przy równym czasie bierzesz ten, który stoi wyżej.
+# - **Skorzystaj z:**
+#
+#   - `deduplicated` z 06.4c.
+#   - `nlargest(2, "quantity")`. Zwraca dwa wiersze z największą ilością.
+#   - `itertuples()`. Przechodzi po wierszach jak po krotkach z polami o nazwach kolumn.
+#   - maski. Wybiera anulowania tego samego towaru: ten sam `stock_code`, `is_cancellation`, `invoice_date` nie wcześniejsza niż sprzedaż.
+#
+#   `deduplicated` ma kolejność pliku, a plik idzie chronologicznie. Pierwszy wiersz spełniający maskę to więc najwcześniejsze takie anulowanie. Przy równym czasie bierzesz anulowanie, które stoi wyżej.
 
 # %%
 # >>> SOLUTION 06.8
@@ -770,6 +1013,6 @@ for row in biggest.itertuples():
 # %% [markdown]
 # *Twoja odpowiedź:*
 #
-# **5. Czego nie wyczyściłeś i dlaczego?** Wymień co najmniej dwie rzeczy, które zostały w danych, i powiedz, co musiałoby się zmienić, żeby trzeba było się nimi zająć. Bez komórki z kodem: oprzyj się na docstringach i liczbach z pytań 1-4.
+# **5. Czego nie wyczyściłeś i dlaczego?** Wymień co najmniej dwie rzeczy, które zostały w danych, i powiedz, co musiałoby się zmienić, żeby trzeba było się nimi zająć. Bez komórki z kodem. Oprzyj się na docstringach i liczbach z pytań 1-4.
 #
 # *Twoja odpowiedź:*

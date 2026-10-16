@@ -26,7 +26,7 @@
 # Jak pracujesz:
 #
 # - Zadania w notebooku piszesz w komórce z `...` albo z `raise NotImplementedError`. Sprawdzenie przekazuje Twoją funkcję do `check`: `check("05.6", to_matrix)`, nazwa funkcji bez nawiasów.
-# - Zadania w pakiecie piszesz w pliku w edytorze, w miejscu `raise NotImplementedError("Zadanie 05.x")`. Zmienne i importy notebooka nie istnieją w plikach pakietu: czego potrzebujesz w pliku, importujesz na jego górze. Komórka `check("05.x")` w notebooku albo `uv run course check 05.x` w terminalu sprawdza to, co jest zapisane w pliku.
+# - Zadania w pakiecie piszesz w pliku w edytorze, w miejscu `raise NotImplementedError("Zadanie 05.x")`. Zmienne i importy notebooka nie istnieją w plikach pakietu. Czego potrzebujesz w pliku, importujesz na górze tego pliku. Komórka `check("05.x")` w notebooku albo `uv run course check 05.x` w terminalu sprawdza to, co jest zapisane w pliku.
 # - Docstring funkcji to dokładna umowa: co przyjmuje, co zwraca, kiedy zgłasza błąd. Tekst w notebooku mówi to samo prostszymi słowami.
 
 # %%
@@ -79,7 +79,7 @@ print(f"Dni: {dates[0]} .. {dates[-1]} ({len(dates)})")
 # | Zmienna | Kształt i typ | Co znaczy |
 # |---|---|---|
 # | `ids` | `(wiersze,)`, `int64` | identyfikator serii: `store_id * 1000 + product_id` |
-# | `day` | `(wiersze,)`, `int64` | numer dnia od 0 do 89; 0 to pierwsza data w `dates` |
+# | `day` | `(wiersze,)`, `int64` | numer dnia od 0 do 89, gdzie 0 to pierwsza data w `dates` |
 # | `dates` | `(90,)`, napisy (`object`) | daty w kolejności numerów dni |
 # | `sale` | `(wiersze,)`, `float64` | sprzedaż serii w tym dniu (`sale_amount`) |
 # | `stockout_hours` | `(wiersze,)`, `int32` | ile godzin między 6:00 a 22:00 produktu brakowało na półce, od 0 do 16 |
@@ -122,19 +122,36 @@ print(f"Równe dokładnie: {exact:.1%}, równe z tolerancją: {close:.1%}")
 # - `series`: `np.ndarray` jednowymiarowa, każdy identyfikator serii raz, rosnąco,
 # - `matrix`: `np.ndarray` o kształcie `(len(series), n_days)` i typie jak `values`. `matrix[i, d]` to wartość serii `series[i]` w dniu `d`.
 #
-# Tablice wejściowe zostają bez zmian. `ValueError`, gdy trzy tablice mają różne długości albo gdy któraś seria nie ma każdego dnia od 0 do `n_days - 1` dokładnie raz (brakuje dnia albo dzień jest dwa razy).
+# Tablice wejściowe zostają bez zmian.
 #
-# **Skorzystaj z:** sortowania i powtarzania tablic z wykładu (sekcja "Sortowanie i powtarzanie"): `np.lexsort`, `np.unique`, `np.arange`, `np.tile`, `np.array_equal`, `reshape`.
+# `ValueError`, gdy:
+#
+# - trzy tablice mają różne długości,
+# - któraś seria nie ma każdego dnia od 0 do `n_days - 1` dokładnie raz, czyli brakuje jej dnia albo ma dzień dwa razy.
+#
+# **Skorzystaj z:**
+#
+# - `np.lexsort` z wykładu, sekcja "Sortowanie i powtarzanie". Wyznacza kolejność wierszy.
+# - `np.unique` z tej samej sekcji. Daje listę serii.
+# - `np.arange` i `np.tile` z tej samej sekcji. Razem budują oczekiwany ciąg dni.
+# - `np.array_equal` z tej samej sekcji. Porównuje oczekiwany ciąg z posortowanymi dniami.
+# - `reshape` z tej samej sekcji. Układa posortowane wartości w macierz.
 #
 # **Kroki:**
 #
 # 1. Porównaj długości trzech tablic. Jeśli się różnią, zgłoś `ValueError` z tymi długościami w komunikacie.
 # 2. Wyznacz kolejność wierszy: najpierw według serii, w obrębie serii według dnia. `np.lexsort` przyjmuje krotkę kluczy, sortuje według ostatniego klucza, a remisy rozstrzyga poprzednim. Zwraca numery wierszy w nowej kolejności, nie same wartości.
-# 3. Wyznacz listę serii. `np.unique` zwraca każdą wartość raz, rosnąco. Jej długość to liczba wierszy macierzy.
-# 4. Sprawdź dni. W poprawnych danych po posortowaniu dni każdej serii idą 0, 1, ..., `n_days - 1`, seria po serii. Zbuduj taki oczekiwany ciąg (`np.arange` daje jeden blok, `np.tile` powtarza go dla każdej serii) i porównaj z posortowanymi dniami przez `np.array_equal`. Różnica oznacza brak albo powtórzenie dnia: `ValueError`. Samo liczenie wierszy na serię tego nie wykryje, bo seria z podwójnym dniem i brakującym dniem ma poprawną liczbę wierszy.
-# 5. Ułóż wartości w posortowanej kolejności i zmień ich kształt przez `reshape` na `(liczba serii, n_days)`. Indeksowanie tablicą numerów wierszy daje kopię, więc `values` się nie zmieni.
+# 3. Wyznacz listę serii. `np.unique` zwraca każdą wartość raz, rosnąco. Długość tej listy to liczba wierszy macierzy.
+# 4. Sprawdź dni. W poprawnych danych po posortowaniu dni każdej serii idą 0, 1, ..., `n_days - 1`, seria po serii. Zbuduj taki oczekiwany ciąg i porównaj go z posortowanymi dniami przez `np.array_equal`. `np.arange` daje jeden blok, a `np.tile` powtarza ten blok dla każdej serii. Jeśli ciągi się różnią, brakuje dnia albo dzień się powtarza. Wtedy zgłoś `ValueError`. Samo liczenie wierszy na serię tego nie wykryje, bo seria z podwójnym dniem i brakującym dniem ma poprawną liczbę wierszy.
+# 5. Ułóż wartości w posortowanej kolejności. Potem zmień ich kształt przez `reshape` na `(liczba serii, n_days)`. Indeksowanie tablicą numerów wierszy daje kopię, więc `values` się nie zmieni.
 #
-# **Sprawdzenie:** komórka z `check("05.6", to_matrix)` przekazuje do sprawdzenia samą funkcję (bez nawiasów). Sprawdzenie woła ją na małym przykładzie: dwie serie, trzy dni, wiersze pomieszane, oraz na danych z brakującym i z podwójnym dniem. Zaliczone zadanie wypisuje `✅ 05.6`.
+# **Sprawdzenie:** komórka z `check("05.6", to_matrix)` przekazuje do sprawdzenia samą funkcję, bez nawiasów. Sprawdzenie woła `to_matrix` na takich danych:
+#
+# - mały przykład: dwie serie, trzy dni, wiersze pomieszane,
+# - dane z brakującym dniem,
+# - dane z podwójnym dniem.
+#
+# Zaliczone zadanie wypisuje `✅ 05.6`.
 #
 # <details>
 # <summary>Podpowiedź 1: kierunek</summary>
@@ -207,7 +224,7 @@ check("05.6", to_matrix)
 #
 # **Cel:** mieć sprzedaż i godziny braków wszystkich serii jako dwie macierze o tych samych wierszach i kolumnach. Na nich pracują 05.7 i 05.3b.
 #
-# **Gdzie:** komórka pod tym tekstem. Zastępujesz `...` w dwóch liniach, nazwy zmiennych zostają.
+# **Gdzie:** komórka pod tym tekstem. Zastępujesz `...` w dwóch liniach. Nazwy zmiennych zostają.
 #
 # **Wejście:** tablice z sekcji "Dane jako tablice": `ids`, `day`, `sale`, `stockout_hours`, `dates`.
 #
@@ -217,9 +234,11 @@ check("05.6", to_matrix)
 # - `sales`: `np.ndarray` o kształcie `(liczba serii, 90)`, `float64`: sprzedaż serii w każdym dniu,
 # - `stockouts`: `np.ndarray` o tym samym kształcie: liczba godzin bez towaru na półce, od 0 do 16.
 #
-# Wiersz `i` obu macierzy to ta sama seria `series[i]`. `_` w drugiej linii to zmienna, której nie używasz: identyfikatory serii wyjdą te same co w pierwszej.
+# Wiersz `i` obu macierzy to ta sama seria `series[i]`. `_` w drugiej linii to zmienna, której nie używasz. Identyfikatory serii wyjdą w niej te same co w pierwszej linii.
 #
-# **Skorzystaj z:** `to_matrix` z 05.6a, dwa wywołania.
+# **Skorzystaj z:**
+#
+# - `to_matrix` z 05.6a. Wołasz ją dwa razy: raz dla sprzedaży, raz dla godzin braku towaru.
 #
 # **Sprawdzenie:** komórka wypisuje kształty obu macierzy, a następna sprawdza je asercjami i wypisuje `Zgadza się.`
 
@@ -257,28 +276,44 @@ print("Zgadza się.")
 #
 # - `actual`: `ArrayLike`, czyli lista liczb, tablica 1-D albo 2-D. Wartości rzeczywiste, na przykład sprzedaż w tygodniu testowym.
 # - `predicted`: `ArrayLike` o tym samym kształcie. Prognozy tych samych wartości, element w element.
-# - `mask`: `ArrayLike` wartości logicznych o tym samym kształcie albo `None`. `True` znaczy "ten element bierze udział w ocenie". W labie to `in_stock`: dni bez braków towaru. `None` znaczy "wszystkie".
+# - `mask`: `ArrayLike` wartości logicznych o tym samym kształcie albo `None`. `True` znaczy "ten element bierze udział w ocenie". W labie maską jest `in_stock`, czyli dni bez braków towaru. `None` znaczy "wszystkie".
 #
-# **Wynik:** krotka dwóch tablic `np.ndarray` typu `float64`, jednowymiarowych, tej samej długości: najpierw `actual`, potem `predicted`. Zostają tylko elementy z `True` w masce, w tej samej kolejności. Maska ma jeden element na każdą ocenianą wartość: dla macierzy (serie, dni) wybiera pojedyncze komórki, a nie całe serie.
+# **Wynik:** krotka dwóch tablic `np.ndarray`, najpierw `actual`, potem `predicted`. Obie tablice:
+#
+# - mają typ `float64`,
+# - są jednowymiarowe i mają tę samą długość,
+# - zawierają tylko elementy z `True` w masce, w tej samej kolejności.
+#
+# Maska ma jeden element na każdą ocenianą wartość. Dla macierzy (serie, dni) maska wybiera pojedyncze komórki, a nie całe serie.
 #
 # `ValueError`, gdy:
 #
-# - `actual` i `predicted` mają różny kształt (także (2, 3) wobec (3, 2): tyle samo elementów, inny układ),
+# - `actual` i `predicted` mają różny kształt. Dotyczy to także kształtów (2, 3) i (3, 2), które mają tyle samo elementów w innym układzie,
 # - maska ma inny kształt niż dane,
 # - po zastosowaniu maski nie zostaje żaden element,
 # - wśród elementów, które zostały, jest `NaN`. `NaN` w elemencie odrzuconym przez maskę nie jest błędem.
 #
-# **Skorzystaj z:** `np.asarray(x, dtype=...)` (zamienia listę albo tablicę na tablicę danego typu), `.ravel()` (spłaszcza do 1-D), maski z wykładu (sekcja "Maski i np.where"), `np.isnan` (sekcja "NaN i typy liczbowe").
+# **Skorzystaj z:**
+#
+# - `np.asarray(x, dtype=...)`. Zamienia listę albo tablicę na tablicę danego typu.
+# - `.ravel()`. Spłaszcza tablicę do 1-D.
+# - masek z wykładu, sekcja "Maski i np.where". Maska wybiera elementy z obu tablic.
+# - `np.isnan` z wykładu, sekcja "NaN i typy liczbowe". Znajduje `NaN` w elementach, które zostały.
 #
 # **Kroki:**
 #
 # 1. Zamień `actual` i `predicted` na tablice `float64`, jeszcze bez spłaszczania.
-# 2. Porównaj ich kształty (`.shape`). Różne: `ValueError`. Dopiero potem spłaszcz obie tablice.
-# 3. Jeśli jest maska, zamień ją na tablicę `bool`, porównaj jej kształt z kształtem danych sprzed spłaszczenia, spłaszcz ją i wybierz nią elementy z obu tablic.
+# 2. Porównaj kształty obu tablic (`.shape`). Jeśli się różnią, zgłoś `ValueError`. Dopiero potem spłaszcz obie tablice.
+# 3. Jeśli jest maska, zamień ją na tablicę `bool`. Porównaj kształt maski z kształtem danych sprzed spłaszczenia. Potem spłaszcz maskę i wybierz nią elementy z obu tablic.
 # 4. Sprawdź, czy coś zostało.
-# 5. Policz `NaN` w tym, co zostało. Kolejność kroków 3 i 5 ma znaczenie: braki sprawdzasz dopiero po masce.
+# 5. Policz `NaN` w elementach, które zostały. Kolejność kroków 3 i 5 ma znaczenie. Braki sprawdzasz dopiero po masce.
 #
-# **Sprawdzenie:** `check("05.1")` w komórce pod 05.3a albo `uv run course check 05.1` w terminalu. Sprawdzenie woła `prepare` na krótkich listach, z maską i bez, oraz na każdym przypadku błędu z listy. Sprawdzenie patrzy tylko na to, czy poleciał `ValueError`. Treść komunikatu wybierasz sam. Napisz w nim, co się nie zgadza (na przykład słowo NaN albo oba kształty): w 05.5 Twoje testy dopasują `match=` właśnie do tych słów.
+# **Sprawdzenie:** `check("05.1")` w komórce pod 05.3a albo `uv run course check 05.1` w terminalu. Sprawdzenie działa tak:
+#
+# - Woła `prepare` na krótkich listach, z maską i bez, oraz na każdym przypadku błędu z listy.
+# - Przy błędach patrzy tylko na to, czy poleciał `ValueError`. Treść komunikatu wybierasz sam.
+#
+# W komunikacie napisz, co się nie zgadza, na przykład słowo NaN albo oba kształty. W 05.5 Twoje testy dopasują `match=` właśnie do tych słów.
 #
 # ### 05.2 `mae` i `rmse`
 #
@@ -288,14 +323,18 @@ print("Zgadza się.")
 #
 # **Wejście:** `actual`, `predicted`, `mask`, tak samo jak w `prepare`.
 #
-# **Wynik:** `float`, zwykła liczba Pythona (nie `np.float64`), w jednostkach danych, czyli w sztukach sprzedaży. Błędy jak w `prepare`.
+# **Wynik:** `float`, czyli zwykła liczba Pythona, a nie `np.float64`. Wynik jest w jednostkach danych, czyli w sztukach sprzedaży. Błędy jak w `prepare`.
 #
-# **Skorzystaj z:** `prepare` z 05.1, w tym samym pliku, wołasz je bezpośrednio. Wzory z tabeli w wykładzie. `np.abs`, `np.square`, `np.sqrt`, `.mean()`.
+# **Skorzystaj z:**
+#
+# - `prepare` z 05.1. Jest w tym samym pliku, wołasz ją bezpośrednio.
+# - wzorów metryk z tabeli w wykładzie.
+# - `np.abs`, `np.square`, `np.sqrt` i `.mean()` do samych obliczeń.
 #
 # **Kroki:**
 #
 # 1. Wywołaj `prepare` i odbierz dwie tablice.
-# 2. Policz różnice element po elemencie, potem wzór metryki.
+# 2. Policz różnice element po elemencie. Potem policz wzór metryki.
 # 3. Zamień wynik na `float` przed `return`.
 #
 # **Sprawdzenie:** `check("05.2")` albo `uv run course check 05.2`. Dla błędów `[0, 0, 0, 4]` MAE wynosi 1.0, a RMSE 2.0.
@@ -308,15 +347,28 @@ print("Zgadza się.")
 #
 # **Wejście:** `actual`, `predicted`, `mask`, tak samo jak w `prepare`.
 #
-# **Wynik:** `float`, ułamek bez jednostki: WAPE 0.3 to pomyłki równe 30% sprzedaży, bias -0.1 to prognoza o 10% za niska. Mianownik WAPE to suma wartości bezwzględnych danych rzeczywistych, mianownik biasu to ich zwykła suma. Dla sprzedaży, która nie bywa ujemna, to ta sama liczba, ale wzory są różne. Gdy mianownik wynosi zero, `ValueError`. Pozostałe błędy jak w `prepare`.
+# **Wynik:** `float`, ułamek bez jednostki. Przykłady:
 #
-# **Skorzystaj z:** `prepare` z 05.1, wzory z tabeli w wykładzie.
+# - WAPE 0.3 to pomyłki równe 30% sprzedaży,
+# - bias -0.1 to prognoza o 10% za niska.
+#
+# Mianownik WAPE to suma wartości bezwzględnych danych rzeczywistych. Mianownik biasu to ich zwykła suma. Dla sprzedaży, która nie bywa ujemna, oba mianowniki dają tę samą liczbę, ale wzory są różne.
+#
+# `ValueError`, gdy:
+#
+# - mianownik wynosi zero,
+# - zachodzi któryś z błędów `prepare`.
+#
+# **Skorzystaj z:**
+#
+# - `prepare` z 05.1. Sprawdza wejścia i stosuje maskę.
+# - wzorów metryk z tabeli w wykładzie.
 #
 # **Kroki:**
 #
 # 1. Wywołaj `prepare`.
-# 2. Policz mianownik: dla WAPE sumę wartości bezwzględnych danych rzeczywistych, dla biasu ich zwykłą sumę. Zero: `ValueError`.
-# 3. WAPE: suma pomyłek bezwzględnych przez mianownik. Bias: suma prognoz minus suma wartości rzeczywistych, przez mianownik. Znak ma znaczenie: za wysoka prognoza daje bias dodatni.
+# 2. Policz mianownik. Dla WAPE to suma wartości bezwzględnych danych rzeczywistych, dla biasu ich zwykła suma. Jeśli mianownik wynosi zero, zgłoś `ValueError`.
+# 3. Podziel licznik przez mianownik. Licznik WAPE to suma pomyłek bezwzględnych. Licznik biasu to suma prognoz minus suma wartości rzeczywistych. Znak ma znaczenie. Za wysoka prognoza daje bias dodatni.
 #
 # **Sprawdzenie:** `check("05.3")` albo `uv run course check 05.3`. Dla `actual = [0, 10, 10]` i `predicted = [1, 8, 13]` WAPE wynosi 0.3, a bias 0.1.
 #
@@ -367,17 +419,35 @@ check("05.3")
 # - `horizon`: `int`, ile dni do przodu prognozujesz, co najmniej 1.
 # - `season`: `int`, długość sezonu w dniach, co najmniej 1, domyślnie 7 (tydzień).
 #
-# **Wynik:** `np.ndarray` o kształcie `(liczba serii, horizon)`. Kolumna `h` prognozy to wartość z pozycji `h % season` ostatniego sezonu historii. Przykład: historia jednej serii `[0, 1, 2, 3, 4, 5]`, sezon 3, horyzont 4. Ostatni sezon to `[3, 4, 5]`, prognoza to `[3, 4, 5, 3]`. `ValueError`, gdy `horizon` albo `season` jest mniejszy od 1 albo historia ma mniej kolumn niż `season`.
+# **Wynik:** `np.ndarray` o kształcie `(liczba serii, horizon)`. Kolumna `h` prognozy to wartość z pozycji `h % season` ostatniego sezonu historii.
 #
-# **Skorzystaj z:** wycinków 2-D z wykładu (`history[:, ...]` bierze kolumny wszystkich wierszy naraz), indeksowania listą albo tablicą numerów kolumn, `np.arange` i reszty z dzielenia `%`. `SeasonalNaiveForecaster` z labu 04 (`from freshcast.models.local import SeasonalNaiveForecaster`) daje wzorcowe wyniki: komórka pod sprawdzeniem porówna z nim Twoją funkcję.
+# Przykład: historia jednej serii `[0, 1, 2, 3, 4, 5]`, sezon 3, horyzont 4. Ostatni sezon to `[3, 4, 5]`, prognoza to `[3, 4, 5, 3]`.
+#
+# `ValueError`, gdy:
+#
+# - `horizon` jest mniejszy od 1,
+# - `season` jest mniejszy od 1,
+# - historia ma mniej kolumn niż `season`.
+#
+# **Skorzystaj z:**
+#
+# - `history[:, ...]`, wycinek 2-D z wykładu. Bierze kolumny wszystkich wierszy naraz.
+# - indeksowania listą albo tablicą numerów kolumn. Wybiera kolumny ostatniego sezonu w potrzebnej kolejności.
+# - `np.arange` i reszty z dzielenia `%`. Razem dają ciąg numerów kolumn.
+# - `SeasonalNaiveForecaster` z labu 04, import `from freshcast.models.local import SeasonalNaiveForecaster`. Daje wzorcowe wyniki. Komórka pod sprawdzeniem porówna z tą klasą Twoją funkcję.
 #
 # **Kroki:**
 #
-# 1. Sprawdź `horizon` i liczbę kolumn historii (`history.shape[1]`). Złe: `ValueError`.
+# 1. Sprawdź `horizon`, `season` i liczbę kolumn historii (`history.shape[1]`). Jeśli któraś wartość jest zła, zgłoś `ValueError`.
 # 2. Wytnij ostatnie `season` kolumn wszystkich wierszy.
 # 3. Wybierz z nich kolumny w kolejności `0, 1, ..., season - 1, 0, 1, ...`, aż będzie ich `horizon`. Taki ciąg numerów daje reszta z dzielenia przez `season`.
 #
-# **Sprawdzenie:** `check("05.7", seasonal_naive)` przekazuje samą funkcję. Sprawdzenie używa przykładu z punktu **Wynik** (dla dwóch serii) i trzech przypadków błędu. Komórka pod nim wypisuje `Te same prognozy: True`, gdy wynik zgadza się z klasą z labu 04 na wszystkich seriach.
+# **Sprawdzenie:** `check("05.7", seasonal_naive)` przekazuje samą funkcję. Sprawdzenie woła ją na takich danych:
+#
+# - przykład z punktu **Wynik**, dla dwóch serii,
+# - trzy przypadki błędu.
+#
+# Komórka pod sprawdzeniem wypisuje `Te same prognozy: True`, gdy wynik zgadza się z klasą z labu 04 na wszystkich seriach.
 #
 # <details>
 # <summary>Podpowiedź 1: kierunek</summary>
@@ -472,21 +542,32 @@ print("Te same prognozy:", np.array_equal(looped, vectorised))
 #
 # **Gdzie:** komórka pod tym tekstem, zmienne `forecasts` i `in_stock`. Pętlę `for` pod nimi zostawiasz bez zmian.
 #
-# **Wejście:** `history` (`(liczba serii, 83)`, sprzedaż przed tygodniem testowym), `actual` (`(liczba serii, 7)`, sprzedaż w tygodniu testowym), `vectorised` (prognoza sezonowa z poprzedniej komórki), `stockouts` z 05.6b, `HORIZON` (7).
+# **Wejście:**
+#
+# - `history`: `(liczba serii, 83)`, sprzedaż przed tygodniem testowym.
+# - `actual`: `(liczba serii, 7)`, sprzedaż w tygodniu testowym.
+# - `vectorised`: prognoza sezonowa z poprzedniej komórki.
+# - `stockouts` z 05.6b.
+# - `HORIZON`, czyli 7.
 #
 # **Wynik:**
 #
 # - `forecasts`: słownik (`dict`) z trzema kluczami, dokładnie `"sezonowa"`, `"naiwna"` i `"średnia 7 dni"`. Każda wartość to `np.ndarray` o kształcie `actual`: prognoza dla każdej serii i każdego dnia tygodnia testowego.
 # - `in_stock`: `np.ndarray` typu `bool` o kształcie `actual`. `True` tam, gdzie seria w tym dniu tygodnia testowego nie miała ani godziny braku.
 #
-# **Skorzystaj z:** `vectorised` jako prognozy sezonowej. Z wykładu: wycinek `[:, -1:]` (ostatnia kolumna, ale dalej 2-D), `mean(axis=1, keepdims=True)` (sekcje "Osie" i "Broadcasting"). `np.repeat(a, k, axis=1)` powtarza kolumny tablicy `k` razy.
+# **Skorzystaj z:**
+#
+# - `vectorised`. To gotowa prognoza sezonowa.
+# - `[:, -1:]`, wycinek z wykładu. Daje ostatnią kolumnę, ale dalej jako tablicę 2-D.
+# - `mean(axis=1, keepdims=True)` z wykładu, sekcje "Osie" i "Broadcasting". Liczy średnią każdego wiersza i zostawia wymiar kolumny.
+# - `np.repeat(a, k, axis=1)`. Powtarza kolumny tablicy `k` razy.
 #
 # **Kroki:**
 #
-# 1. Prognoza naiwna: weź ostatnią kolumnę historii jako tablicę `(liczba serii, 1)` i powtórz ją 7 razy w poziomie.
-# 2. Średnia 7 dni: policz średnią ostatnich 7 kolumn historii dla każdego wiersza, zostaw wymiar kolumny i powtórz 7 razy.
+# 1. Zbuduj prognozę naiwną. Weź ostatnią kolumnę historii jako tablicę `(liczba serii, 1)` i powtórz ją 7 razy w poziomie.
+# 2. Zbuduj prognozę "średnia 7 dni". Policz średnią ostatnich 7 kolumn historii dla każdego wiersza i zostaw wymiar kolumny. Potem powtórz średnią 7 razy.
 # 3. Złóż słownik z trzema prognozami.
-# 4. Maska: weź ostatnie 7 kolumn `stockouts` i porównaj z zerem.
+# 4. Zbuduj maskę. Weź ostatnie 7 kolumn `stockouts` i porównaj je z zerem.
 #
 # **Sprawdzenie:** komórka wypisuje udział dni bez braków i trzy wiersze z WAPE i biasem. Następna komórka sprawdza kształty i typy asercjami.
 
@@ -522,7 +603,7 @@ print("Zgadza się.")
 # %% [markdown]
 # ## 05.4 Profil godzinowy
 #
-# Wiersz `hours` to sprzedaż w 24 godzinach jednego dnia. Żeby porównać kształt dnia między seriami o różnej skali, dzielisz każdy wiersz przez jego sumę: wtedy wartości to udziały godzin w sprzedaży dnia.
+# Wiersz `hours` to sprzedaż w 24 godzinach jednego dnia. Żeby porównać kształt dnia między seriami o różnej skali, dzielisz każdy wiersz przez jego sumę. Wtedy wartości to udziały godzin w sprzedaży dnia.
 #
 # ### 05.4a `row_shares`
 #
@@ -532,13 +613,24 @@ print("Zgadza się.")
 #
 # **Wejście:** `matrix`: `np.ndarray` dwuwymiarowa liczb nieujemnych, typ `float64`. W labie `hours`: wiersz to jeden dzień jednej serii, kolumna to godzina od 0 do 23.
 #
-# **Wynik:** nowa `np.ndarray` o tym samym kształcie. Każdy wiersz podzielony przez własną sumę, więc sumuje się do 1. Wiersz samych zer nie ma profilu i ma dać same `NaN`, a nie zera ani nieskończoności. Wejście zostaje bez zmian. `ValueError`, gdy tablica nie jest dwuwymiarowa (`ndim`) albo ma wartość ujemną.
+# **Wynik:** nowa `np.ndarray` o tym samym kształcie. Wejście zostaje bez zmian. Wiersze wyniku:
 #
-# **Skorzystaj z:** `sum(axis=1, keepdims=True)` i reguły broadcastingu z wykładu (sekcja "Broadcasting"), `np.where` (sekcja "Maski i np.where"), `np.nan`.
+# - Każdy wiersz jest podzielony przez własną sumę, więc sumuje się do 1.
+# - Wiersz samych zer nie ma profilu. Ma dać same `NaN`, a nie zera ani nieskończoności.
+#
+# `ValueError`, gdy:
+#
+# - tablica nie jest dwuwymiarowa (`ndim`),
+# - tablica ma wartość ujemną.
+#
+# **Skorzystaj z:**
+#
+# - `sum(axis=1, keepdims=True)` i reguł broadcastingu z wykładu, sekcja "Broadcasting". Dają sumy wierszy, przez które dzielisz macierz.
+# - `np.where` z wykładu, sekcja "Maski i np.where", razem z `np.nan`. Zamieniają zerowe sumy na `NaN`.
 #
 # **Kroki:**
 #
-# 1. Sprawdź liczbę wymiarów i wartości ujemne. Złe: `ValueError`.
+# 1. Sprawdź liczbę wymiarów i wartości ujemne. Jeśli któreś sprawdzenie nie przejdzie, zgłoś `ValueError`.
 # 2. Policz sumy wierszy tak, żeby miały kształt `(wiersze, 1)`, a nie `(wiersze,)`.
 # 3. Zamień zerowe sumy na `NaN`, zanim podzielisz. Dzielenie przez `NaN` daje `NaN` bez ostrzeżenia.
 # 4. Podziel macierz przez sumy.
@@ -585,10 +677,14 @@ check("05.4")
 # **Wynik:**
 #
 # - `profiles`: `np.ndarray` `(wiersze, 24)`, udziały godzin w sprzedaży dnia. Dzień bez sprzedaży to wiersz `NaN`.
-# - `no_profile`: `np.ndarray` typu `bool`, kształt `(wiersze,)`. `True` dla dnia bez sprzedaży, czyli bez profilu. Wiersz `hours` to jeden dzień jednej serii, więc to maska dni, nie serii.
-# - `mean_profile`: `np.ndarray` `(24,)`, średni udział każdej godziny, liczony tylko z dni, które mają profil. Każdy taki dzień waży tyle samo, niezależnie od tego, ile sprzedał. To nie jest udział godziny w sumie całej sprzedaży. Sumuje się do 1.
+# - `no_profile`: `np.ndarray` typu `bool`, kształt `(wiersze,)`. `True` dla dnia bez sprzedaży, czyli bez profilu. Wiersz `hours` to jeden dzień jednej serii, więc `no_profile` to maska dni, nie serii.
+# - `mean_profile`: `np.ndarray` `(24,)`, średni udział każdej godziny, liczony tylko z dni, które mają profil. Każdy taki dzień waży tyle samo, niezależnie od tego, ile sprzedał. Ta średnia nie jest udziałem godziny w sumie całej sprzedaży. `mean_profile` sumuje się do 1.
 #
-# **Skorzystaj z:** `row_shares` z 05.4a (import jest w komórce), `np.isnan` na jednej kolumnie `profiles` (wiersz bez profilu ma `NaN` w każdej kolumnie), `np.nanmean` z `axis` (sekcje "Osie" i "NaN i typy liczbowe").
+# **Skorzystaj z:**
+#
+# - `row_shares` z 05.4a. Import jest w komórce.
+# - `np.isnan` na jednej kolumnie `profiles`. Wiersz bez profilu ma `NaN` w każdej kolumnie.
+# - `np.nanmean` z `axis`, z wykładu, sekcje "Osie" i "NaN i typy liczbowe". Liczy średni udział każdej godziny i pomija `NaN`.
 #
 # **Sprawdzenie:** komórka wypisuje udział dni bez profilu, średni profil i godzinę szczytu. Następna komórka sprawdza wynik asercjami.
 
@@ -622,9 +718,18 @@ print("Zgadza się.")
 #
 # **Gdzie:** `tests/test_metrics.py`, pod gotowym testem `test_mae_is_the_mean_absolute_difference`, w miejscu komentarza `# Your tests go here.`
 #
-# **Wejście:** metryki z 05.2 i 05.3a. Na górze pliku jest import tylko `mae`: dopisz do niego metryki, których używasz (`from freshcast.metrics import bias, mae, rmse, wape`). Alias `Metric` przyda się w adnotacji testu z `@pytest.mark.parametrize`, który dostaje metrykę jako argument.
+# **Wejście:** metryki z 05.2 i 05.3a. W pliku zastajesz:
 #
-# **Wynik:** plik ma razem co najmniej sześć testów, licząc gotowy test MAE, i wszystkie przechodzą na Twoich metrykach. Każdy przypadek parametryzacji liczy się jako osobny test. Do wykrycia siedmiu błędów zwykle potrzeba więcej. Razem mają wykryć siedem celowo zepsutych wersji metryk:
+# - Na górze pliku import tylko `mae`. Dopisz do niego metryki, których używasz: `from freshcast.metrics import bias, mae, rmse, wape`.
+# - Alias `Metric`. Przyda się w adnotacji testu z `@pytest.mark.parametrize`, który dostaje metrykę jako argument.
+#
+# **Wynik:** testy w pliku spełniają trzy warunki:
+#
+# - Jest ich razem co najmniej sześć, licząc gotowy test MAE. Każdy przypadek parametryzacji liczy się jako osobny test. Do wykrycia siedmiu błędów zwykle potrzeba więcej.
+# - Wszystkie przechodzą na Twoich metrykach.
+# - Razem wykrywają siedem celowo zepsutych wersji metryk z listy poniżej.
+#
+# Zepsute wersje metryk:
 #
 # - `mae` zwraca to samo co `rmse`,
 # - `rmse` nie wyciąga pierwiastka,
@@ -634,9 +739,14 @@ print("Zgadza się.")
 # - `NaN` w danych jest po cichu liczony jako zero,
 # - przy różnej długości wejść metryki obcinają dłuższe wejście zamiast zgłosić błąd.
 #
-# Cztery pierwsze błędy psują jedną metrykę, trzy ostatnie wszystkie cztery naraz. Do wykrycia każdego z trzech ostatnich wystarczy test jednej metryki, ale parametryzacja po czterech metrykach nic nie kosztuje.
+# Cztery pierwsze błędy psują jedną metrykę. Trzy ostatnie psują wszystkie cztery metryki naraz. Do wykrycia każdego z trzech ostatnich wystarczy test jednej metryki, ale parametryzacja po czterech metrykach nic nie kosztuje.
 #
-# **Skorzystaj z:** wzoru gotowego testu (małe dane widoczne w teście, wynik policzony w głowie), `pytest.approx` do porównania liczb, `pytest.raises(ValueError, match=...)` do błędów, `@pytest.mark.parametrize` (lab 04).
+# **Skorzystaj z:**
+#
+# - `test_mae_is_the_mean_absolute_difference`, gotowego testu w pliku. To wzór: małe dane widoczne w teście, wynik policzony w głowie.
+# - `pytest.approx` do porównania liczb.
+# - `pytest.raises(ValueError, match=...)` do błędów.
+# - `@pytest.mark.parametrize` z labu 04.
 #
 # **Kroki:**
 #
@@ -682,9 +792,12 @@ check("05.5")
 # %% [markdown]
 # ## 05.8 Eksploracja
 #
-# Bez sprawdzeń. Pytania są trzy i stoją poniżej, w tej komórce: odpowiadasz na nie, a nie na własne. Odpowiedz jednym, dwoma zdaniami pod pytaniami, w miejscu *Twoje odpowiedzi*.
+# Bez sprawdzeń. Pytania są trzy i stoją poniżej, w tej komórce. Odpowiadasz na te pytania, a nie na własne. Odpowiedz jednym albo dwoma zdaniami w miejscu *Twoje odpowiedzi*, pod pytaniami.
 #
-# **Skorzystaj z:** wydruku komórki 05.3b (WAPE na wszystkich dniach i bez braków, bias) i wydruku 05.4b (udział dni bez profilu).
+# **Skorzystaj z:**
+#
+# - wydruku komórki 05.3b: WAPE na wszystkich dniach i bez braków, bias.
+# - wydruku komórki 05.4b: udział dni bez profilu.
 #
 # 1. Porównaj w wydruku 05.3b WAPE na wszystkich dniach i bez braków dla każdej prognozy. Co widzisz? Zaproponuj wyjaśnienie. To obserwacja z tych danych, a nie własność wzoru WAPE.
 # 2. Która prognoza wygrała w Twoim tygodniu testowym? Czy to wystarczy, żeby wybrać ją jako baseline na resztę kursu? Czego brakuje?

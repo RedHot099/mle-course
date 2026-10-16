@@ -21,7 +21,7 @@
 # | | 04.2b | test liczby wartości prognozy | to samo | |
 # | | 04.2c | testy błędów | to samo | |
 # | | 04.2d | sprawdzenie i uzupełnienie testów | terminal albo notebook | |
-# | 04.3 | | ten sam pakiet w Poetry i w uv | terminal, poza repozytorium; odpowiedzi w notebooku | 60 min |
+# | 04.3 | | ten sam pakiet w Poetry i w uv | terminal poza repozytorium, odpowiedzi w notebooku | 60 min |
 # | PK1 | | pull request i review | terminal, GitHub | 60 min |
 #
 # Pliki w pakiecie edytujesz w VS Code. Pierwsza komórka włącza `%autoreload 2`, więc notebook widzi każdą zapisaną zmianę w `local.py` bez restartu.
@@ -42,7 +42,7 @@ print(version("mle-course"))
 # %% [markdown]
 # ## Skąd notebook zna `freshcast`
 #
-# `uv sync` zainstalował repozytorium kursu jako pakiet `mle-course` w trybie **edytowalnym**: środowisko nie ma kopii kodu, tylko wskazanie na katalog `src/`. Dlatego `import freshcast` działa w każdym notebooku i w każdym teście. Każdy nowy proces Pythona, np. `uv run pytest` albo `uv run course check`, czyta aktualne pliki z `src/`. Działający kernel notebooka pamięta raz zaimportowany moduł: zmiany zobaczy dzięki `%autoreload 2` z pierwszej komórki albo po restarcie kernela i uruchomieniu komórek od początku. Samo ponowne uruchomienie komórki z `import` nie wystarczy.
+# `uv sync` zainstalował repozytorium kursu jako pakiet `mle-course` w trybie edytowalnym. Środowisko nie ma kopii kodu, ma tylko wskazanie na katalog `src/`. Dlatego `import freshcast` działa w każdym notebooku i w każdym teście. Każdy nowy proces Pythona, np. `uv run pytest` albo `uv run course check`, czyta aktualne pliki z `src/`. Działający kernel notebooka pamięta raz zaimportowany moduł. Zmiany zobaczy dzięki `%autoreload 2` z pierwszej komórki albo po restarcie kernela i uruchomieniu komórek od początku. Samo ponowne uruchomienie komórki z `import` nie wystarczy.
 #
 # Sprawdź to sam:
 
@@ -55,27 +55,35 @@ print(version("mle-course"))
 # %% [markdown]
 # ## 04.1 Klasy prognoz w pakiecie
 #
-# **Cel.** Prognozy z labu 03 mają być dostępne z każdego labu i każdego testu przez `from freshcast.models.local import ...`. Od modułu 08 będą baseline'em dla danych dziennych, więc ich sygnatury są już ustalone.
+# **Cel:** Prognozy z labu 03 mają być dostępne z każdego labu i każdego testu przez `from freshcast.models.local import ...`. Od modułu 08 będą baseline'em dla danych dziennych, więc ich sygnatury są już ustalone.
 #
-# **Gdzie.** `src/freshcast/models/local.py`. Sygnatury, docstringi i importy już tam są. W miejscu każdego ciała metody stoi `raise NotImplementedError("Zadanie 04.1")`: zamień je na kod. Nie zmieniaj sygnatur ani wartości domyślnych, bo od modułu 08 używa ich reszta pakietu. Docstring każdej metody to dokładna umowa.
+# **Gdzie:** `src/freshcast/models/local.py`. Sygnatury, docstringi i importy już tam są. W miejscu każdego ciała metody stoi `raise NotImplementedError("Zadanie 04.1")`. Zamień każdą taką linię na kod. Nie zmieniaj sygnatur ani wartości domyślnych, bo od modułu 08 używa ich reszta pakietu. Docstring każdej metody to dokładna umowa.
 #
-# **Wejście.** `history`: znane wartości jednej serii od najstarszej, ciąg liczb (`Sequence[float]`); może zawierać liczby całkowite. `horizon`: liczba całkowita (`int`), ile kroków do przodu. `season`, `window`: liczby całkowite, domyślnie 7.
+# **Wejście:**
 #
-# **Wynik.** Ta sama umowa co w 03.3 i 03.4. Jeśli Twój kod z labu 03 przeszedł sprawdzenia, przenosisz go bez zmian. Dwie rzeczy z tej umowy sprawdzenie 04.1 bada wprost:
+# - `history`: znane wartości jednej serii od najstarszej, ciąg liczb (`Sequence[float]`). Może zawierać liczby całkowite.
+# - `horizon`: liczba całkowita (`int`), ile kroków do przodu.
+# - `season` i `window`: liczby całkowite, domyślnie 7.
 #
-# - domyślne `season` i `window` to 7, bo od modułu 08 prognozujesz dane dzienne (tydzień ma 7 dni); w labie 03 na danych miesięcznych podawałeś inne wartości jawnie,
-# - `predict` zwraca listę długości `horizon`, w której każdy element jest typu `float`, także gdy historia była listą liczb całkowitych: `NaiveForecaster().fit([3, 5, 4]).predict(2)` daje `[4.0, 4.0]`, a nie `[4, 4]`.
+# **Wynik:** Ta sama umowa co w 03.3 i 03.4. Jeśli Twój kod z labu 03 przeszedł sprawdzenia, przenosisz go bez zmian. Dwie rzeczy z tej umowy sprawdzenie 04.1 bada wprost:
 #
-# **Skorzystaj z.** Twojego `labs/03-classes/demand.py`, zadania 03.3 i 03.4: ciała metod przenosisz stamtąd. `Forecaster`, `mae` i `evaluate` zostają w labie 03.
+# - domyślne `season` i `window` to 7, bo od modułu 08 prognozujesz dane dzienne, a tydzień ma 7 dni. W labie 03 na danych miesięcznych podawałeś inne wartości jawnie.
+# - `predict` zwraca listę długości `horizon`, w której każdy element jest typu `float`. Tak jest także wtedy, gdy historia była listą liczb całkowitych. Na przykład `NaiveForecaster().fit([3, 5, 4]).predict(2)` daje `[4.0, 4.0]`, a nie `[4, 4]`.
 #
-# **Kroki.**
+# **Skorzystaj z:**
 #
-# - **04.1a** `LocalForecaster.fit` i `LocalForecaster.predict`: walidacja, kopia historii jako lista `float`, wywołanie `_forecast`. `__init__` i `_forecast` klasy bazowej są gotowe.
-# - **04.1b** `NaiveForecaster._forecast`. Komórka z `assert` pod podpowiedziami potwierdza kroki 04.1a i 04.1b.
-# - **04.1c** `SeasonalNaiveForecaster`: `__init__`, `fit` i `_forecast`.
-# - **04.1d** `MovingAverageForecaster`: `__init__` i `_forecast`.
+# - Twojego `labs/03-classes/demand.py`, zadania 03.3 i 03.4. Ciała metod przenosisz stamtąd.
 #
-# **Sprawdzenie.** `check("04.1")` w notebooku albo `uv run course check 04.1` w terminalu, w katalogu repozytorium. Kod leży w pakiecie, nie w notebooku, więc `check` dostaje tylko numer zadania. Wynik `✅ 04.1` znaczy, że wszystkie cztery klasy działają zgodnie z docstringami.
+# `Forecaster`, `mae` i `evaluate` zostają w labie 03.
+#
+# **Kroki:**
+#
+# 1. Krok 04.1a. Napisz `LocalForecaster.fit` i `LocalForecaster.predict`: walidację, kopię historii jako listę `float` i wywołanie `_forecast`. `__init__` i `_forecast` klasy bazowej są gotowe.
+# 2. Krok 04.1b. Napisz `NaiveForecaster._forecast`. Komórka z `assert` pod podpowiedziami potwierdza kroki 04.1a i 04.1b.
+# 3. Krok 04.1c. Napisz `SeasonalNaiveForecaster`: `__init__`, `fit` i `_forecast`.
+# 4. Krok 04.1d. Napisz `MovingAverageForecaster`: `__init__` i `_forecast`.
+#
+# **Sprawdzenie:** `check("04.1")` w notebooku albo `uv run course check 04.1` w terminalu, w katalogu repozytorium. Kod leży w pakiecie, nie w notebooku, więc `check` dostaje tylko numer zadania. Wynik `✅ 04.1` znaczy, że wszystkie cztery klasy działają zgodnie z docstringami.
 #
 # <details>
 # <summary>Podpowiedź 1: kierunek</summary>
@@ -132,17 +140,26 @@ for model in (NaiveForecaster(), SeasonalNaiveForecaster(), MovingAverageForecas
 # %% [markdown]
 # ## 04.2 Testy
 #
-# **Cel.** Testy mają złapać błąd w `local.py`, zanim zobaczy go ktoś inny: przy przenosinach, refaktoryzacji albo "drobnej poprawce" w module 08. Test, który przechodzi także na zepsutym kodzie, niczego nie chroni.
+# **Cel:** Testy mają złapać błąd w `local.py`, zanim zobaczy go ktoś inny: przy przenosinach, refaktoryzacji albo "drobnej poprawce" w module 08. Test, który przechodzi także na zepsutym kodzie, niczego nie chroni.
 #
-# **Gdzie.** `tests/models/test_local.py`, pod gotowym testem, w miejscu komentarza `# Your tests go here`. Każdy test to osobna funkcja z nazwą zaczynającą się od `test_`, bez argumentów (albo z argumentami z `@pytest.mark.parametrize`). Testy w innym pliku albo z inną nazwą nie zostaną policzone.
+# **Gdzie:** `tests/models/test_local.py`, pod gotowym testem, w miejscu komentarza `# Your tests go here`. Każdy test to osobna funkcja z nazwą zaczynającą się od `test_`, bez argumentów (albo z argumentami z `@pytest.mark.parametrize`). Testy w innym pliku albo z inną nazwą nie zostaną policzone.
 #
-# **Wejście.** Klasy z `freshcast.models.local`, które napisałeś w 04.1. Testujesz je tylko tak, jak używa ich reszta kursu: przez `fit(...)` i `predict(...)`, jak w gotowym teście. Nie wołaj `_forecast` bezpośrednio.
+# **Wejście:** Klasy z `freshcast.models.local`, które napisałeś w 04.1. Testujesz je tylko tak, jak używa ich reszta kursu: przez `fit(...)` i `predict(...)`, jak w gotowym teście. Nie wołaj `_forecast` bezpośrednio.
 #
-# **Wynik.** W pliku co najmniej sześć testów, licząc gotowy. Żeby wykryć wszystkie błędy z kroku 04.2d, napiszesz ich więcej. Każdy przypadek parametryzacji liczy się jako osobny test, więc `@pytest.mark.parametrize("horizon", [0, -1])` to dwa testy.
+# **Wynik:** W pliku co najmniej sześć testów, licząc gotowy. Żeby wykryć wszystkie błędy z kroku 04.2d, napiszesz ich więcej. Każdy przypadek parametryzacji liczy się jako osobny test, więc `@pytest.mark.parametrize("horizon", [0, -1])` to dwa testy.
 #
-# **Skorzystaj z.** Docstringów w `local.py`: każde zdanie, które mówi, co metoda zwraca albo kiedy zgłasza błąd, to kandydat na test. Z wykładu 04: `pytest.raises(..., match=...)`, `@pytest.mark.parametrize`, `pytest.approx`. Dopisz na górze pliku `import pytest` i dopisz do importu z `freshcast.models.local` klasy, których używasz (gotowy import ma tylko `NaiveForecaster`). Kolejność importów sprawdza `ruff check` w punkcie kontrolnym; gdy zgłosi `I001`, uruchom `uv run ruff check --fix tests/models/test_local.py`.
+# **Skorzystaj z:**
 #
-# **Sprawdzenie.** `check("04.2")` w notebooku albo `uv run course check 04.2` w terminalu. Opis, co dokładnie robi, jest w kroku 04.2d.
+# - docstringów w `local.py`. Każde zdanie, które mówi, co metoda zwraca albo kiedy zgłasza błąd, to kandydat na test.
+# - `pytest.raises(..., match=...)` z wykładu 04. Sprawdza, że kod zgłasza błąd.
+# - `@pytest.mark.parametrize` z wykładu 04. Uruchamia jeden test na kilku przypadkach.
+# - `pytest.approx` z wykładu 04. Porównuje liczby zmiennoprzecinkowe z tolerancją.
+# - `import pytest`. Dopisz tę linię na górze pliku.
+# - importu z `freshcast.models.local`. Dopisz do niego klasy, których używasz. Gotowy import ma tylko `NaiveForecaster`.
+#
+# Kolejność importów sprawdza `ruff check` w punkcie kontrolnym. Gdy `ruff check` zgłosi `I001`, uruchom `uv run ruff check --fix tests/models/test_local.py`.
+#
+# **Sprawdzenie:** `check("04.2")` w notebooku albo `uv run course check 04.2` w terminalu. Opis, co dokładnie robi, jest w kroku 04.2d.
 #
 # Pierwszy test jest gotowy i pokazuje wzór:
 #
@@ -157,15 +174,18 @@ for model in (NaiveForecaster(), SeasonalNaiveForecaster(), MovingAverageForecas
 #
 # ### 04.2a Wartości prognoz
 #
-# Dla każdej z trzech klas co najmniej jeden test, który porównuje całą prognozę z listą policzoną przez Ciebie na kartce.
+# Dla każdej z trzech klas napisz co najmniej jeden test, który porównuje całą prognozę z listą policzoną przez Ciebie na kartce.
 #
 # | Klasa | Co test ma potwierdzić (z docstringu) |
 # |---|---|
-# | `NaiveForecaster` | prognoza to ostatnia wartość historii; gotowy test to pokazuje, dopisz drugi na innych danych |
+# | `NaiveForecaster` | prognoza to ostatnia wartość historii. Gotowy test już to pokazuje. Dopisz drugi na innych danych |
 # | `SeasonalNaiveForecaster` | prognoza to ostatni pełny sezon, krok po kroku, i zawija się, gdy horyzont jest dłuższy niż sezon |
-# | `MovingAverageForecaster` | prognoza to średnia tylko z ostatnich `window` wartości; historia krótsza niż okno jest uśredniana w całości |
+# | `MovingAverageForecaster` | prognoza to średnia tylko z ostatnich `window` wartości. Historia krótsza niż okno jest uśredniana w całości |
 #
-# Dobierz dane tak, żeby różne pomyłki dawały różne liczby: wartości w historii różne od siebie, historia dłuższa niż sezon i niż okno.
+# Dobierz dane tak, żeby różne pomyłki dawały różne liczby:
+#
+# - wartości w historii różne od siebie.
+# - historia dłuższa niż sezon i niż okno.
 #
 # ### 04.2b Liczba wartości
 #
@@ -173,11 +193,11 @@ for model in (NaiveForecaster(), SeasonalNaiveForecaster(), MovingAverageForecas
 #
 # ### 04.2c Błędy
 #
-# Docstringi `fit` i `predict` w `LocalForecaster` wymieniają sytuacje, w których kod ma zgłosić błąd, i jego typ (`ValueError`, `RuntimeError`). Na każdą napisz test z `pytest.raises(TypBłędu, match="...")`. W `match` podaj słowo z komunikatu, który napisałeś w 04.1. `SeasonalNaiveForecaster.fit` dodaje jeszcze jeden przypadek. Docstringi klas `SeasonalNaiveForecaster` i `MovingAverageForecaster` wymieniają też błędy konstruktora (`season` i `window` mniejsze od 1). Testy na nie też są dobre, choć sprawdzenie 04.2 ich nie wymaga.
+# Docstringi `fit` i `predict` w `LocalForecaster` wymieniają sytuacje, w których kod ma zgłosić błąd, i jego typ (`ValueError`, `RuntimeError`). Na każdą taką sytuację napisz test z `pytest.raises(TypBłędu, match="...")`. W `match` podaj słowo z komunikatu, który napisałeś w 04.1. `SeasonalNaiveForecaster.fit` dodaje jeszcze jeden przypadek. Docstringi klas `SeasonalNaiveForecaster` i `MovingAverageForecaster` wymieniają też błędy konstruktora (`season` i `window` mniejsze od 1). Testy na błędy konstruktora też są dobre, choć sprawdzenie 04.2 ich nie wymaga.
 #
 # ### 04.2d Uruchom testy, potem sprawdzenie
 #
-# Najpierw same testy, na Twoim kodzie. Wszystkie muszą przejść. W terminalu, w katalogu repozytorium (tym z `pyproject.toml`): `uv run pytest tests/models -q`, albo komórka poniżej. Komórka zakłada, że kernel działa w katalogu notebooka, `labs/04-testing`, i dlatego przechodzi dwa katalogi wyżej. Gdy pytest zgłasza, że nie znalazł `tests/models`, uruchom polecenie w terminalu.
+# Najpierw uruchom same testy na Twoim kodzie. Wszystkie muszą przejść. W terminalu, w katalogu repozytorium (tym z `pyproject.toml`), uruchom `uv run pytest tests/models -q`. Zamiast terminala możesz użyć komórki poniżej. Komórka zakłada, że kernel działa w katalogu notebooka, `labs/04-testing`, i dlatego przechodzi dwa katalogi wyżej. Gdy pytest zgłasza, że nie znalazł `tests/models`, uruchom polecenie w terminalu.
 
 # %%
 # !cd ../.. && uv run pytest tests/models -q
@@ -186,10 +206,13 @@ for model in (NaiveForecaster(), SeasonalNaiveForecaster(), MovingAverageForecas
 # Potem `check("04.2")`. Sprawdzenie robi to, co dobry recenzent, w trzech etapach:
 #
 # 1. Liczy testy w `tests/models/test_local.py`, razem z gotowym. Mniej niż sześć to `❌` z liczbą znalezionych.
-# 2. Uruchamia je na Twoim kodzie. Jeśli któryś nie przechodzi, `❌` i polecenie, którym zobaczysz który.
-# 3. Uruchamia je osiem razy, za każdym razem na Twoim `local.py` z jednym celowo wprowadzonym błędem. Każdy taki błąd łamie jedno zdanie z docstringów. Na każdej zepsutej wersji co najmniej jeden Twój test musi **nie** przejść. Wersje, na których wszystkie testy przeszły, sprawdzenie wypisuje na liście: każda pozycja mówi, jakiego błędu Twoje testy nie zauważyły.
+# 2. Uruchamia testy na Twoim kodzie. Jeśli któryś test nie przechodzi, wypisuje `❌` i polecenie, którym zobaczysz, który to test.
+# 3. Uruchamia je osiem razy, za każdym razem na Twoim `local.py` z jednym celowo wprowadzonym błędem. Każdy taki błąd łamie jedno zdanie z docstringów. Na każdej zepsutej wersji co najmniej jeden Twój test musi nie przejść. Sprawdzenie wypisuje listę wersji, na których wszystkie testy przeszły. Każda pozycja listy mówi, jakiego błędu Twoje testy nie zauważyły.
 #
-# Wynik `✅ 04.2` znaczy, że testy wykryły wszystkie osiem błędów. Dlatego dobry test spełnia dwa warunki. Wartość oczekiwaną liczysz sam, a nie tym samym kodem, który testujesz. Dane są takie, że poprawny i błędny kod dają na nich różne wyniki.
+# Wynik `✅ 04.2` znaczy, że testy wykryły wszystkie osiem błędów. Test wykryje błąd, gdy spełnia dwa warunki:
+#
+# - wartość oczekiwaną liczysz sam, a nie tym samym kodem, który testujesz.
+# - dane są takie, że poprawny i błędny kod dają na nich różne wyniki.
 #
 # <details>
 # <summary>Podpowiedź 1: kierunek</summary>
@@ -233,13 +256,16 @@ check("04.2")
 # %% [markdown]
 # ## 04.3 Piaskownica: Poetry i uv
 #
-# **Cel.** Kurs używa uv. W wielu firmach spotkasz Poetry, starsze i nadal popularne narzędzie do tego samego. Zamiast czytać porównanie, zbuduj ten sam mały pakiet obydwoma.
+# **Cel:** Kurs używa uv. W wielu firmach spotkasz Poetry, starsze i nadal popularne narzędzie do tego samego. Zamiast czytać porównanie, zbuduj ten sam mały pakiet obydwoma.
 #
-# **Gdzie.** W terminalu, w katalogu `~/sandbox`, **poza repozytorium kursu**, żeby niczego w nim nie zmienić. Odpowiedzi na cztery pytania zapisz w komórce "*Twoje odpowiedzi:*" na końcu tej sekcji.
+# **Gdzie:** W terminalu, w katalogu `~/sandbox`, poza repozytorium kursu, żeby niczego w nim nie zmienić. Odpowiedzi na cztery pytania zapisz w komórce "*Twoje odpowiedzi:*" na końcu tej sekcji.
 #
-# **Wynik.** Dwa pakiety, `~/sandbox/demand-poetry` i `~/sandbox/demand-uv`, w każdym jedna funkcja i jeden przechodzący test, oraz odpowiedzi na pytania.
+# **Wynik:**
 #
-# **Sprawdzenie.** Bez sprawdzeń. Gotowe, gdy `poetry run pytest` i `uv run pytest` przechodzą, a w odpowiedziach jest uzupełniona tabela.
+# - dwa pakiety, `~/sandbox/demand-poetry` i `~/sandbox/demand-uv`. W każdym jest jedna funkcja i jeden przechodzący test.
+# - odpowiedzi na pytania.
+#
+# **Sprawdzenie:** Bez sprawdzeń. Gotowe, gdy `poetry run pytest` i `uv run pytest` przechodzą, a w odpowiedziach jest uzupełniona tabela.
 #
 # **Krok 1.** Zainstaluj Poetry jako narzędzie uv. Tak instaluje się każde narzędzie wiersza poleceń napisane w Pythonie: dostaje własne, osobne środowisko.
 #
@@ -265,7 +291,12 @@ check("04.2")
 # cd ~/sandbox/demand-uv && uv add --dev pytest && uv sync
 # ```
 #
-# **Krok 4.** W obu pakietach napisz funkcję `naive(history, horizon)`: dostaje listę liczb i liczbę kroków, zwraca listę, w której ostatnia wartość historii powtarza się `horizon` razy. Dopisz ją do pliku `__init__.py` pakietu: `src/demand_poetry/__init__.py` i `src/demand_uv/__init__.py` (myślnik z nazwy projektu zamienia się w nazwie pakietu na podkreślnik). Test napisz w `tests/test_naive.py` każdego projektu (w `demand-uv` katalog `tests/` utwórz sam) i zaimportuj w nim funkcję: `from demand_poetry import naive` albo `from demand_uv import naive`. Uruchom testy: `poetry run pytest` w `demand-poetry` i `uv run pytest` w `demand-uv`.
+# **Krok 4.** W obu pakietach napisz funkcję `naive(history, horizon)`. Funkcja dostaje listę liczb i liczbę kroków. Zwraca listę, w której ostatnia wartość historii powtarza się `horizon` razy.
+#
+# 1. Dopisz funkcję do pliku `__init__.py` pakietu: `src/demand_poetry/__init__.py` i `src/demand_uv/__init__.py`. Myślnik z nazwy projektu zamienia się w nazwie pakietu na podkreślnik.
+# 2. Test napisz w `tests/test_naive.py` każdego projektu. W `demand-uv` katalog `tests/` utwórz sam.
+# 3. W teście zaimportuj funkcję: `from demand_poetry import naive` albo `from demand_uv import naive`.
+# 4. Uruchom testy: `poetry run pytest` w `demand-poetry` i `uv run pytest` w `demand-uv`.
 #
 # **Krok 5.** Porównaj. Otwórz oba `pyproject.toml` i oba pliki lock.
 #
@@ -301,7 +332,7 @@ check("04.2")
 # uv run course check 04
 # ```
 #
-# Polecenia obejmują tylko kod modułów 01-04. Reszta repozytorium to zadania kolejnych modułów: ich funkcje zgłaszają jeszcze `NotImplementedError`, a ich gotowe testy (np. `tests/test_metrics.py`, zadanie 05.2) nie przejdą, dopóki ich nie zrobisz. Pliki z `labs/` podajesz jawnie, bo `ruff` sam ich nie sprawdza: konfiguracja repozytorium wyłącza katalog `labs/`. Wszystkie pięć poleceń ma przejść bez błędów.
+# Polecenia obejmują tylko kod modułów 01-04. Reszta repozytorium to zadania kolejnych modułów. Funkcje tych modułów zgłaszają jeszcze `NotImplementedError`. Ich gotowe testy (np. `tests/test_metrics.py`, zadanie 05.2) nie przejdą, dopóki nie zrobisz tych zadań. Pliki z `labs/` podajesz jawnie, bo `ruff` sam ich nie sprawdza. Konfiguracja repozytorium wyłącza katalog `labs/`. Wszystkie pięć poleceń ma przejść bez błędów.
 #
 # **2. Wyczyść wyjścia notebooków** (reguła G4: w repozytorium nie ma wyjść z danymi):
 #
@@ -309,7 +340,7 @@ check("04.2")
 # uv run jupyter nbconvert --clear-output --inplace labs/0[1-4]-*/*.ipynb
 # ```
 #
-# **3. Gałąź, commit, pull request.** Pull request idzie z gałęzi `checkpoint/01` do gałęzi `main` w **Twoim forku**, nie do repozytorium kursu. Tak ustawiłeś `gh` w module 00 (`gh repo set-default`). `gh pr create` wypisuje adres pull requesta: otwórz go i sprawdź, że repozytorium docelowe to `TWOJ-LOGIN/mle-course`, a baza to `main`.
+# **3. Gałąź, commit, pull request.** Pull request idzie z gałęzi `checkpoint/01` do gałęzi `main` w Twoim forku, nie do repozytorium kursu. Tak ustawiłeś `gh` w module 00 (`gh repo set-default`). `gh pr create` wypisuje adres pull requesta. Otwórz ten adres i sprawdź, że repozytorium docelowe to `TWOJ-LOGIN/mle-course`, a baza to `main`.
 #
 # ```bash
 # git switch -c checkpoint/01
@@ -321,9 +352,14 @@ check("04.2")
 #
 # **4. Review.** W Claude Code w katalogu repozytorium wpisz `/review`. Tutor przeczyta cały diff według `docs/standard.md` i powie "do scalenia" albo "do poprawy". Poprawki robisz sam, kolejnymi commitami na tej samej gałęzi, i prosisz o review jeszcze raz.
 #
-# Bez tutora zrób review sam: otwórz `docs/standard.md`, weź reguły z kolumną "Od" do 04 włącznie i dla każdej przejrzyj zakładkę "Files changed" pull requesta. Dopisz do opisu PR (na stronie pull requesta przycisk edycji opisu albo `gh pr edit --body "..."`) listę identyfikatorów reguł, które sprawdziłeś, np. `K1, K2, T1, G3`, a przy każdej znalezionej uwadze jedno zdanie, co poprawiłeś.
+# Bez tutora zrób review sam:
 #
-# **5.** Gdy werdykt to "do scalenia", scal pull request: przycisk **Merge pull request** na jego stronie w Twoim forku albo `gh pr merge` w terminalu. Dopiero potem wróć lokalnie na `main` i pobierz scalone zmiany:
+# - Otwórz `docs/standard.md` i weź reguły z kolumną "Od" do 04 włącznie.
+# - Dla każdej reguły przejrzyj zakładkę "Files changed" pull requesta.
+# - Dopisz do opisu PR listę identyfikatorów reguł, które sprawdziłeś, np. `K1, K2, T1, G3`. Opis zmienisz przyciskiem edycji opisu na stronie pull requesta albo poleceniem `gh pr edit --body "..."`.
+# - Przy każdej znalezionej uwadze dopisz jedno zdanie, co poprawiłeś.
+#
+# **5.** Gdy werdykt to "do scalenia", scal pull request. Użyj przycisku "Merge pull request" na jego stronie w Twoim forku albo polecenia `gh pr merge` w terminalu. Dopiero potem wróć lokalnie na `main` i pobierz scalone zmiany:
 #
 # ```bash
 # git switch main && git pull
