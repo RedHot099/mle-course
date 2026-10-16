@@ -20,7 +20,20 @@ type Statistic = Callable[[Values], float | None]
 
 
 def parse_value(text: str) -> float | None:
-    """Turn one value of a .tsf series into a float, or None for a missing month."""
+    """Turn one value of a .tsf series into a float, or None for a missing month.
+
+    Args:
+        text: One value cut out of a data line, a string such as "3", " 12 ",
+            "2.5" or "?". Spaces around it are allowed.
+
+    Returns:
+        The demand of one month as a float ("3" gives 3.0), or None when the
+        text is "?" (MISSING), which marks a month without a measurement.
+
+    Raises:
+        ValueError: The text is not a number, or the number is negative.
+            The message shows the text.
+    """
     text = text.strip()
     if text == MISSING:
         return None
@@ -34,7 +47,21 @@ def parse_value(text: str) -> float | None:
 
 
 def parse_series_line(line: str) -> tuple[str, str, list[float | None]]:
-    """Split one data line into (name, start date, list of values)."""
+    """Split one data line into (name, start date, list of values).
+
+    Args:
+        line: One line after "@data", a string such as
+            "T7:1998-01-01 00-00-00:0,2,?,1". A trailing newline is allowed.
+
+    Returns:
+        A tuple of three fields: the series name ("T7"), the start date
+        without the time ("1998-01-01") and the list of monthly values, each
+        turned by parse_value into a float or None ([0.0, 2.0, None, 1.0]).
+
+    Raises:
+        ValueError: The line does not have the form name:start:values, or a
+            value is not a valid demand (see parse_value).
+    """
     parts = line.strip().split(":", 2)
     if len(parts) != 3:
         raise ValueError(f"Expected name:start:values, got {line.strip()[:40]!r}")
@@ -43,7 +70,20 @@ def parse_series_line(line: str) -> tuple[str, str, list[float | None]]:
 
 
 def read_series(path: str | Path) -> Iterator[tuple[str, str, list[float | None]]]:
-    """Yield (name, start, values) for every series of a .tsf file."""
+    """Yield (name, start, values) for every series of a .tsf file.
+
+    Args:
+        path: Location of the .tsf file, a pathlib.Path or a string.
+
+    Yields:
+        One tuple per data line, in file order, as returned by
+        parse_series_line: (name, start date, list of float or None).
+        Comments (#), header lines (@) up to and including "@data", and
+        blank lines are skipped.
+
+    Raises:
+        ValueError: A data line cannot be parsed (see parse_series_line).
+    """
     in_data = False
     with Path(path).open(encoding="utf-8") as handle:
         for line in handle:
@@ -57,7 +97,23 @@ def read_series(path: str | Path) -> Iterator[tuple[str, str, list[float | None]
 
 
 def demand_stats(values: Values) -> Stats:
-    """Summarise one series: known months, missing months, total, zero share, ADI."""
+    """Summarise one series: known months, missing months, total, zero share, ADI.
+
+    Args:
+        values: The monthly values of one series in month order, a sequence
+            (list or tuple) of float or None (None marks a missing month).
+            It is not changed.
+
+    Returns:
+        A dict with five keys:
+        "months": number of known months (int);
+        "missing": number of missing months (int);
+        "total": sum of the known values, the units sold;
+        "zero_share": share of known months with zero demand, from 0 to 1,
+        or None when no month is known;
+        "adi": average demand interval, known months divided by months with
+        demand above zero, or None when there was no demand.
+    """
     known = [value for value in values if value is not None]
     demand = [value for value in known if value > 0]
     return {
@@ -70,7 +126,19 @@ def demand_stats(values: Values) -> Stats:
 
 
 def top_series(stats: Mapping[str, Stats], key: str, n: int) -> list[tuple[str, float]]:
-    """Return the n (name, value) pairs with the largest `key`, ties by name."""
+    """Return the n (name, value) pairs with the largest `key`, ties by name.
+
+    Args:
+        stats: Statistics of many series, a mapping from series name to the
+            dict returned by demand_stats. It is not changed.
+        key: Name of the statistic to rank by, such as "total" or "adi".
+        n: How many series to return at most.
+
+    Returns:
+        A list of at most n tuples (name, value), largest value first; equal
+        values in ascending name order. Series whose `key` is None are left
+        out, so the list is shorter than n when fewer series have a value.
+    """
     rows = [
         (name, value)
         for name, row in stats.items()
@@ -80,7 +148,18 @@ def top_series(stats: Mapping[str, Stats], key: str, n: int) -> list[tuple[str, 
 
 
 def save_summary(stats: Mapping[str, Stats], path: str | Path) -> Path:
-    """Write the statistics as sorted, indented JSON and return the file path."""
+    """Write the statistics as sorted, indented JSON and return the file path.
+
+    Args:
+        stats: The mapping to save, from series name to its statistics. It is
+            not changed.
+        path: Where to write the file, a pathlib.Path or a string. Missing
+            folders are created; an existing file is overwritten.
+
+    Returns:
+        The path of the written file as a pathlib.Path. The file is UTF-8
+        JSON with an indent of 2 spaces and keys sorted alphabetically.
+    """
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(stats, indent=2, sort_keys=True), encoding="utf-8")
@@ -95,8 +174,15 @@ def save_summary(stats: Mapping[str, Stats], path: str | Path) -> Path:
 def timed[**P, R](func: Callable[P, R]) -> Callable[P, R]:
     """Print how long each call of `func` took, then return its result.
 
-    The line reads ``<function name>: <seconds> s``. It is printed even when
-    the call raises.
+    Args:
+        func: Any function. Its arguments and result pass through unchanged.
+
+    Returns:
+        A new function with the name, docstring, arguments and result of
+        `func`. After every call it prints one line
+        ``<function name>: <seconds> s``, with the wall-clock seconds of that
+        call to three decimals, such as ``load_all: 0.250 s``. The line is
+        printed even when the call raises; the exception then passes on.
     """
 
     # >>> SOLUTION 02.2
@@ -115,9 +201,20 @@ def timed[**P, R](func: Callable[P, R]) -> Callable[P, R]:
 def requires_history(min_months: int) -> Callable[[Statistic], Statistic]:
     """Make a statistic return None for series with fewer than `min_months` known.
 
+    Args:
+        min_months: The smallest number of known months (values that are not
+            None; a zero counts as known) for which the statistic is computed.
+
+    Returns:
+        A decorator. It turns a statistic into one with the same name and
+        docstring that returns None, without calling the statistic, when the
+        series has fewer than `min_months` known months, and the statistic's
+        own result otherwise.
+
     Raises:
-        ValueError: `min_months` is below 1. This happens when the decorator
-            is applied, not when the statistic is called.
+        ValueError: `min_months` is below 1. Raised by the call
+            ``requires_history(min_months)`` itself, before any statistic is
+            passed to the decorator, not when the statistic is called.
     """
     # >>> SOLUTION 02.3
     if min_months < 1:
@@ -142,6 +239,14 @@ STATISTICS: dict[str, Statistic] = {}
 
 def register(name: str) -> Callable[[Statistic], Statistic]:
     """Add a statistic to STATISTICS under `name` and return it unchanged.
+
+    Args:
+        name: The key under which the statistic is stored in STATISTICS and
+            reported by summarise, such as "total".
+
+    Returns:
+        A decorator that stores the statistic it receives in STATISTICS and
+        returns that same function object, not a wrapper.
 
     Raises:
         ValueError: Another statistic already uses `name`.
@@ -213,6 +318,15 @@ def cv2(values: Values) -> float | None:
 def summarise(values: Values, names: Sequence[str] | None = None) -> Stats:
     """Compute the registered statistics `names` (all when None) for one series.
 
+    Args:
+        values: The monthly values of one series, float or None per month.
+        names: Names of registered statistics to compute, in the order wanted.
+            None means every statistic in STATISTICS, in registration order.
+
+    Returns:
+        A dict from statistic name to its result (float, int or None), with
+        the keys in the order of `names`.
+
     Raises:
         ValueError: A name is not registered. The message lists the known ones.
     """
@@ -226,7 +340,18 @@ def summarise(values: Values, names: Sequence[str] | None = None) -> Stats:
 
 
 def at_least(key: str, threshold: float) -> Callable[[Stats], bool]:
-    """Return a test that passes when a series' `key` is known and >= `threshold`."""
+    """Return a test that passes when a series' `key` is known and >= `threshold`.
+
+    Args:
+        key: Name of a statistic, such as "total".
+        threshold: The smallest value that passes.
+
+    Returns:
+        A function that takes the statistics of one series (a Stats dict, as
+        returned by summarise) and returns True when `key` is present, not
+        None and at least `threshold`; False otherwise, also when the key is
+        missing.
+    """
 
     # >>> SOLUTION 02.5
     def passes(stats: Stats) -> bool:
@@ -238,7 +363,17 @@ def at_least(key: str, threshold: float) -> Callable[[Stats], bool]:
 
 
 def select(stats: Mapping[str, Stats], *tests: Callable[[Stats], bool]) -> list[str]:
-    """Return the sorted names of the series that pass every test."""
+    """Return the sorted names of the series that pass every test.
+
+    Args:
+        stats: Statistics of many series, a mapping from series name to its
+            Stats dict. It is not changed.
+        *tests: Any number of tests such as those made by at_least.
+
+    Returns:
+        The names of the series for which every test returns True, sorted in
+        ascending order. With no tests, all names, sorted.
+    """
     # >>> SOLUTION 02.5
     return sorted(name for name, row in stats.items() if all(t(row) for t in tests))
     # <<< SOLUTION
