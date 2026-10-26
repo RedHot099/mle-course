@@ -22,7 +22,7 @@ Lecture sections are `lectures/NN-*/index.html#id`. Tasks are lab ids.
 | test as a contract, not an accuracy check | 04 `#umowa` | 04.1, 04.2 | |
 | loss, parameters, training | 08 `#model` | 08.3 | |
 | train / validation / test split by time | 08 (Podział po czasie) | 08.1 | same idea as the holdout of 03, with three parts |
-| leakage | 07 (Pułapka druga: dzień bieżący), 08 (Leakage) | 07.5, 08.6 | 07 explains the mechanism for `shift`, 08 names the rule |
+| leakage | 07 (Pułapka druga: dzień bieżący), 08 (Leakage) | 07.5, 08.6 | 07 names and defines leakage on the `shift` example; 08 expands it to the three common sources and the rule ids C2, C4 |
 | features from the series' own past (lag, rolling) | 07 (Czas w panelu) | 07.5 | the word "cecha" is used in 07 before 08 defines a feature; acceptable, 07 says what it means in place |
 | features known at forecast time | 08 (Leakage: "za krótkie spojrzenie wstecz"), 09 (Cechy znane w chwili prognozy) | 08.6, 09.1 | 08 states the rule for lags, 09 generalises it |
 | regularisation, hyperparameter | 08 (Regularyzacja) | 08.7 | |

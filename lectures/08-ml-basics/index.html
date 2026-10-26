@@ -58,7 +58,7 @@
 
       <p><strong>Uczenie</strong> to szukanie parametrów, dla których strata na danych treningowych jest najmniejsza. Cel jest jednak inny: mała strata na danych <em>przyszłych</em>. Różnica między tymi dwoma celami to temat reszty wykładu.</p>
 
-      <p>To drugie znaczenie słowa <code>fit</code>. W modułach 03 i 04 <code>fit</code> niczego nie liczył, tylko zapamiętywał historię, bo prognoza naiwna nie ma parametrów. Tu <code>fit</code> wyznacza wagi, a <code>predict</code> liczy z nich prognozę. Nazwy i kolejność kroków są te same, więc kod, który umie wywołać jedno, umie wywołać drugie.</p>
+      <p>To drugie znaczenie słowa <code>fit</code>. W modułach 03 i 04 <code>fit</code> niczego nie liczył, tylko zapamiętywał historię, bo prognoza naiwna nie ma parametrów. Tu <code>fit</code> wyznacza wagi, a <code>predict</code> liczy z nich prognozę. Nazwy i kolejność kroków są te same, zmieniają się argumenty: w 03 <code>fit(history)</code> i <code>predict(horizon)</code>, tu <code>fit(X, y)</code> i <code>predict(X)</code>. Jak pogodzić te dwie umowy, mówi sekcja o baseline'ie.</p>
     </section>
 
     <section id="gradient">
