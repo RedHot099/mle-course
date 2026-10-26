@@ -49,14 +49,14 @@
     <section id="prognoza">
       <h2>Co to jest prognoza</h2>
 
-      <p>Zanim napiszesz klasę, ustal, co ma liczyć. Seria z labów 01 i 02 to lista miesięcznych sprzedaży jednej części. Wszystko, co o niej wiesz, to <strong>historia</strong>: wartości do dziś. <strong>Prognoza</strong> (forecast) odpowiada na pytanie, ile sprzeda się w kolejnych miesiącach. Liczba tych miesięcy to <strong>horyzont</strong> (horizon).</p>
+      <p>Zanim napiszesz klasę, ustal, co ma liczyć. Seria z labów 01 i 02 to lista miesięcznych sprzedaży jednej części. Wszystko, co o niej wiesz, to <strong>historia</strong>: wartości do dziś. <strong>Prognoza</strong> (forecast) odpowiada na pytanie, ile sprzeda się w kolejnych miesiącach. Liczba tych miesięcy to <strong>horyzont prognozy</strong> (horizon).</p>
 
       <p>Trzy najprostsze przepisy, każdy na zwykłej liście liczb:</p>
 
       <ul>
         <li><strong>naiwna</strong> (naive): powtórz ostatnią wartość historii,</li>
         <li><strong>naiwna sezonowa</strong> (seasonal naive): powtórz wartości sprzed jednego sezonu, na przykład sprzed roku. Gdy horyzont jest dłuższy niż sezon, zacznij od początku,</li>
-        <li><strong>średnia ruchoma</strong> (moving average): średnia z ostatnich kilku wartości, powtórzona na cały horyzont.</li>
+        <li><strong>średnia krocząca</strong> (moving average): średnia z ostatnich kilku wartości, powtórzona na cały horyzont.</li>
       </ul>
 
 <pre><code class="language-text">miesiąc:               1     2     3     4     5     6  |  7     8     9
@@ -89,7 +89,7 @@ MAE:        (2 + 4) / 2 = 3.0</code></pre>
         </ul>
       </div>
 
-      <p>Przepis, który trudno pobić, nazywa się <strong>baseline</strong> (punkt odniesienia). Od modułu 08 każdy bardziej złożony model w kursie porównujesz z prognozą naiwną sezonową na tych samych seriach. Model, który jej nie bije, nie jest wart swojej złożoności.</p>
+      <p>Najprostsza sensowna prognoza, z którą porównujesz każdy model, to <strong>baseline</strong> (punkt odniesienia). Od modułu 08 tę rolę pełni prognoza naiwna sezonowa, liczona na tych samych seriach co model. Model, który jej nie bije, nie jest wart swojej złożoności.</p>
 
       <p>Na seriach części samochodowych ta ocena zaskakuje: w MAE wygrywa prognoza "zawsze zero". Większość miesięcy w holdoucie to zera, a MAE nagradza prognozę, która trafia w medianę. Magazyn, który na tej prognozie zamawia części, nie zamówi nic. Metryka do wyboru modelu nie może nagradzać stałego zaniżania. Moduł 05 wprowadza <strong>WAPE</strong>, który liczy pomyłkę jako część całej sprzedaży, i <strong>bias</strong>, który mówi, czy prognoza jest za niska czy za wysoka. W labie policzysz ten wynik sam i sprawdzisz, dla którego typu popytu różnica jest największa.</p>
 
@@ -285,7 +285,7 @@ Broken()</code></pre>
         </ul>
       </div>
 
-      <p>W labie <code>LocalForecaster</code> ma dwie publiczne metody z sekcji o prognozie: <code>fit</code>, które sprawdza historię i ją zapamiętuje, i <code>predict</code>, które sprawdza horyzont, i jedną abstrakcyjną, <code>_forecast</code>, która liczy. Każdy model pisze tylko <code>_forecast</code>, a walidacja jest w jednym miejscu. Podkreślnik na początku nazwy mówi: to szczegół implementacji, z zewnątrz tego nie wołaj.</p>
+      <p>W labie <code>LocalForecaster</code> ma dwie publiczne metody, <code>fit</code> i <code>predict</code> z sekcji "Co to jest prognoza", które sprawdzają argumenty, i jedną abstrakcyjną, <code>_forecast</code>, która liczy. Każdy model pisze tylko <code>_forecast</code>, a walidacja jest w jednym miejscu. Podkreślnik na początku nazwy mówi: to szczegół implementacji, z zewnątrz tego nie wołaj.</p>
 
       <h3>Protocol</h3>
 

@@ -57,6 +57,7 @@ Reference code lives on the `solutions` branch. It is the learner's to open, not
 | `src/coursekit/checks/mNN.py` | what each check verifies, on which input, with which message |
 | `src/coursekit/fixtures/` | the small sample the checks run on |
 | `tutor/notes/NN.md` | per task: common mistakes, leading questions, quiz bank |
+| `tutor/concepts.md` | per forecasting concept: the lecture section that explains it and the task that first uses it |
 | `docs/standard.md` | the engineering standard used in reviews |
 | `.course/` | local state: `config.toml` (data profile), `progress.json`, `progress.md`, `backup/` |
 

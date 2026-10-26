@@ -62,6 +62,7 @@ Kurs używa angielskich terminów, bo takich używa się w pracy i w dokumentacj
 | merge | złączenie | Połączenie dwóch tabel po kluczu |
 | mixed precision | mieszana precyzja | Liczenie części operacji w 16 bitach zamiast 32, szybciej i przy mniejszej pamięci |
 | mock | atrapa | Obiekt udający zależność w teście i zapamiętujący, jak go wołano |
+| moving average | średnia krocząca | Prognoza równa średniej z ostatnich kilku wartości historii |
 | MSE | średni błąd kwadratowy | Średnia z kwadratów różnic między prognozą a rzeczywistością |
 | mutation testing | testowanie mutacyjne | Sprawdzanie testów przez celowe psucie kodu: dobry test wykrywa zepsutą wersję |
 | NaN | brak wartości | Specjalna wartość zmiennoprzecinkowa oznaczająca brak liczby |
