@@ -59,10 +59,11 @@
         <li><strong>średnia ruchoma</strong> (moving average): średnia z ostatnich kilku wartości, powtórzona na cały horyzont.</li>
       </ul>
 
-<pre><code class="language-text">historia (6 miesięcy):          2  0  1  3  0  1
-naiwna, horyzont 3:                               1     1     1
-sezonowa (sezon 3), horyzont 3:                   3     0     1
-średnia z okna 3, horyzont 3:                     1.33  1.33  1.33</code></pre>
+<pre><code class="language-text">miesiąc:               1     2     3     4     5     6  |  7     8     9
+historia:              2     0     1     3     0     1  |
+naiwna, horyzont 3:                                     |  1     1     1
+sezonowa (sezon 3):                                     |  3     0     1
+średnia z okna 3:                                       |  1.33  1.33  1.33</code></pre>
 
       <p>Każdy z tych przepisów ma dwa kroki. <strong><code>fit</code></strong> dostaje historię i zapamiętuje ją. <strong><code>predict</code></strong> dostaje horyzont i liczy z zapamiętanej historii prognozę. Ten podział wraca w każdym modelu kursu. W module 08 <code>fit</code> zacznie wyznaczać parametry zamiast tylko zapamiętywać, ale nazwa i kolejność kroków zostaną te same.</p>
 
