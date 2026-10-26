@@ -30,13 +30,14 @@
     <p class="lede">Klasa łączy dane z regułami, które te dane muszą spełniać, i z operacjami na nich. Dobrze użyta sprawia, że niepoprawny obiekt w ogóle nie powstaje. Źle użyta zamienia trzy linijki funkcji w trzydzieści linijek ceremonii.</p>
 
     <ul class="meta">
-      <li><b>Czas:</b> około 60 minut</li>
+      <li><b>Czas:</b> około 70 minut</li>
       <li><b>Wymagane:</b> moduły 01 i 02</li>
       <li><b>Potem:</b> <a href="../../labs/03-classes/README.md">lab 03</a>, około 6 godzin</li>
     </ul>
 
     <p>Po tym wykładzie będziesz umiał:</p>
     <ul>
+      <li>powiedzieć, czym jest prognoza, horyzont, holdout i baseline, i policzyć MAE na kartce,</li>
       <li>napisać klasę z <code>__init__</code>, atrybutami i metodami i wiedzieć, czym jest <code>self</code>,</li>
       <li>zastąpić ręcznie pisaną klasę danych przez <code>@dataclass</code>, także zamrożony,</li>
       <li>używać właściwości i metod klasy,</li>
@@ -44,6 +45,55 @@
       <li>nazwać skończony zbiór wartości przez <code>StrEnum</code> i rozgałęziać kod przez <code>match</code>,</li>
       <li>ocenić, kiedy klasa jest zbędna.</li>
     </ul>
+
+    <section id="prognoza">
+      <h2>Co to jest prognoza</h2>
+
+      <p>Zanim napiszesz klasę, ustal, co ma liczyć. Seria z labów 01 i 02 to lista miesięcznych sprzedaży jednej części. Wszystko, co o niej wiesz, to <strong>historia</strong>: wartości do dziś. <strong>Prognoza</strong> (forecast) odpowiada na pytanie, ile sprzeda się w kolejnych miesiącach. Liczba tych miesięcy to <strong>horyzont</strong> (horizon).</p>
+
+      <p>Trzy najprostsze przepisy, każdy na zwykłej liście liczb:</p>
+
+      <ul>
+        <li><strong>naiwna</strong> (naive): powtórz ostatnią wartość historii,</li>
+        <li><strong>naiwna sezonowa</strong> (seasonal naive): powtórz wartości sprzed jednego sezonu, na przykład sprzed roku. Gdy horyzont jest dłuższy niż sezon, zacznij od początku,</li>
+        <li><strong>średnia ruchoma</strong> (moving average): średnia z ostatnich kilku wartości, powtórzona na cały horyzont.</li>
+      </ul>
+
+<pre><code class="language-text">historia (6 miesięcy):          2  0  1  3  0  1
+naiwna, horyzont 3:                               1     1     1
+sezonowa (sezon 3), horyzont 3:                   3     0     1
+średnia z okna 3, horyzont 3:                     1.33  1.33  1.33</code></pre>
+
+      <p>Każdy z tych przepisów ma dwa kroki. <strong><code>fit</code></strong> dostaje historię i zapamiętuje ją. <strong><code>predict</code></strong> dostaje horyzont i liczy z zapamiętanej historii prognozę. Ten podział wraca w każdym modelu kursu. W module 08 <code>fit</code> zacznie wyznaczać parametry zamiast tylko zapamiętywać, ale nazwa i kolejność kroków zostaną te same.</p>
+
+      <p>Który przepis jest lepszy? Model, który widział całą serię, łatwo "przewiduje" przeszłość. Uczciwa ocena chowa przed nim ostatnie miesiące. Ten schowany kawałek to <strong>holdout</strong> (okres testowy). Model dostaje w <code>fit</code> miesiące przed nim, prognozuje schowane, a Ty porównujesz prognozę z tym, co sprzedano naprawdę.</p>
+
+      <p>Najprostsza miara pomyłki to <strong>MAE</strong> (mean absolute error, średni błąd bezwzględny): dla każdego miesiąca różnica między sprzedażą a prognozą bez znaku, potem średnia. Wynik jest w tych samych jednostkach co dane, tu w sztukach. Przykład z holdoutem 2:</p>
+
+<pre><code class="language-text">seria:      1  1  3  5
+historia:   1  1          (to dostaje fit)
+prawda:           3  5    (ostatnie 2 miesiące, schowane)
+prognoza:         1  1    (naiwna: powtarza ostatnią wartość historii)
+błędy:            2  4
+MAE:        (2 + 4) / 2 = 3.0</code></pre>
+
+      <p>Dla wielu serii liczysz MAE osobno dla każdej, a potem średnią z tych liczb. W labie robi to funkcja <code>evaluate</code>.</p>
+
+      <div class="quiz" id="q0" data-type="single">
+        <div class="quiz-q">Seria <code>4 0 0 2</code>, holdout 2. Który przepis ma mniejsze MAE: naiwna czy naiwna sezonowa z sezonem 2?</div>
+        <ul class="quiz-options">
+          <li data-correct>Naiwna, MAE 1.0.<span class="why">Tak. Historia to <code>4 0</code>, naiwna prognozuje <code>0 0</code>, błędy 0 i 2, średnia 1.0. Sezonowa powtarza <code>4 0</code>, błędy 4 i 2, MAE 3.0.</span></li>
+          <li>Sezonowa, MAE 1.0.<span class="why">Sezonowa powtarza cały sezon z historii, czyli <code>4 0</code>. Wobec prawdy <code>0 2</code> to błędy 4 i 2.</span></li>
+          <li>Remis, obie mają MAE 2.0.<span class="why">Policz osobno: naiwna <code>0 0</code>, sezonowa <code>4 0</code>. Różne prognozy, różne błędy.</span></li>
+        </ul>
+      </div>
+
+      <p>Przepis, który trudno pobić, nazywa się <strong>baseline</strong> (punkt odniesienia). Od modułu 08 każdy bardziej złożony model w kursie porównujesz z prognozą naiwną sezonową na tych samych seriach. Model, który jej nie bije, nie jest wart swojej złożoności.</p>
+
+      <p>Na seriach części samochodowych ta ocena zaskakuje: w MAE wygrywa prognoza "zawsze zero". Większość miesięcy w holdoucie to zera, a MAE nagradza prognozę, która trafia w medianę. Magazyn, który na tej prognozie zamawia części, nie zamówi nic. Metryka do wyboru modelu nie może nagradzać stałego zaniżania. Moduł 05 wprowadza <strong>WAPE</strong>, który liczy pomyłkę jako część całej sprzedaży, i <strong>bias</strong>, który mówi, czy prognoza jest za niska czy za wysoka. W labie policzysz ten wynik sam i sprawdzisz, dla którego typu popytu różnica jest największa.</p>
+
+      <p>Trzy przepisy, ten sam kształt: zapamiętaj historię, policz prognozę na horyzont. Reszta tego wykładu jest o tym, jak taki wspólny kształt zapisać w Pythonie.</p>
+    </section>
 
     <section id="klasa">
       <h2>Klasa, obiekt, self</h2>
@@ -234,7 +284,7 @@ Broken()</code></pre>
         </ul>
       </div>
 
-      <p>W labie <code>LocalForecaster</code> ma dwie publiczne metody, <code>fit</code> i <code>predict</code>, które sprawdzają argumenty, i jedną abstrakcyjną, <code>_forecast</code>, która liczy. Każdy model pisze tylko <code>_forecast</code>, a walidacja jest w jednym miejscu. Podkreślnik na początku nazwy mówi: to szczegół implementacji, z zewnątrz tego nie wołaj.</p>
+      <p>W labie <code>LocalForecaster</code> ma dwie publiczne metody z sekcji o prognozie: <code>fit</code>, które sprawdza historię i ją zapamiętuje, i <code>predict</code>, które sprawdza horyzont, i jedną abstrakcyjną, <code>_forecast</code>, która liczy. Każdy model pisze tylko <code>_forecast</code>, a walidacja jest w jednym miejscu. Podkreślnik na początku nazwy mówi: to szczegół implementacji, z zewnątrz tego nie wołaj.</p>
 
       <h3>Protocol</h3>
 
@@ -257,21 +307,6 @@ def evaluate(make_model: Callable[[], Forecaster], ...) -> float: ...</code></pr
           <li><code>Any</code>.<span class="why">Zadziała, ale <code>mypy</code> przestanie cokolwiek sprawdzać, także literówkę w <code>predcit</code>.</span></li>
         </ul>
       </div>
-
-      <h3>Jak ocenić prognozę: holdout i MAE</h3>
-
-      <p>Model, który widział całą serię, łatwo "przewiduje" przeszłość. Uczciwa ocena chowa przed nim ostatnie miesiące. Ten schowany kawałek to <strong>holdout</strong> (okres testowy). Model uczy się na miesiącach przed nim, prognozuje schowane, a Ty porównujesz prognozę z tym, co sprzedano naprawdę.</p>
-
-      <p>Najprostsza miara pomyłki to <strong>MAE</strong> (mean absolute error, średni błąd bezwzględny): dla każdego miesiąca różnica między sprzedażą a prognozą bez znaku, potem średnia. Wynik jest w tych samych jednostkach co dane, tu w sztukach. Przykład z holdoutem 2:</p>
-
-<pre><code class="language-text">seria:      1  1  3  5
-historia:   1  1          (model uczy się na tym)
-prawda:           3  5    (ostatnie 2 miesiące, schowane)
-prognoza:         1  1    (naiwna: powtarza ostatnią wartość historii)
-błędy:            2  4
-MAE:        (2 + 4) / 2 = 3.0</code></pre>
-
-      <p>Dla wielu serii liczysz MAE osobno dla każdej, a potem średnią z tych liczb. W labie robi to funkcja <code>evaluate</code>.</p>
     </section>
 
     <section id="enum-match">
@@ -441,7 +476,7 @@ assert "predict" not in MedianForecaster.__dict__ and "fit" not in MedianForecas
 
     <div class="next">
       <h2>Teraz lab</h2>
-      <p>Seria stanie się zamrożonym obiektem, który sam sprawdza swoje dane i zna swój typ popytu. Napiszesz trzy modele prognozy ze wspólną klasą bazową i ocenisz je na 2 509 kompletnych seriach. Jeden z wyników Cię zaskoczy. Około 6 godzin.</p>
+      <p>Seria stanie się zamrożonym obiektem, który sam sprawdza swoje dane i zna swój typ popytu. Napiszesz trzy modele prognozy ze wspólną klasą bazową i ocenisz je na 2 509 kompletnych seriach. Sprawdzisz na nich wynik z sekcji o prognozie i zobaczysz, dla którego typu popytu różnica jest największa. Około 6 godzin.</p>
       <p>Otwórz <code>labs/03-classes/03-classes.ipynb</code> w VS Code, a obok plik <code>labs/03-classes/demand.py</code>.</p>
     </div>
   </main>
