@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A4.1 · Policz błąd małej prognozy | ML Engineering from Scratch</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body data-module="foundations-a4-metrics">
+<header class="topbar">
+  <a class="brand" href="../index.html">ML Engineering from Scratch</a>
+  <span class="crumb">A4.1 · Fundamenty</span><span class="spacer"></span>
+  <span class="score"></span>
+  <button class="icon-button" id="theme-toggle" type="button" aria-label="Przełącz motyw jasny i ciemny">◐</button>
+</header>
+<div class="progress-line"></div>
+
+<div class="page with-toc">
+  <nav class="toc" aria-label="W tej lekcji"><p>W tej lekcji</p>
+<ol></ol>
+</nav>
+  <main class="lecture">
+    <p class="kicker">A4.1 · <a href="index.html">Ścieżka A i B</a></p>
+
+    <h1>Policz błąd małej prognozy</h1>
+
+    <p class="lede">Wyjaśnisz historię, horyzont i baseline oraz policzysz MAE na małych liczbach.</p>
+
+    <ul class="meta"><li><b>Przed lekcją:</b> Listy, pętle i dzielenie z A2. Wystarczy runner przeglądarkowy.</li>
+<li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
+</ul>
+
+    <section id="pytanie"><h2>Co przewidujesz i kiedy?</h2>
+<p>Obserwacja mówi, co już zmierzono. Prognoza mówi, czego oczekujesz później. Historia to obserwacje dostępne w chwili wykonania prognozy. Horyzont oznacza liczbę kolejnych okresów, które przewidujesz.</p>
+<p>Jeśli w niedzielę wieczorem prognozujesz poniedziałek i wtorek, horyzont obejmuje dwa dni. Sprzedaż z poniedziałku nie jest jeszcze znana. Nie może pomóc w niedzielnej prognozie wtorku.</p>
+<div class="quiz" id="available" data-type="single"><p>W niedzielę wieczorem przygotowujesz prognozę na poniedziałek. Co jest historią?</p>
+<ul class="quiz-options"><li>Końcowa sprzedaż z poniedziałku<span class="why">Tę wartość poznasz dopiero po prognozowanym dniu.</span></li>
+<li data-correct>Zapisana sprzedaż z soboty<span class="why">To wynik wcześniejszego dnia, który już się zakończył.</span></li>
+</ul>
+</div>
+<p><strong>Baseline</strong> to prosty punkt odniesienia. Może przewidywać, że kolejny dzień będzie taki jak ostatni znany dzień. W kolejnej lekcji sprawdzisz tę regułę na małym fragmencie prawdziwych danych.</p>
+</section>
+<section id="srednia"><h2>Zacznij od średniej i odległości</h2>
+<p>Średnia to suma podzielona przez liczbę elementów. Dla 2, 4 i 6 suma wynosi 12, elementów jest 3, więc średnia to 4. <code>sum</code> sumuje listę liczb, a <code>len</code> podaje ich liczbę.</p>
+<pre><code class="language-python">values = [2, 4, 6]
+print(sum(values) / len(values))</code></pre><p>Błąd ze znakiem to prognoza minus obserwacja. Wartość bezwzględna usuwa znak: odległość między 3 a 8 jest taka sama jak między 8 a 3. Funkcja <code>abs</code> liczy tę odległość.</p>
+<div class="predict" id="absolute" data-type="single" data-expected-output="5 5"><p>Jakie dwie wartości zobaczysz?</p>
+<pre><code class="language-python">print(abs(3 - 8), abs(8 - 3))</code></pre><ul class="quiz-options"><li>0 0<span class="why">Odwrócenie kolejności zmienia znak, ale różnica nadal ma długość 5.</span></li>
+<li data-correct>5 5<span class="why">Obie różnice mają tę samą wartość bezwzględną.</span></li>
+<li>-5 5<span class="why">abs usuwa minus z pierwszej różnicy.</span></li>
+</ul>
+</div>
+</section>
+<section id="mae"><h2>Porównaj te same dni</h2>
+<p>MAE, czyli mean absolute error, to średnia bezwzględnych błędów. Dla obserwacji <code>[2, 6]</code> i prognozy <code>[3, 3]</code> błędy bezwzględne wynoszą 1 i 3. MAE wynosi 2. Jednostka jest taka sama jak jednostka obserwacji.</p>
+<p>Ustaw obserwację i prognozę tego samego dnia w jednej parze. <code>zip</code> łączy kolejne elementy list, a dwie nazwy w pętli odbierają elementy pary:</p>
+<pre><code class="language-python">days = [&quot;Mon&quot;, &quot;Tue&quot;]
+values = [4, 7]
+for day, value in zip(days, values):
+    print(day, value)</code></pre><p>Wynik to Mon 4, a potem Tue 7. Zip kończy się wraz z krótszą listą, dlatego przed oceną sprawdzamy, czy obie listy mają tę samą długość.</p>
+<div class="callout rule"><span class="label">Dwa różne rachunki</span><p>Średnia błędów ze znakiem nie jest MAE. Dodatnie i ujemne błędy mogą się skasować, choć obie prognozy są nietrafione.</p>
+</div>
+</section>
+<section id="cwiczenie"><h2>Policz inną parę prognoz</h2>
+<h3>Średnia błędów</h3>
+<p>Dla tych samych trzech dni policz listę <code>errors</code> z wartościami bezwzględnymi, a następnie <code>mae</code>. Obserwacje zawierają zero, które trzeba uwzględnić. Możesz użyć pętli i zip.</p>
+<div class="pyrun" id="mae-practice"><script type="text/x-python" data-role="starter">
+actual = [0, 5, 4]
+predicted = [2, 3, 4]
+errors = []
+mae = None
+# Uzupełnij obliczenia.
+print(errors, mae)
+</script><script type="text/x-python" data-role="test">
+import math
+assert errors == [2, 2, 0], "Błędy bezwzględne tych dni to 2, 2 i 0."
+assert isinstance(mae, (int, float)), "Zapisz średnią błędów w mae."
+assert math.isclose(mae, 4 / 3), "MAE to suma trzech błędów podzielona przez 3, także gdy błąd wynosi zero."
+</script></div>
+<details><summary>Podpowiedź 1</summary>
+<p>Dla każdego dnia najpierw policz różnicę, a potem jej wartość bezwzględną.</p>
+</details>
+<details><summary>Podpowiedź 2</summary>
+<p>Do errors dodawaj jeden błąd na dzień. Średnią oblicz po zakończeniu pętli.</p>
+</details>
+</section>
+<section id="powrot"><h2>Powrót bez zaglądania</h2>
+<p>Czy wynik MAE = 2 sam wystarcza, żeby uznać model za dobry? Czy znasz poniedziałkową sprzedaż już w niedzielę?</p>
+<details><summary>Sprawdź własne wyjaśnienie</summary>
+<p>Potrzebujesz skali danych i punktu odniesienia. Przyszłej obserwacji nie ma jeszcze w historii. Baseline i model porównujesz na tych samych dniach.</p>
+</details>
+</section>
+
+    <div class="next"><h2>Następny krok</h2>
+<p><a href="a4-forecast.html">A4.2 · Pierwsza prognoza na danych Freshcast</a></p>
+<p><a href="a3-environment.html">Poprzednia: A3</a> · <a href="index.html">Mapa A i B</a></p>
+</div>
+
+  </main>
+</div>
+
+<footer class="footer">ML Engineering from Scratch · Jakub Eichner · treści CC BY 4.0, kod MIT</footer>
+<script src="../assets/highlight.min.js"></script>
+<script src="../assets/course.js"></script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>B6.2 · Pierwsze własne testy | ML Engineering from Scratch</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body data-module="foundations-b6-tests">
+<header class="topbar">
+  <a class="brand" href="../index.html">ML Engineering from Scratch</a>
+  <span class="crumb">B6.2 · Fundamenty</span><span class="spacer"></span>
+  <span class="score"></span>
+  <button class="icon-button" id="theme-toggle" type="button" aria-label="Przełącz motyw jasny i ciemny">◐</button>
+</header>
+<div class="progress-line"></div>
+
+<div class="page with-toc">
+  <nav class="toc" aria-label="W tej lekcji"><p>W tej lekcji</p>
+<ol></ol>
+</nav>
+  <main class="lecture">
+    <p class="kicker">B6.2 · <a href="index.html">Ścieżka A i B</a></p>
+
+    <h1>Pierwsze własne testy</h1>
+
+    <p class="lede">Napiszesz test na małych danych, sprawdzisz wyjątek i zobaczysz, czy test zauważa błąd.</p>
+
+    <ul class="meta"><li><b>Przed lekcją:</b> Własna funkcja mean_known z B6.1. Do pytest lokalnie potrzebne A3; pierwsze doświadczenie działa w przeglądarce.</li>
+<li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
+</ul>
+
+    <section id="assert"><h2>Oczekiwany wynik policz sam</h2>
+<p><code>assert</code> sprawdza zdanie. Jeśli jest prawdziwe, program idzie dalej. Jeśli fałszywe, zgłasza AssertionError. Wiadomość po przecinku pomaga nazwać niespełnione wymaganie.</p>
+<pre><code class="language-python">result = 2 + 3
+assert result == 5, &quot;Suma 2 i 3 powinna wynosić 5&quot;
+print(&quot;check passed&quot;)</code></pre><p>Wynikiem jest check passed. Test nie ma powtarzać obliczenia funkcji po drugiej stronie porównania. Oczekiwana wartość ma wynikać z ręcznego rachunku i umowy.</p>
+<div class="quiz" id="oracle" data-type="single"><p>Które sprawdzenie ma niezależne oczekiwanie?</p>
+<ul class="quiz-options"><li data-correct><code>assert length_cm(2) == 200</code><span class="why">Wiemy z przelicznika, że dwa metry to 200 cm.</span></li>
+<li><code>assert length_cm(2) == length_cm(2)</code><span class="why">Obie strony korzystają z tego samego kodu, więc wspólny błąd pozostanie niezauważony.</span></li>
+</ul>
+</div>
+</section>
+<section id="plik"><h2>Zapisz funkcję i pierwszy test</h2>
+<p>W JupyterLab z A3 wybierz nowy plik tekstowy. Zapisz go jako <code>summary.py</code> w katalogu mle-practice. Przenieś do niego własną funkcję mean_known, bez wywołań print z końca ćwiczenia. Plik .py jest modułem. Inny plik może importować jego definicje.</p>
+<p>Obok zapisz <code>test_summary.py</code>. Pierwszy test jest dostarczony jako wzór. Nie podaje sposobu obliczenia średniej.</p>
+<pre><code class="language-python" data-needs-learner="true">from summary import mean_known
+
+def test_mean_includes_zero():
+    assert mean_known([0, None, 6]) == 3.0</code></pre><p>Import <code>from summary import mean_known</code> bierze funkcję z pliku summary.py. Oba pliki leżą w tym samym katalogu. Pytest rozpoznaje pliki i funkcje zaczynające się od test_. Uruchom w terminalu tego katalogu:</p>
+<pre><code class="language-bash">cd ~/mle-practice
+uv run --no-project --python 3.12 --with pytest pytest -q</code></pre><p>Jeśli Twoja funkcja spełnia ten przypadek, zobaczysz <code>1 passed</code>. Jeśli nie, pytest pokaże oczekiwany i otrzymany wynik. Brak modułu summary zwykle oznacza inny katalog albo niepoprawną nazwę pliku, nie brak biblioteki z internetu.</p>
+</section>
+<section id="pytest"><h2>Liczby przybliżone i oczekiwane błędy</h2>
+<p>Liczby float przechowują przybliżenia. Zamiast wymagać dokładnej równości wyniku niekończącego się ułamka, użyj <code>pytest.approx</code>. Do sprawdzenia oczekiwanego wyjątku służy <code>pytest.raises</code>. To gotowe narzędzia, nie klasy do napisania.</p>
+<pre><code class="language-python">import pytest
+
+def half(value):
+    if value &lt; 0:
+        raise ValueError(&quot;value must be non-negative&quot;)
+    return value / 2
+
+def test_half():
+    assert half(1) == pytest.approx(0.5)
+
+def test_half_rejects_negative():
+    with pytest.raises(ValueError, match=&quot;non-negative&quot;):
+        half(-1)</code></pre><p>Ten przykład używa innej funkcji niż zadanie. match sprawdza fragment komunikatu. Jeśli wyjątek nie wystąpi, test ma się nie udać. Przepisanie przykładu do testów mean_known wymaga wybrania jej własnych przypadków i oczekiwań.</p>
+</section>
+<section id="zadanie"><h2>Dopisz testy własnej funkcji</h2>
+<p>Do test_summary.py dopisz co najmniej cztery własne testy. Wybierz: pustą listę, same braki, wynik ułamkowy oraz zachowanie wejścia. Dla każdego najpierw zapisz oczekiwanie słowami. Nie kopiuj całej pętli z implementacji do testu.</p>
+<ol><li>Uruchom testy na swojej funkcji.</li>
+<li>W kopii pliku wprowadź jeden kontrolowany błąd, na przykład pomijanie zer.</li>
+<li>Sprawdź, czy testy przestają przechodzić i czy komunikat dotyczy tego błędu.</li>
+<li>Przywróć poprawną wersję i uruchom komplet ponownie.</li>
+</ol>
+<p>Robisz to na swoim małym module, nie na kodzie reszty kursu. Nie musisz jeszcze znać narzędzi mutation testing.</p>
+<details><summary>Rubryka samooceny bez tutora</summary>
+<p>Testy przechodzą na Twojej poprawnej wersji, a co najmniej jeden pada po kontrolowanym zepsuciu. Każdy sprawdza konkretne wymaganie. Oczekiwany błąd nie jest zamieniany na puste except. Wejście do testu jest małe i widoczne w jego treści. Liczba zaliczonych testów sama nie dowodzi jakości.</p>
+</details>
+</section>
+<section id="powrot"><h2>Powrót bez zaglądania</h2>
+<p>Czy zielony test dowodzi, że funkcja działa na wszystkich danych?</p>
+<details><summary>Sprawdź własne wyjaśnienie</summary>
+<p>Nie. Dowodzi tylko zgodności z wybranymi przypadkami. Potrzebne są przypadki odróżniające poprawne zachowanie od typowego błędu. Nowy przykład po przerwie sprawdza także Twoje rozumienie.</p>
+</details>
+</section>
+
+    <div class="next"><h2>Następny krok</h2>
+<p><a href="b7-modules.html">B7.1 · Moduł, podstawowe typy i jakość kodu</a></p>
+<p><a href="b6-functions.html">Poprzednia: B6.1</a> · <a href="index.html">Mapa A i B</a></p>
+</div>
+
+  </main>
+</div>
+
+<footer class="footer">ML Engineering from Scratch · Jakub Eichner · treści CC BY 4.0, kod MIT</footer>
+<script src="../assets/highlight.min.js"></script>
+<script src="../assets/course.js"></script>
+</body>
+</html>

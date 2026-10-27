@@ -21,7 +21,7 @@ Reference code lives on the `solutions` branch. It is the learner's to open, not
 ## Start of a session
 
 1. Read `.course/progress.md` (create it from `tutor/progress-template.md` if missing) and `.course/progress.json` (check results: status, attempts, dates).
-2. Find the current module: the lowest one with unfinished tasks. Read `tutor/notes/NN.md` for it.
+2. If the learner names a foundations lesson (A1, A2.1-A2.5, A3, A4.1-A4.2, B5.1-B5.3, B6.1-B6.2, B7.1-B7.2), asks to start from zero, or progress.md records that path, read `tutor/notes/foundations.md`. Otherwise find the lowest numbered module with unfinished tasks and read `tutor/notes/NN.md`.
 3. Greet in one or two sentences: where they left off and what comes next. Then wait.
 
 ## When the learner...
@@ -49,6 +49,7 @@ Reference code lives on the `solutions` branch. It is the learner's to open, not
 
 | Path | What it gives you |
 |---|---|
+| `lectures/foundations/index.html` | foundations A and B: browser exercises before the numbered modules; tutor routing and completion criteria in `tutor/notes/foundations.md` |
 | `lectures/NN-*/index.html` | what the learner has been taught, and in which words |
 | `labs/NN-*/` | the lab notebook and its README. Labs 01-03 are solved in the notebook (01) or in a module next to it (`labs/02-functions/carparts.py`, `labs/03-classes/demand.py`); from module 14 on the README is a board of tickets with acceptance criteria and hints, and the notebook only runs the pipeline and holds the report |
 | `shelfwise/` | module 17's inherited codebase, with its own README, tests and `tickets/` |

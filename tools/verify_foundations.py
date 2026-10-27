@@ -1,0 +1,181 @@
+"""Check foundations pages, links and supplied examples without learner solutions.
+
+Run from the repository root: uv run python tools/verify_foundations.py
+Only supplied examples execute. Exercise starters must remain unsolved.
+"""
+
+from __future__ import annotations
+
+import contextlib
+import io
+import os
+import tempfile
+from collections.abc import Iterator
+from dataclasses import dataclass, field
+from html.parser import HTMLParser
+from pathlib import Path
+from urllib.parse import unquote, urlsplit
+
+ROOT = Path(__file__).resolve().parents[1]
+PAGES = ROOT / "lectures" / "foundations"
+VOID = {
+    "area",
+    "base",
+    "br",
+    "col",
+    "embed",
+    "hr",
+    "img",
+    "input",
+    "link",
+    "meta",
+    "source",
+    "wbr",
+}
+
+
+@dataclass
+class Node:
+    tag: str
+    attrs: dict[str, str] = field(default_factory=dict)
+    children: list[Node | str] = field(default_factory=list)
+
+    def text(self) -> str:
+        return "".join(c if isinstance(c, str) else c.text() for c in self.children)
+
+    def walk(self) -> Iterator[Node]:
+        yield self
+        for child in self.children:
+            if isinstance(child, Node):
+                yield from child.walk()
+
+    def has_class(self, name: str) -> bool:
+        return name in self.attrs.get("class", "").split()
+
+
+class Document(HTMLParser):
+    def __init__(self, path: Path) -> None:
+        super().__init__(convert_charrefs=True)
+        self.root = Node("document")
+        self.stack = [self.root]
+        self.feed(path.read_text(encoding="utf-8"))
+        self.close()
+        assert len(self.stack) == 1, f"Unclosed HTML: {path.name}"
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        node = Node(tag, {key: value or "" for key, value in attrs})
+        self.stack[-1].children.append(node)
+        if tag not in VOID:
+            self.stack.append(node)
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag in VOID:
+            return
+        assert self.stack[-1].tag == tag, f"Unbalanced HTML: {tag}"
+        self.stack.pop()
+
+    def handle_data(self, data: str) -> None:
+        self.stack[-1].children.append(data)
+
+
+def check_links(path: Path, document: Node) -> None:
+    ids = [n.attrs["id"] for n in document.walk() if "id" in n.attrs]
+    assert len(ids) == len(set(ids)), f"Duplicate IDs: {path.name}"
+    for node in document.walk():
+        for attribute in ("href", "src"):
+            if attribute in node.attrs:
+                check_target(path, node.attrs[attribute])
+
+
+def check_target(path: Path, target: str) -> None:
+    url = urlsplit(target)
+    if url.scheme or url.netloc:
+        return
+    destination = (path.parent / unquote(url.path)).resolve() if url.path else path
+    assert destination.exists(), f"Broken link: {path.name}: {target}"
+    if url.fragment and destination.suffix == ".html":
+        ids = {n.attrs.get("id") for n in Document(destination).root.walk()}
+        assert unquote(url.fragment) in ids, f"Missing anchor: {path.name}: {target}"
+
+
+def run_example(source: str, expected_error: str | None) -> str:
+    output = io.StringIO()
+    with contextlib.redirect_stdout(output):
+        try:
+            exec(compile(source, "<supplied-example>", "exec"), {})
+        except Exception as error:
+            assert type(error).__name__ == expected_error, str(error)
+        else:
+            assert expected_error is None, f"Expected {expected_error}"
+    return output.getvalue().strip()
+
+
+def check_content(path: Path, document: Node) -> tuple[int, int, int]:
+    quizzes = exercises = examples = 0
+    for node in document.walk():
+        if node.has_class("quiz") or node.has_class("predict"):
+            correct = [n for n in node.walk() if "data-correct" in n.attrs]
+            assert len(correct) == 1, f"Quiz answer count: {path.name}"
+            quizzes += 1
+        if node.has_class("pyrun"):
+            check_exercise(path, node)
+            exercises += 1
+        if node.tag == "code" and "language-python" in node.attrs.get("class", ""):
+            source = node.text()
+            compile(source, f"{path.name}:example", "exec")
+            if "data-needs-learner" not in node.attrs:
+                run_example(source, node.attrs.get("data-expected-error"))
+                examples += 1
+        if "data-expected-output" in node.attrs:
+            source = next(n.text() for n in node.walk() if n.tag == "code")
+            assert run_example(source, None) == node.attrs["data-expected-output"]
+    return quizzes, exercises, examples
+
+
+def check_exercise(path: Path, node: Node) -> None:
+    scripts = {
+        n.attrs.get("data-role"): n.text() for n in node.walk() if n.tag == "script"
+    }
+    assert "starter" in scripts, f"Missing starter: {path.name}"
+    for role, source in scripts.items():
+        compile(source, f"{path.name}:{role}", "exec")
+    if "test" not in scripts:
+        return
+    namespace: dict[str, object] = {}
+    with contextlib.redirect_stdout(io.StringIO()):
+        exec(compile(scripts["starter"], "<starter>", "exec"), namespace)
+    try:
+        exec(compile(scripts["test"], "<exercise-check>", "exec"), namespace)
+    except AssertionError as error:
+        assert str(error), f"Unhelpful empty check failure: {path.name}"
+    else:
+        raise AssertionError(f"Unsolved exercise already passes: {path.name}")
+
+
+def main() -> None:
+    quizzes = exercises = examples = 0
+    pages = sorted(PAGES.glob("*.html"))
+    previous = Path.cwd()
+    with tempfile.TemporaryDirectory() as directory:
+        os.chdir(directory)
+        try:
+            for path in pages:
+                document = Document(path).root
+                check_links(path, document)
+                q, e, x = check_content(path, document)
+                quizzes += q
+                exercises += e
+                examples += x
+        finally:
+            os.chdir(previous)
+    print(
+        f"OK: {len(pages)} pages, {quizzes} quizzes, "
+        f"{exercises} editors, {examples} examples"
+    )
+    print(
+        "Links and anchors resolve; examples run; unsolved starters fail with messages."
+    )
+
+
+if __name__ == "__main__":
+    main()

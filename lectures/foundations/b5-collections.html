@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>B5.1 · Kolekcje i zmiany danych | ML Engineering from Scratch</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body data-module="foundations-b5-collections">
+<header class="topbar">
+  <a class="brand" href="../index.html">ML Engineering from Scratch</a>
+  <span class="crumb">B5.1 · Fundamenty</span><span class="spacer"></span>
+  <span class="score"></span>
+  <button class="icon-button" id="theme-toggle" type="button" aria-label="Przełącz motyw jasny i ciemny">◐</button>
+</header>
+<div class="progress-line"></div>
+
+<div class="page with-toc">
+  <nav class="toc" aria-label="W tej lekcji"><p>W tej lekcji</p>
+<ol></ol>
+</nav>
+  <main class="lecture">
+    <p class="kicker">B5.1 · <a href="index.html">Ścieżka A i B</a></p>
+
+    <h1>Kolekcje i zmiany danych</h1>
+
+    <p class="lede">Dobierzesz kolekcję do pytania i zbudujesz wynik bez zmiany danych wejściowych.</p>
+
+    <ul class="meta"><li><b>Przed lekcją:</b> A2 i A4. Możesz pracować w przeglądarce.</li>
+<li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
+</ul>
+
+    <section id="wybor"><h2>Wybierz kolekcję do pytania</h2>
+<p>Znasz już listę i słownik. Lista zachowuje kolejność obserwacji. Słownik pozwala wybierać wartość po nazwanym kluczu. Dwie kolejne kolekcje to tuple i set.</p>
+<div class="table-wrap"><table><thead><tr><th>Potrzeba</th><th>Kolekcja</th><th>Przykład</th></tr>
+</thead>
+<tbody><tr><td>Wartości w kolejności dni</td><td>list</td><td><code>[3, 0, 5]</code></td></tr>
+<tr><td>Pola rekordu</td><td>dict</td><td><code>{"day": "Mon", "sale": 3}</code></td></tr>
+<tr><td>Stała para</td><td>tuple</td><td><code>("north", 12)</code></td></tr>
+<tr><td>Unikalne identyfikatory</td><td>set</td><td><code>{"north", "south"}</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>Tuple nie pozwala zastąpić własnego elementu przypisaniem. Set usuwa powtórzenia i nie daje kolejności dni. <code>in</code> pyta o obecność elementu. Funkcja sorted tworzy uporządkowaną listę, jeśli jej potrzebujesz.</p>
+<pre><code class="language-python">cities = [&quot;north&quot;, &quot;south&quot;, &quot;north&quot;]
+unique = set(cities)
+print(len(unique))
+print(&quot;north&quot; in unique)
+print(sorted(unique))</code></pre><p>Wynik to 2, True i lista north, south. Nie stosuj set do historii sprzedaży: usunąłby powtarzające się obserwacje, które mogą dotyczyć różnych dni.</p>
+</section>
+<section id="alias"><h2>Przypisanie nie robi kopii</h2>
+<div class="predict" id="alias-result" data-type="single" data-expected-output="[3, 5, 8]"><p>Co zobaczysz?</p>
+<pre><code class="language-python">original = [3, 5]
+other = original
+other.append(8)
+print(original)</code></pre><ul class="quiz-options"><li data-correct>[3, 5, 8]<span class="why">Obie nazwy wskazują tę samą listę.</span></li>
+<li>[3, 5]<span class="why">Nowej listy nie utworzono. Przypisanie nie kopiuje.</span></li>
+</ul>
+</div>
+<p>Listę można zmienić, więc jest mutowalna. <code>list(original)</code> tworzy nową listę. To wystarcza dla listy liczb. Przy listach zawierających kolejne listy elementy wewnętrzne nadal mogą być współdzielone; wrócimy do tego w obecnym module 01.</p>
+<p>Funkcja otrzymująca listę też nie dostaje automatycznej kopii. Zanim zaczniesz dopisywać lub usuwać elementy, ustal, czy zmiana wejścia jest częścią umowy. W naszych zadaniach wynik ma powstawać osobno.</p>
+</section>
+<section id="comprehension"><h2>Od pętli do comprehension</h2>
+<pre><code class="language-python">doubled = []
+for value in [1, 3, 4]:
+    doubled.append(value * 2)
+print(doubled)</code></pre><p>Gdy rozumiesz pętlę, tę samą nową listę możesz zapisać krócej:</p>
+<pre><code class="language-python">doubled = [value * 2 for value in [1, 3, 4]]
+print(doubled)</code></pre><p>Obie wersje dają [2, 6, 8]. Ten zapis to comprehension. Pętla jest nadal poprawnym wyborem, szczególnie gdy łatwiej ją prześledzić. Filtrowanie przez comprehension poznasz później; teraz przećwicz wybór elementów zwykłą pętlą. Nie musisz skracać kodu, którego jeszcze nie rozumiesz.</p>
+</section>
+<section id="cwiczenia"><h2>Zachowaj wejście</h2>
+<h3>Nowa lista znanych wartości</h3>
+<p>Napisz <code>without_missing(values)</code>. Zwróć nową listę bez None, w pierwotnej kolejności, pozostawiając zera i powtórzenia. Użyj zwykłej pętli i warunku.</p>
+<div class="pyrun" id="without-missing"><script type="text/x-python" data-role="starter">
+def without_missing(values):
+    ...
+
+print(without_missing([0, None, 3, 3]))
+</script><script type="text/x-python" data-role="test">
+_input = [0, None, 3, 3]
+_output = without_missing(_input)
+assert _output == [0, 3, 3], "Oczekiwano [0, 3, 3]. Zachowaj zera i powtórzenia."
+assert _input == [0, None, 3, 3], "Nie usuwaj elementów z listy wejściowej."
+assert _output is not _input, "Wynik ma być nową listą."
+assert without_missing([]) == [], "Dla pustej listy wynikiem jest nowa pusta lista."
+assert without_missing([None]) == [], "Po odrzuceniu jedynego braku zostaje pusta lista."
+</script></div>
+<details><summary>Podpowiedź 1</summary>
+<p>Nie usuwaj elementów w trakcie przechodzenia po tej samej liście.</p>
+</details>
+<details><summary>Podpowiedź 2</summary>
+<p>Buduj nową listę i dodawaj tylko wartości inne niż None.</p>
+</details>
+</section>
+<section id="powrot"><h2>Powrót bez zaglądania</h2>
+<p>Dlaczego set nie nadaje się do historii? Co może zmienić append wykonane przez inną nazwę?</p>
+<details><summary>Sprawdź własne wyjaśnienie</summary>
+<p>Set gubi powtórzenia i kolejność. Append zmienia obiekt listy, więc zmianę widać przez każdą nazwę tej listy. Wróć do quizu o przypisaniu, jeśli oczekiwałeś kopii.</p>
+</details>
+</section>
+
+    <div class="next"><h2>Następny krok</h2>
+<p><a href="b5-files.html">B5.2 · Odczytaj i zapisz mały plik</a></p>
+<p><a href="a4-forecast.html">Poprzednia: A4.2</a> · <a href="index.html">Mapa A i B</a></p>
+</div>
+
+  </main>
+</div>
+
+<footer class="footer">ML Engineering from Scratch · Jakub Eichner · treści CC BY 4.0, kod MIT</footer>
+<script src="../assets/highlight.min.js"></script>
+<script src="../assets/course.js"></script>
+</body>
+</html>

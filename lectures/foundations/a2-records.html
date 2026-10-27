@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A2.4 · Słowniki i lista rekordów | ML Engineering from Scratch</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body data-module="foundations-a2-records">
+<header class="topbar">
+  <a class="brand" href="../index.html">ML Engineering from Scratch</a>
+  <span class="crumb">A2.4 · Fundamenty</span><span class="spacer"></span>
+  <span class="score"></span>
+  <button class="icon-button" id="theme-toggle" type="button" aria-label="Przełącz motyw jasny i ciemny">◐</button>
+</header>
+<div class="progress-line"></div>
+
+<div class="page with-toc">
+  <nav class="toc" aria-label="W tej lekcji"><p>W tej lekcji</p>
+<ol></ol>
+</nav>
+  <main class="lecture">
+    <p class="kicker">A2.4 · <a href="index.html">Ścieżka A i B</a></p>
+
+    <h1>Słowniki i lista rekordów</h1>
+
+    <p class="lede">Odczytasz nazwane pola i wybierzesz obserwacje spełniające warunek.</p>
+
+    <ul class="meta"><li><b>Przed lekcją:</b> A2.2 i A2.3.</li>
+<li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
+</ul>
+
+    <section id="rekord"><h2>Nazwij pola jednej obserwacji</h2>
+<p>Słownik, czyli <code>dict</code>, łączy klucz z wartością. Rekord to opis jednego obiektu lub zdarzenia. W tym przykładzie klucz "day" nazywa dzień, a "sale" sprzedaż.</p>
+<pre><code class="language-python">row = {&quot;day&quot;: &quot;Monday&quot;, &quot;sale&quot;: 3}
+print(row[&quot;day&quot;])
+print(row[&quot;sale&quot;])</code></pre><p>Wyniki to Monday i 3. W liście wybieraliśmy po indeksie, w słowniku po kluczu. Nieistniejący klucz wywoła <code>KeyError</code>, zamiast zwrócić przypadkowe dane.</p>
+<div class="quiz" id="key" data-type="single"><p>Jak odczytasz sprzedaż z row?</p>
+<ul class="quiz-options"><li><code>row["day"]</code><span class="why">To inne pole rekordu.</span></li>
+<li data-correct><code>row["sale"]</code><span class="why">Klucz sale opisuje potrzebne pole.</span></li>
+<li><code>row[0]</code><span class="why">Słownik nie wybiera pierwszej pary po indeksie 0.</span></li>
+</ul>
+</div>
+</section>
+<section id="rekordy"><h2>Przejdź po obserwacjach</h2>
+<pre><code class="language-python">rows = [
+    {&quot;city&quot;: &quot;north&quot;, &quot;sale&quot;: 3},
+    {&quot;city&quot;: &quot;south&quot;, &quot;sale&quot;: 7},
+]
+for row in rows:
+    print(row[&quot;city&quot;], row[&quot;sale&quot;])</code></pre><p>Pętla daje po jednym słowniku. Wypisze north 3, a potem south 7. Możesz zadać pytanie o pole aktualnego rekordu i dopiero wtedy włączyć jego wartość do obliczeń.</p>
+<p>Do zmiany pola słownika używasz przypisania, na przykład <code>row["sale"] = 4</code>. Taka zmiana zmienia istniejący rekord. W zadaniu poniżej nie zmieniaj rekordów wejściowych.</p>
+</section>
+<section id="cwiczenia"><h2>Wybierz właściwy produkt</h2>
+<h3>Suma dla wybranego produktu</h3>
+<p>W <code>total</code> policz sprzedaż tylko produktu "pear". Zachowaj zero jako obserwację, a None pomiń. Zbuduj też listę <code>selected_days</code> z dniami tych znanych obserwacji, w kolejności danych.</p>
+<div class="pyrun" id="select"><script type="text/x-python" data-role="starter">
+rows = [
+    {"day": "Mon", "product": "pear", "sale": 0},
+    {"day": "Tue", "product": "apple", "sale": 8},
+    {"day": "Wed", "product": "pear", "sale": None},
+    {"day": "Thu", "product": "pear", "sale": 5},
+]
+total = 0
+selected_days = []
+# Dopisz pętlę i warunki.
+print(total, selected_days)
+</script><script type="text/x-python" data-role="test">
+assert total == 5, "Suma znanych sprzedaży pear to 5, bez sprzedaży apple."
+assert selected_days == ["Mon", "Thu"], "Wybierz dni pear ze znanym sale. Zero zostaje, None odpada."
+assert rows[0]["sale"] == 0 and rows[2]["sale"] is None, "Nie zmieniaj rekordów wejściowych."
+</script></div>
+<details><summary>Podpowiedź 1</summary>
+<p>Potrzebujesz osobno wyboru produktu i sprawdzenia braku.</p>
+</details>
+<details><summary>Podpowiedź 2</summary>
+<p>Warunki można zagnieździć lub połączyć słowem and. Oba muszą być prawdziwe.</p>
+</details>
+</section>
+<section id="powrot"><h2>Powrót bez zaglądania</h2>
+<p>Czym różni się lista rekordów od jednego rekordu? Co wybiera indeks, a co klucz?</p>
+<details><summary>Sprawdź własne wyjaśnienie</summary>
+<p>Lista przechowuje kolejne obserwacje. Każdy słownik opisuje jedną. Indeks wybiera obserwację listy, a klucz wybiera jej pole.</p>
+</details>
+</section>
+
+    <div class="next"><h2>Następny krok</h2>
+<p><a href="a2-functions.html">A2.5 · Pierwsza własna funkcja</a></p>
+<p><a href="a2-loops.html">Poprzednia: A2.3</a> · <a href="index.html">Mapa A i B</a></p>
+</div>
+
+  </main>
+</div>
+
+<footer class="footer">ML Engineering from Scratch · Jakub Eichner · treści CC BY 4.0, kod MIT</footer>
+<script src="../assets/highlight.min.js"></script>
+<script src="../assets/course.js"></script>
+</body>
+</html>

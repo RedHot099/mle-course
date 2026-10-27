@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A2.5 · Pierwsza własna funkcja | ML Engineering from Scratch</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body data-module="foundations-a2-functions">
+<header class="topbar">
+  <a class="brand" href="../index.html">ML Engineering from Scratch</a>
+  <span class="crumb">A2.5 · Fundamenty</span><span class="spacer"></span>
+  <span class="score"></span>
+  <button class="icon-button" id="theme-toggle" type="button" aria-label="Przełącz motyw jasny i ciemny">◐</button>
+</header>
+<div class="progress-line"></div>
+
+<div class="page with-toc">
+  <nav class="toc" aria-label="W tej lekcji"><p>W tej lekcji</p>
+<ol></ol>
+</nav>
+  <main class="lecture">
+    <p class="kicker">A2.5 · <a href="index.html">Ścieżka A i B</a></p>
+
+    <h1>Pierwsza własna funkcja</h1>
+
+    <p class="lede">Oddasz wynik obliczenia wywołującemu i użyjesz tej samej funkcji na innych danych.</p>
+
+    <ul class="meta"><li><b>Przed lekcją:</b> A2.1–A2.4.</li>
+<li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
+</ul>
+
+    <section id="def"><h2>Nadaj operacji nazwę</h2>
+<p>Funkcja pozwala nazwać operację. <code>def</code> rozpoczyna definicję. Parametr to nazwa danych otrzymanych przy wywołaniu. <code>return</code> oddaje wynik i kończy to wywołanie.</p>
+<pre><code class="language-python">def triple(number):
+    return number * 3
+
+first = triple(2)
+second = triple(5)
+print(first, second)</code></pre><p>Wynik to <code>6 15</code>. Definicja nie uruchamia obliczenia. Robi to wywołanie, na przykład triple(2). Nazwa number otrzymuje wtedy wartość 2.</p>
+<div class="predict" id="print-return" data-type="single" data-expected-output="6
+None"><p>Co wypisze ostatnia linia?</p>
+<pre><code class="language-python">def show_double(number):
+    print(number * 2)
+
+result = show_double(3)
+print(result)</code></pre><ul class="quiz-options"><li data-correct>None<span class="why">Funkcja tylko wypisuje 6. Bez return oddaje None.</span></li>
+<li>6<span class="why">To wypisze sama funkcja, ale zmienna result otrzyma None.</span></li>
+</ul>
+</div>
+</section>
+<section id="argument"><h2>Przekaż inne dane</h2>
+<p>Funkcja może otrzymać listę. Zmienne utworzone w jej wnętrzu są lokalne dla wywołania. Kolejne wywołanie zaczyna obliczenie od nowa.</p>
+<pre><code class="language-python">def last_value(values):
+    if len(values) == 0:
+        return None
+    return values[-1]
+
+print(last_value([2, 7]))
+print(last_value([]))</code></pre><p>Wyniki to 7 i None. Funkcja ma dwie drogi oddania wyniku: dla pustej i niepustej listy. W funkcji z pętlą uważaj na return wewnątrz pętli, bo zakończy wywołanie już przy pierwszym wykonaniu tej linii.</p>
+</section>
+<section id="cwiczenia"><h2>Napisz funkcję od początku</h2>
+<h3>Liczba znanych obserwacji</h3>
+<p>Napisz <code>count_known(values)</code>. Wynik to liczba elementów innych niż None. Funkcja ma działać także dla pustej listy i nie może zmieniać listy wejściowej. Podpis i pusty środek są już przygotowane.</p>
+<div class="pyrun" id="known-count"><script type="text/x-python" data-role="starter">
+def count_known(values):
+    # Tutaj napisz ciało funkcji.
+    ...
+
+print(count_known([None, 0, 4]))
+</script><script type="text/x-python" data-role="test">
+_data = [None, 0, 4]
+assert count_known(_data) == 2, "Dla [None, 0, 4] wynik to 2. Czy return oddaje licznik?"
+assert count_known([]) == 0, "Pusta lista ma zero znanych obserwacji."
+assert count_known([None, None]) == 0, "Same braki nie są znanymi obserwacjami."
+assert count_known([0, 0]) == 2, "Zera to znane obserwacje."
+assert _data == [None, 0, 4], "Funkcja nie może zmieniać listy wejściowej."
+</script></div>
+<details><summary>Podpowiedź 1</summary>
+<p>Początek, przejście po danych i oddanie wyniku to trzy różne momenty.</p>
+</details>
+<details><summary>Podpowiedź 2</summary>
+<p>Zacznij licznik przed pętlą. W pętli sprawdzaj tylko None. Return potrzebny jest po pętli.</p>
+</details>
+</section>
+<section id="powrot"><h2>Powrót bez zaglądania</h2>
+<p>Czy print i return robią to samo? Dlaczego count powstaje przed pętlą?</p>
+<details><summary>Sprawdź własne wyjaśnienie</summary>
+<p>Print pokazuje komunikat. Return udostępnia wynik innemu kodowi. Licznik powstaje przed pętlą, żeby nie zerować go przy każdym elemencie. Jeśli nie umiesz samodzielnie napisać podobnej funkcji, powtórz lekcję przed przejściem do B.</p>
+</details>
+</section>
+
+    <div class="next"><h2>Następny krok</h2>
+<p><a href="a3-environment.html">A3 · Przenieś pracę do notebooka</a></p>
+<p><a href="a2-records.html">Poprzednia: A2.4</a> · <a href="index.html">Mapa A i B</a></p>
+</div>
+
+  </main>
+</div>
+
+<footer class="footer">ML Engineering from Scratch · Jakub Eichner · treści CC BY 4.0, kod MIT</footer>
+<script src="../assets/highlight.min.js"></script>
+<script src="../assets/course.js"></script>
+</body>
+</html>

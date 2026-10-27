@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A3 · Przenieś pracę do notebooka | ML Engineering from Scratch</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body data-module="foundations-a3-environment">
+<header class="topbar">
+  <a class="brand" href="../index.html">ML Engineering from Scratch</a>
+  <span class="crumb">A3 · Fundamenty</span><span class="spacer"></span>
+  <span class="score"></span>
+  <button class="icon-button" id="theme-toggle" type="button" aria-label="Przełącz motyw jasny i ciemny">◐</button>
+</header>
+<div class="progress-line"></div>
+
+<div class="page with-toc">
+  <nav class="toc" aria-label="W tej lekcji"><p>W tej lekcji</p>
+<ol></ol>
+</nav>
+  <main class="lecture">
+    <p class="kicker">A3 · <a href="index.html">Ścieżka A i B</a></p>
+
+    <h1>Przenieś pracę do notebooka</h1>
+
+    <p class="lede">Zapiszesz notebook lokalnie, uruchomisz go od początku i rozpoznasz trzy różne miejsca wpisywania poleceń.</p>
+
+    <ul class="meta"><li><b>Przed lekcją:</b> Podstawy Python z A2 albo zaliczona diagnoza.</li>
+<li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
+</ul>
+
+    <section id="miejsca"><h2>Terminal, edytor i kernel</h2>
+<div class="table-wrap"><table><thead><tr><th>Miejsce</th><th>Co tam wpisujesz</th><th>Przykład</th></tr>
+</thead>
+<tbody><tr><td>Terminal systemu</td><td>Polecenia uruchamiające programy</td><td><code>uv --version</code></td></tr>
+<tr><td>Komórka notebooka</td><td>Kod Python</td><td><code>print(2 + 3)</code></td></tr>
+<tr><td>Edytor pliku .py</td><td>Kod, który zapisujesz przed uruchomieniem</td><td><code>print("ready")</code></td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Kernel</strong> to proces Python wykonujący komórki notebooka. Pamięta nazwy między uruchomieniami komórek. Zapisany plik notebooka nie jest tym samym co pamięć kernela.</p>
+<div class="callout rule"><span class="label">Dwa środowiska</span><p>Runner na stronach A i B wykonuje każde Uruchom i Sprawdź w nowej przestrzeni nazw. Kod jednego pola nie przekazuje zmiennych do następnego. W lokalnym notebooku komórki współdzielą kernel. Dlatego uruchamianie notebooka od początku jest ważną kontrolą.</p>
+</div>
+</section>
+<section id="system"><h2>Przygotuj terminal</h2>
+<p>Na Linuxie otwórz terminal. Na Windowsie używamy Linuxa w WSL2. Jeśli masz działające Ubuntu w WSL, otwórz jego terminal. Jeśli jeszcze go nie masz, wykonaj tylko <a href="../00-setup/index.html#windows">część Windows istniejącej instrukcji</a>, pomijając na razie opcjonalny sterownik NVIDIA. Potem wróć tutaj. Nie musisz teraz przechodzić całej lekcji 00.</p>
+<p>Instalacja na komputerze współdzielonym może wymagać pomocy jego właściciela. Wtedy kontynuuj A i B w przeglądarce, a kroki lokalne wykonaj później. Nie jest to niezaliczenie zadania programistycznego.</p>
+<p>W terminalu Linux sprawdź uv:</p>
+<pre><code class="language-bash">uv --version</code></pre><p>Jeśli widzisz numer wersji, pomiń instalację. Jeśli polecenie nie istnieje, zainstaluj uv instrukcją użytkownika z <a href="https://docs.astral.sh/uv/getting-started/installation/">oficjalnej dokumentacji</a>. Na Linuxie i w terminalu WSL jest to:</p>
+<pre><code class="language-bash">curl --retry 5 --retry-all-errors -LsSf https://astral.sh/uv/install.sh | sh</code></pre><p>Zamknij i otwórz terminal. Ponownie sprawdź <code>uv --version</code>. Nie wpisuj powyższych poleceń do komórki Python.</p>
+</section>
+<section id="katalog"><h2>Utwórz osobne miejsce do nauki</h2>
+<p>Pracujemy w Twoim katalogu domowym, w osobnym folderze. <code>mkdir -p</code> tworzy folder, <code>cd</code> przechodzi do niego, a <code>pwd</code> pokazuje bieżącą ścieżkę.</p>
+<pre><code class="language-bash">mkdir -p ~/mle-practice
+cd ~/mle-practice
+pwd
+uv run --no-project --python 3.12 python -c &quot;print(2 + 3)&quot;</code></pre><p>Ostatni wynik powinien wynosić 5. Opcja <code>--no-project</code> pozwala wykonać program bez instalowania całego projektu ML. <code>--python 3.12</code> wybiera wersję Pythona. Uv pobierze ją, jeśli jej brakuje. Nie potrzebujesz jeszcze git, danych FreshRetailNet ani bibliotek ML.</p>
+</section>
+<section id="notebook"><h2>Uruchom i zapisz notebook</h2>
+<p>Z tego samego terminala uruchom:</p>
+<pre><code class="language-bash">uv run --no-project --python 3.12 --with jupyterlab --with ipykernel jupyter lab</code></pre><p>Uv przygotowuje oddzielne środowisko z JupyterLab. Terminal wypisze adres lokalnej strony. Otwórz go na swoim komputerze. Zostaw terminal uruchomiony. Jeśli korzystasz z WSL, adres otwierasz w przeglądarce Windows.</p>
+<ol><li>W JupyterLab wybierz nowy notebook z kernelem Python 3.</li>
+<li>Nazwij plik <code>first_steps.ipynb</code>.</li>
+<li>W pierwszej komórce wpisz <code>stock = 6</code> i uruchom ją przez Shift+Enter.</li>
+<li>W drugiej wpisz <code>print(stock + 2)</code>. Oczekiwany wynik to 8.</li>
+<li>Zapisz notebook przez Ctrl+S.</li>
+<li>W menu Kernel wybierz Restart Kernel and Run All Cells. Nazwa może nieznacznie różnić się między wersjami. Ponownie powinieneś zobaczyć 8.</li>
+</ol>
+<p>Teraz otwórz drugi nowy notebook, bez definiowania stock, i wykonaj <code>print(stock)</code>. Zobaczysz NameError. To celowe doświadczenie: wynik zależy od wcześniejszych poleceń w danym kernelu.</p>
+<div class="callout rule"><span class="label">Zakończenie pracy</span><p>Po wykonaniu zamknij niepotrzebny kernel przez menu Kernel → Shut Down Kernel. Serwer Jupyter zatrzymasz przez Ctrl+C w jego terminalu i potwierdzenie. Nie wyłączasz w ten sposób komputera.</p>
+</div>
+</section>
+<section id="sprawdzenie"><h2>Sprawdź środowisko, nie rozwiązanie</h2>
+<p>Gotowość oznacza, że potrafisz zapisać notebook, zamknąć go, otworzyć i wykonać od początku. Zapisz w komórce tekstowej: gdzie leży plik, co wykonuje kernel i po czym rozpoznajesz wynik.</p>
+<div class="quiz" id="terminal" data-type="single"><p>Gdzie wpiszesz uv --version?</p>
+<ul class="quiz-options"><li data-correct>W terminalu<span class="why">To polecenie uruchamiające program uv.</span></li>
+<li>W komórce Python<span class="why">Zwykła komórka oczekuje składni Python, a nie polecenia terminala.</span></li>
+</ul>
+</div>
+<p>Jeśli notebook nie startuje, zachowaj nazwę polecenia i treść błędu bez tokenu z adresu Jupyter. Wróć do runnera. Jeśli startuje, ale Twój kod daje zły wynik, dalsza praca dotyczy rozwiązania, nie instalacji.</p>
+</section>
+
+    <div class="next"><h2>Następny krok</h2>
+<p><a href="a4-metrics.html">A4.1 · Policz błąd małej prognozy</a></p>
+<p><a href="a2-functions.html">Poprzednia: A2.5</a> · <a href="index.html">Mapa A i B</a></p>
+</div>
+
+  </main>
+</div>
+
+<footer class="footer">ML Engineering from Scratch · Jakub Eichner · treści CC BY 4.0, kod MIT</footer>
+<script src="../assets/highlight.min.js"></script>
+<script src="../assets/course.js"></script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>B5.2 · Odczytaj i zapisz mały plik | ML Engineering from Scratch</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body data-module="foundations-b5-files">
+<header class="topbar">
+  <a class="brand" href="../index.html">ML Engineering from Scratch</a>
+  <span class="crumb">B5.2 · Fundamenty</span><span class="spacer"></span>
+  <span class="score"></span>
+  <button class="icon-button" id="theme-toggle" type="button" aria-label="Przełącz motyw jasny i ciemny">◐</button>
+</header>
+<div class="progress-line"></div>
+
+<div class="page with-toc">
+  <nav class="toc" aria-label="W tej lekcji"><p>W tej lekcji</p>
+<ol></ol>
+</nav>
+  <main class="lecture">
+    <p class="kicker">B5.2 · <a href="index.html">Ścieżka A i B</a></p>
+
+    <h1>Odczytaj i zapisz mały plik</h1>
+
+    <p class="lede">Odczytasz tekst linia po linii, rozpoznasz katalog roboczy i zapiszesz osobny wynik.</p>
+
+    <ul class="meta"><li><b>Przed lekcją:</b> B5.1. Pliki lokalne wymagają A3; doświadczenia w runnerze działają bez instalacji.</li>
+<li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
+</ul>
+
+    <section id="sciezka"><h2>Ustal, gdzie szukasz pliku</h2>
+<p>Ścieżka względna, taka jak <code>readings.txt</code>, jest liczona od bieżącego katalogu programu. Notebook i terminal mogą mieć inny katalog. Ścieżka bezwzględna zaczyna się od korzenia systemu plików.</p>
+<p><code>pathlib</code> to moduł standardowej biblioteki Python. Import udostępnia potrzebne nazwy. Nie musisz instalować pathlib. <code>Path</code> opisuje ścieżkę; po kropce wybierasz jego metodę.</p>
+<pre><code class="language-python">from pathlib import Path
+
+print(Path.cwd())
+path = Path(&quot;lesson_readings.txt&quot;)
+print(path.name)</code></pre><p>Pierwsza linia wyniku to katalog roboczy. Druga to nazwa lesson_readings.txt. Jeśli czytasz nie ten plik, zacznij diagnozę od katalogu, nie od zmieniania danych.</p>
+</section>
+<section id="tekst"><h2>Zamknij plik także przy błędzie</h2>
+<p>Doświadczenie tworzy mały plik demonstracyjny, a następnie go czyta. <code>\n</code> w napisie oznacza nową linię. UTF-8 to jawne kodowanie znaków.</p>
+<pre><code class="language-python">from pathlib import Path
+
+path = Path(&quot;lesson_readings.txt&quot;)
+path.write_text(&quot;8\n?\n0\n&quot;, encoding=&quot;utf-8&quot;)
+with path.open(encoding=&quot;utf-8&quot;) as handle:
+    for line in handle:
+        print(line.strip())</code></pre><p>Zobaczysz 8, ?, 0. Blok <code>with</code> pilnuje zamknięcia pliku. <code>strip()</code> zwraca tekst bez białych znaków na początku i końcu. Nie zmienia napisu w liczbę. <code>float("8")</code> zwraca 8.0.</p>
+<div class="callout rule"><span class="label">Plik w przeglądarce</span><p>W runnerze plik znajduje się w wirtualnym systemie plików interpretera w przeglądarce. Nie pojawi się w Twoim folderze Downloads. Odświeżenie może go usunąć. Do zachowania pracy kopiuj kod i uruchom go w lokalnym notebooku.</p>
+</div>
+</section>
+<section id="cwiczenie"><h2>Odczytaj kilka obserwacji</h2>
+<h3>Zachowaj zero, oznacz brak</h3>
+<p>Przygotowanie pliku jest dostarczone. W <code>values</code> odczytaj liczby typu float. Znak ? zamień na None. Użyj with, pętli oraz strip. Nie zmieniaj treści pliku.</p>
+<div class="pyrun" id="read-lines"><script type="text/x-python" data-role="starter">
+from pathlib import Path
+
+path = Path("foundation_input.txt")
+path.write_text("2.5\n?\n0\n4\n", encoding="utf-8")
+values = []
+# Tutaj odczytaj plik.
+print(values)
+</script><script type="text/x-python" data-role="test">
+assert values == [2.5, None, 0.0, 4.0], "Po odczycie oczekiwano [2.5, None, 0.0, 4.0]. Oddziel strip, wybór braku i float."
+assert path.read_text(encoding="utf-8") == "2.5\n?\n0\n4\n", "Odczyt nie powinien zmieniać pliku."
+</script></div>
+<details><summary>Podpowiedź 1</summary>
+<p>Każda linia jest napisem, także gdy wygląda jak liczba.</p>
+</details>
+<details><summary>Podpowiedź 2</summary>
+<p>Najpierw usuń znak końca linii. Przed float sprawdź znak braku.</p>
+</details>
+</section>
+<section id="lokalnie"><h2>Przenieś wynik na dysk</h2>
+<p>W notebooku z A3 utwórz plik o innej nazwie, na przykład <code>my_readings.txt</code>, z co najmniej czterema własnymi pomiarami. Odczytaj go tym samym sposobem. Zapisz krótki raport do nowego pliku <code>my_report.txt</code> przez write_text. Nie nadpisuj wejścia.</p>
+<p>Możesz zapisać znaną wartość przez zamianę jej na napis: <code>str(total)</code>. Gdy wynik ma zawierać wiele pól, przyda się JSON:</p>
+<pre><code class="language-python">import json
+from pathlib import Path
+
+report = {&quot;status&quot;: &quot;ready&quot;, &quot;rows&quot;: 4}
+text = json.dumps(report, ensure_ascii=False)
+Path(&quot;lesson_report.json&quot;).write_text(text, encoding=&quot;utf-8&quot;)</code></pre><p>To gotowy przykład formatu, nie zadanie do uzupełnienia. W pliku zobaczysz nazwy pól i ich wartości. Zanim uznasz własny zapis za poprawny, otwórz utworzony plik i przeczytaj jego treść.</p>
+</section>
+<section id="generator"><h2>Dodatek po działającym odczycie: generator</h2>
+<p>W tym dodatku wynik nie musi od razu być całą listą. Generator oddaje wartości po jednej, na żądanie. Zamiast return jednej gotowej kolekcji używa yield dla kolejnych wartości.</p>
+<pre><code class="language-python">def labels(names):
+    for name in names:
+        yield &quot;item: &quot; + name
+
+items = labels([&quot;red&quot;, &quot;blue&quot;])
+print(list(items))
+print(list(items))</code></pre><p>Pierwsze list(items) zbiera dwie etykiety. Drugie daje pustą listę, bo generator został zużyty. Nowe wywołanie labels tworzy nowy generator. To wyjaśnia też, dlaczego czytanie pliku po jednej linii nie wymaga zebrania wszystkich linii w pamięci przed pierwszym obliczeniem. Obiekt otwartego pliku jest iteratorem, choć nie jest funkcją generatorową.</p>
+<p>Dodatek nie blokuje B6 ani B7. Zanim użyjesz generatora w większym zadaniu, wyjaśnij różnicę między utworzeniem generatora a pobraniem jego elementów.</p>
+</section>
+<section id="powrot"><h2>Powrót bez zaglądania</h2>
+<p>Dlaczego poprawna nazwa pliku może kończyć się FileNotFoundError?</p>
+<details><summary>Sprawdź własne wyjaśnienie</summary>
+<p>Program może działać w innym katalogu. Sprawdź Path.cwd oraz ścieżkę. Nie zamieniaj błędu odczytu automatycznie na pustą listę.</p>
+</details>
+</section>
+
+    <div class="next"><h2>Następny krok</h2>
+<p><a href="b5-errors.html">B5.3 · Przeczytaj błąd i zachowaj jego znaczenie</a></p>
+<p><a href="b5-collections.html">Poprzednia: B5.1</a> · <a href="index.html">Mapa A i B</a></p>
+</div>
+
+  </main>
+</div>
+
+<footer class="footer">ML Engineering from Scratch · Jakub Eichner · treści CC BY 4.0, kod MIT</footer>
+<script src="../assets/highlight.min.js"></script>
+<script src="../assets/course.js"></script>
+</body>
+</html>

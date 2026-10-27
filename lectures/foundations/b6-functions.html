@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>B6.1 · Funkcja ma wejście, wynik i umowę | ML Engineering from Scratch</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body data-module="foundations-b6-functions">
+<header class="topbar">
+  <a class="brand" href="../index.html">ML Engineering from Scratch</a>
+  <span class="crumb">B6.1 · Fundamenty</span><span class="spacer"></span>
+  <span class="score"></span>
+  <button class="icon-button" id="theme-toggle" type="button" aria-label="Przełącz motyw jasny i ciemny">◐</button>
+</header>
+<div class="progress-line"></div>
+
+<div class="page with-toc">
+  <nav class="toc" aria-label="W tej lekcji"><p>W tej lekcji</p>
+<ol></ol>
+</nav>
+  <main class="lecture">
+    <p class="kicker">B6.1 · <a href="index.html">Ścieżka A i B</a></p>
+
+    <h1>Funkcja ma wejście, wynik i umowę</h1>
+
+    <p class="lede">Zaprojektujesz małą funkcję, która zwraca wynik i jawnie odrzuca przypadek bez poprawnej odpowiedzi.</p>
+
+    <ul class="meta"><li><b>Przed lekcją:</b> A2.5 oraz B5.1–B5.3.</li>
+<li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
+</ul>
+
+    <section id="umowa"><h2>Opisz zachowanie przed środkiem funkcji</h2>
+<p>Sygnatura to nazwa i parametry funkcji. Docstring to napis zaraz pod def. Opisuje jej umowę: co przyjmuje, co zwraca i kiedy zgłasza błąd. W tym kursie czytaj docstring przed pisaniem środka.</p>
+<pre><code class="language-python">def label_count(name, count=0):
+    &quot;&quot;&quot;Return a label for a non-negative count.
+
+    Raises:
+        ValueError: The count is negative.
+    &quot;&quot;&quot;
+    if count &lt; 0:
+        raise ValueError(&quot;count must be non-negative&quot;)
+    return name + &quot;: &quot; + str(count)
+
+print(label_count(&quot;rows&quot;))
+print(label_count(&quot;rows&quot;, count=3))</code></pre><p>Wyniki to rows: 0 i rows: 3. Domyślny argument jest używany, gdy go pominiesz. W drugim wywołaniu podajesz argument po nazwie. To opis wywołania, nie tworzenie nowej zmiennej poza funkcją.</p>
+</section>
+<section id="lokalnie"><h2>Oddziel obliczenie od wypisywania</h2>
+<p>Funkcja obliczeniowa nie musi pytać o dane ani wypisywać raportu. Wynik oddaje przez return. Inny kod decyduje, czy go pokazać, zapisać czy porównać z oczekiwaniem. Ułatwia to sprawdzanie na małych wejściach.</p>
+<div class="predict" id="scope" data-type="single" data-expected-output="9"><p>Co wypisze ostatnia linia?</p>
+<pre><code class="language-python">value = 9
+
+def increase(value):
+    value = value + 1
+    return value
+
+increase(value)
+print(value)</code></pre><ul class="quiz-options"><li data-correct>9<span class="why">value wewnątrz funkcji jest lokalnym parametrem. Przypisanie go nie zmienia zewnętrznej nazwy.</span></li>
+<li>10<span class="why">Funkcja oddaje 10, ale wywołujący nie przypisuje tego wyniku do swojej nazwy value.</span></li>
+</ul>
+</div>
+<p>Przy liście sytuacja jest inna: append zmienia sam obiekt, co widziałeś w B5.1. Funkcja czysta oblicza wynik z argumentów i nie zmienia wejścia ani plików. Odczyt i zapis pliku trzymamy oddzielnie od liczenia.</p>
+</section>
+<section id="cwiczenie"><h2>Średnia znanych wartości</h2>
+<h3>Jawnie odrzuć brak odpowiedzi</h3>
+<p>Napisz <code>mean_known(values)</code>. Przyjmuje listę liczb nieujemnych i None. Zwraca float: średnią znanych wartości, zachowując zera. Dla [] oraz samych None zgłasza ValueError z tekstem "no known values". Nie zmienia listy wejściowej. Nie musisz jeszcze walidować innych typów ani liczb ujemnych.</p>
+<div class="pyrun" id="mean-known"><script type="text/x-python" data-role="starter">
+def mean_known(values):
+    """Return the mean of known values, including zeros.
+
+    Raises:
+        ValueError: There are no known values.
+    """
+    ...
+
+print(mean_known([0, None, 6]))
+</script><script type="text/x-python" data-role="test">
+import math
+_input = [0, None, 6]
+assert mean_known(_input) == 3.0, "Zero ma być liczone. Średnia [0, 6] to 3."
+assert _input == [0, None, 6], "Nie zmieniaj listy wejściowej."
+assert isinstance(mean_known([2, 4]), float), "Wynikiem ma być float, także przy całkowitych wejściach."
+assert math.isclose(mean_known([1, 1, 2]), 4 / 3), "Nie zaokrąglaj wyniku wewnątrz funkcji."
+for _values in [[], [None, None]]:
+    try:
+        mean_known(_values)
+    except ValueError as _error:
+        assert "no known values" in str(_error), "Wiadomość powinna wyjaśnić brak znanych wartości."
+    else:
+        raise AssertionError("Bez znanych wartości zgłoś ValueError, zamiast zwracać zero.")
+</script></div>
+<details><summary>Podpowiedź 1</summary>
+<p>Najpierw ustal, ile jest znanych wartości i jaka jest ich suma.</p>
+</details>
+<details><summary>Podpowiedź 2</summary>
+<p>Przed dzieleniem sprawdź, czy istnieje mianownik różny od zera. Wynik oddaj po całej pętli.</p>
+</details>
+</section>
+<section id="transfer"><h2>Sprawdź na własnym wejściu</h2>
+<p>Bez zaglądania do kodu oblicz ręcznie wynik dla <code>[None, 0, 8, 4]</code>, a potem wywołaj swoją funkcję. Własnymi słowami wyjaśnij, dlaczego [] nie powinno zwracać zera.</p>
+<details><summary>Sprawdź uzasadnienie</summary>
+<p>Wymagana jest różnica między średnią równą zero a brakiem danych do średniej. W pierwszym przypadku obserwacje istnieją. W drugim nie ma wartości, po których można uśredniać. Ręczny wynik nowego wejścia porównaj z kodem, zamiast ufać samemu zielonemu sprawdzeniu.</p>
+</details>
+</section>
+<section id="powrot"><h2>Powrót bez zaglądania</h2>
+<p>Gdzie funkcja kończy wywołanie? Czy rezultat ma być wypisany, czy zwrócony?</p>
+<details><summary>Sprawdź własne wyjaśnienie</summary>
+<p>Return kończy wywołanie i oddaje wartość. Print jest osobnym efektem ubocznym. Wróć do A2.5, jeśli mylisz widoczny tekst z wynikiem funkcji.</p>
+</details>
+</section>
+
+    <div class="next"><h2>Następny krok</h2>
+<p><a href="b6-tests.html">B6.2 · Pierwsze własne testy</a></p>
+<p><a href="b5-errors.html">Poprzednia: B5.3</a> · <a href="index.html">Mapa A i B</a></p>
+</div>
+
+  </main>
+</div>
+
+<footer class="footer">ML Engineering from Scratch · Jakub Eichner · treści CC BY 4.0, kod MIT</footer>
+<script src="../assets/highlight.min.js"></script>
+<script src="../assets/course.js"></script>
+</body>
+</html>

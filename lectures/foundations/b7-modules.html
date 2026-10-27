@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>B7.1 · Moduł, podstawowe typy i jakość kodu | ML Engineering from Scratch</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body data-module="foundations-b7-modules">
+<header class="topbar">
+  <a class="brand" href="../index.html">ML Engineering from Scratch</a>
+  <span class="crumb">B7.1 · Fundamenty</span><span class="spacer"></span>
+  <span class="score"></span>
+  <button class="icon-button" id="theme-toggle" type="button" aria-label="Przełącz motyw jasny i ciemny">◐</button>
+</header>
+<div class="progress-line"></div>
+
+<div class="page with-toc">
+  <nav class="toc" aria-label="W tej lekcji"><p>W tej lekcji</p>
+<ol></ol>
+</nav>
+  <main class="lecture">
+    <p class="kicker">B7.1 · <a href="index.html">Ścieżka A i B</a></p>
+
+    <h1>Moduł, podstawowe typy i jakość kodu</h1>
+
+    <p class="lede">Uruchomisz swój moduł i testy w małym projekcie z powtarzalnymi zależnościami.</p>
+
+    <ul class="meta"><li><b>Przed lekcją:</b> B6.1 i B6.2. Własne summary.py i test_summary.py, oba w mle-practice.</li>
+<li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
+</ul>
+
+    <section id="modul"><h2>Import nie jest kopiowaniem pliku</h2>
+<p>Plik .py to moduł. <code>import summary</code> daje nazwę modułu, a potem <code>summary.mean_known(...)</code> wybiera jego funkcję. <code>from summary import mean_known</code> daje bezpośrednią nazwę funkcji. Oba zapisy działają na tym samym kodzie.</p>
+<p>Przy pierwszym imporcie Python wykonuje plik od góry. Dlatego nie trzymaj na jego końcu automatycznego wczytania danych ani uruchomienia raportu. Definicje zostają, doświadczenia wykonuje notebook lub osobny skrypt.</p>
+<div class="quiz" id="import" data-type="single"><p>Moduł ma na górze print("loading"). Co zrobią dwa importy w jednym świeżym procesie?</p>
+<ul class="quiz-options"><li>Wypiszą loading dwa razy<span class="why">Import nie wykonuje ponownie już załadowanego modułu bez dodatkowej operacji.</span></li>
+<li data-correct>Wypiszą loading raz<span class="why">Kolejny import korzysta z zapamiętanego modułu.</span></li>
+</ul>
+</div>
+<p>Gdy zmienisz summary.py w notebooku, sam ponowny import może nie pokazać nowej wersji. Na tym etapie zrestartuj kernel i wykonaj komórki od początku. Każde uruchomienie pytest z terminala zaczyna nowy proces.</p>
+</section>
+<section id="projekt"><h2>Zapisz narzędzia projektu</h2>
+<p>Poniższe polecenia dotyczą osobnego katalogu mle-practice, nie korzenia repozytorium mle-course. Jeśli jest w nim już pyproject.toml, pomiń uv init.</p>
+<pre><code class="language-bash">cd ~/mle-practice
+uv init --bare --python 3.12
+uv python pin 3.12
+uv add --dev pytest ruff mypy</code></pre><p><code>pyproject.toml</code> opisuje projekt i potrzebne narzędzia. <code>.python-version</code> wybiera Python 3.12 przy kolejnych uruchomieniach. <code>uv.lock</code> zapisuje rozwiązane wersje zależności. <code>.venv</code> zawiera lokalne środowisko projektu. Od tej chwili polecenia uruchamiasz przez uv run, bez --no-project i --with.</p>
+<pre><code class="language-bash">uv run pytest -q
+uv run ruff format summary.py test_summary.py
+uv run ruff check summary.py test_summary.py</code></pre><p>Ruff format układa zapis kodu. Ruff check szuka między innymi nieznanych nazw i nieużytych importów. Zielony ruff nie potwierdza poprawnego wyniku średniej, dlatego testy nadal są potrzebne.</p>
+</section>
+<section id="typy"><h2>Opisz argument i wynik</h2>
+<p>Adnotacja typu to informacja dla czytelnika i narzędzi. Sama nie zmienia wykonywania kodu. Zapis po dwukropku dotyczy argumentu, a po strzałce wyniku.</p>
+<pre><code class="language-python">def triple(number: float) -&gt; float:
+    return number * 3
+
+print(triple(2.0))</code></pre><p><code>list[float | None]</code> opisuje listę liczb lub braków. Znak | oznacza tutaj alternatywę typów. Do własnej funkcji mean_known dopisz te typy argumentu oraz <code>float</code> wyniku. Do funkcji testowych, które nic nie zwracają, dopisz <code>-&gt; None</code>.</p>
+<pre><code class="language-bash">uv run mypy --disallow-untyped-defs summary.py
+uv run ruff format --check summary.py test_summary.py
+uv run ruff check summary.py test_summary.py
+uv run pytest -q</code></pre><p>Nie musisz teraz typować dekoratorów ani znać Sequence, Protocol czy ABC. Jeśli mypy widzi możliwe None, wskaż zmienną, dla której wcześniej sprawdziłeś brak. Nie dopisuj ignore tylko po to, by zniknął komunikat.</p>
+<div class="quiz" id="annotation" data-type="single"><p>Czy adnotacja -> float automatycznie zamienia wynik na float?</p>
+<ul class="quiz-options"><li>Tak<span class="why">Python sam nie wykonuje konwersji na podstawie tej adnotacji.</span></li>
+<li data-correct>Nie<span class="why">Typ opisuje umowę. Konwersję musi wykonać kod, jeśli jest potrzebna.</span></li>
+</ul>
+</div>
+</section>
+<section id="zadanie"><h2>Uruchom od czystego startu</h2>
+<p>Zamknij kernel, a w terminalu tego projektu uruchom cztery sprawdzenia powyżej. Zapisz, które narzędzie sprawdza wynik, które typy, a które format i wzorce. Umieść w README.md krótką instrukcję uruchomienia testów.</p>
+<details><summary>Rubryka samooceny</summary>
+<p>Obcy czytelnik widzi nazwę pliku z funkcją, umowę w docstringu i polecenie testów. Format, lint, mypy oraz pytest przechodzą dla Twoich dwóch plików. Do B nie muszą przechodzić testy z nieukończonych modułów całego kursu.</p>
+</details>
+</section>
+<section id="powrot"><h2>Powrót bez zaglądania</h2>
+<p>Dlaczego po zmianie pliku notebook może nadal używać starej funkcji?</p>
+<details><summary>Sprawdź własne wyjaśnienie</summary>
+<p>Kernel może pamiętać załadowany moduł. Restart i wykonanie od początku odtwarza bieżący kod. Nie oznacza to, że trzeba ponownie instalować bibliotekę.</p>
+</details>
+</section>
+
+    <div class="next"><h2>Następny krok</h2>
+<p><a href="b7-git.html">B7.2 · Pierwszy branch, commit i pull request</a></p>
+<p><a href="b6-tests.html">Poprzednia: B6.2</a> · <a href="index.html">Mapa A i B</a></p>
+</div>
+
+  </main>
+</div>
+
+<footer class="footer">ML Engineering from Scratch · Jakub Eichner · treści CC BY 4.0, kod MIT</footer>
+<script src="../assets/highlight.min.js"></script>
+<script src="../assets/course.js"></script>
+</body>
+</html>

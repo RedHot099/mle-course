@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A2.2 · Warunki, zero i brak obserwacji | ML Engineering from Scratch</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body data-module="foundations-a2-conditions">
+<header class="topbar">
+  <a class="brand" href="../index.html">ML Engineering from Scratch</a>
+  <span class="crumb">A2.2 · Fundamenty</span><span class="spacer"></span>
+  <span class="score"></span>
+  <button class="icon-button" id="theme-toggle" type="button" aria-label="Przełącz motyw jasny i ciemny">◐</button>
+</header>
+<div class="progress-line"></div>
+
+<div class="page with-toc">
+  <nav class="toc" aria-label="W tej lekcji"><p>W tej lekcji</p>
+<ol></ol>
+</nav>
+  <main class="lecture">
+    <p class="kicker">A2.2 · <a href="index.html">Ścieżka A i B</a></p>
+
+    <h1>Warunki, zero i brak obserwacji</h1>
+
+    <p class="lede">Wybierzesz działanie zależnie od danych i zachowasz różnicę między zerem a brakiem.</p>
+
+    <ul class="meta"><li><b>Przed lekcją:</b> A2.1 albo samodzielna praca z liczbą i nazwą.</li>
+<li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
+</ul>
+
+    <section id="warunek"><h2>Wybierz jedną z dróg</h2>
+<p>Porównanie, takie jak <code>stock &gt; 0</code>, daje wartość logiczną: <code>True</code> albo <code>False</code>. <code>if</code> wykonuje wcięty blok, gdy warunek jest prawdziwy. <code>else</code> wybiera drugą drogę.</p>
+<pre><code class="language-python">stock = 4
+if stock &gt; 0:
+    print(&quot;available&quot;)
+else:
+    print(&quot;empty&quot;)</code></pre><p>Wynik to <code>available</code>. Dwukropek zaczyna blok. Wcięcie czterech spacji oznacza, co do niego należy. Zmień w myślach stock na zero. Wybierzesz wtedy drugą drogę.</p>
+<div class="quiz" id="comparison" data-type="single"><p>Który zapis pyta o równość?</p>
+<ul class="quiz-options"><li data-correct><code>stock == 0</code><span class="why">Podwójny znak równości porównuje wartości.</span></li>
+<li><code>stock = 0</code><span class="why">Pojedynczy znak przypisuje nową wartość.</span></li>
+<li><code>stock + 0</code><span class="why">To dodawanie, a nie pytanie.</span></li>
+</ul>
+</div>
+<p><code>!=</code> oznacza różne, <code>&gt;=</code> większe lub równe, <code>&lt;</code> mniejsze. <code>elif</code> pozwala dodać kolejny warunek. Sprawdzamy warunki od góry i wykonujemy pierwszy pasujący blok.</p>
+<pre><code class="language-python">value = -2
+if value &lt; 0:
+    print(&quot;invalid&quot;)
+elif value == 0:
+    print(&quot;zero&quot;)
+else:
+    print(&quot;positive&quot;)</code></pre></section>
+<section id="brak"><h2>Oddziel brak od zera</h2>
+<p><code>None</code> oznacza brak wartości. Jeśli pomiar sprzedaży wynosi zero, wiemy, że odnotowano zero. Jeśli wynosi None, nie znamy liczby. Nie wolno ich utożsamiać.</p>
+<div class="predict" id="missing" data-type="single" data-expected-output="known"><p>Co wypisze ten kod?</p>
+<pre><code class="language-python">value = 0
+if value is None:
+    print(&quot;missing&quot;)
+else:
+    print(&quot;known&quot;)</code></pre><ul class="quiz-options"><li data-correct>known<span class="why">Zero jest znaną wartością, więc nie jest None.</span></li>
+<li>missing<span class="why">Warunek is None pyta o brak, nie o zerową sprzedaż.</span></li>
+</ul>
+</div>
+<p>Do sprawdzania braku używaj <code>is None</code> lub <code>is not None</code>. Zapis <code>if value:</code> pomija także zero. Dlatego w danych liczbowych potrzebujesz precyzyjnego pytania.</p>
+</section>
+<section id="cwiczenia"><h2>Nadaj obserwacji status</h2>
+<h3>Znana liczba</h3>
+<p>Uzupełnij warunek tak, aby <code>status</code> wynosił "missing" dla None i "known" dla każdej liczby, także zera. Po sprawdzeniu zmień value ręcznie na None oraz 5 i uruchom ponownie.</p>
+<div class="pyrun" id="status"><script type="text/x-python" data-role="starter">
+value = 0
+status = None
+# Napisz tutaj if oraz else przypisujące status.
+print(status)
+</script><script type="text/x-python" data-role="test">
+_expected = {None: "missing", 0: "known", 5: "known"}
+assert value in _expected, "Do tej próby użyj value = 0, None lub 5."
+assert status == _expected[value], "Dla None status to missing. Dla 0 i 5 to known."
+</script></div>
+<details><summary>Podpowiedź 1</summary>
+<p>Sprawdź dokładnie brak wartości, nie to, czy liczba jest dodatnia.</p>
+</details>
+<details><summary>Podpowiedź 2</summary>
+<p>Obie drogi powinny przypisać napis do nazwy status.</p>
+</details>
+</section>
+<section id="powrot"><h2>Powrót bez zaglądania</h2>
+<p>Czy brak obserwacji oznacza zero? Dlaczego używasz == zamiast = w porównaniu?</p>
+<details><summary>Sprawdź własne wyjaśnienie</summary>
+<p>Brak nie daje informacji o liczbie. Zero ją daje. Znak = przypisuje; == porównuje. Zmień value na None, a potem na dodatnią liczbę i sprawdź własny warunek.</p>
+</details>
+</section>
+
+    <div class="next"><h2>Następny krok</h2>
+<p><a href="a2-loops.html">A2.3 · Listy i pętle krok po kroku</a></p>
+<p><a href="a2-values.html">Poprzednia: A2.1</a> · <a href="index.html">Mapa A i B</a></p>
+</div>
+
+  </main>
+</div>
+
+<footer class="footer">ML Engineering from Scratch · Jakub Eichner · treści CC BY 4.0, kod MIT</footer>
+<script src="../assets/highlight.min.js"></script>
+<script src="../assets/course.js"></script>
+</body>
+</html>
