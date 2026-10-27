@@ -27,7 +27,7 @@
   <main class="lecture">
     <p class="kicker">Moduł 17 · Część 3: produkcja</p>
     <h1>Cudzy kod</h1>
-    <p class="lede">Większość pracy inżyniera to kod, którego nie napisał: pisany przez kilka osób, przez kilka lat, z decyzjami, których nikt już nie pamięta. Ten moduł dotyczy metody: jak się w takim kodzie odnaleźć, jak znaleźć przyczynę błędu, zamiast zgadywać, i jak go poprawić tak, żeby nie wrócił.</p>
+    <p class="lede">Tym razem otrzymasz projekt napisany przez kogoś innego. Najpierw ustalisz, jak go uruchomić i skąd biorą się wyniki. Potem odtworzysz zgłoszony problem, znajdziesz jego przyczynę i przygotujesz poprawkę z testem.</p>
 
     <ul class="meta">
       <li><b>Czas:</b> około 45 minut</li>
@@ -48,7 +48,7 @@
     <section id="mapa">
       <h2>Najpierw mapa</h2>
 
-      <p>Pierwsza godzina w cudzym kodzie to czytanie i uruchamianie, a nie poprawianie. Pytania, na które odpowiadasz:</p>
+      <p>Zanim zaczniesz zmieniać cudzy projekt, przeczytaj instrukcję i uruchom istniejący kod. Ustal odpowiedzi na następujące pytania:</p>
       <ul>
         <li><strong>Jak to uruchomić?</strong> README, <code>__main__.py</code>, polecenie z CI. Uruchom i zobacz, co powstaje,</li>
         <li><strong>Gdzie jest punkt wejścia?</strong> Funkcja, od której wszystko się zaczyna. W niej widać kolejność kroków,</li>
@@ -70,7 +70,7 @@
     <section id="debugowanie">
       <h2>Szukanie przyczyny</h2>
 
-      <p>Debugowanie to zawężanie. Masz miejsce, gdzie wynik jest dobry (wejście), i miejsce, gdzie jest zły (raport). Sprawdzasz środek. Połowa, w której wynik jest już zły, zostaje, drugą odrzucasz. Po kilku krokach zostaje jedna funkcja, potem jedna linia.</p>
+      <p>Zacznij od danych wejściowych i błędnego wyniku. Sprawdź wynik pośredni pomiędzy nimi. Jeśli jest poprawny, szukaj problemu w późniejszych krokach. Jeśli jest błędny, sprawdź wcześniejsze.</p><p>Powtarzając takie porównania, zawężasz poszukiwanie do konkretnej funkcji lub instrukcji. Każda próba powinna potwierdzać albo odrzucać jedną hipotezę.</p>
 
       <p>Narzędzia:</p>
       <ul>
@@ -106,16 +106,16 @@ print(sorted(prices), prices.sort())</code></pre>
     </section>
 
     <section id="test">
-      <h2>Najpierw test, który pada</h2>
+      <h2>Zapisz test odtwarzający błąd</h2>
 
-      <p>Gdy znasz przyczynę, zanim ją poprawisz, napisz test, który pada <em>z tego powodu</em>. Daje trzy rzeczy:</p>
+      <p>Gdy znajdziesz przyczynę, przed poprawieniem kodu napisz test, który wykrywa właśnie ten problem. Najpierw sprawdź, czy test rzeczywiście się nie udaje. Daje to trzy korzyści:</p>
       <ul>
         <li>dowód, że przyczyna jest właściwa: test pada przed poprawką i przechodzi po niej,</li>
         <li>ochronę przed powrotem błędu, gdy ktoś za rok "uprości" poprawiony kod,</li>
         <li>dokumentację: nazwa testu mówi, jakiego zachowania oczekujesz.</li>
       </ul>
 
-      <p>Test ma być mały: kilka wierszy danych zbudowanych w teście, które pokazują przyczynę (T2), a nie cały plik faktur. Jeśli testu nie da się napisać, bo funkcja robi za dużo naraz, to też jest informacja o kodzie.</p>
+      <p>W teście użyj kilku samodzielnie przygotowanych wierszy pokazujących problem, zgodnie z regułą T2. Nie potrzebujesz całego pliku faktur.</p><p>Jeśli trudno odtworzyć problem bez uruchamiania wielu niepowiązanych operacji, sprawdź, czy testowana funkcja nie ma zbyt wielu zadań.</p>
 
       <div class="quiz" id="q2" data-type="single">
         <div class="quiz-q">Poprawiłeś błąd, wszystkie istniejące testy przechodzą, a nowego nie dopisałeś. Czego nie wiesz?</div>
@@ -130,7 +130,7 @@ print(sorted(prices), prices.sort())</code></pre>
     <section id="niestabilne">
       <h2>Testy zależne od daty</h2>
 
-      <p>Test, który raz przechodzi, a raz pada, bez zmiany kodu, jest gorszy niż brak testu: uczy wszystkich ignorować czerwone CI. Najczęstsze przyczyny to data, losowość, kolejność testów i sieć (T4). Daty mają dodatkowo pułapki kalendarza:</p>
+      <p>Test bez zmiany kodu nie powinien zależeć od dnia uruchomienia, kolejności innych testów ani dostępności sieci. Losowość również wymaga kontroli. To wymagania reguły T4.</p><p>Przy datach sprawdź dodatkowo szczególne przypadki kalendarza:</p>
 
       <div class="predict" id="p3" data-type="single">
 <pre><code class="language-python">from datetime import date
@@ -144,17 +144,17 @@ print(day.isocalendar().week, day.strftime("%W"))</code></pre>
         </ul>
       </div>
 
-      <p>Test, który porównuje wynik z <code>date.today()</code> liczonym inną metodą, przechodzi przez większość roku i pada na przełomie. Naprawa nie polega na zmianie oczekiwanego napisu, tylko na wstrzyknięciu daty: funkcja przyjmuje <code>now</code> jako argument, a test podaje stałą datę, w tym datę z przełomu roku. Gdy kodu nie da się zmienić, zegar zamraża się w teście (<code>freezegun.freeze_time</code>).</p>
+      <p>Test korzystający z bieżącej daty może przechodzić przez większą część roku i zawieść na jego przełomie. Zamiast dopasowywać oczekiwany napis do dzisiejszego wyniku, przekaż datę jako argument <code>now</code>.</p><p>Test może wtedy sprawdzić ustalone daty, także przełom roku. Jeśli nie możesz zmienić funkcji, narzędzie takie jak <code>freezegun.freeze_time</code> pozwala ustalić datę widzianą przez kod w teście.</p>
     </section>
 
     <section id="wydajnosc">
       <h2>Wydajność: najpierw pomiar</h2>
 
-      <p>Intuicja o tym, co jest wolne, myli się częściej, niż się wydaje. <strong>Profiler</strong> mierzy, ile czasu zajmuje każda funkcja:</p>
+      <p>Zanim przyspieszysz program, zmierz, gdzie spędza czas. <strong>Profiler</strong> pokazuje czas wykonania funkcji i liczbę ich wywołań. Dzięki temu możesz wybrać poprawkę na podstawie pomiaru:</p>
 
 <pre><code class="language-bash">uv run python -m cProfile -s cumulative -m shelfwise run --config settings.yaml | head -30</code></pre>
 
-      <p>Typowe przyczyny wolnego kodu w pandas to pętle po wierszach (<code>iterrows</code>, <code>apply</code> z Pythonem w środku) i powtarzane w pętli filtrowanie całej ramki. Pętla po produktach, w której każdy krok filtruje całą tabelę, rośnie kwadratowo: dwa razy więcej produktów to cztery razy dłużej. Jedno <code>merge</code> albo <code>groupby</code> robi to samo w czasie liniowym (K7).</p>
+      <p>W pandas kosztowne bywa przechodzenie po wierszach z kodem Pythona oraz wielokrotne filtrowanie całej tabeli. Jeśli dla każdego produktu ponownie przeglądasz wszystkie wiersze, koszt szybko rośnie wraz z danymi.</p><p>Sprawdź, czy to samo zadanie można wykonać jednym <code>merge</code> lub <code>groupby</code>, zgodnie z regułą K7. Potem zmierz czas ponownie i porównaj także poprawność wyniku.</p>
 
       <div class="quiz" id="q3" data-type="single">
         <div class="quiz-q">Raport dla 5 000 produktów liczy się 7 sekund, dla 20 000 prawie dwie minuty. Co to mówi o kodzie?</div>
@@ -169,7 +169,7 @@ print(day.isocalendar().week, day.strftime("%W"))</code></pre>
     <section id="zakres">
       <h2>Zakres zmiany</h2>
 
-      <p>W cudzym kodzie kusi, żeby "przy okazji" poprawić formatowanie, nazwy i wszystko, co razi. Każda taka zmiana utrudnia review: recenzent szuka jednej poprawki wśród stu zmienionych linii. Zasady:</p>
+      <p>Oddziel naprawę problemu od zmian nazw, formatowania i porządkowania innych fragmentów. W dużej, mieszanej zmianie trudniej znaleźć przyczynę i ocenić, czy poprawka działa. Przyjmij następujące zasady:</p>
       <ul>
         <li>jeden ticket, jedna gałąź, jeden pull request (G1),</li>
         <li>poprawiasz to, czego dotyczy ticket, a otoczenie tylko tam, gdzie go dotykasz,</li>
@@ -183,7 +183,7 @@ print(day.isocalendar().week, day.strftime("%W"))</code></pre>
 
       <h3>Bisekcja</h3>
 
-      <p>Napisz <code>first_bad(n, is_bad)</code>: wersje 0..n−1, od pewnej wersji wszystkie są złe, wcześniejsze dobre. Znajdź pierwszą złą, wołając <code>is_bad</code> jak najrzadziej. Jeśli wszystkie są dobre, zwróć <code>n</code>.</p>
+      <p>Napisz <code>first_bad(n, is_bad)</code>. Wersje mają numery od 0 do <code>n − 1</code>. Od pewnego numeru wszystkie są błędne, a wcześniejsze poprawne.</p><p>Znajdź numer pierwszej błędnej wersji, wykonując możliwie mało wywołań <code>is_bad</code>. Jeśli wszystkie wersje są poprawne, zwróć <code>n</code>.</p>
 
       <div class="pyrun" id="e1">
         <script type="text/x-python" data-role="starter">
@@ -208,7 +208,7 @@ assert first_bad(10, lambda v: True) == 0, "Gdy wszystkie są złe, pierwsza zł
 
       <h3>Etykieta tygodnia bez zegara</h3>
 
-      <p>Napisz <code>week_label(now=None)</code>: napis <code>"2021-W53"</code> z roku i numeru tygodnia ISO daty <code>now</code>, a bez argumentu z dzisiejszej daty. Rok ma być rokiem ISO, nie kalendarzowym.</p>
+      <p>Napisz <code>week_label(now=None)</code>, która zapisuje rok i numer tygodnia ISO w postaci <code>"RRRR-WTT"</code>. Gdy <code>now</code> nie podano, użyj bieżącej daty.</p><p>Skorzystaj z roku ISO, który na przełomie roku może różnić się od roku kalendarzowego.</p>
 
       <div class="pyrun" id="e2">
         <script type="text/x-python" data-role="starter">
@@ -235,7 +235,7 @@ assert week_label() == f"{_today.year}-W{_today.week:02d}", "Bez argumentu: dzis
 
     <div class="next">
       <h2>Teraz lab</h2>
-      <p>Przejmujesz <code>shelfwise</code> i sześć ticketów: rozbieżne sumy, nowa metryka, nowa cecha, zbyt dobra walidacja, test, który pada w styczniu, i wolny raport. Zaliczasz cztery, każdy jako osobny pull request z testem. Około 7 godzin.</p>
+      <p>W labie przejmiesz projekt <code>shelfwise</code>. Otrzymasz sześć ticketów: rozbieżne sumy, nową metrykę, nową cechę, podejrzaną walidację, test zależny od styczniowej daty i wolny raport.</p><p>Wykonaj cztery z nich. Każdy przygotuj jako osobny pull request z testem. Zarezerwuj około 7 godzin.</p>
       <p>Zacznij od <code>labs/17-shelfwise/README.md</code>, a potem <code>shelfwise/README.md</code>.</p>
     </div>
   </main>

@@ -27,14 +27,14 @@
   <main class="lecture">
     <p class="kicker">Moduł 00 · Część 1: inżynieria w Pythonie</p>
     <h1>Setup</h1>
-    <p class="lede">Zanim napiszesz pierwszą linię kodu, potrzebujesz miejsca, w którym ten kod działa. Tę stronę przechodzisz ręcznie, krok po kroku. Na końcu uruchamiasz tutora i resztę robicie razem.</p>
+    <p class="lede">Przygotujesz komputer do pracy z kursem: zainstalujesz potrzebne narzędzia, pobierzesz projekt i uruchomisz pierwsze sprawdzenia. Wykonuj kroki po kolei. Dalszą konfigurację możesz przejść samodzielnie albo z pomocą tutora.</p>
 
     <ul class="meta">
       <li><b>Czas:</b> 2-4 godziny, zależnie od łącza i szczęścia</li>
       <li><b>Wynik:</b> działające środowisko, pobrane dane, pierwszy pull request</li>
     </ul>
 
-    <p>Nie musisz rozumieć każdego polecenia, które tu wpisujesz. Zrozumienie przyjdzie w modułach 02 i 04. Masz za to wiedzieć, <strong>po czym poznać, że krok się udał</strong>. Każdy krok kończy się poleceniem sprawdzającym. Odhaczaj kroki na bieżąco, strona zapamięta, gdzie jesteś.</p>
+    <p>Na początku nie musisz znać wszystkich opcji poleceń. Przy każdym kroku sprawdź za to, czy otrzymujesz opisany wynik. Wyjaśnienia narzędzi poznasz w kolejnych modułach.</p><p>Po wykonaniu kroku zaznacz pole „Zrobione”. Strona zapamięta zaznaczenia w tej przeglądarce.</p>
 
     <div class="tabs" data-group="os">
       <div class="segmented" role="group" aria-label="System operacyjny">
@@ -46,7 +46,7 @@
     <div class="tab-panel" data-group="os" data-tab="linux" hidden>
       <div class="callout">
         <span class="label">Linux</span>
-        <p>Pomiń część "Windows" i zacznij od kroku 4. Polecenia są pisane pod Ubuntu 24.04. Na innej dystrybucji zamień <code>apt</code> na swój menedżer pakietów. Sterownik NVIDIA instalujesz tak, jak zaleca Twoja dystrybucja.</p>
+        <p>Jeśli korzystasz z Linuksa, pomiń instalację WSL2 i zacznij od kroku 4. Poniższe polecenia przygotowano dla Ubuntu 24.04. Na innej dystrybucji użyj jej menedżera pakietów zamiast <code>apt</code>. Sterownik NVIDIA zainstaluj według instrukcji swojej dystrybucji.</p>
       </div>
     </div>
 
@@ -75,10 +75,10 @@
       <ol class="steps">
         <li class="step" id="s-wsl">
           <h3>Zainstaluj WSL2 z Ubuntu 24.04</h3>
-          <p>Otwórz PowerShell <strong>jako administrator</strong> (menu Start, wpisz "PowerShell", prawy przycisk, "Uruchom jako administrator").</p>
+          <p>W menu Start wyszukaj PowerShell. Kliknij go prawym przyciskiem myszy i wybierz <strong>Uruchom jako administrator</strong>. W otwartym oknie wpisz:</p>
 <pre><code class="language-text">wsl --update
 wsl --install -d Ubuntu-24.04</code></pre>
-          <p>Uruchom komputer ponownie. Po restarcie otworzy się okno Ubuntu i poprosi o nazwę użytkownika i hasło. To nowe konto linuksowe, niezależne od konta Windows. Hasła nie widać podczas wpisywania i tak ma być.</p>
+          <p>Uruchom komputer ponownie. Po restarcie Ubuntu poprosi o utworzenie nazwy użytkownika i hasła. Będzie to osobne konto linuksowe, niezależne od konta Windows. Podczas wpisywania hasła nie zobaczysz znaków na ekranie. To prawidłowe zachowanie.</p>
           <p>Jeśli instalacja stoi na 0%, przerwij ją i użyj <code>wsl --install --web-download -d Ubuntu-24.04</code>.</p>
           <p><strong>Sprawdzenie</strong>, w PowerShell:</p>
 <pre><code class="language-text">wsl -l -v</code></pre>
@@ -88,7 +88,7 @@ wsl --install -d Ubuntu-24.04</code></pre>
 
         <li class="step" id="s-memory">
           <h3>Sprawdź, ile pamięci dostaje Linux</h3>
-          <p>WSL domyślnie przydziela Linuksowi połowę pamięci komputera. Na laptopie z 16 GB to 8 GB. Kurs na tym zadziała. Jeśli chcesz dać więcej, utwórz w Windows plik <code>%UserProfile%\.wslconfig</code>:</p>
+          <p>Przy domyślnym ustawieniu WSL Linux otrzymuje połowę pamięci komputera, czyli 8 GB na laptopie z 16 GB RAM. Kurs dobierze do dostępnej pamięci odpowiedni profil danych. Jeśli chcesz zwiększyć limit WSL, utwórz w Windows plik <code>%UserProfile%\.wslconfig</code>:</p>
 <pre><code class="language-ini">[wsl2]
 memory=12GB</code></pre>
           <p>Po zmianie wykonaj w PowerShell <code>wsl --shutdown</code> i otwórz Ubuntu ponownie.</p>
@@ -100,7 +100,7 @@ memory=12GB</code></pre>
 
         <li class="step" id="s-nvidia">
           <h3>Sterownik karty NVIDIA</h3>
-          <p>Zainstaluj w <strong>Windows</strong> aktualny sterownik NVIDIA ze strony producenta (Game Ready albo RTX). To jedyny sterownik, jakiego potrzebujesz. <strong>Wewnątrz Ubuntu nie instaluj żadnego sterownika NVIDIA</strong>: WSL udostępnia kartę sam, a linuksowy sterownik to zepsuje.</p>
+          <p>Zainstaluj aktualny sterownik NVIDIA w <strong>Windows</strong>, korzystając ze strony producenta. Może to być sterownik Game Ready albo RTX.</p><p>W Ubuntu uruchomionym przez WSL <strong>nie instaluj osobnego sterownika NVIDIA</strong>. Dostęp do karty zapewnia sterownik Windows; dodatkowy sterownik linuksowy może zakłócić jego działanie.</p>
           <p>Karta przyda się dopiero w module 18, ale problemy ze sterownikiem lepiej znaleźć teraz. Biblioteki z tego modułu wymagają sterownika w wersji 580 lub nowszej.</p>
           <p><strong>Sprawdzenie</strong>, w Ubuntu:</p>
 <pre><code class="language-bash">nvidia-smi</code></pre>
@@ -127,7 +127,7 @@ sudo apt install -y git curl libgomp1</code></pre>
 
         <li class="step" id="s-fork">
           <h3>Załóż konto GitHub i zrób fork kursu</h3>
-          <p>Fork to Twoja własna kopia repozytorium na GitHubie. Na niej pracujesz i do niej wysyłasz zmiany.</p>
+          <p>Fork to Twoja kopia repozytorium kursu na GitHubie. Będziesz w niej zapisywać własną pracę i wysyłać zmiany. Utwórz ją według poniższych kroków.</p>
           <ol>
             <li>Załóż konto na <a href="https://github.com">github.com</a>, jeśli go nie masz.</li>
             <li>Otwórz repozytorium kursu i kliknij <strong>Fork</strong>.</li>
@@ -145,7 +145,7 @@ git clone https://github.com/TWOJ-LOGIN/mle-course.git
 cd mle-course</code></pre>
           <div class="callout trap">
             <span class="label">Pułapka</span>
-            <p>Repozytorium ma leżeć w systemie plików Linuksa, czyli pod <code>/home/...</code>. Nie klonuj go na dysk Windows (<code>/mnt/c/...</code>). Operacje na plikach są tam wielokrotnie wolniejsze.</p>
+            <p>Sklonuj projekt do systemu plików Linuksa, pod ścieżką zaczynającą się od <code>/home/</code>. W WSL unikaj folderu na dysku Windows, na przykład <code>/mnt/c/</code>: praca z plikami projektu może być tam znacznie wolniejsza.</p>
           </div>
           <p><strong>Sprawdzenie:</strong></p>
 <pre><code class="language-bash">pwd</code></pre>
@@ -162,7 +162,7 @@ uv sync</code></pre>
           <p><code>uv sync</code> pobiera Pythona 3.12 i wszystkie biblioteki w wersjach zapisanych w pliku <code>uv.lock</code>. Pierwszy raz trwa kilka minut.</p>
           <p><strong>Sprawdzenie:</strong></p>
 <pre><code class="language-bash">uv run course doctor</code></pre>
-          <p>Zobaczysz listę kontroli. Na tym etapie część z nich będzie czerwona. To normalne: naprawisz je w następnej części.</p>
+          <p>Polecenie wyświetli listę sprawdzeń. Niektóre wyniki na tym etapie mogą być czerwone, ponieważ nie zakończyliśmy jeszcze konfiguracji. W następnej części zajmiesz się nimi po kolei.</p>
           <label class="tick"><input type="checkbox"> Zrobione</label>
         </li>
       </ol>
@@ -170,7 +170,7 @@ uv sync</code></pre>
 
     <section id="tutor">
       <h2>Dalej z tutorem</h2>
-      <p>Zostało kilka rzeczy: konfiguracja gita, logowanie do GitHuba z terminala, VS Code, pobranie danych i pierwszy pull request. Możesz je zrobić z tutorem albo sam.</p>
+      <p>Pozostały konfiguracja gita, logowanie do GitHuba z terminala, ustawienie edytora, pobranie danych i pierwszy pull request. Wybierz poniżej pracę z tutorem albo instrukcję do samodzielnego wykonania.</p>
 
       <h3>Ścieżka z tutorem (zalecana)</h3>
       <p>Tutor to agent AI uruchamiany w katalogu kursu. Ten kurs opisuje pracę z Claude Code, które wymaga płatnego planu (Pro wystarcza). Instrukcje tutora są w pliku <code>AGENTS.md</code>, więc zadziałają też w innych narzędziach, które ten plik czytają.</p>
@@ -184,7 +184,7 @@ uv sync</code></pre>
 claude</code></pre>
           <p>Przy pierwszym uruchomieniu zalogujesz się przez przeglądarkę. W WSL może pojawić się kod do wklejenia. Potem wpisz:</p>
 <pre><code class="language-text">/setup</code></pre>
-          <p>Tutor uruchomi <code>course doctor</code>, przeprowadzi Cię przez każdy czerwony punkt i wytłumaczy, co robi każde polecenie. Skończycie na pierwszym pull requeście.</p>
+          <p>Tutor uruchomi <code>course doctor</code> i pomoże Ci przejść przez niezaliczone sprawdzenia. Przy każdym poleceniu wyjaśni jego działanie i oczekiwany wynik. Na koniec wspólnie przygotujecie pierwszy pull request.</p>
           <p><strong>Sprawdzenie:</strong></p>
 <pre><code class="language-bash">uv run course check 00</code></pre>
           <label class="tick"><input type="checkbox"> Zrobione</label>
@@ -192,14 +192,14 @@ claude</code></pre>
       </ol>
 
       <h3>Ścieżka bez tutora</h3>
-      <p>Te same kroki, wykonane ręcznie. Po każdym uruchom <code>uv run course doctor</code> i zobacz, co zmieniło kolor.</p>
+      <p>Poniżej znajdziesz te same kroki do samodzielnego wykonania. Po każdym z nich uruchom <code>uv run course doctor</code> i sprawdź, które elementy konfiguracji są już gotowe.</p>
 
       <ol class="steps">
         <li class="step" id="s-git">
           <h3>Przedstaw się gitowi</h3>
 <pre><code class="language-bash">git config --global user.name "Imię Nazwisko"
 git config --global user.email "ty@example.com"</code></pre>
-          <p>Te dane trafią do każdego commita. Użyj adresu powiązanego z kontem GitHub.</p>
+          <p>Git zapisze tę nazwę i adres e-mail przy każdym Twoim commicie. Podaj adres powiązany z kontem GitHub.</p>
           <label class="tick"><input type="checkbox"> Zrobione</label>
         </li>
 
@@ -238,13 +238,13 @@ code .</code></pre>
           <h3>Pobierz dane</h3>
 <pre><code class="language-bash">uv run course data
 uv run course doctor</code></pre>
-          <p>Pierwsze polecenie pobiera około 110 MB i sprawdza sumy kontrolne. Drugie powinno już nie mieć żadnego czerwonego punktu. Na końcu wypisuje <strong>profil danych</strong> dobrany do pamięci Twojego komputera.</p>
+          <p>Pierwsze polecenie pobierze około 110 MB danych i sprawdzi, czy pliki są zgodne z oczekiwanymi sumami kontrolnymi. Drugie ponownie oceni środowisko. Po zakończeniu konfiguracji wszystkie sprawdzenia powinny być zaliczone.</p><p>Na końcu zobaczysz <strong>profil danych</strong> dobrany do pamięci komputera. Określa on wielkość zbioru używanego w ćwiczeniach.</p>
           <label class="tick"><input type="checkbox"> Zrobione</label>
         </li>
 
         <li class="step" id="s-pr">
           <h3>Pierwszy pull request</h3>
-          <p>Załóż dziennik nauki. Będziesz w nim zapisywać, co zrobiłeś i co było trudne.</p>
+          <p>Utwórz dziennik nauki. Zapisuj w nim ukończone zadania, napotkane trudności i pytania, do których chcesz wrócić.</p>
 <pre><code class="language-bash">git switch -c setup/journal
 mkdir -p notes
 code notes/journal.md</code></pre>
@@ -292,7 +292,7 @@ git pull</code></pre>
           </tbody>
         </table>
       </div>
-      <p>Możesz też po prostu pisać po polsku. Tutor nie napisze za Ciebie rozwiązania zadania, nawet jeśli poprosisz. Pomoże Ci do niego dojść.</p>
+      <p>Możesz też pisać do tutora zwykłym językiem, po polsku. Jeśli poprosisz o gotowe rozwiązanie, zamiast kodu otrzymasz kolejną wskazówkę. Zadania rozwiązujesz samodzielnie.</p>
     </section>
 
     <div class="next">

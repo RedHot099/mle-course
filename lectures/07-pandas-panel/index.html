@@ -27,7 +27,7 @@
   <main class="lecture">
     <p class="kicker">Moduł 07 · Część 2: dane i ML</p>
     <h1>pandas II: panel i relacje</h1>
-    <p class="lede">Raport sprzedaży pokazał rekordowy miesiąc. Nikt nie zrobił nic inaczej niż zwykle. Trzy produkty wpisano do słownika dwa razy i jedno złączenie po cichu podwoiło ich sprzedaż. Ten wykład jest o tym, jak pisać kod, w którym taki błąd kończy się wyjątkiem, a nie premią.</p>
+    <p class="lede">Po połączeniu tabel raport pokazuje większą sprzedaż niż wcześniej. Czy faktycznie sprzedano więcej, czy jeden produkt został dopasowany do kilku wierszy? W tym module nauczysz się wykrywać takie problemy i przygotujesz dane wielu serii czasowych w jednej tabeli.</p>
 
     <ul class="meta">
       <li><b>Czas:</b> około 60 minut</li>
@@ -35,7 +35,7 @@
       <li><b>Potem:</b> <a href="../../labs/07-pandas-panel/README.md">lab 07</a>, około 7 godzin</li>
     </ul>
 
-    <p>Do tej pory pracowałeś na jednej tabeli, w której każdy wiersz żył osobno. Dane do prognozowania wyglądają inaczej. To wiele szeregów czasowych w jednej tabeli, opisanych przez kilka tabel pobocznych. Prawie każda operacja ma tu dwie wersje: poprawną i taką, która działa bez błędu i daje zły wynik.</p>
+    <p>Do prognozowania potrzebujemy uporządkowanej historii każdej serii oraz informacji opisujących sklepy i produkty. Samo wykonanie operacji bez wyjątku nie wystarczy. Będziemy sprawdzać liczbę wierszy, zgodność kluczy i to, czy cechy korzystają wyłącznie z dostępnej historii.</p>
 
     <p>Po tym wykładzie będziesz umiał:</p>
     <ul>
@@ -71,14 +71,14 @@
         <li><strong>Klucz wiersza</strong> to klucz serii plus data. Powinien być unikalny.</li>
       </ul>
 
-      <p>Panel może być dobry albo zły na trzy niezależne sposoby:</p>
+      <p>Panel będziemy sprawdzać pod trzema względami:</p>
       <ul>
         <li><strong>Unikalny:</strong> żaden klucz wiersza się nie powtarza.</li>
         <li><strong>Kompletny:</strong> każda seria ma wiersz na każdy dzień. Bez luk.</li>
         <li><strong>Posortowany:</strong> wiersze idą seria po serii, a w serii dzień po dniu.</li>
       </ul>
 
-      <p>Dwie pierwsze cechy to własności danych. Trzecia to własność ramki, którą akurat trzymasz w ręku, i potrafi zniknąć po każdym <code>merge</code> albo <code>concat</code>. Wszystkie trzy będziesz sprawdzać kodem.</p>
+      <p>Pierwsze dwie cechy opisują zawartość danych. Trzecia dotyczy kolejności wierszy w aktualnej tabeli. Po <code>merge</code> lub <code>concat</code> nie zakładaj, że kolejność nadal jest poprawna. Wszystkie trzy warunki sprawdzisz w kodzie.</p>
 
       <div class="quiz" id="q1" data-type="single">
         <div class="quiz-q">Sprawdziłeś, że panel nie ma duplikatów klucza wiersza i że każda z 2 648 serii ma dokładnie 90 wierszy w 90-dniowym zakresie dat. Czego jeszcze nie wiesz?</div>
@@ -104,7 +104,7 @@
         <figcaption>Dwie kolumny godzinowe zajmują ponad 80% pamięci. Do większości zadań nie są potrzebne.</figcaption>
       </figure>
 
-      <p>Parquet jest formatem <strong>kolumnowym</strong>: każda kolumna leży w pliku osobno. Dzięki temu da się przeczytać trzy kolumny z dwudziestu i nie dotknąć reszty. Da się też odrzucać wiersze już podczas czytania.</p>
+      <p>Parquet jest formatem <strong>kolumnowym</strong>. Pozwala odczytać wybrane kolumny bez ładowania pozostałych. Można też podać filtry ograniczające wczytywane wiersze. To przydatne, gdy cały zbiór nie mieści się w pamięci.</p>
 
 <pre><code class="language-python">df = pd.read_parquet(
     path,
@@ -116,7 +116,7 @@
 
       <div class="callout rule">
         <span class="label">Reguła</span>
-        <p>Wybieraj kolumny i wiersze przy czytaniu, a nie po nim. Pamięć ma zależeć od rozmiaru wyniku, nie od rozmiaru pliku.</p>
+        <p>Wybieraj potrzebne kolumny i wiersze już przy odczycie. Odfiltrowanie danych dopiero po wczytaniu nie zapobiegnie wcześniejszemu zużyciu pamięci.</p>
       </div>
 
       <h3>Typy</h3>
@@ -126,7 +126,7 @@
 <pre><code class="language-python">df["city_id"] = pd.to_numeric(df["city_id"], downcast="integer")   # int64 -> int8
 df["dt"] = pd.to_datetime(df["dt"], format="%Y-%m-%d")             # tekst -> datetime64</code></pre>
 
-      <p>Zmniejszenie typu całkowitego jest bezpieczne: wartości zostają te same. Z liczbami zmiennoprzecinkowymi jest inaczej. <code>float32</code> ma około 7 cyfr znaczących, więc sumy na milionach wierszy zaczynają odbiegać od prawdy. W tym kursie floatów nie zmniejszamy.</p>
+      <p>Mniejszy typ całkowity zachowa wartości, jeśli wszystkie mieszczą się w jego zakresie. Sprawdź to przed zmianą.</p><p>Typ <code>float32</code> ma natomiast mniejszą precyzję niż <code>float64</code>. Przy sumowaniu wielu wartości różnice mogą być zauważalne. W tym kursie nie zmniejszamy typów kolumn zmiennoprzecinkowych.</p>
 
       <p>Zamiana tekstu na datę daje mniej pamięci, ale przede wszystkim daje arytmetykę: odejmowanie dat, dzień tygodnia przez <code>.dt.dayofweek</code>, poprawne sortowanie.</p>
 
@@ -136,7 +136,7 @@ df["dt"] = pd.to_datetime(df["dt"], format="%Y-%m-%d")             # tekst -> da
 column = "dt"
 df = df.assign(**{column: pd.to_datetime(df[column])})   # assign, gdy nazwa kolumny jest w zmiennej</code></pre>
 
-      <p><code>select_dtypes</code> wybiera kolumny po typie. <code>assign(nazwa=wartości)</code> znasz z modułu 06, ale tam nazwa kolumny była wpisana w kod. Gdy siedzi w zmiennej albo w stałej (<code>DATE</code>), budujesz słownik <code>{nazwa: wartości}</code>, a <code>**</code> rozpakowuje go na argumenty. Ten sam zapis przyjmuje słownik z wieloma kolumnami naraz.</p>
+      <p>Metoda <code>select_dtypes</code> wybiera kolumny według typu. Zapis <code>assign(nazwa=wartości)</code> znasz już z modułu 06.</p><p>Jeśli nazwa kolumny jest w zmiennej lub stałej, na przykład <code>DATE</code>, utwórz słownik <code>{nazwa: wartości}</code>. Zapis <code>**</code> przekaże jego elementy jako nazwane argumenty. W ten sposób możesz przypisać również kilka kolumn naraz.</p>
 
       <div class="quiz" id="q2" data-type="single">
         <div class="quiz-q">Potrzebujesz sprzedaży jednego miasta. Który wariant zużyje najmniej pamięci w szczycie?</div>
@@ -159,13 +159,13 @@ df = df.assign(**{column: pd.to_datetime(df[column])})   # assign, gdy nazwa kol
     </section>
 
     <section id="fail-fast">
-      <h2>Reguły zamiast nadziei</h2>
+      <h2>Zapisz wymagania wobec danych</h2>
 
-      <p>Każdy kod, który liczy coś na danych, robi założenia. "Jedna seria ma jeden wiersz na dzień." "Sprzedaż nie jest ujemna." Dopóki założenie siedzi tylko w Twojej głowie, dane mogą je złamać i nikt się nie dowie. Program policzy wynik. Wynik będzie zły.</p>
+      <p>Zakładamy na przykład, że seria zawiera jeden wiersz na dzień, a sprzedaż jest nieujemna. Jeśli nie sprawdzimy tych warunków, program może policzyć wynik na danych, które ich nie spełniają. Nie musi przy tym zgłosić żadnego błędu.</p>
 
       <div class="callout rule">
         <span class="label">Reguła</span>
-        <p>Cicha zła prognoza jest gorsza niż błąd. Założenie o danych zapisujesz jako kod, który rzuca wyjątek.</p>
+        <p>Zapisz więc każde istotne założenie jako sprawdzenie w kodzie. Jeśli dane go nie spełniają, zgłoś wyjątek, zanim przejdziesz do obliczeń.</p>
       </div>
 
       <p>To podejście nazywa się <strong>fail fast</strong>. Reguła ma trzy cechy: sprawdza jedną rzecz, liczy, ile wierszy ją łamie, i podaje tę liczbę w komunikacie.</p>
@@ -178,7 +178,7 @@ if duplicated:
 
       <h3>Czego nie robić</h3>
 
-      <p>Trzy popularne sposoby na uciszenie problemu. Każdy zamienia głośny błąd w cichy.</p>
+      <p>Poniższe operacje mogą sprawić, że program przestanie zgłaszać problem, choć jego przyczyna pozostanie w danych:</p>
 
       <div class="table-wrap">
         <table>
@@ -191,13 +191,13 @@ if duplicated:
         </table>
       </div>
 
-      <p>Żadna z tych funkcji nie jest zakazana. Zakazane jest użycie ich bez sprawdzenia, ile wierszy dotykają, i bez decyzji, co te wiersze znaczą.</p>
+      <p>Te funkcje są przydatne, jeśli wiesz, dlaczego ich używasz. Najpierw sprawdź, ilu wierszy dotyczy zmiana i co one oznaczają. Dopiero potem zdecyduj o usunięciu, zastąpieniu lub pominięciu wartości.</p>
 
       <h3>Wartość, która nie pasuje do skali</h3>
 
       <p>W danych jest kolumna <code>discount</code>. Dokumentacja mówi: 1.0 to cena regularna, 0.9 to 10% taniej. W 16 tysiącach wierszy stoi tam 0.</p>
 
-      <p>Może to produkt rozdawany za darmo. Może znacznik "nie zapisano". Dane pasują do obu wyjaśnień i w labie zobaczysz dlaczego. Masz wtedy trzy uczciwe wyjścia i jedno nieuczciwe.</p>
+      <p>Zero może oznaczać bezpłatny produkt albo brak zapisanego rabatu. Same wartości nie rozstrzygają tego jednoznacznie. W labie porównasz możliwe decyzje i zobaczysz, dlaczego nie należy traktować jednej interpretacji jako potwierdzonego faktu.</p>
 
       <div class="quiz" id="q4" data-type="single">
         <div class="quiz-q">Nie wiesz, co znaczy <code>discount == 0</code>. Które rozwiązanie zachowuje całą informację i nie udaje wiedzy, której nie masz?</div>
@@ -220,7 +220,7 @@ s.mask(s == 0)        # 0.9, NaN, 1.0</code></pre>
 
       <p>Tabela sprzedaży to <strong>tabela faktów</strong>: jeden wiersz to jedno zdarzenie. Informacje, które opisują sklep albo produkt i nie zmieniają się z dnia na dzień, trzyma się osobno, w <strong>tabelach wymiarów</strong>: jeden wiersz na sklep, jeden na produkt.</p>
 
-      <p>Ma to dwa powody. Kategoria produktu powtórzona w każdym z 4,5 miliona wierszy to zmarnowana pamięć. I ważniejszy: jeśli produkt zmieni kategorię, chcesz poprawić jeden wiersz w jednym miejscu.</p>
+      <p>W ten sposób nie powtarzamy kategorii produktu w każdym wierszu sprzedaży. Gdy opis produktu się zmieni, można poprawić go w jednym miejscu. To również ułatwia kontrolę, czy każdy produkt ma jednoznaczny opis.</p>
 
       <p>Wymiar dołączasz do faktów przez <code>merge</code>. O wyniku decyduje <strong>kardynalność</strong>, czyli to, ile razy klucz występuje po każdej stronie.</p>
 
@@ -235,7 +235,7 @@ s.mask(s == 0)        # 0.9, NaN, 1.0</code></pre>
         </table>
       </div>
 
-      <p>Fakty z wymiarem to zawsze many to one. Kłopot w tym, że pandas nie wie, czego się spodziewasz. Jeśli klucz w wymiarze się powtórzy, zrobi many to many i nic nie powie. Zepsuj wymiar poniżej i zobacz.</p>
+      <p>Przy dołączaniu wymiaru oczekujemy relacji <em>many to one</em>: wiele wierszy sprzedaży odpowiada jednemu opisowi produktu lub sklepu. Powtórzony klucz w tabeli wymiaru narusza to założenie.</p><p>Jeśli nie podasz oczekiwanej relacji, pandas może zwrócić kilka dopasowań i zwiększyć liczbę wierszy bez wyjątku. Sprawdź to w poniższym przykładzie.</p>
 
       <figure class="widget" id="merge-widget">
         <p class="widget-title">Co robi merge, gdy wymiar jest zepsuty</p>
@@ -261,9 +261,9 @@ s.mask(s == 0)        # 0.9, NaN, 1.0</code></pre>
 
       <p>Dwie rzeczy warto zapamiętać z tego eksperymentu.</p>
 
-      <p><code>validate="many_to_one"</code> łapie powtórzony klucz w wymiarze. To jedno słowo zamienia cichy błąd w <code>MergeError</code>.</p>
+      <p>Opcja <code>validate="many_to_one"</code> wykrywa powtórzony klucz w tabeli wymiaru. Zamiast tabeli z nadmiarowymi wierszami otrzymasz <code>MergeError</code>.</p>
 
-      <p><code>validate</code> nie łapie klucza, którego w wymiarze brakuje. Przy <code>how="left"</code> dostajesz wiersze z NaN, przy <code>how="inner"</code> wiersze po prostu znikają. Do tego służy <code>indicator=True</code>: dodaje kolumnę <code>_merge</code>, z której wynika, czy wiersz znalazł parę.</p>
+      <p>Opcja <code>validate</code> nie wykrywa jednak braku pasującego klucza. Przy <code>how="left"</code> pozostanie wiersz z <code>NaN</code> w dołączanych kolumnach. Przy <code>how="inner"</code> taki wiersz zostanie pominięty.</p><p>Opcja <code>indicator=True</code> dodaje kolumnę <code>_merge</code>. Możesz z niej odczytać, które wiersze znalazły dopasowanie.</p>
 
 <pre><code class="language-python">merged = fact.merge(dim, on="product_id", how="left", validate="many_to_one", indicator=True)
 unmatched = int((merged["_merge"] != "both").sum())
@@ -282,7 +282,7 @@ merged = merged.drop(columns="_merge")</code></pre>
           <li>1 000<span class="why">Tak by było, gdyby klucz w wymiarze był unikalny.</span></li>
           <li data-correct>1 040<span class="why">Tak. Każdy z 40 wierszy łączy się z dwoma wierszami wymiaru, więc przybywa 40.</span></li>
           <li>1 051<span class="why">Dodatkowy wiersz wymiaru nie dokleja się do wyniku. Mnożą się tylko te wiersze faktów, które do niego pasują.</span></li>
-          <li>Żadnego, poleci <code>MergeError</code><span class="why">Tylko z argumentem <code>validate</code>. Bez niego pandas nie ma jak wiedzieć, że duplikat to pomyłka.</span></li>
+          <li>Żadnego, wystąpi <code>MergeError</code><span class="why">Tylko z argumentem <code>validate</code>. Bez niego pandas nie ma jak wiedzieć, że duplikat to pomyłka.</span></li>
         </ul>
       </div>
 
@@ -297,9 +297,9 @@ merged = merged.drop(columns="_merge")</code></pre>
     </section>
 
     <section id="groupby">
-      <h2>groupby: zwijanie kontra zachowanie kształtu</h2>
+      <h2>groupby: wynik dla grupy albo dla każdego wiersza</h2>
 
-      <p><code>groupby</code> dzieli ramkę na grupy i coś w każdej liczy. Ważne jest, co robi z wynikiem. Są dwa tryby i trzeba je rozróżniać bez zastanowienia.</p>
+      <p><code>groupby</code> dzieli tabelę na grupy i wykonuje obliczenia osobno w każdej z nich. Zwróć uwagę na kształt wyniku: możesz otrzymać jeden wiersz na grupę albo wynik przypisany do każdego pierwotnego wiersza.</p>
 
       <figure class="widget" id="groupby-widget">
         <p class="widget-title">Ta sama średnia, dwa kształty wyniku</p>
@@ -357,7 +357,7 @@ df["relative_sales"] = df["sale_amount"] / series_mean</code></pre>
 
       <p>Cechy modeli prognostycznych powstają głównie z przeszłości tej samej serii: sprzedaż sprzed 7 dni, średnia z ostatniego tygodnia. W pandas to <code>shift</code> i <code>rolling</code>.</p>
 
-      <p>Obie operacje działają na <strong>pozycjach wierszy</strong>, nie na datach. <code>shift(1)</code> znaczy "weź wartość z wiersza powyżej". Z tego biorą się dwie pułapki. Znajdź obie w widżecie.</p>
+      <p>W pokazanych tu operacjach <code>shift</code> i <code>rolling</code> pracują na pozycjach wierszy. <code>shift(1)</code> wybiera wartość z poprzedniego wiersza, nie sprawdzając jego daty. W widżecie zobaczysz dwa problemy, do których może to prowadzić.</p>
 
       <figure class="widget" id="window-widget">
         <p class="widget-title">Skąd okno bierze wartości</p>
@@ -381,13 +381,13 @@ df["sales_lag_7"] = df.groupby(key)["sale_amount"].shift(7)</code></pre>
 
       <p>Z <code>groupby</code> pierwsze 7 dni każdej serii dostaje NaN. To poprawna odpowiedź: tej wartości nie ma.</p>
 
-      <p>Nawet z <code>groupby</code> zostają dwa założenia. Wiersze serii muszą być ułożone po dacie, bo inaczej "wiersz powyżej" nie jest "dniem wcześniej". I seria nie może mieć luk, bo inaczej siedem wierszy wstecz to nie siedem dni wstecz. Jedno sprawdza się funkcją, drugie regułą kompletności panelu.</p>
+      <p>Samo <code>groupby</code> nie wystarczy. Wiersze wewnątrz serii muszą być uporządkowane według daty. Seria nie może też mieć luk, jeśli siedem wierszy wstecz ma oznaczać siedem dni wstecz.</p><p>Sprawdź więc zarówno kolejność, jak i kompletność panelu.</p>
 
       <h3>Pułapka druga: dzień bieżący</h3>
 
-      <p><code>rolling(7).mean()</code> liczy średnią z siedmiu wierszy, <strong>kończąc na bieżącym</strong>. Jeśli użyjesz jej jako cechy do przewidywania sprzedaży w tym samym dniu, w cesze siedzi jedna siódma odpowiedzi. Model wygląda świetnie na danych historycznych i zawodzi, gdy przyjdzie mu prognozować dzień, którego sprzedaży jeszcze nikt nie zna.</p>
+      <p>Średnia <code>rolling(7).mean()</code> uwzględnia siedem wierszy, łącznie z bieżącym. Jeśli ma być cechą służącą do przewidywania sprzedaży tego dnia, zawiera część wartości, którą dopiero chcemy przewidzieć.</p><p>Na danych historycznych wynik może wyglądać bardzo dobrze. Przy prawdziwej prognozie bieżąca sprzedaż nie będzie jeszcze znana, więc takiej cechy nie uda się obliczyć.</p>
 
-      <p>To pierwszy przykład zjawiska o nazwie <strong>leakage</strong> (przeciek): do cech trafia informacja, której w chwili prognozy nie będzie. Poświęcimy mu dużą część modułu 08. Tutaj wystarczy mechanika: najpierw przesuń, potem licz okno.</p>
+      <p>To przykład <strong>leakage</strong>, czyli przecieku informacji. Cecha korzysta z danych niedostępnych w chwili prognozy. W module 08 przyjrzymy się temu szerzej. Tutaj zapamiętaj kolejność: najpierw przesunięcie, potem obliczenie średniej w oknie.</p>
 
 <pre><code class="language-python">past = df.groupby(key)["sale_amount"].shift(1)            # wczoraj i wcześniej
 df["sales_mean_7"] = (
@@ -439,7 +439,7 @@ df["sales_mean_7"] = (
 
       <p>To najcenniejsza informacja w tym zbiorze. Gdy towaru nie ma, sprzedaż wynosi zero bez względu na to, ilu klientów chciało go kupić. <strong>Sprzedaż to nie popyt</strong>, a model ma przewidywać popyt. W 44% wierszy tego zbioru towaru zabrakło przynajmniej na godzinę.</p>
 
-      <p>pandas trzyma taką kolumnę jako kolumnę obiektów: w każdej komórce siedzi osobna tablica NumPy. Operacje kolumnowe pandas na niej nie działają. Można iść wiersz po wierszu w pętli Pythona, co na 4,5 miliona wierszy trwa minuty. Można też zauważyć, że n wierszy po 24 liczby to prostokąt.</p>
+      <p>Każda komórka takiej kolumny zawiera osobną tablicę NumPy. Zwykłe operacje liczbowe na kolumnie nie wykonają więc od razu obliczenia dla każdej godziny.</p><p>Można przejść po wierszach pętlą, ale można też połączyć tablice w macierz: <code>n</code> wierszy i 24 kolumny. To pozwoli wykorzystać poznane operacje NumPy.</p>
 
 <pre><code class="language-python">status = np.stack(df["hours_stock_status"].tolist())   # kształt (n, 24)
 out_of_stock = status.astype(bool)
@@ -469,9 +469,9 @@ oos_hours = out_of_stock[:, 6:22].sum(axis=1)          # tylko godziny 6:00-22:0
     <section id="kontrakt">
       <h2>Kontrakt danych</h2>
 
-      <p>Na końcu labu zapiszesz plik <code>data/processed/daily.parquet</code>. Każdy następny moduł zaczyna od jego wczytania. Kod, który ten plik pisze, i kod, który go czyta, powstają w odstępie tygodni. Między nimi jest umowa: jakie kolumny, w jakiej kolejności, co znaczą.</p>
+      <p>Na końcu labu zapiszesz <code>data/processed/daily.parquet</code>. Kolejne moduły będą go odczytywać. Musimy więc ustalić, jakie zawiera kolumny, w jakiej kolejności i co oznaczają. Ten opis nazywamy kontraktem danych.</p>
 
-      <p>Umowa, której nikt nie sprawdza, przestaje obowiązywać przy pierwszej zmianie. Dlatego jest zapisana w jednym miejscu jako kod i sprawdzana po obu stronach.</p>
+      <p>Zapisz kontrakt w jednym miejscu i sprawdzaj go zarówno przed zapisem, jak i po odczycie. Dzięki temu zmiana jednego etapu nie naruszy po cichu wymagań kolejnego.</p>
 
 <pre><code class="language-python"># schema.py: jedno źródło prawdy
 PROCESSED_COLUMNS = ["store_id", "product_id", "city_id", "dt", "sale_amount", ...]
@@ -481,7 +481,7 @@ daily = pd.read_parquet(path)
 if list(daily.columns) != PROCESSED_COLUMNS:
     raise ValueError(f"{path} does not match PROCESSED_COLUMNS. Rebuild it.")</code></pre>
 
-      <p>Ten sam plik <code>schema.py</code> trzyma nazwy kolumn jako stałe. Piszesz <code>df[TARGET]</code> zamiast <code>df["sale_amount"]</code>. Literówka w stałej kończy się błędem przy imporcie. Literówka w napisie kończy się <code>KeyError</code> po dwudziestu minutach obliczeń albo, co gorsze, nową pustą kolumną.</p>
+      <p>W pliku <code>schema.py</code> przechowujemy też nazwy kolumn jako stałe. Zapis <code>df[TARGET]</code> odwołuje się do tej samej nazwy we wszystkich modułach.</p><p>Literówkę w nazwie stałej łatwiej wykryć przed obliczeniami. Błędny tekst z nazwą kolumny może natomiast ujawnić się dopiero przy dostępie do danych albo utworzyć niezamierzoną kolumnę.</p>
     </section>
 
     <section id="podsumowanie">
@@ -493,10 +493,10 @@ if list(daily.columns) != PROCESSED_COLUMNS:
         <li>Założenie o danych to kod, który rzuca wyjątek z liczbą złych wierszy.</li>
         <li>Każdy <code>merge</code> ma <code>on</code>, <code>how</code> i <code>validate</code>, a po nim sprawdzasz niedopasowane klucze.</li>
         <li>Lagi i okna liczysz wewnątrz serii, a okno kończy się najpóźniej wczoraj.</li>
-        <li>Kształt danych między modułami to kontrakt zapisany w kodzie.</li>
+        <li>Oczekiwane kolumny, typy i reguły danych między modułami są zapisane w kodzie kontraktu.</li>
       </ol>
 
-      <p>Wszystkie pięć trafią do standardu inżynierskiego kursu, według którego tutor sprawdza Twoje pull requesty.</p>
+      <p>Wszystkie pięć reguł uwzględnia standard kursu. Tutor będzie się do nich odwoływać podczas przeglądu Twoich pull requestów.</p>
     </section>
 
     <div class="next">

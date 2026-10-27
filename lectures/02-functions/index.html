@@ -27,7 +27,7 @@
   <main class="lecture">
     <p class="kicker">Moduł 02 · Część 1: inżynieria w Pythonie</p>
     <h1>Funkcje i style kodu</h1>
-    <p class="lede">Kod czyta się częściej, niż się go pisze. Ten moduł dotyczy funkcji, które da się przeczytać, sprawdzić narzędziem i złożyć z innymi. Od niego zaczynają obowiązywać typy, <code>mypy</code> i <code>ruff</code>.</p>
+    <p class="lede">Rozbudujesz funkcje z poprzedniego modułu tak, żeby łatwiej było z nich korzystać, sprawdzać je i łączyć z innym kodem. Poznasz typy argumentów, dekoratory i importy. Narzędzia <code>mypy</code> i <code>ruff</code> pomogą Ci sprawdzać zapis kodu.</p>
 
     <ul class="meta">
       <li><b>Czas:</b> około 60 minut</li>
@@ -50,7 +50,7 @@
     <section id="sygnatury">
       <h2>Sygnatura to umowa</h2>
 
-      <p>Sygnatura funkcji mówi, co funkcja przyjmuje. Czytelnik patrzy na nią pierwszy, często jako jedyną rzecz. Python daje kilka rodzajów argumentów:</p>
+      <p>Sygnatura to pierwsza linia definicji funkcji. Podaje nazwę i parametry, a także ich wartości domyślne oraz typy, jeśli je zapisano. Dzięki niej można ustalić, jak wywołać funkcję. Spójrz na kilka rodzajów argumentów:</p>
 
       <ul>
         <li><strong>pozycyjne</strong>: <code>f(1, 2)</code>, przypisane w kolejności,</li>
@@ -72,7 +72,7 @@ describe("T7", 3, 5, unit="kg", shop=12)</code></pre>
         </ul>
       </div>
 
-      <p>Sama gwiazdka w sygnaturze, bez nazwy, oznacza: wszystko dalej podajesz po nazwie. To dobra obrona przed wywołaniem, którego nie da się przeczytać, jak <code>top(stats, 5, True)</code>.</p>
+      <p>Sama gwiazdka <code>*</code> w sygnaturze oznacza, że wszystkie dalsze argumenty trzeba podawać po nazwie. Dzięki temu wywołanie mówi więcej niż <code>top(stats, 5, True)</code>, w którym trudno zgadnąć znaczenie ostatniej wartości.</p>
 
       <div class="predict" id="p2" data-type="single">
 <pre><code class="language-python">def top(stats, *, n=5):
@@ -86,7 +86,7 @@ print(top([4, 3, 2, 1], 2))</code></pre>
         </ul>
       </div>
 
-      <p><strong>Funkcja czysta</strong> zależy tylko od swoich argumentów i nie zmienia niczego poza swoim wynikiem: nie dopisuje do list, które dostała, nie zmienia zmiennych globalnych, nie pisze do plików. Taką funkcję testujesz jednym wywołaniem i możesz wywołać drugi raz bez obaw. Kod z efektami ubocznymi też jest potrzebny, bo ktoś musi zapisać wynik na dysk. Trzymaj go jednak na brzegach programu, a środek niech liczy.</p>
+      <p><strong>Czysta funkcja</strong> oblicza wynik wyłącznie z otrzymanych argumentów. Nie zmienia przekazanej listy, zmiennych globalnych ani plików. Można więc sprawdzić ją na małych danych i powtórzyć wywołanie bez zmieniania otoczenia.</p><p>Odczyt i zapis plików też są potrzebne. Warto jednak oddzielić je od obliczeń, żeby każdą część programu dało się sprawdzić osobno.</p>
     </section>
 
     <section id="funkcje-jako-wartosci">
@@ -104,7 +104,7 @@ print(sorted(rows, key=lambda row: (-row[1], row[0])))</code></pre>
         </ul>
       </div>
 
-      <p><code>lambda</code> to funkcja w jednym wyrażeniu, bez nazwy. Pasuje do krótkiego klucza sortowania. Gdy ma więcej niż jedną myśl, napisz zwykłą funkcję z nazwą, bo nazwa też jest dokumentacją.</p>
+      <p><code>lambda</code> tworzy krótką funkcję bez nazwy, zapisaną jednym wyrażeniem. Przydaje się na przykład do określenia kolejności sortowania. Gdy wyrażenie staje się trudne do przeczytania, użyj <code>def</code> i nadaj funkcji nazwę opisującą jej działanie.</p>
 
       <p><code>map</code> i <code>filter</code> też przyjmują funkcje. W Pythonie zwykle czytelniej jest napisać comprehension: <code>[f(x) for x in xs if ok(x)]</code> mówi to samo w jednym miejscu.</p>
     </section>
@@ -112,7 +112,7 @@ print(sorted(rows, key=lambda row: (-row[1], row[0])))</code></pre>
     <section id="domkniecia">
       <h2>Domknięcia</h2>
 
-      <p>Funkcja zdefiniowana w innej funkcji widzi jej zmienne, także wtedy, gdy zewnętrzna funkcja już się skończyła. Taka para, czyli funkcja i zmienne, które zapamiętała, to <strong>domknięcie</strong> (closure).</p>
+      <p>Funkcja zdefiniowana wewnątrz innej funkcji może korzystać z jej zmiennych. Dostęp do nich zachowuje także po zakończeniu zewnętrznego wywołania. Funkcję wraz z zapamiętanymi zmiennymi nazywamy <strong>domknięciem</strong>, po angielsku <em>closure</em>.</p>
 
       <div class="predict" id="p4" data-type="single">
 <pre><code class="language-python">def make_counter():
@@ -150,14 +150,14 @@ print([test(7) for test in tests])</code></pre>
 
       <div class="callout trap">
         <span class="label">Pułapka</span>
-        <p>Funkcje tworzone w pętli widzą ostatnią wartość zmiennej pętli. Rozwiązanie: fabryka, czyli funkcja, która dostaje próg jako argument i zwraca test. Każde wywołanie fabryki ma własną zmienną. W labie napiszesz taką fabrykę: <code>at_least(key, threshold)</code>.</p>
+        <p>Funkcje z tego przykładu odczytują zmienną pętli dopiero przy wywołaniu. Wtedy zawiera ona już ostatnią wartość.</p><p>Możesz uniknąć tego problemu, tworząc funkcję wewnątrz innej funkcji, która otrzymuje próg jako argument. Każde wywołanie ma wtedy własną zmienną. Taki sposób tworzenia funkcji nazywamy fabryką. W labie napiszesz przykład <code>at_least(key, threshold)</code>.</p>
       </div>
     </section>
 
     <section id="dekoratory">
       <h2>Dekoratory</h2>
 
-      <p>Dekorator to funkcja, która dostaje funkcję i zwraca nową, zwykle opakowującą starą. Zapis z <code>@</code> to skrót:</p>
+      <p>Dekorator otrzymuje funkcję i zwraca funkcję, której będziemy używać w jej miejsce. Zwykle nowa funkcja wywołuje oryginał i wykonuje dodatkową pracę przed nim lub po nim. Zapis z <code>@</code> jest skrótem takiej zamiany:</p>
 
 <pre><code class="language-python">@timed
 def load_all(path): ...
@@ -166,7 +166,7 @@ def load_all(path): ...
 def load_all(path): ...
 load_all = timed(load_all)</code></pre>
 
-      <p>Dekoratorem dodajesz zachowanie, które powtarza się w wielu funkcjach i nie należy do żadnej z nich: pomiar czasu, logowanie, ponawianie, walidację, rejestrację. Typowy kształt:</p>
+      <p>Dekorator przydaje się do dodawania tego samego zachowania do wielu funkcji, na przykład pomiaru czasu lub zapisu informacji do logów. Dzięki temu nie trzeba powtarzać tego kodu w każdej z nich. Typowy przykład wygląda tak:</p>
 
 <pre><code class="language-python">import functools
 
@@ -206,7 +206,7 @@ print(greet(), greet.__name__)</code></pre>
       </div>
 
       <h3>Kod, który działa zawsze</h3>
-      <p>Dekorator, który coś mierzy albo zapisuje, często musi zrobić to także wtedy, gdy opakowana funkcja zgłosi wyjątek. Do tego służy <code>finally</code>: blok pod nim wykonuje się po <code>try</code> zawsze, czy <code>try</code> skończył się wynikiem, czy wyjątkiem. <code>finally</code> niczego nie łapie, więc wyjątek leci dalej, do wywołującego.</p>
+      <p>Czas wykonania chcemy zapisać także wtedy, gdy funkcja zgłosi błąd. Służy do tego blok <code>finally</code>: wykona się po <code>try</code>, niezależnie od tego, czy obliczenie się powiodło.</p><p><code>finally</code> samo nie obsługuje wyjątku. Po wykonaniu tego bloku wyjątek nadal może przerwać kod, który wywołał funkcję.</p>
 
       <div class="predict" id="p8" data-type="single">
 <pre><code class="language-python">def load():
@@ -246,7 +246,7 @@ except ValueError:
 
     return decorator</code></pre>
 
-      <p>Każdy poziom działa w innym momencie. Fabryka działa raz, przy definicji udekorowanej funkcji. Dlatego walidacja parametru stoi w niej: błąd wychodzi przy imporcie modułu, a nie w połowie nocnego przeliczenia.</p>
+      <p>Każdy z tych poziomów wykonuje się w innym momencie. Fabrykę wywołujemy podczas definiowania udekorowanej funkcji. Dlatego właśnie tam sprawdzamy poprawność parametru dekoratora. Niepoprawne ustawienie zostanie wykryte przy wczytywaniu modułu, zanim rozpoczną się obliczenia.</p>
 
       <div class="quiz" id="q1" data-type="single">
         <div class="quiz-q">Dekorator <code>register(name)</code> zapisuje funkcję w słowniku i zwraca ją bez zmian. Czy potrzebuje <code>functools.wraps</code>?</div>
@@ -261,7 +261,7 @@ except ValueError:
     <section id="moduly">
       <h2>Moduły i importy</h2>
 
-      <p>Każdy plik <code>.py</code> to <strong>moduł</strong>. <code>import carparts</code> szuka pliku <code>carparts.py</code> w katalogach z listy <code>sys.path</code>. Pierwszy na liście jest katalog skryptu albo notebooka. Potem Python wykonuje plik od góry do dołu i zapamiętuje wynik w <code>sys.modules</code>. Kolejny <code>import carparts</code> w tym samym procesie niczego nie wykonuje, tylko zwraca zapamiętany moduł.</p>
+      <p>Plik <code>.py</code> jest <strong>modułem</strong>. Przy <code>import carparts</code> Python szuka modułu w miejscach zapisanych w <code>sys.path</code>. Następnie wykonuje jego kod od góry do dołu i zapamiętuje moduł w <code>sys.modules</code>.</p><p>Kolejny <code>import carparts</code> w tym samym procesie korzysta już z zapamiętanego modułu. Nie wykonuje pliku ponownie. Dlatego warto sprawdzać, czy notebook pracuje w folderze, z którego można odnaleźć własny moduł.</p>
 
       <p>Dlatego zmiana w pliku nie dociera do notebooka, dopóki nie zrestartujesz kernela. W labie użyjesz <code>%autoreload 2</code>, które przeładowuje zmienione moduły przed każdą komórką.</p>
 
@@ -305,12 +305,12 @@ print(total((1, 2, 3)))</code></pre>
         </ul>
       </div>
 
-      <p>Po co więc typy? Po to, żeby błąd wyszedł na biurku, a nie w danych. Ten sam plik w <code>mypy</code>:</p>
+      <p>Po co dopisywać typy? Dzięki nim narzędzie może zauważyć niezgodne argumenty jeszcze przed uruchomieniem obliczeń. Spójrz, co <code>mypy</code> zgłasza dla tego pliku:</p>
 
 <pre><code class="language-text">$ uv run mypy --strict stats.py
 stats.py:4: error: Argument 1 to "total" has incompatible type "tuple[int, int, int]"; expected "list[float]"  [arg-type]</code></pre>
 
-      <p>Liczby całkowite <code>mypy</code> przyjmuje tam, gdzie spodziewa się <code>float</code>. Krotki zamiast listy nie przyjmuje. Tu ma rację tylko formalnie, bo <code>total</code> jedynie czyta wartości, więc krotka by wystarczyła. Lepsza adnotacja mówi dokładnie tyle, ile funkcja potrzebuje: <code>Sequence[float]</code>.</p>
+      <p><code>mypy</code> dopuszcza liczbę całkowitą tam, gdzie oczekiwany jest <code>float</code>. Nie zaakceptuje jednak krotki, jeśli parametr opisano jako listę.</p><p>Funkcja <code>total</code> tylko odczytuje wartości, więc nie potrzebuje konkretnie listy. Typ <code>Sequence[float]</code> opisuje jej wymagania lepiej: pozwala przekazać zarówno listę, jak i krotkę.</p>
 
       <table>
         <thead><tr><th>Zapis</th><th>Znaczy</th></tr></thead>
@@ -325,7 +325,7 @@ stats.py:4: error: Argument 1 to "total" has incompatible type "tuple[int, int, 
         </tbody>
       </table>
 
-      <p><code>Sequence</code>, <code>Mapping</code>, <code>Iterator</code> i <code>Callable</code> importujesz z <code>collections.abc</code>. Zasada: parametry typuj szeroko (czego funkcja potrzebuje), wynik wąsko (co dokładnie zwraca).</p>
+      <p>Typy <code>Sequence</code>, <code>Mapping</code>, <code>Iterator</code> i <code>Callable</code> importujemy z <code>collections.abc</code>. W parametrze opisuj to, czego funkcja potrzebuje do pracy. W typie wyniku podaj możliwie dokładnie to, co zwraca.</p>
 
       <p>Długi typ, który się powtarza, dostaje nazwę:</p>
 
@@ -356,7 +356,7 @@ def demand_stats(values: Values) -> Stats: ...</code></pre>
 
       <h3>Typ dekoratora</h3>
 
-      <p>Dekorator zwraca nową funkcję. Jeśli napiszesz, że zwraca <code>Callable[..., Any]</code>, każda udekorowana funkcja straci typy. Żeby powiedzieć "opakowanie ma te same argumenty i wynik co oryginał", sygnaturę parametryzuje się typami argumentów <code>P</code> i wyniku <code>R</code>:</p>
+      <p>Dekorator zwraca nową funkcję. Opis <code>Callable[..., Any]</code> nie zachowuje informacji o jej konkretnych argumentach i wyniku. Żeby narzędzie mogło dalej je sprawdzać, używamy <code>P</code> do opisania argumentów i <code>R</code> do opisania wyniku:</p>
 
 <pre><code class="language-python">def timed[**P, R](func: Callable[P, R]) -> Callable[P, R]:
     @functools.wraps(func)
@@ -367,7 +367,7 @@ def demand_stats(values: Values) -> Stats: ...</code></pre>
 
       <div class="callout rule">
         <span class="label">Reguła</span>
-        <p>Od tego modułu każda funkcja ma typy argumentów i wyniku, a <code>mypy</code> przechodzi bez błędów (K1). To reguła blokująca w review.</p>
+        <p>Od tego modułu wszystkie funkcje opisujemy typami parametrów i wyniku. Przed przeglądem kodu popraw błędy wskazane przez <code>mypy</code>. To wymaganie reguły K1 w standardzie kursu.</p>
       </div>
     </section>
 
@@ -396,7 +396,7 @@ clean.py:5:16: E711 Comparison to `None` should be `cond is None`</code></pre>
 
       <h3>Docstring</h3>
 
-      <p>Docstring to napis zaraz pod <code>def</code>. Mówi, co funkcja robi i zwraca, a przy dłuższych funkcjach także co przyjmuje i co rzuca. Kurs używa stylu Google (K2):</p>
+      <p>Docstring to opis w potrójnym cudzysłowie pod <code>def</code>. Wyjaśnia działanie funkcji, zwracany wynik, a w razie potrzeby także argumenty i możliwe wyjątki. W kursie stosujemy styl Google, opisany w regule K2:</p>
 
 <pre><code class="language-python">def summarise(values: Values, names: Sequence[str] | None = None) -> Stats:
     """Compute the registered statistics `names` (all when None) for one series.
@@ -432,7 +432,7 @@ for name, values in series.items():
             if value == 0:
                 zeros += 1
     zero_share[name] = zeros / known if known else None</code></pre>
-        <p>Krok po kroku, ze zmiennymi, które się zmieniają. Łatwo prześledzić w debuggerze. Trudno użyć ponownie: logika jednej serii siedzi w środku pętli po wszystkich.</p>
+        <p>Pierwsza wersja wykonuje kolejne kroki w pętli i aktualizuje zmienne. Łatwo prześledzić, jak powstaje wynik. Trudniej natomiast sprawdzić obliczenie jednej serii osobno, ponieważ znajduje się ono wewnątrz pętli po wszystkich seriach.</p>
       </div>
 
       <div class="tab-panel" data-group="style" data-tab="functional" hidden>
@@ -442,7 +442,7 @@ for name, values in series.items():
 
 
 zero_share = {name: share_of_zeros(values) for name, values in series.items()}</code></pre>
-        <p>Mała funkcja czysta dla jednej serii i comprehension, która ją stosuje. Funkcję przetestujesz osobno, a dołożenie następnej statystyki nie dotyka tej. Tak piszesz większość kodu z danymi.</p>
+        <p>Druga wersja wydziela obliczenie dla jednej serii do małej, czystej funkcji. Comprehension stosuje ją do wszystkich serii. Możesz sprawdzić tę funkcję osobno i dodać kolejną statystykę bez zmieniania jej kodu.</p>
       </div>
 
       <div class="tab-panel" data-group="style" data-tab="object" hidden>
@@ -460,10 +460,10 @@ zero_share = {name: share_of_zeros(values) for name, values in series.items()}</
 
 
 zero_share = {s.name: s.zero_share() for s in all_series}</code></pre>
-        <p>Dane i operacje na nich w jednym miejscu. Opłaca się, gdy obiekt ma stan, który trzeba chronić, albo kilka wymiennych implementacji jednej umowy, na przykład kilka modeli prognozy. O tym jest moduł 03.</p>
+        <p>Trzecia wersja łączy dane i operacje w klasie. Taki zapis przydaje się, gdy obiekt musi pamiętać stan albo gdy kilka implementacji ma oferować te same metody. Przykładem są różne modele prognozy. Klasy poznasz w module 03.</p>
       </div>
 
-      <p>Żaden styl nie jest "ten dobry". W jednym pliku zobaczysz wszystkie trzy. Domyślnie w kodzie z danymi pisz małe funkcje czyste, klasy wprowadzaj, gdy mają powód, a pętlę ze stanem zostaw tam, gdzie krok po kroku znaczy najjaśniej.</p>
+      <p>Dobieraj sposób zapisu do problemu. W pracy z danymi zacznij od małych funkcji, które nie zmieniają argumentów. Użyj klasy, gdy potrzebujesz stanu lub wspólnego interfejsu. Zostaw zwykłą pętlę, jeśli najlepiej pokazuje kolejne kroki.</p>
 
       <div class="quiz" id="q4" data-type="single">
         <div class="quiz-q">Masz sześć statystyk w jednej funkcji <code>demand_stats</code> i chcesz dodać siódmą. W wersji z rejestrem (dekorator <code>@register</code>) dopisujesz nową funkcję. Co jest główną korzyścią?</div>
@@ -480,7 +480,7 @@ zero_share = {s.name: s.zero_share() for s in all_series}</code></pre>
 
       <h3>Licznik wywołań</h3>
 
-      <p>Napisz dekorator <code>counted</code>. Opakowana funkcja działa jak oryginał, a w atrybucie <code>calls</code> trzyma liczbę swoich wywołań. Każda udekorowana funkcja ma własny licznik. Nazwa i docstring mają zostać.</p>
+      <p>Napisz dekorator <code>counted</code>. Udekorowana funkcja ma zachować działanie oryginału, jego nazwę i docstring. W atrybucie <code>calls</code> zapisuj liczbę jej wywołań. Każda udekorowana funkcja powinna mieć osobny licznik.</p>
 
       <div class="pyrun" id="e1">
         <script type="text/x-python" data-role="starter">
@@ -519,7 +519,7 @@ assert _other.calls == 0, "Nowa udekorowana funkcja ma licznik 0: każda liczy o
 
       <h3>Test przedziału</h3>
 
-      <p>Napisz fabrykę <code>between(low, high)</code>. Zwraca funkcję, która dla wartości mówi, czy jest znana i leży w przedziale od <code>low</code> do <code>high</code>, z końcami.</p>
+      <p>Napisz <code>between(low, high)</code>, które zwraca funkcję sprawdzającą pojedynczą wartość. Wynik sprawdzenia ma być prawdziwy, gdy wartość jest znana i znajduje się w przedziale od <code>low</code> do <code>high</code>, łącznie z końcami.</p>
 
       <div class="pyrun" id="e2">
         <script type="text/x-python" data-role="starter">
@@ -544,7 +544,7 @@ assert [_x(0.5) for _x in _tests] == [True, False, False], "Każdy test pamięta
 
     <div class="next">
       <h2>Teraz lab</h2>
-      <p>Przeniesiesz funkcje z labu 01 do modułu <code>carparts.py</code>, dasz im typy i doprowadzisz do zera uwag <code>ruff</code> i <code>mypy --strict</code>. Potem dopiszesz dekoratory <code>timed</code> i <code>requires_history</code>, rejestr statystyk i filtry z domknięć. Około 6 godzin.</p>
+      <p>W labie przeniesiesz funkcje z poprzedniego notebooka do pliku <code>carparts.py</code> i dodasz typy. Poprawisz też uwagi <code>ruff</code> i <code>mypy --strict</code>.</p><p>Następnie napiszesz dekoratory <code>timed</code> i <code>requires_history</code>, rejestr statystyk oraz filtry korzystające z domknięć. Zarezerwuj około 6 godzin.</p>
       <p>Otwórz <code>labs/02-functions/02-functions.ipynb</code> w VS Code, a obok plik <code>labs/02-functions/carparts.py</code>.</p>
     </div>
   </main>

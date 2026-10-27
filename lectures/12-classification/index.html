@@ -27,7 +27,7 @@
   <main class="lecture">
     <p class="kicker">Moduł 12 · Część 2: dane i ML</p>
     <h1>Klasyfikacja</h1>
-    <p class="lede">Nie każda decyzja potrzebuje liczby sztuk. Czasem wystarczy odpowiedź tak albo nie: czy jutro produktu zabraknie na cały dzień? Model zwraca wtedy prawdopodobieństwo, a decyzję podejmuje próg. Ten moduł dotyczy obu: jak ocenić model, który przewiduje rzadkie zdarzenie, i jak wybrać próg, żeby decyzje kosztowały najmniej.</p>
+    <p class="lede">Zamiast pytać o liczbę sprzedanych sztuk, zapytamy teraz: czy jutro towar będzie niedostępny przez cały obserwowany dzień? Model oszacuje prawdopodobieństwo, a Ty wybierzesz, kiedy zgłaszać alarm. Nauczysz się oceniać takie prognozy i uwzględniać koszty pomyłek.</p>
 
     <ul class="meta">
       <li><b>Czas:</b> około 60 minut</li>
@@ -48,7 +48,7 @@
     <section id="etykieta">
       <h2>Etykieta z jutra</h2>
 
-      <p>Pytanie labu: na koniec dnia <code>t</code>, czy produkt będzie niedostępny przez całe okno 6:00-22:00 dnia <code>t + 1</code>? Etykieta wiersza dnia <code>t</code> to wynik dnia następnego, więc powstaje przez przesunięcie wstecz, <code>shift(-1)</code>, wewnątrz serii.</p>
+      <p>Prognozę przygotowujemy wieczorem dnia <code>t</code>. Chcemy wiedzieć, czy w dniu <code>t + 1</code> produkt będzie niedostępny przez całe okno 6:00–22:00.</p><p>Do wiersza z dzisiejszymi cechami przypiszemy więc wynik z jutra. Ten wynik to <strong>etykieta</strong>. Utworzysz ją przez <code>shift(-1)</code> osobno w każdej serii.</p>
 
       <div class="predict" id="p1" data-type="single">
 <pre><code class="language-python">import pandas as pd
@@ -63,7 +63,7 @@ print(tomorrow.tolist(), (tomorrow == 16).tolist())</code></pre>
         </ul>
       </div>
 
-      <p>Wiersz bez jutra ma etykietę <strong>nieznaną</strong>. Usuwasz go jawnie, według reguły: etykiety brakuje dokładnie w ostatnim dniu każdej serii. Przy podziale po czasie jest jeszcze jeden szczegół: etykieta dnia tuż przed granicą to wynik pierwszego dnia po niej. Ten wiersz usuwasz z treningu, bo w chwili treningu jego wyniku jeszcze nie znasz.</p>
+      <p>Dla ostatniego dnia serii nie znamy wyniku kolejnego dnia. Jego etykieta jest nieznana, więc taki wiersz pomijamy według jawnej reguły.</p><p>Podobny problem występuje na granicy treningu. Etykieta wiersza tuż przed nią opisuje pierwszy dzień po granicy. W chwili treningu jeszcze jej nie znamy, dlatego ten wiersz również usuń z treningu.</p>
 
       <p>Cechy obowiązuje ta sama zasada co zawsze: tylko to, co znane w chwili prognozy. Prognoza powstaje wieczorem dnia <code>t</code>, więc dzisiejsza sprzedaż i dzisiejsze godziny braku są dozwolone. Z jutra tylko to, co ustalono z góry: kalendarz i zaplanowany rabat.</p>
     </section>
@@ -88,13 +88,13 @@ print(np.round(1 / (1 + np.exp(-z)), 2))</code></pre>
         </ul>
       </div>
 
-      <p>Funkcją straty nie jest tu MSE, tylko <strong>log-loss</strong>: <code>−[y·log(p) + (1−y)·log(1−p)]</code>. Karze pewność w złą stronę bardzo mocno: prawdopodobieństwo 0.01 dla zdarzenia, które nastąpiło, kosztuje ponad 4.6, a 0.5 tylko 0.69. Dzięki temu model uczony na log-loss zwraca prawdopodobieństwa, które zwykle są bliskie rzeczywistym częstościom.</p>
+      <p>Regresja logistyczna korzysta ze straty <strong>log-loss</strong>: <code>−[y·log(p) + (1−y)·log(1−p)]</code>. Duży koszt pojawia się wtedy, gdy model jest bardzo pewny błędnej odpowiedzi.</p><p>Jeśli zdarzenie nastąpiło, przypisanie mu prawdopodobieństwa <code>0.01</code> daje stratę ponad <code>4.6</code>, a przypisanie <code>0.5</code> około <code>0.69</code>. Uczenie zachęca więc do trafnego szacowania prawdopodobieństw. Ich zgodność z częstościami sprawdzimy osobno w sekcji o kalibracji.</p>
     </section>
 
     <section id="metryki">
       <h2>Precision, recall i accuracy</h2>
 
-      <p>Po wybraniu progu każdy wiersz trafia do jednej z czterech kratek:</p>
+      <p>Po wybraniu progu zamieniamy prawdopodobieństwa na alarmy. Każdy przypadek można wtedy przypisać do jednej z czterech sytuacji:</p>
 
       <table>
         <thead><tr><th></th><th>brak nastąpił</th><th>brak nie nastąpił</th></tr></thead>
@@ -143,9 +143,9 @@ print((never == y).mean(), never[y == 1].mean())</code></pre>
     <section id="prog">
       <h2>Próg i krzywa precision-recall</h2>
 
-      <p>Model zwraca prawdopodobieństwo. Alarm to decyzja: <code>p ≥ próg</code>. Niski próg łapie więcej braków (wyższy recall) za cenę większej liczby fałszywych alarmów (niższa precision). Każdy próg daje punkt na <strong>krzywej precision-recall</strong>. Pole pod nią, liczone schodkowo, to <strong>average precision</strong> (AP): miara rankingu, niezależna od progu. Losowy ranking ma AP równe udziałowi klasy pozytywnej.</p>
+      <p>Przyjmujemy regułę: zgłoś alarm, gdy <code>p ≥ próg</code>. Obniżenie progu pozwala wykryć więcej braków, ale zwykle oznacza też więcej fałszywych alarmów.</p><p><em>Recall</em> mówi, jaką część braków wykryliśmy. <em>Precision</em> mówi, jaką część alarmów potwierdziło rzeczywiste zdarzenie. Każdy próg daje inny punkt na krzywej precision-recall.</p><p><strong>Average precision</strong>, czyli AP, podsumowuje ten ranking dla różnych progów. Punktem odniesienia jest udział klasy pozytywnej, odpowiadający losowemu porządkowaniu przy dużej próbce.</p>
 
-      <p>Krzywa ROC i jej pole (ROC AUC) to popularna alternatywa. Przy rzadkiej klasie jest zbyt łaskawa, bo na osi ma udział fałszywych alarmów wśród wszystkich dni bez zdarzenia, a tych jest ogromnie dużo. Kilkaset fałszywych alarmów to na tej osi mały procent, a dla zespołu, który je obsługuje, dużo pracy. Precision pokazuje to wprost.</p>
+      <p>Krzywa ROC i miara ROC AUC opisują ranking inaczej. Przy rzadkich zdarzeniach udział fałszywych alarmów wśród wszystkich dni bez zdarzenia może być mały, choć samych alarmów jest dużo.</p><p>Jeśli ktoś musi je obsłużyć, warto obok ROC AUC sprawdzić precision i ich rzeczywistą liczbę.</p>
 
       <figure class="widget" id="threshold-widget">
         <p class="widget-title">Próg na prawdziwych wynikach</p>
@@ -161,7 +161,7 @@ print((never == y).mean(), never[y == 1].mean())</code></pre>
 
       <h3>Próg z kosztów</h3>
 
-      <p>Próg 0.5 zakłada, że oba błędy kosztują tyle samo. Jeśli fałszywy alarm kosztuje 1, a przegapiony brak 5, alarm opłaca się, gdy oczekiwana strata z ciszy przewyższa stratę z alarmu:</p>
+      <p>W rozpatrywanym tu modelu kosztów próg <code>0.5</code> odpowiada równym kosztom obu pomyłek. Jeśli fałszywy alarm kosztuje 1, a pominięty brak towaru 5, warto alarmować wcześniej. Porównujemy oczekiwany koszt zgłoszenia alarmu z kosztem jego braku:</p>
 
 <pre><code class="language-text">p · 5 > (1 − p) · 1   ⟺   p > 1 / (1 + 5) ≈ 0.17</code></pre>
 
@@ -180,9 +180,9 @@ print((never == y).mean(), never[y == 1].mean())</code></pre>
     <section id="kalibracja">
       <h2>Kalibracja i wagi klas</h2>
 
-      <p>Model jest <strong>skalibrowany</strong>, gdy wśród wierszy z prawdopodobieństwem 0.3 około 30% to naprawdę zdarzenia. Sprawdzasz to tabelą: przedziały prawdopodobieństwa, w każdym średnie przewidywanie i obserwowana częstość. Kalibracja to inna własność niż ranking: model może dobrze porządkować wiersze i mimo to podawać zawyżone liczby.</p>
+      <p>Model jest <strong>skalibrowany</strong>, jeśli jego prawdopodobieństwa odpowiadają częstościom zdarzeń. Wśród przypadków ocenionych na <code>0.3</code> zdarzenie powinno wystąpić w przybliżeniu w 30%.</p><p>Sprawdzimy to w przedziałach prawdopodobieństw, porównując średnią prognozę z zaobserwowaną częstością. Dobry ranking nie gwarantuje kalibracji: model może poprawnie wskazywać bardziej ryzykowne dni, ale zawyżać wszystkie prawdopodobieństwa.</p>
 
-      <p>Przy rzadkiej klasie tutoriale często polecają <code>class_weight="balanced"</code>: wiersze rzadkiej klasy ważą w treningu więcej. W labie efekt jest wyraźny:</p>
+      <p>Ustawienie <code>class_weight="balanced"</code> zwiększa podczas uczenia znaczenie wierszy rzadszej klasy. Może zmienić zarówno wykrywanie zdarzeń, jak i wartości przewidywanych prawdopodobieństw. W labie sprawdzisz oba skutki:</p>
       <ul>
         <li>ranking prawie się nie zmienia: AP regresji logistycznej 0.469 bez wag, 0.465 z wagami,</li>
         <li>prawdopodobieństwa rosną: średnio 0.26 zamiast 0.08, przy częstości 0.08,</li>
@@ -204,7 +204,7 @@ print((never == y).mean(), never[y == 1].mean())</code></pre>
 
       <h3>Precision i recall</h3>
 
-      <p>Napisz <code>precision_recall(y, alarm)</code>: para (precision, recall). Przy zerowym mianowniku wynik to 0.0.</p>
+      <p>Napisz <code>precision_recall(y, alarm)</code>, która zwraca parę <code>(precision, recall)</code>. Jeśli mianownik danej miary jest zerowy, przyjmij dla niej wynik <code>0.0</code>.</p>
 
       <div class="pyrun" id="e1">
         <script type="text/x-python" data-role="starter">
@@ -229,7 +229,7 @@ assert precision_recall(_np.array([0, 0]), _np.array([1, 0])) == (0.0, 0.0), "Be
 
       <h3>Najtańszy próg</h3>
 
-      <p>Napisz <code>cheapest_threshold(y, scores, cost_false, cost_missed)</code>: spośród różnych wartości <code>scores</code> i opcji "bez alarmu" (<code>float("inf")</code>) wybierz próg o najniższym koszcie. Alarm to <code>score ≥ próg</code>. Przy remisie wygrywa wyższy próg.</p>
+      <p>Napisz <code>cheapest_threshold(y, scores, cost_false, cost_missed)</code>. Rozważ różne wartości z <code>scores</code> jako progi oraz <code>float("inf")</code>, oznaczające brak alarmów. Alarm ma występować przy <code>score ≥ próg</code>.</p><p>Zwróć próg o najmniejszym łącznym koszcie. Jeśli kilka progów daje ten sam koszt, wybierz najwyższy.</p>
 
       <div class="pyrun" id="e2">
         <script type="text/x-python" data-role="starter">
@@ -258,7 +258,7 @@ assert cheapest_threshold(_np.array([0, 1, 0]), _np.array([0.9, 0.5, 0.1]), 10, 
 
     <div class="next">
       <h2>Teraz lab</h2>
-      <p>Zbudujesz etykietę pełnego braku na jutro i cechy znane wieczorem, napiszesz metryki od zera, porównasz baseline "tak jak dziś", regresję logistyczną i LightGBM, wybierzesz próg z kosztów, sprawdzisz kalibrację i wpadniesz w pułapkę kolumn z jutra. Około 6 godzin.</p>
+      <p>W labie przygotujesz etykietę braku towaru na jutro oraz cechy dostępne wieczorem. Napiszesz metryki i porównasz prostą regułę „tak jak dziś” z regresją logistyczną i LightGBM.</p><p>Następnie dobierzesz próg na podstawie kosztów, sprawdzisz kalibrację i zbadasz przeciek z kolumn zawierających jutrzejsze informacje. Zarezerwuj około 6 godzin.</p>
       <p>Otwórz <code>labs/12-classification/12-classification.ipynb</code>.</p>
     </div>
   </main>

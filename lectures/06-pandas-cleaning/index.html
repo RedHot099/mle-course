@@ -27,7 +27,7 @@
   <main class="lecture">
     <p class="kicker">Moduł 06 · Część 2: dane i ML</p>
     <h1>pandas I: czyszczenie</h1>
-    <p class="lede">Model jest tak dobry jak dane, na których się uczy, a prawdziwe dane zawsze mają niespodzianki. Czyszczenie to nie usuwanie wszystkiego, co wygląda dziwnie. To seria decyzji, z których każda coś twierdzi o danych, więc każdą trzeba policzyć, uzasadnić i zapisać.</p>
+    <p class="lede">W danych mogą pojawić się braki, powtórzenia i wartości, których znaczenia od razu nie znamy. W tym module przygotujesz tabelę do dalszej analizy. Zanim coś usuniesz lub zmienisz, policzysz, ilu wierszy dotyczy problem, i zapiszesz uzasadnienie decyzji.</p>
 
     <ul class="meta">
       <li><b>Czas:</b> około 60 minut</li>
@@ -47,7 +47,7 @@
     <section id="ramka">
       <h2>Series i DataFrame</h2>
 
-      <p><code>pd.Series</code> to tablica NumPy z etykietami, czyli <strong>indeksem</strong>. <code>pd.DataFrame</code> to kilka Series o wspólnym indeksie, po jednej na kolumnę. Każda kolumna ma własny typ. Operacje działają na całych kolumnach, jak w NumPy.</p>
+      <p><code>pd.Series</code> opisuje jedną kolumnę wartości z etykietami, które tworzą jej indeks. <code>pd.DataFrame</code> jest tabelą złożoną z kolumn o wspólnym indeksie. Każda kolumna może mieć inny typ.</p><p>Podobnie jak w NumPy możesz wykonywać operacje na całych kolumnach, zamiast pisać pętlę dla każdego wiersza.</p>
 
 <pre><code class="language-python">import pandas as pd
 
@@ -67,7 +67,7 @@ lines["quantity"].sum()                 # 12</code></pre>
     <section id="typy">
       <h2>Typy: kolumna, która wygląda dobrze</h2>
 
-      <p>Arkusz Excela nie ma typów kolumn, tylko typy komórek. Numer faktury bywa liczbą (<code>489434</code>) albo tekstem (<code>C489449</code>), bo anulowania mają literę. pandas, czytając taki arkusz, robi kolumnę typu <code>object</code>, w której leżą obok siebie liczby i napisy.</p>
+      <p>W arkuszu Excela typ może różnić się między komórkami tej samej kolumny. Numer faktury bywa liczbą, na przykład <code>489434</code>, albo tekstem, takim jak <code>C489449</code>. Litera oznacza tutaj anulowanie.</p><p>Po odczycie takiej kolumny możesz otrzymać typ <code>object</code> i mieszankę liczb oraz napisów. Utrudnia to porównywanie i przetwarzanie identyfikatorów.</p>
 
       <div class="predict" id="p1" data-type="single">
 <pre><code class="language-python">import pandas as pd
@@ -81,7 +81,7 @@ print(invoices.str.startswith("C").tolist())</code></pre>
         </ul>
       </div>
 
-      <p>Dlatego plik czyta się z jawnymi typami: <code>pd.read_excel(path, dtype={"Invoice": str, "StockCode": str})</code>. Typ to część umowy o danych, a nie szczegół techniczny.</p>
+      <p>Podaj więc oczekiwane typy już podczas odczytu: <code>pd.read_excel(path, dtype={"Invoice": str, "StockCode": str})</code>. Identyfikatory będą wtedy konsekwentnie tekstem. To część ustalonego formatu danych.</p>
 
       <p>Liczby całkowite z brakami to osobny przypadek. W NumPy brak (<code>NaN</code>) istnieje tylko we <code>float</code>, więc identyfikatory klientów z pustymi komórkami przychodzą jako liczby zmiennoprzecinkowe. pandas ma typ całkowity z brakami, pisany wielką literą: <code>"Int64"</code>.</p>
 
@@ -109,7 +109,7 @@ print(ids.dtype, ids.astype("Int64").tolist())</code></pre>
         </tbody>
       </table>
 
-      <p>Parquet zapisuje typy razem z danymi, więc po odczycie masz to samo, co zapisałeś, i czyta się go setki razy szybciej niż Excela. Dlatego w labie pierwszym krokiem jest jednorazowe przepisanie skoroszytu do Parquet.</p>
+      <p>Parquet przechowuje dane wraz z typami kolumn i nadaje się do wielokrotnego odczytu w analizie. W labie raz odczytasz skoroszyt Excela i zapiszesz jego zawartość do Parquet. Kolejne uruchomienia skorzystają z tego zapisu.</p>
     </section>
 
     <section id="braki">
@@ -138,7 +138,7 @@ print(df.isna().sum().sum(), df.isna().any(axis=1).sum())</code></pre>
 
       <div class="callout story">
         <span class="label">Z labu</span>
-        <p>W pliku z labu 22,8% linii nie ma klienta. Brzmi jak dziura do usunięcia. Ale te linie to 6,1% sztuk i 13,1% przychodu, mają medianę 1 sztuki na linię wobec 5 i wyższą cenę. To inny rodzaj kupującego: detal, a nie hurt. Usunięcie ich przesunęłoby obraz popytu w stronę hurtu. Braki rzadko są losowe.</p>
+        <p>W pliku z labu 22,8% pozycji nie ma identyfikatora klienta. Nie usuwaj ich automatycznie. Odpowiadają za 6,1% sprzedanych sztuk i 13,1% przychodu.</p><p>Różnią się też od pozostałych pozycji: mediana ilości wynosi 1 zamiast 5 sztuk, a ceny są wyższe. To wskazówka, że mogą opisywać inny sposób kupowania, bliższy detalowi niż hurtowi. Ich usunięcie zmieniłoby analizowany obraz sprzedaży.</p>
       </div>
     </section>
 
@@ -163,7 +163,7 @@ print(
         </ul>
       </div>
 
-      <p>Liczba duplikatów zależy więc od tego, co liczysz. Para identycznych wierszy to 1 przy <code>keep="first"</code> (dodatkowe wystąpienia, czyli tyle, ile usunęłoby zostawienie jednego egzemplarza) i 2 przy <code>keep=False</code> (wszystkie egzemplarze, czyli tyle wierszy trzeba obejrzeć). W labie 06 (<code>flag_repeat_lines</code>, 06.4) i w labie 07 (07.2a, <code>n_duplicated</code>) liczysz dodatkowe wystąpienia: pierwsze wystąpienie nie jest oznaczone. Ćwiczenie "Walidator klucza" na końcu tego wykładu liczy wszystkie egzemplarze. Zawsze pisz w komunikacie albo docstringu, którą liczbę podajesz.</p>
+      <p>Dla dwóch identycznych wierszy <code>keep="first"</code> oznaczy jeden, czyli dodatkowe wystąpienie. Z kolei <code>keep=False</code> oznaczy oba wiersze. Są to więc dwie różne liczby.</p><p>W zadaniu 06.4, <code>flag_repeat_lines</code>, i w zadaniu 07.2a, <code>n_duplicated</code>, liczysz wystąpienia po pierwszym. W ćwiczeniu „Walidator klucza” na końcu tego wykładu liczysz wszystkie wiersze z powtarzającym się kluczem. W docstringu i komunikacie zawsze wyjaśnij, którą liczbę podajesz.</p>
 
       <p>Ważniejsze od składni jest pytanie, skąd duplikat się wziął:</p>
       <ul>
@@ -171,7 +171,7 @@ print(
         <li><strong>powtórzenie w źródle</strong>: ta sama linia dwa razy na jednej fakturze. Może to błąd, a może klient dwa razy dodał ten sam towar. Dane tego nie rozstrzygną. Oznaczasz i mierzysz, ile to zmienia.</li>
       </ul>
 
-      <p><code>drop_duplicates()</code> na całej tabeli wrzuca oba rodzaje do jednego worka i nie mówi, ile usunął. W labie usunie 34 335 wierszy, z czego tylko 22 523 to kopie.</p>
+      <p>Samo <code>drop_duplicates()</code> nie wyjaśnia, skąd wzięły się identyczne wiersze. Zastosowane do całej tabeli z labu usunęłoby 34 335 wierszy, choć tylko 22 523 z nich to kopie. Dlatego najpierw rozróżnij przyczyny powtórzeń.</p>
     </section>
 
     <section id="loc-assign">
@@ -192,7 +192,7 @@ print(len(df.columns), sales["revenue"].sum())</code></pre>
         </ul>
       </div>
 
-      <p><code>lambda d: ...</code> w <code>assign</code> dostaje ramkę z tego miejsca łańcucha, już po filtrowaniu. Dzięki temu całe przetwarzanie można zapisać jako łańcuch czytany od góry do dołu, a własne funkcje wstawić przez <code>pipe</code>:</p>
+      <p>Funkcja <code>lambda d: ...</code> przekazana do <code>assign</code> otrzymuje tabelę w jej aktualnej postaci, na przykład już po filtrowaniu. Możesz dzięki temu zapisać kolejne operacje w czytelnym łańcuchu. Metoda <code>pipe</code> pozwala włączyć do niego własne funkcje:</p>
 
 <pre><code class="language-python">daily = (
     raw.pipe(add_flags)
@@ -216,7 +216,7 @@ print(len(df.columns), sales["revenue"].sum())</code></pre>
 
       <h3>Kilka arkuszy w jednej tabeli</h3>
 
-      <p><code>pd.read_excel(path, sheet_name=None)</code> czyta wszystkie arkusze i zwraca słownik: nazwa arkusza → ramka. <code>pd.concat(lista_ramek, ignore_index=True)</code> skleja ramki jedna pod drugą. Bez <code>ignore_index=True</code> każda ramka wnosi swoje etykiety 0, 1, 2, ..., więc w wyniku się powtarzają. <code>rename(columns={"stara": "nowa"})</code> zmienia nazwy kolumn według słownika.</p>
+      <p>Wywołanie <code>pd.read_excel(path, sheet_name=None)</code> odczytuje wszystkie arkusze. Zwraca słownik, w którym nazwa arkusza wskazuje jego tabelę.</p><p>Funkcja <code>pd.concat(lista_ramek, ignore_index=True)</code> łączy tabele jedna pod drugą i nadaje nowy indeks. Bez tej opcji powtarzałyby się etykiety wierszy z poszczególnych arkuszy. Nazwy kolumn zmienisz metodą <code>rename(columns={"stara": "nowa"})</code>.</p>
 
 <pre><code class="language-python">import pandas as pd
 
@@ -230,7 +230,7 @@ pd.Series([" 85123a", "47503J "]).str.strip().str.upper().tolist()   # ['85123A'
 
       <h3>Ile różnych wartości w grupie</h3>
 
-      <p><code>groupby(klucz)[kolumna].nunique()</code> liczy różne wartości kolumny w każdej grupie i zwraca jedną liczbę na grupę. <code>transform("nunique")</code> liczy to samo, ale wpisuje wynik do każdego wiersza grupy: wynik ma indeks i długość ramki, więc nadaje się na maskę wierszy. <code>isin(lista)</code> daje maskę wierszy, których wartość jest na liście.</p>
+      <p>Wywołanie <code>groupby(klucz)[kolumna].nunique()</code> oblicza liczbę różnych wartości osobno w każdej grupie. Wynik zawiera jedną liczbę na grupę.</p><p>Wariant <code>transform("nunique")</code> przypisuje tę samą liczbę każdemu wierszowi danej grupy. Zachowuje więc długość i indeks tabeli. Możesz użyć go do filtrowania wierszy. Metoda <code>isin(lista)</code> sprawdza natomiast, które wartości należą do podanej listy.</p>
 
       <div class="predict" id="p8" data-type="single">
 <pre><code class="language-python">import pandas as pd
@@ -257,13 +257,13 @@ quantity.where(quantity > 0, 0).tolist()   # [3, 0, 5]</code></pre>
 
       <h3>Zapis i odczyt Parquet</h3>
 
-      <p><code>df.to_parquet(path, index=False)</code> zapisuje ramkę z typami kolumn. <code>index=False</code> pomija indeks: bez tego odczytana ramka ma dodatkową kolumnę albo inny indeks niż zapisana. <code>pd.read_parquet(path)</code> czyta plik z powrotem. Brakujący katalog tworzysz przez <code>path.parent.mkdir(parents=True, exist_ok=True)</code>, jak w wykładzie 01. <code>path.is_file()</code> zwraca <code>True</code>, gdy plik istnieje: tak sprawdzisz, czy cache jest już zbudowany, zanim zgłosisz <code>FileNotFoundError</code>.</p>
+      <p>Zapis <code>df.to_parquet(path, index=False)</code> zachowuje tabelę i typy kolumn, ale pomija indeks. Odczytasz ją przez <code>pd.read_parquet(path)</code>.</p><p>Jeśli folder docelowy nie istnieje, utwórz go za pomocą <code>path.parent.mkdir(parents=True, exist_ok=True)</code>. Wywołanie <code>path.is_file()</code> pozwoli sprawdzić, czy zapisany plik już istnieje. W labie użyjesz go do rozpoznania gotowej kopii danych.</p>
     </section>
 
     <section id="walidacja">
-      <h2>Założenie to kod, który zgłasza błąd</h2>
+      <h2>Sprawdzaj założenia w kodzie</h2>
 
-      <p>Każdy krok czyszczenia coś zakłada: że faktura ma sześć cyfr, że anulowanie ma ujemną ilość, że faktura ma jednego klienta. Założenie zapisane tylko w głowie pęknie po cichu przy następnej wersji pliku. Zapisane jako kod zatrzyma przetwarzanie i powie, co się zmieniło:</p>
+      <p>Przetwarzanie zakłada określony format danych: na przykład sześć cyfr w numerze faktury albo jednego klienta na fakturę. Jeśli te warunki się zmienią, program może nadal obliczać wynik, ale będzie on niepoprawny.</p><p>Zapisz więc sprawdzenia w kodzie. Gdy warunek nie jest spełniony, przerwij przetwarzanie i wyjaśnij przyczynę:</p>
 
 <pre><code class="language-python">bad = ~raw["invoice"].str.fullmatch(INVOICE_PATTERN)
 if bad.any():
@@ -272,7 +272,7 @@ if bad.any():
         f"{int(bad.sum())} invoice numbers do not match {INVOICE_PATTERN}, e.g. {example!r}"
     )</code></pre>
 
-      <p>Komunikat mówi, która reguła, ile wierszy ją łamie i jak wygląda pierwszy z nich. Tego potrzebujesz, gdy przetwarzanie padnie w nocy.</p>
+      <p>Komunikat wskazuje naruszoną regułę, liczbę niepasujących wierszy i przykład. Dzięki temu możesz rozpocząć wyjaśnianie problemu bez ponownego przeglądania całego zbioru.</p>
 
       <div class="predict" id="p6" data-type="single">
 <pre><code class="language-python">import pandas as pd
@@ -286,11 +286,11 @@ print(s.str.match(r"[CA]?\d{6}").tolist(), s.str.fullmatch(r"[CA]?\d{6}").tolist
         </ul>
       </div>
 
-      <p>Regułę sprawdzasz na prawdziwym pliku, zanim jej zaufasz. Reguła "ujemna ilość tylko na fakturach C" wygląda rozsądnie po obejrzeniu kilku anulowań, a na prawdziwym pliku łamie ją 3 457 linii: odpisy magazynowe. To nie dane są wtedy złe, tylko reguła była za wąska.</p>
+      <p>Zanim uznasz regułę za poprawną, sprawdź ją na danych. Założenie, że ujemna ilość występuje tylko na fakturach C, pasuje do części anulowań. Nie obejmuje jednak 3 457 pozycji z odpisami magazynowymi.</p><p>Taki wynik może wskazywać na zbyt wąską regułę, a nie na błędne dane.</p>
 
       <h3>Uzgodnienie po groupby</h3>
 
-      <p><code>groupby(klucz).sum()</code> zmienia milion linii w pół miliona wierszy. Czy nic nie zginęło? Sprawdzasz to, porównując sumy przed i po. Jest jeden cichy sposób, żeby zginęło:</p>
+      <p>Agregacja <code>groupby(klucz).sum()</code> zmniejsza liczbę wierszy. Sprawdź, czy zachowuje łączną ilość i wartość sprzedaży, porównując sumy przed operacją i po niej. Poniższy przykład pokazuje, jak część danych może zostać pominięta bez wyjątku:</p>
 
       <div class="predict" id="p7" data-type="single">
 <pre><code class="language-python">import pandas as pd
@@ -313,7 +313,7 @@ print(
 
       <h3>Raport braków</h3>
 
-      <p>Napisz <code>missing_report</code>: dla każdej kolumny liczba i udział braków, posortowane malejąco po liczbie, tylko kolumny z jakimkolwiek brakiem.</p>
+      <p>Napisz funkcję <code>missing_report</code>. Dla każdej kolumny oblicz liczbę i udział braków. W wyniku pozostaw tylko kolumny z co najmniej jednym brakiem i uporządkuj je malejąco według liczby braków.</p>
 
       <div class="pyrun" id="e1">
         <script type="text/x-python" data-role="starter">
@@ -342,7 +342,7 @@ assert len(_df.columns) == 3, "missing_report zmieniło ramkę wejściową."
 
       <h3>Walidator klucza</h3>
 
-      <p>Napisz <code>check_unique_key(df, key)</code>: jeśli któraś kombinacja kolumn z listy <code>key</code> występuje więcej niż raz, zgłoś <code>ValueError</code> z liczbą powtórzonych wierszy i przykładem. Tutaj liczysz wszystkie egzemplarze (<code>keep=False</code>): para (A, d1) występująca dwa razy daje 2. W labie 06 i 07 liczba powtórzeń to tylko wystąpienia po pierwszym, więc ta sama para dałaby tam 1. W przeciwnym razie nic nie zwracaj.</p>
+      <p>Napisz <code>check_unique_key(df, key)</code>. Lista <code>key</code> wskazuje kolumny, których kombinacja powinna być unikalna. Jeśli się powtarza, zgłoś <code>ValueError</code> zawierający liczbę takich wierszy i przykład.</p><p>Policz wszystkie wiersze z powtarzającym się kluczem, używając <code>keep=False</code>. Jeśli para (A, d1) występuje dwa razy, liczba wynosi 2. W zadaniach labów 06 i 07 liczymy inaczej, tylko wystąpienia po pierwszym. Jeśli klucz jest unikalny, funkcja ma zakończyć się bez zwracania wyniku.</p>
 
       <div class="pyrun" id="e2">
         <script type="text/x-python" data-role="starter">
@@ -381,7 +381,7 @@ else:
 
     <div class="next">
       <h2>Teraz lab</h2>
-      <p>Zbudujesz dzienną tabelę sprzedaży z miliona linii faktur: jawne typy i cache w Parquet, reguły z liczbami, flagi zamiast usuwania, kopie oddzielone od powtórzeń, zwroty oddzielone od odpisów i uzgodnienie sum. Około 6 godzin.</p>
+      <p>W labie utworzysz dzienną tabelę sprzedaży z około miliona pozycji faktur. Określisz typy kolumn, zapiszesz dane w Parquet i sprawdzisz reguły czyszczenia.</p><p>Rozróżnisz kopie i powtarzające się zakupy oraz zwroty i odpisy magazynowe. Po agregacji porównasz sumy, żeby sprawdzić, czy niczego nie pominięto. Zarezerwuj około 6 godzin.</p>
       <p>Otwórz <code>labs/06-pandas-cleaning/06-pandas-cleaning.ipynb</code>.</p>
     </div>
   </main>

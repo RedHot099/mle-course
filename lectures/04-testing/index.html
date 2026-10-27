@@ -27,7 +27,7 @@
   <main class="lecture">
     <p class="kicker">Moduł 04 · Część 1: inżynieria w Pythonie</p>
     <h1>Testy i pakiet</h1>
-    <p class="lede">Kod bez testów działa, dopóki nikt go nie zmieni. Ten moduł dotyczy testów, które wykrywają błędy, a nie tylko przechodzą, i pakietu, który da się zainstalować w tej samej postaci na każdym komputerze.</p>
+    <p class="lede">Masz już modele prognozy. Teraz napiszesz testy, które pozwolą sprawdzić ich działanie po kolejnych zmianach. Przygotujesz też pakiet, który można zainstalować poza folderem kursu.</p>
 
     <ul class="meta">
       <li><b>Czas:</b> około 60 minut</li>
@@ -48,15 +48,15 @@
     <section id="umowa">
       <h2>Co testujesz w modelu prognozy</h2>
 
-      <p>Model z labu 03 to funkcja z historii w przyszłość, zapisana w dwóch krokach: <code>fit</code> zapamiętuje historię, <code>predict</code> liczy z niej prognozę na zadany horyzont (sekcja "Co to jest prognoza" wykładu 03). Test takiego modelu sprawdza <strong>umowę</strong>, nie trafność. Umowa to zdania z docstringa: naiwna powtarza ostatnią wartość, prognoza ma dokładnie <code>horizon</code> elementów, pusta historia to <code>ValueError</code>. Każde z nich da się sprawdzić na trzech liczbach wymyślonych na kartce, z wynikiem policzonym ręcznie.</p>
+      <p>Model z labu 03 działa w dwóch krokach: <code>fit</code> zapamiętuje historię, a <code>predict</code> zwraca prognozę na zadany horyzont. Docstring określa szczegóły tego działania, na przykład powtarzanie ostatniej wartości, długość prognozy i błąd dla pustej historii.</p><p>Test sprawdza właśnie te wymagania. Wystarczy kilka wymyślonych liczb i wynik obliczony ręcznie. Nie musisz wczytywać całego zbioru sprzedaży.</p>
 
-      <p>Trafność na prawdziwych seriach to nie jest temat testu. Zmierzyłeś ją w labie 03 na holdoucie przez MAE i zmierzysz znowu w module 08 na całym panelu. Test ma odpowiedzieć na inne pytanie: czy po zmianie kodu model dalej robi to, co obiecał.</p>
+      <p>To inne sprawdzenie niż ocena trafności prognozy. Trafność mierzyliśmy w labie 03 za pomocą MAE na odłożonym okresie. Do niej wrócimy w module 08. Test kodu odpowiada teraz na pytanie: czy po zmianie funkcja nadal zachowuje się zgodnie z opisem?</p>
     </section>
 
     <section id="po-co">
       <h2>Po co testy</h2>
 
-      <p>Test to mały program, który wywołuje Twój kod na znanych danych i sprawdza wynik. Działa jak wykonywalna specyfikacja: mówi, co kod ma robić, i sam sprawdza, czy robi. Jego prawdziwa wartość wychodzi później, przy zmianie. Zmieniasz <code>fit</code>, uruchamiasz testy i w dwie sekundy wiesz, czy prognozy dalej są poprawne.</p>
+      <p>Test to mały program, który wywołuje Twój kod na znanych danych i porównuje wynik z oczekiwaniem. Opisuje wymaganie w postaci, którą da się uruchomić.</p><p>Przydaje się szczególnie po zmianach. Jeśli zmodyfikujesz <code>fit</code>, testy pomogą wykryć, czy naruszyłeś sprawdzane wcześniej zachowania.</p>
 
       <p>Dobry test ma trzy części, oddzielone pustą linią:</p>
 
@@ -67,7 +67,7 @@
 
     assert forecast == [10.0, 20.0, 30.0]                                       # sprawdź</code></pre>
 
-      <p>Nazwa mówi, jakie zachowanie test sprawdza. Gdy padnie, sama nazwa w raporcie powie, co się zepsuło. Dane są małe i jawne, a oczekiwany wynik policzony w głowie, a nie tym samym kodem, który testujesz (reguła T2).</p>
+      <p>Nadaj testowi nazwę opisującą sprawdzane zachowanie. Gdy się nie powiedzie, nazwa pomoże znaleźć problem. Dane powinny być małe i widoczne w teście, a oczekiwany wynik ustalony niezależnie od sprawdzanej funkcji. To reguła T2.</p>
     </section>
 
     <section id="pytest">
@@ -107,20 +107,20 @@ E         At index 0 diff: 3.0 != 4.0</code></pre>
           <tr><td><code>uv run pytest tests/models</code></td><td>tylko testy z katalogu</td></tr>
           <tr><td><code>uv run pytest -k seasonal</code></td><td>tylko testy z <code>seasonal</code> w nazwie</td></tr>
           <tr><td><code>uv run pytest -x</code></td><td>zatrzymuje się na pierwszym błędzie</td></tr>
-          <tr><td><code>uv run pytest --lf</code></td><td>tylko testy, które padły ostatnio</td></tr>
+          <tr><td><code>uv run pytest --lf</code></td><td>tylko testy, które ostatnio się nie powiodły</td></tr>
           <tr><td><code>uv run pytest -q</code> / <code>-v</code></td><td>mniej albo więcej szczegółów</td></tr>
         </tbody>
       </table>
 
       <h3>Błędy i liczby zmiennoprzecinkowe</h3>
 
-      <p>Zachowanie przy złych danych też jest częścią umowy i też się je testuje (reguła T3). <code>pytest.raises</code> sprawdza, że kod rzucił wyjątek, a <code>match</code>, że komunikat mówi o właściwej rzeczy:</p>
+      <p>Sprawdź również, co funkcja robi z niepoprawnymi danymi. Jest to część jej opisu działania, uwzględniona w regule T3. Funkcja <code>pytest.raises</code> sprawdza typ zgłoszonego wyjątku, a argument <code>match</code> pozwala sprawdzić jego komunikat:</p>
 
 <pre><code class="language-python">def test_fit_rejects_an_empty_history() -> None:
     with pytest.raises(ValueError, match="empty"):
         NaiveForecaster().fit([])</code></pre>
 
-      <p>Bez <code>match</code> test przejdzie także wtedy, gdy <code>ValueError</code> poleci z zupełnie innego powodu, na przykład z literówki w kodzie walidacji.</p>
+      <p>Bez <code>match</code> test może przejść również wtedy, gdy <code>ValueError</code> wystąpił z innego powodu. Sprawdzenie komunikatu pomaga odróżnić oczekiwane odrzucenie danych od innego błędu.</p>
 
       <div class="predict" id="p1" data-type="single">
 <pre><code class="language-python">import math
@@ -152,13 +152,13 @@ def test_forecast_has_one_value_per_step(forecaster: LocalForecaster, horizon: i
         <ul class="quiz-options">
           <li><code>1</code><span class="why">Każdy zestaw parametrów to osobny test z osobnym wynikiem w raporcie.</span></li>
           <li><code>5</code><span class="why">Dwa dekoratory nie dodają się, tylko mnożą: każdy model z każdym horyzontem.</span></li>
-          <li data-correct><code>6</code><span class="why">Tak. Trzy modele razy dwa horyzonty. Gdy padnie jeden, raport pokaże, dla której pary.</span></li>
+          <li data-correct><code>6</code><span class="why">Tak. Trzy modele razy dwa horyzonty. Jeśli jedna próba się nie powiedzie, raport wskaże model i horyzont.</span></li>
         </ul>
       </div>
 
       <h3>Fixtures</h3>
 
-      <p>Fixture to funkcja, która przygotowuje coś dla testu. Test dostaje jej wynik, gdy poda jej nazwę jako parametr. <code>pytest</code> ma wbudowane fixtures, na przykład <code>tmp_path</code>: świeży katalog tymczasowy dla każdego testu.</p>
+      <p><em>Fixture</em> to funkcja przygotowująca dane lub zasób potrzebny w teście. Żeby otrzymać jej wynik, podajesz nazwę fixture jako parametr testu. Wbudowane <code>tmp_path</code> udostępnia na przykład osobny katalog tymczasowy dla każdego testu.</p>
 
 <pre><code class="language-python">@pytest.fixture
 def weekly_history() -> list[float]:
@@ -182,16 +182,16 @@ def test_summary_is_written(tmp_path: Path) -> None:
     <section id="zaleznosci">
       <h2>Test bez sieci, zegara i przypadku</h2>
 
-      <p>Test, który raz przechodzi, a raz nie, jest gorszy niż brak testu: uczy wszystkich ignorować czerwone wyniki. Typowe przyczyny to sieć, bieżąca data, losowość bez ziarna i kolejność testów (reguła T4). Jest kilka sposobów, żeby się od nich odciąć. Zacznij od najprostszego:</p>
+      <p>Jeśli test bez zmiany kodu raz przechodzi, a raz się nie udaje, trudno zaufać jego wynikowi. Przyczyną bywa sieć, bieżąca data, losowość bez ustalonego ziarna lub kolejność testów. Reguła T4 wymaga uniezależnienia testów od takich czynników. Zacznij od najprostszego sposobu:</p>
 
       <ol>
-        <li><strong>Parametr.</strong> Funkcja, która sama woła <code>date.today()</code>, jest trudna do testowania. Funkcja, która dostaje <code>today</code> jako argument, jest łatwa. To nazywa się wstrzykiwaniem zależności. Brzmi poważnie, a to tylko jeden argument więcej.</li>
+        <li><strong>Parametr.</strong> Zamiast wyznaczać datę wewnątrz funkcji przez <code>date.today()</code>, pozwól przekazać ją jako <code>today</code>. Test poda wtedy stałą datę. Nazywamy to wstrzykiwaniem zależności: funkcja otrzymuje z zewnątrz coś, od czego zależy jej wynik.</li>
         <li><strong><code>monkeypatch</code>.</strong> Wbudowana fixture <code>pytest</code>, która na czas testu podmienia atrybut, zmienną środowiskową albo słownik, a po teście przywraca oryginał:
 <pre><code class="language-python">def test_reads_the_bucket_from_the_environment(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("DATA_BUCKET", "test-bucket")
 
     assert load_settings().bucket == "test-bucket"</code></pre></li>
-        <li><strong><code>Mock</code>.</strong> Obiekt z <code>unittest.mock</code>, który przyjmuje każde wywołanie, zwraca to, co mu każesz, i pamięta, jak go wołano.</li>
+        <li><strong><code>Mock</code>.</strong> Obiekt z <code>unittest.mock</code>, któremu ustawiasz zwracane wartości. Zapamiętuje wywołania, co pozwala później sprawdzić ich liczbę i argumenty.</li>
       </ol>
 
       <div class="predict" id="p2" data-type="single">
@@ -210,16 +210,16 @@ print(storage.load("x.parquet"), storage.load.call_count, storage.save.called)</
 
       <div class="callout trap">
         <span class="label">Pułapka</span>
-        <p><code>Mock</code> przyjmie każdą literówkę: <code>storage.laod()</code> też "działa". Test z mockiem sprawdza, jak kod rozmawia z zależnością, a nie czy ta rozmowa ma sens. Gdzie się da, użyj prawdziwego obiektu na małych danych albo gotowej podróbki, jak <code>moto</code> dla S3 w module 15.</p>
+        <p>Zwykły <code>Mock</code> może zaakceptować także nieistniejącą metodę, na przykład literówkę <code>storage.laod()</code>. Test z takim obiektem nie musi więc wykryć niezgodności z prawdziwą biblioteką.</p><p>Jeśli to możliwe, użyj rzeczywistego obiektu na małych danych. Gdy potrzebna jest usługa zewnętrzna, możesz skorzystać z jej lokalnego odpowiednika do testów, takiego jak <code>moto</code> dla S3 w module 15.</p>
       </div>
     </section>
 
     <section id="czy-test-cos-chroni">
       <h2>Czy test coś chroni</h2>
 
-      <p>Test, który przechodzi, mówi tylko tyle, że przechodzi. Czy wykryłby błąd? Sprawdzasz to, psując kod celowo. Jeśli po zamianie <code>history[-1]</code> na <code>history[0]</code> wszystkie testy dalej są zielone, żaden z nich nie sprawdza, której wartości używa prognoza naiwna.</p>
+      <p>Przechodzący test nie mówi jeszcze, jakie błędy potrafi wykryć. Możesz to sprawdzić, celowo zmieniając kod.</p><p>Załóżmy, że zastąpisz <code>history[-1]</code> przez <code>history[0]</code>. Jeśli wszystkie testy nadal przechodzą, nie rozróżniają użycia pierwszej i ostatniej wartości w prognozie naiwnej.</p>
 
-      <p>Tak działa <strong>testowanie mutacyjne</strong> i tak działa sprawdzenie 04.2. Podmienia Twój kod na osiem wersji, każdą z jednym typowym błędem, i uruchamia na nich Twoje testy. Każda wersja, która przejdzie, to błąd, przed którym testy Cię nie chronią.</p>
+      <p>Na tym polega <strong>testowanie mutacyjne</strong>. W sprawdzeniu 04.2 Twoje testy zostaną uruchomione na ośmiu zmienionych wersjach kodu. Każda zawiera jeden typowy błąd. Jeśli testy zaakceptują taką wersję, oznacza to, że tego błędu nie wykrywają.</p>
 
       <div class="quiz" id="q3" data-type="single">
         <div class="quiz-q">Test: <code>assert len(NaiveForecaster().fit([1.0, 1.0, 1.0]).predict(3)) == 3</code>. Który błąd wykryje?</div>
@@ -230,7 +230,7 @@ print(storage.load("x.parquet"), storage.load.call_count, storage.save.called)</
         </ul>
       </div>
 
-      <p>Wniosek na co dzień: dane w teście dobieraj tak, żeby błędna implementacja dała inny wynik niż poprawna. <code>[3.0, 5.0, 4.0]</code> odróżnia pierwszą, środkową i ostatnią wartość. <code>[1.0, 1.0, 1.0]</code> nie odróżnia niczego.</p>
+      <p>Dobieraj dane tak, żeby poprawny i błędny kod dawały różne wyniki. Lista <code>[3.0, 5.0, 4.0]</code> pozwala rozróżnić pierwszą, środkową i ostatnią wartość. Lista <code>[1.0, 1.0, 1.0]</code> nie wykryje zamiany jednej z tych pozycji na inną.</p>
     </section>
 
     <section id="pakiet">
@@ -282,7 +282,7 @@ build-backend = "hatchling.build"</code></pre>
 
       <h3>uv.lock</h3>
 
-      <p><code>uv.lock</code> zapisuje dokładną wersję i sumę kontrolną każdego pakietu w środowisku, także zależności Twoich zależności. Dzięki niemu <code>uv sync</code> na Twoim komputerze, w CI i w obrazie Dockera instaluje dokładnie to samo. Plik lock trafia do gita. Nie edytujesz go ręcznie.</p>
+      <p>Plik <code>uv.lock</code> zapisuje dokładne wersje pakietów, ich zależności i sumy kontrolne. Pozwala odtworzyć uzgodniony zestaw bibliotek na komputerze, w CI i w obrazie Dockera. Dodaj go do gita. Zmiany w nim wprowadzaj narzędziem uv, zamiast edytować go ręcznie.</p>
 
       <table>
         <thead><tr><th>Polecenie</th><th>Robi</th></tr></thead>
@@ -304,11 +304,11 @@ build-backend = "hatchling.build"</code></pre>
         </ul>
       </div>
 
-      <p>W wielu firmach zamiast uv spotkasz <strong>Poetry</strong>. Idea jest ta sama: <code>pyproject.toml</code>, plik lock, środowisko per projekt. W labie zbudujesz ten sam pakiet obydwoma narzędziami i porównasz.</p>
+      <p>W innych projektach możesz spotkać <strong>Poetry</strong>. Ono również korzysta z <code>pyproject.toml</code>, pliku lock i osobnego środowiska projektu. W labie zbudujesz ten sam pakiet obydwoma narzędziami i porównasz sposób pracy.</p>
 
       <div class="callout rule">
         <span class="label">Reguła</span>
-        <p>Od tego modułu każda funkcja publiczna pakietu ma test (T1), a przed prośbą o review lokalnie przechodzą <code>ruff</code>, <code>mypy</code>, <code>pytest</code> i <code>course check</code> (G3). Obie reguły blokują review.</p>
+        <p>Od tego modułu każda publiczna funkcja pakietu powinna mieć test, zgodnie z regułą T1. Przed zgłoszeniem kodu do przeglądu uruchom lokalnie <code>ruff</code>, <code>mypy</code>, <code>pytest</code> i <code>course check</code>. Wszystkie muszą przejść. To warunek reguły G3.</p>
       </div>
     </section>
 
@@ -317,7 +317,7 @@ build-backend = "hatchling.build"</code></pre>
 
       <h3>Test, który łapie błąd</h3>
 
-      <p>Napisz test do <code>moving_average</code>. Sprawdzenie uruchomi go na poprawnej funkcji, a potem na dwóch zepsutych. Na poprawnej ma przejść, na zepsutych paść.</p>
+      <p>Napisz test funkcji <code>moving_average</code>. Sprawdzenie uruchomi go najpierw na poprawnej implementacji, a potem na dwóch wersjach z błędem. Twój test ma zaakceptować pierwszą i wykryć błąd w każdej z dwóch pozostałych.</p>
 
       <div class="pyrun" id="e1">
         <script type="text/x-python" data-role="starter">
@@ -354,7 +354,7 @@ for _name, _bad in _broken.items():
 
       <h3>Tytuł raportu bez zegara</h3>
 
-      <p>Funkcja poniżej zależy od dzisiejszej daty, więc jej testu nie da się napisać tak, żeby przechodził każdego dnia. Zmień ją tak, żeby przyjmowała datę jako opcjonalny argument <code>today</code>. Bez argumentu ma działać jak dotąd.</p>
+      <p>Funkcja poniżej korzysta z bieżącej daty, więc jej wynik zależy od dnia uruchomienia. Dodaj opcjonalny argument <code>today</code>, żeby w teście można było przekazać stałą datę. Gdy argument zostanie pominięty, funkcja ma działać jak wcześniej.</p>
 
       <div class="pyrun" id="e2">
         <script type="text/x-python" data-role="starter">
@@ -380,7 +380,7 @@ assert report_title() == f"Raport za tydzień {_date.today().isocalendar().week}
 
     <div class="next">
       <h2>Teraz lab</h2>
-      <p>Przeniesiesz klasy prognoz do pakietu <code>freshcast</code>, napiszesz testy, które wyłapią osiem celowo wprowadzonych błędów, i zbudujesz mały pakiet w Poetry i w uv. Na koniec pierwszy punkt kontrolny: pull request i review. Około 6 godzin.</p>
+      <p>W labie przeniesiesz klasy modeli do pakietu <code>freshcast</code> i napiszesz testy wykrywające osiem celowych błędów. Zbudujesz też mały pakiet za pomocą Poetry i uv.</p><p>Na koniec przygotujesz pull request do pierwszego punktu kontrolnego i przeglądu kodu. Zarezerwuj około 6 godzin.</p>
       <p>Otwórz <code>labs/04-testing/04-testing.ipynb</code>.</p>
     </div>
   </main>

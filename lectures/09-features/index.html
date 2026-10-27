@@ -27,7 +27,7 @@
   <main class="lecture">
     <p class="kicker">Moduł 09 · Część 2: dane i ML</p>
     <h1>Feature engineering</h1>
-    <p class="lede">Model widzi świat tylko przez cechy. Dobra cecha niesie informację, której model sam by nie znalazł. Zła cecha niesie informację, której w chwili prognozy nie będzie. Ten moduł dotyczy obu rodzajów i tego, jak je odróżnić, zanim zrobi to produkcja.</p>
+    <p class="lede">Model korzysta z informacji zapisanych w cechach. Przygotujesz je z kalendarza, kategorii i wcześniejszej sprzedaży. Za każdym razem sprawdzisz, czy można je obliczyć z danych dostępnych w chwili prognozy.</p>
 
     <ul class="meta">
       <li><b>Czas:</b> około 60 minut</li>
@@ -48,7 +48,7 @@
     <section id="horyzont">
       <h2>Cechy znane w chwili prognozy</h2>
 
-      <p>Prognoza na przyszły tydzień powstaje dziś wieczorem. Każda cecha musi mieć wartość dla każdego z 7 dni horyzontu, licząc tylko z tego, co wiesz dziś. Stąd dwie zasady dla cech z historii sprzedaży:</p>
+      <p>Załóżmy, że dziś wieczorem przygotowujesz prognozę na siedem kolejnych dni. Każda cecha musi być dostępna dla każdego z tych dni już teraz. Nie możesz użyć sprzedaży, którą poznasz dopiero w trakcie prognozowanego tygodnia. Dla cech historycznych przyjmiemy więc dwie zasady:</p>
       <ul>
         <li><strong>lag</strong> nie krótszy niż horyzont: sprzedaż sprzed 7, 14, 21 dni,</li>
         <li><strong>okno</strong> kończy się co najmniej 7 dni przed prognozowanym dniem: średnia z 28 dni kończących się tydzień wcześniej.</li>
@@ -84,7 +84,7 @@ print(df["lag_2"].tolist())</code></pre>
     <section id="kalendarz">
       <h2>Kalendarz</h2>
 
-      <p>Sprzedaż świeżych produktów ma silny rytm tygodnia. Dzień tygodnia jako liczba 0-6 wystarczy drzewom (moduł 10), które dzielą oś w dowolnym miejscu. Model liniowy widzi jednak, że niedziela (6) jest "najdalej" od poniedziałku (0), choć to sąsiedzi. <strong>Kodowanie cykliczne</strong> kładzie dni na okręgu:</p>
+      <p>Sprzedaż może zależeć od dnia tygodnia. Zapis dni jako liczb od 0 do 6 nie oddaje jednak tego, że po niedzieli znowu jest poniedziałek.</p><p>Drzewo potrafi tworzyć oddzielne przedziały takich wartości. Model liniowy potraktuje je jako zwykłą skalę liczbową. <strong>Kodowanie cykliczne</strong> pozwala przedstawić tygodniowy cykl za pomocą punktów na okręgu:</p>
 
 <pre><code class="language-python">angle = 2 * np.pi * dow / 7
 dow_sin, dow_cos = np.sin(angle), np.cos(angle)</code></pre>
@@ -103,13 +103,13 @@ print(abs(dow[0] - dow[1]), round(float(np.linalg.norm(points[0] - points[1])), 
         </ul>
       </div>
 
-      <p><strong>Święta</strong> bierzesz z gotowego kalendarza (pakiet <code>holidays</code>), a nie z danych: kalendarz zna też przyszłe święta. Obok flagi "to jest święto" przydaje się "ile dni do najbliższego święta", bo zakupy przed świętem rosną, zanim święto nadejdzie.</p>
+      <p>Daty świąt są znane z wyprzedzeniem. Możesz więc odczytać je z kalendarza, na przykład pakietu <code>holidays</code>, także dla prognozowanych dni. Oprócz informacji „czy to święto” warto rozważyć liczbę dni do święta: zwiększone zakupy mogą pojawić się wcześniej.</p>
     </section>
 
     <section id="kategorie">
       <h2>Kategorie</h2>
 
-      <p>Identyfikator sklepu i produktu to liczby, ale nie wielkości: produkt 300 nie jest "trzy razy większy" od produktu 100. Model musi dostać kategorię w formie, która tego nie sugeruje.</p>
+      <p>Identyfikator produktu jest oznaczeniem, a nie wielkością. Produkt 300 nie ma trzykrotnie większej wartości niż produkt 100. Wybierz więc takie kodowanie kategorii, które nie narzuca modelowi tej interpretacji.</p>
 
       <table>
         <thead><tr><th>Sposób</th><th>Jak</th><th>Kiedy</th></tr></thead>
@@ -123,7 +123,7 @@ print(abs(dow[0] - dow[1]), round(float(np.linalg.norm(points[0] - points[1])), 
 
       <h3>Target encoding i jego wyciek</h3>
 
-      <p>Target encoding zamienia grupę na średnią celu w tej grupie. To silna cecha, bo niesie wprost informację o celu. Właśnie dlatego łatwo z nią przesadzić:</p>
+      <p><em>Target encoding</em> zastępuje kategorię średnią wartości celu w tej grupie. Na przykład kategorię sklepu można opisać jego średnią sprzedażą na treningu. Ponieważ kodowanie korzysta z przewidywanej wartości, trzeba szczególnie pilnować podziału danych:</p>
 
       <div class="predict" id="p3" data-type="single">
 <pre><code class="language-python">import pandas as pd
@@ -146,7 +146,7 @@ print(encoded.tolist())</code></pre>
 
       <div class="callout story">
         <span class="label">Z labu</span>
-        <p>Kodowanie seria × dzień tygodnia dopasowane na treningu i walidacji poprawia WAPE walidacji z 0.399 na 0.361. Na teście pogarsza z 0.411 na 0.452. Walidacja, która zgodnie z regułami miała chronić przed złą decyzją, poleciła najgorszy wariant.</p>
+        <p>W przykładzie z labu kodowanie seria × dzień tygodnia dopasowane również na walidacji poprawia jej WAPE z <code>0.399</code> do <code>0.361</code>. Jednocześnie wynik testowy pogarsza się z <code>0.411</code> do <code>0.452</code>.</p><p>Tak przygotowana walidacja nie pomaga wybrać modelu. Jej odpowiedzi trafiły do cech, więc porównanie faworyzuje rozwiązanie z przeciekiem.</p>
       </div>
 
       <h3>Pipeline</h3>
@@ -170,7 +170,7 @@ forecast = model.predict(valid[columns])</code></pre>
     <section id="rejestr">
       <h2>Cechy jako czyste funkcje</h2>
 
-      <p>Cechę trzeba policzyć dwa razy: na historii do treningu i na przyszłym tygodniu do prognozy. Jeśli oba miejsca mają osobny kod, prędzej czy później się rozjadą, a model dostanie w produkcji coś innego niż w treningu. Rozwiązanie: każda cecha to czysta funkcja z ramki na kolumnę, zarejestrowana z listą kolumn, których potrzebuje:</p>
+      <p>Te same cechy musisz przygotować dla treningu i dla przyszłych prognoz. Dwie oddzielne implementacje łatwo zaczną się różnić.</p><p>W labie każdą cechę zapiszemy więc jako funkcję, która otrzymuje tabelę i zwraca kolumnę bez zmieniania danych. Przy rejestracji podamy też nazwy potrzebnych kolumn:</p>
 
 <pre><code class="language-python">@registry.register("dow", requires=["dt"])
 def _dow(df: pd.DataFrame) -> pd.Series:
@@ -181,7 +181,7 @@ def _dow(df: pd.DataFrame) -> pd.Series:
 def _dow_sin(df: pd.DataFrame) -> pd.Series:
     return calendar.cyclical(df["dow"], 7)[0]</code></pre>
 
-      <p>Z deklaracji <code>requires</code> powstaje graf. Kod, który buduje zestaw cech, przechodzi ten graf tak, żeby każda cecha liczyła się po wszystkim, czego potrzebuje. To sortowanie topologiczne, napiszesz je w labie. Trening i prognoza wołają ten sam kod z tą samą listą nazw.</p>
+      <p>Lista <code>requires</code> opisuje zależności cechy. Jeśli cecha potrzebuje wyniku innej cechy, musimy najpierw obliczyć tamtą.</p><p>Z tych zależności powstaje graf, a poprawną kolejność wyznacza sortowanie topologiczne. Napiszesz je w labie. Zarówno trening, jak i prognozowanie użyją potem tego samego kodu i listy cech.</p>
 
       <div class="quiz" id="q2" data-type="single">
         <div class="quiz-q">Cecha <code>a</code> wymaga <code>b</code>, <code>b</code> wymaga <code>c</code>, a <code>c</code> wymaga <code>a</code>. Co powinien zrobić kod budujący cechy?</div>
@@ -196,7 +196,7 @@ def _dow_sin(df: pd.DataFrame) -> pd.Series:
     <section id="popyt">
       <h2>Popyt ocenzurowany</h2>
 
-      <p>Sprzedaż to nie popyt. Gdy towaru zabrakło o 14:00, sprzedaż dnia pokazuje tylko popyt do 14:00. Takie dane są <strong>ocenzurowane</strong>: prawdziwa wartość jest co najmniej taka, ale nie wiesz, o ile większa. W FreshRetailNet braki dotyczą około 40% dni.</p>
+      <p>Jeśli towaru zabraknie o 14:00, sprzedaż za cały dzień nie pokaże wszystkich zakupów, do których mogłoby dojść przy pełnej dostępności. Dane są wtedy <strong>ocenzurowane</strong>: znamy co najmniej część popytu, ale nie wiemy, ile jeszcze osób chciało kupić produkt. We FreshRetailNet takie braki dotyczą około 40% dni.</p>
 
       <p>Model uczony na sprzedaży dni z brakami uczy się niższego popytu, niż był. Są dwa podejścia:</p>
       <ul>
@@ -204,7 +204,7 @@ def _dow_sin(df: pd.DataFrame) -> pd.Series:
         <li><strong>wykluczenie</strong>: ucz tylko na dniach bez braków, gdzie sprzedaż równa się popytowi.</li>
       </ul>
 
-      <p>Korekta brzmi lepiej, bo wykorzystuje więcej danych. W labie sprawdzisz ją dwa razy. W symulacji, na dniach bez braków ze sztucznym brakiem od losowej godziny, usuwa obciążenie prawie do zera. Jako cel treningu na prawdziwych danych zawyża prognozy, a wykluczenie wygrywa.</p>
+      <p>Korekta pozwala zachować więcej przykładów, ale opiera się na dodatkowych założeniach. W labie sprawdzisz ją na dwa sposoby.</p><p>Najpierw zasymulujesz brak towaru, odcinając część dnia, dla którego znasz pełną sprzedaż. Następnie użyjesz korekty przy uczeniu na rzeczywistych danych. Zobaczysz, że dobry wynik symulacji nie musi oznaczać lepszych prognoz w drugim przypadku.</p>
 
       <div class="quiz" id="q3" data-type="single">
         <div class="quiz-q">Dlaczego korekta działa w symulacji, a na prawdziwych danych zawyża?</div>
@@ -215,7 +215,7 @@ def _dow_sin(df: pd.DataFrame) -> pd.Series:
         </ul>
       </div>
 
-      <p>Wykluczenie ma własną wadę: dni z brakami to często dni wysokiego popytu, więc model uczony bez nich też może trochę zaniżać. Kurs zostaje przy wykluczeniu, bo wygrywa w pomiarze. Tak podejmuje się decyzje o danych: dwie metody, jeden pomiar, prostsza wygrywa, jeśli nie przegrywa.</p>
+      <p>Wykluczenie dni z brakami też ma ograniczenie: braki często pojawiają się właśnie przy dużym popycie. Pozostała próbka może więc sprzyjać zaniżaniu prognoz.</p><p>W kursowym porównaniu pozostajemy przy wykluczeniu, ponieważ daje lepszy wynik oceny. To decyzja dla tego eksperymentu, z rozpoznanym ograniczeniem, a nie ogólna zasada dla wszystkich danych.</p>
     </section>
 
     <section id="cwiczenie">
@@ -223,7 +223,7 @@ def _dow_sin(df: pd.DataFrame) -> pd.Series:
 
       <h3>Lag z kontrolą horyzontu</h3>
 
-      <p>Napisz <code>horizon_lag</code>: lag kolumny w obrębie serii. Jeśli lag jest krótszy niż horyzont, <code>ValueError</code>.</p>
+      <p>Napisz <code>horizon_lag</code>, która przesuwa wskazaną kolumnę osobno w każdej serii. Jeśli podany lag jest krótszy niż horyzont prognozy, zgłoś <code>ValueError</code>.</p>
 
       <div class="pyrun" id="e1">
         <script type="text/x-python" data-role="starter">
@@ -255,7 +255,7 @@ else:
 
       <h3>Target encoding dopasowany na treningu</h3>
 
-      <p>Napisz <code>target_encode(train, other, group, target)</code>: średnia celu w grupie liczona tylko na <code>train</code>, zwrócona dla wierszy <code>other</code>. Grupa nieznana w treningu dostaje średnią ogólną treningu.</p>
+      <p>Napisz <code>target_encode(train, other, group, target)</code>. Oblicz średnią celu w każdej grupie wyłącznie na <code>train</code>, a następnie przypisz ją do wierszy <code>other</code>. Grupie, której nie ma w treningu, przypisz ogólną średnią treningową.</p>
 
       <div class="pyrun" id="e2">
         <script type="text/x-python" data-role="starter">
@@ -284,7 +284,7 @@ assert list(_got.index) == [7, 8, 9], "Wynik ma mieć indeks wierszy other."
 
     <div class="next">
       <h2>Teraz lab</h2>
-      <p>Napiszesz cechy kalendarza, lagi pilnujące horyzontu, rejestr z sortowaniem zależności, korektę popytu i target encoding. Trzy eksperymenty pokażą, że korekta z symulacji zawyża na prawdziwych danych, a kodowanie dopasowane na walidacji ją oszukuje. Około 7 godzin.</p>
+      <p>W labie przygotujesz cechy kalendarzowe, lagi sprawdzające horyzont oraz rejestr zależności między cechami. Zaimplementujesz też korektę popytu i target encoding.</p><p>W eksperymentach porównasz korektę z wykluczaniem dni z brakami i sprawdzisz wpływ przecieku przy kodowaniu kategorii. Zarezerwuj około 7 godzin.</p>
       <p>Otwórz <code>labs/09-features/09-features.ipynb</code>.</p>
     </div>
   </main>

@@ -27,7 +27,7 @@
   <main class="lecture">
     <p class="kicker">Moduł 08 · Część 2: dane i ML</p>
     <h1>Podstawy ML</h1>
-    <p class="lede">Model to funkcja, której parametry dobiera się na danych. Samo dobranie parametrów jest łatwe: robi to jedna linia scikit-learn. Trudne jest co innego: sprawdzić uczciwie, czy model zadziała na danych, których jeszcze nie widział. Ten moduł dotyczy obu rzeczy, z naciskiem na drugą.</p>
+    <p class="lede">Model uczy się na przykładach: dobiera parametry, które łączą dostępne dane z przewidywanym wynikiem. W tym module zbudujesz pierwszy taki model. Potem sprawdzisz go na późniejszych dniach, których nie używał podczas uczenia. To pozwoli ocenić, czy pomaga w prognozowaniu przyszłości.</p>
 
     <ul class="meta">
       <li><b>Czas:</b> około 60 minut</li>
@@ -48,23 +48,23 @@
     <section id="model">
       <h2>Model, strata, uczenie</h2>
 
-      <p>Model przewidujący sprzedaż to funkcja: dostaje <strong>cechy</strong> jednego wiersza (sprzedaż sprzed tygodnia, rabat, dzień tygodnia) i zwraca liczbę. Model liniowy to najprostsza taka funkcja:</p>
+      <p>Dla jednego dnia model otrzymuje <strong>cechy</strong>, czyli informacje dostępne przed prognozą. Mogą to być sprzedaż sprzed tygodnia, rabat i dzień tygodnia. Wynikiem jest przewidywana sprzedaż. Model liniowy łączy cechy w następujący sposób:</p>
 
 <pre><code class="language-text">prognoza = w₁·cecha₁ + w₂·cecha₂ + … + wₖ·cechaₖ + b</code></pre>
 
-      <p>Wagi <code>w</code> i wyraz wolny <code>b</code> to <strong>parametry</strong>. Nie wpisujesz ich ręcznie. Dobierasz je tak, żeby prognozy na znanych danych były jak najbliżej prawdy. "Jak najbliżej" mierzy <strong>funkcja straty</strong>. Dla regresji najczęściej to średni kwadrat błędu:</p>
+      <p>Wagi <code>w</code> określają wkład cech, a <code>b</code> jest wyrazem wolnym. Nazywamy je <strong>parametrami modelu</strong>. Podczas uczenia dobieramy ich wartości na podstawie danych.</p><p>Żeby porównać różne ustawienia parametrów, potrzebujemy miary pomyłki. Służy do tego <strong>funkcja straty</strong>. W poniższym przykładzie użyjemy średniego kwadratu błędu:</p>
 
 <pre><code class="language-text">MSE = średnia((prognoza − prawda)²)</code></pre>
 
-      <p><strong>Uczenie</strong> to szukanie parametrów, dla których strata na danych treningowych jest najmniejsza. Cel jest jednak inny: mała strata na danych <em>przyszłych</em>. Różnica między tymi dwoma celami to temat reszty wykładu.</p>
+      <p><strong>Uczenie</strong> polega na szukaniu parametrów zmniejszających stratę na danych treningowych. Zależy nam jednak na dobrych prognozach dla nowych danych. Niski błąd na przykładach użytych do uczenia nie gwarantuje jeszcze takiego wyniku.</p>
 
-      <p>To drugie znaczenie słowa <code>fit</code>. W modułach 03 i 04 <code>fit</code> niczego nie liczył, tylko zapamiętywał historię, bo prognoza naiwna nie ma parametrów. Tu <code>fit</code> wyznacza wagi, a <code>predict</code> liczy z nich prognozę. Nazwy i kolejność kroków są te same, zmieniają się argumenty: w 03 <code>fit(history)</code> i <code>predict(horizon)</code>, tu <code>fit(X, y)</code> i <code>predict(X)</code>. Jak pogodzić te dwie umowy, mówi sekcja o baseline'ie.</p>
+      <p>Znasz już metody <code>fit</code> i <code>predict</code>. W prostych prognozach z modułów 03 i 04 pierwsza zapamiętywała historię, a druga przygotowywała prognozę na zadany horyzont.</p><p>Tutaj <code>fit(X, y)</code> dobiera wagi na podstawie cech <code>X</code> i sprzedaży <code>y</code>. Metoda <code>predict(X)</code> stosuje te wagi do podanych wierszy. Sposób połączenia obu interfejsów poznasz w sekcji o baseline.</p>
     </section>
 
     <section id="gradient">
       <h2>Gradient descent</h2>
 
-      <p>Strata to funkcja parametrów. Dla modelu liniowego z MSE ma kształt misy z jednym dnem. <strong>Gradient</strong> to kierunek, w którym strata rośnie najszybciej. Gradient descent zaczyna od dowolnych parametrów i w każdym kroku przesuwa je trochę w stronę przeciwną do gradientu:</p>
+      <p>Wyobraź sobie, że dla każdej pary parametrów obliczasz stratę. Dla modelu liniowego z MSE otrzymujesz wypukłą powierzchnię. <strong>Gradient</strong> opisuje kierunek najszybszego wzrostu straty.</p><p>Metoda <em>gradient descent</em> zmienia parametry w przeciwnym kierunku, aby zmniejszać stratę. Zaczynamy od wybranych wartości i powtarzamy niewielkie aktualizacje:</p>
 
 <pre><code class="language-text">r  = X @ w + b − y            # błędy na wszystkich wierszach
 ∂MSE/∂w = 2/n · Xᵀ @ r
@@ -72,7 +72,7 @@
 w ← w − krok · ∂MSE/∂w
 b ← b − krok · ∂MSE/∂b</code></pre>
 
-      <p>W tych wzorach <code>X</code> to tablica cech o kształcie <code>(n, k)</code>: <code>n</code> wierszy panelu, <code>k</code> cech. <code>w</code> ma kształt <code>(k,)</code>, jedna waga na cechę. Operator <code>@</code> to iloczyn macierzowy: <code>X @ w</code> mnoży każdy wiersz <code>X</code> przez wagi, sumuje i daje jedną liczbę na wiersz, kształt <code>(n,)</code>. <code>X.T</code> to <code>X</code> obrócone (transpozycja), kształt <code>(k, n)</code>, więc <code>X.T @ r</code> daje jedną liczbę na cechę: sumę "wartość cechy razy błąd" po wszystkich wierszach.</p>
+      <p>Tablica cech <code>X</code> ma kształt <code>(n, k)</code>: <code>n</code> wierszy i <code>k</code> cech. Wektor <code>w</code> zawiera jedną wagę na cechę, więc ma kształt <code>(k,)</code>.</p><p>Operator <code>@</code> wykonuje mnożenie macierzowe. Zapis <code>X @ w</code> mnoży cechy w każdym wierszu przez odpowiednie wagi i sumuje te iloczyny. Wynik ma kształt <code>(n,)</code>, po jednej liczbie na wiersz.</p><p><code>X.T</code> to transpozycja: zamienia wiersze z kolumnami i ma kształt <code>(k, n)</code>. W wyrażeniu <code>X.T @ r</code> otrzymujemy po jednej sumie na cechę. Sumujemy jej wartości pomnożone przez błędy poszczególnych wierszy.</p>
 
 <pre><code class="language-python">X = np.array([[1.0, 2.0],
               [3.0, 4.0],
@@ -101,7 +101,7 @@ print(X.T @ r)                    # [-4. -4.]  jedna liczba na cechę: (2,)</cod
         <p class="verdict" data-role="verdict" role="status"></p>
       </figure>
 
-      <p>Przy kroku 0.01 model ledwo się rusza. Przy 0.3 dochodzi do dna w kilku krokach. Powyżej 1 każdy krok przeskakuje dno coraz dalej i strata wybucha. Granica zależy od skali cech, dlatego cechy się <strong>standaryzuje</strong>: od każdej odejmuje się średnią i dzieli przez odchylenie. Bez tego jedna kolumna w tysiącach i druga w ułamkach wymagają kroków różnych o rzędy wielkości.</p>
+      <p>W tym przykładzie krok <code>0.01</code> daje powolną poprawę, a <code>0.3</code> szybko zmniejsza stratę. Przy kroku większym niż 1 kolejne zmiany są zbyt duże i strata rośnie.</p><p>Te wartości dotyczą danych z widżetu. Odpowiedni krok zależy między innymi od skali cech. Dlatego często je standaryzujemy: od kolumny odejmujemy jej średnią i dzielimy przez odchylenie standardowe. Cechy wyrażone w tysiącach i ułamkach uzyskują wtedy porównywalną skalę.</p>
 
       <div class="predict" id="p1" data-type="single">
 <pre><code class="language-python">import numpy as np
@@ -121,13 +121,13 @@ print(round(w, 3), round(b, 3))</code></pre>
         </ul>
       </div>
 
-      <p>W praktyce regresji liniowej nie uczy się gradient descent: scikit-learn rozwiązuje ją dokładnie, w jednym kroku algebry. Ale ta sama pętla uczy sieci neuronowe (moduły 13 i 18), dla których dokładnego rozwiązania nie ma. W labie napiszesz ją sam i sprawdzisz, że dochodzi do tych samych wag co scikit-learn.</p>
+      <p>Regresję liniową można dopasować metodami algebry liniowej, bez tej iteracyjnej pętli. Z takiego podejścia korzysta scikit-learn w pokazanym porównaniu.</p><p>Gradient descent poznajemy również dlatego, że podobny schemat aktualizacji służy później do uczenia sieci neuronowych. W labie napiszesz go samodzielnie i porównasz wagi z wynikiem scikit-learn.</p>
     </section>
 
     <section id="podzial">
       <h2>Podział po czasie</h2>
 
-      <p>Wynik na danych treningowych nie mówi, jak model poradzi sobie z przyszłością. Potrzebujesz danych, których model nie widział. W labie 03 chowałeś przed modelem ostatnie sześć miesięcy, czyli holdout. Tu robisz to samo, tylko schowany odcinek dzielisz na dwa, bo masz więcej decyzji do podjęcia. Razem to trzy części:</p>
+      <p>Do oceny potrzebujesz późniejszych danych, których model nie użył podczas treningu. W labie 03 odkładaliśmy ostatnie sześć miesięcy. Tutaj rozdzielimy odłożony okres na walidację i test, bo oprócz oceny chcemy także wybierać ustawienia. Otrzymamy trzy części:</p>
 
       <table>
         <thead><tr><th>Część</th><th>Do czego</th></tr></thead>
@@ -138,7 +138,7 @@ print(round(w, 3), round(b, 3))</code></pre>
         </tbody>
       </table>
 
-      <p>Po co osobny test? Każda decyzja podjęta na walidacji trochę się do niej dopasowuje. Po dwudziestu próbach najlepszy wynik na walidacji jest już zawyżony. Test, którego nie dotykałeś, mówi prawdę (reguła C5).</p>
+      <p>Na walidacji porównujesz pomysły i podejmujesz decyzje. Po wielu próbach możesz dopasować się również do jej przypadkowych cech. Osobny test pozwala ocenić gotowy wybór na danych, które nie służyły do tych decyzji. Tego wymaga reguła C5.</p>
 
       <p>W szeregach czasowych podział musi iść po czasie: trening wcześniej, walidacja później, test na końcu (C3). Granicę podziału liczysz na datach. Różnica dwóch dat w pandas to <code>pd.Timedelta</code>, odcinek czasu. Jego atrybut <code>.days</code> to liczba dni, a dodanie albo odjęcie <code>pd.Timedelta(days=...)</code> przesuwa datę:</p>
 
@@ -162,13 +162,13 @@ print(len(valid), (train["day"] > valid["day"].min()).sum())</code></pre>
         </ul>
       </div>
 
-      <p>Sąsiednie dni tej samej serii są do siebie podobne. Jeśli wtorek jest w treningu, a środa w walidacji, model "zna" środę przez wtorek i czwartek. Przy prognozie na przyszły tydzień takiej pomocy nie będzie.</p>
+      <p>Losowy podział może umieścić wcześniejsze i późniejsze dni tej samej serii po obu stronach. Wtedy model korzysta podczas uczenia z danych późniejszych niż część ocenianych obserwacji. Nie odtwarza to sytuacji prognozowania przyszłego tygodnia.</p>
     </section>
 
     <section id="leakage">
       <h2>Leakage</h2>
 
-      <p><strong>Leakage</strong> (wyciek) to informacja, która jest w danych treningowych i walidacyjnych, a w chwili prognozy jej nie będzie. Model się na niej opiera, walidacja wygląda świetnie, a w produkcji wynik się sypie. Trzy częste źródła:</p>
+      <p><strong>Leakage</strong>, czyli przeciek informacji, występuje wtedy, gdy model podczas uczenia lub oceny korzysta z informacji niedostępnej przy rzeczywistej prognozie. Wynik walidacji może być przez to zbyt dobry. Oto trzy częste źródła takiego problemu:</p>
 
       <ul>
         <li><strong>skutek zamiast przyczyny</strong>: kolumna znana dopiero po fakcie. Godziny bez towaru dzisiaj, sprzedaż w godzinach z towarem dzisiaj: to części tego, co prognozujesz,</li>
@@ -189,7 +189,7 @@ print(len(valid), (train["day"] > valid["day"].min()).sum())</code></pre>
 
       <div class="callout rule">
         <span class="label">Reguła</span>
-        <p>Wynik zbyt dobry, żeby był prawdziwy, najpewniej nie jest prawdziwy. Zanim się ucieszysz, sprawdź wagi albo ważność cech. Jedna kolumna, która robi całą robotę, to prawie zawsze wyciek.</p>
+        <p>Jeśli wynik jest zaskakująco dobry, sprawdź, z jakich danych korzysta model. Przyjrzyj się zwłaszcza cechom o dużej wadze lub ważności. Silna cecha nie musi oznaczać przecieku, ale warto potwierdzić, że będzie dostępna w chwili prognozy.</p>
       </div>
 
       <div class="quiz" id="q2" data-type="single">
@@ -205,11 +205,11 @@ print(len(valid), (train["day"] > valid["day"].min()).sum())</code></pre>
     <section id="baseline">
       <h2>Baseline</h2>
 
-      <p>WAPE 0.45 to dużo czy mało? Sama liczba nic nie mówi. Mówi porównanie z <strong>baseline'em</strong>: najprostszą rozsądną prognozą, na tych samych wierszach (C6). Dla dziennej sprzedaży to prognoza naiwna sezonowa: "tak samo jak tydzień temu", czyli <code>SeasonalNaiveForecaster</code>, którego napisałeś w labie 03, przeniosłeś do pakietu w 04.1 i przetestowałeś w 04.2, z sezonem 7 zamiast 12. Model, który jej nie bije, niczego się nie nauczył. A jeśli bije ją o włos, jego złożoność i koszt utrzymania mogą się nie opłacać.</p>
+      <p>Czy WAPE równe <code>0.45</code> jest dobrym wynikiem? Potrzebujemy porównania. <strong>Baseline</strong> to prosta, rozsądna prognoza oceniana na tych samych wierszach, zgodnie z regułą C6.</p><p>Użyjemy sezonowej prognozy naiwnej: „tak samo jak tydzień temu”. Skorzystasz z <code>SeasonalNaiveForecaster</code> z poprzednich labów, tym razem z sezonem 7 zamiast 12. Sprawdź, czy nowy model poprawia jej wynik na tyle, żeby uzasadnić dodatkową złożoność.</p>
 
-      <p>Żeby porównanie odbywało się na tych samych wierszach, w labie każdy model ma ten sam interfejs: <code>fit(X, y)</code> uczy się na wierszach panelu <code>X</code> i ich sprzedaży <code>y</code>, a <code>predict(X)</code> zwraca tablicę z jedną prognozą na wiersz <code>X</code>. Baseline z modułu 04 widzi jedną serię naraz (<code>fit(history)</code>, <code>predict(horizon)</code>), więc owijasz go w <strong>adapter</strong> <code>PerSeriesForecaster</code>: dla każdej serii panelu tworzy nowy model lokalny, uczy go na historii tej serii i rozkłada prognozy z powrotem na wiersze <code>X</code>. Nowy model dla każdej serii daje funkcja bez argumentów, na przykład <code>lambda: SeasonalNaiveForecaster(season=7)</code>: każde jej wywołanie zwraca świeży obiekt.</p>
+      <p>W labie każdy model ma udostępniać <code>fit(X, y)</code> i <code>predict(X)</code>. Pierwsza metoda uczy się na wierszach panelu i sprzedaży, a druga zwraca jedną prognozę na wiersz.</p><p>Model lokalny z modułu 04 działa inaczej: przyjmuje historię jednej serii i horyzont. Dopasujemy go do wspólnego interfejsu za pomocą <strong>adaptera</strong> <code>PerSeriesForecaster</code>. Utworzy osobny model dla każdej serii, przekaże mu jej historię i przypisze prognozy do odpowiednich wierszy panelu.</p><p>Do tworzenia modeli przekażesz funkcję bez argumentów, na przykład <code>lambda: SeasonalNaiveForecaster(season=7)</code>. Każde wywołanie musi zwracać nowy obiekt, żeby serie nie współdzieliły stanu modelu.</p>
 
-      <p>Baseline to też test poprawności całej rury. Jeśli model wychodzi dużo gorzej od baseline'u, błąd jest raczej w danych albo w podziale niż w modelu.</p>
+      <p>Baseline pomaga też sprawdzić cały proces przygotowania i oceny prognozy. Jeśli bardziej złożony model wypada znacznie gorzej, sprawdź dane, podział i sposób przypisania prognoz do dni, zanim zaczniesz stroić ustawienia.</p>
     </section>
 
     <section id="regularyzacja">
@@ -221,7 +221,7 @@ print(len(valid), (train["day"] > valid["day"].min()).sum())</code></pre>
         <li><strong>przeuczenie</strong>: model zapamiętał szum treningu. Mały błąd na treningu, duży na walidacji.</li>
       </ul>
 
-      <p>Między nimi jest kompromis (bias-variance): bardziej elastyczny model mniej się myli systematycznie, ale bardziej zależy od przypadkowych cech próbki. <strong>Regularyzacja</strong> przesuwa model w stronę prostszego. W Ridge do straty dochodzi kara za duże wagi:</p>
+      <p>Większa elastyczność pozwala lepiej dopasować trening, ale może też zwiększać zależność od przypadkowych cech próbki. Ten kompromis opisujemy jako <em>bias-variance</em>.</p><p><strong>Regularyzacja</strong> ogranicza swobodę dopasowania. W regresji Ridge do straty dodajemy karę za duże wagi:</p>
 
 <pre><code class="language-text">strata Ridge = MSE + alpha · (w₁² + w₂² + … + wₖ²)</code></pre>
 
@@ -242,7 +242,7 @@ print(len(valid), (train["day"] > valid["day"].min()).sum())</code></pre>
     <section id="sklearn">
       <h2>Pipeline w scikit-learn</h2>
 
-      <p>W labie model liniowy piszesz dwa razy: raz od zera, raz z gotowych klocków scikit-learn. Każdy klocek ma <code>fit</code>, który uczy się na danych, a model ma też <code>predict</code>. <code>StandardScaler</code> w <code>fit</code> zapamiętuje średnią i odchylenie każdej kolumny, a potem każdą kolumnę standaryzuje. <code>Ridge(alpha=...)</code> to regresja liniowa z karą z poprzedniej sekcji. <code>make_pipeline</code> łączy je w jeden obiekt <code>Pipeline</code>:</p>
+      <p>W labie napiszesz model liniowy samodzielnie, a potem porównasz go z wersją w scikit-learn. <code>StandardScaler</code> zapamięta na treningu średnią i odchylenie każdej cechy. Następnie użyje ich do standaryzacji danych.</p><p>Model <code>Ridge(alpha=...)</code> dopasuje regresję liniową z regularyzacją. Funkcja <code>make_pipeline</code> połączy oba etapy w jeden obiekt, tak aby przygotowanie danych i model korzystały z tego samego podziału:</p>
 
 <pre><code class="language-python">from sklearn.linear_model import Ridge
 from sklearn.pipeline import make_pipeline
@@ -261,7 +261,7 @@ model.named_steps["ridge"].coef_     # wagi, po jednej na kolumnę</code></pre>
 
       <h3>Krok gradient descent</h3>
 
-      <p>Napisz <code>gd_step</code>: jeden krok dla modelu <code>w · x + b</code> ze stratą MSE. Zwraca nowe <code>(w, b)</code>.</p>
+      <p>Napisz funkcję <code>gd_step</code>, która wykonuje jedną aktualizację parametrów modelu <code>w · x + b</code> ze stratą MSE. Zwróć parę nowych wartości <code>(w, b)</code>.</p>
 
       <div class="pyrun" id="e1">
         <script type="text/x-python" data-role="starter">
@@ -294,7 +294,7 @@ assert abs(_w - 2.0) < 1e-3 and abs(_b) < 1e-3, f"Po wielu krokach model dochodz
 
       <h3>Podział po czasie</h3>
 
-      <p>Napisz <code>time_split</code>: dla tablicy numerów dni zwraca trzy maski: trening, walidacja (<code>valid_days</code> dni przed testem) i test (ostatnie <code>test_days</code> dni).</p>
+      <p>Napisz <code>time_split</code> dla tablicy numerów dni. Zwróć trzy maski: treningu, walidacji i testu. Test obejmuje ostatnie <code>test_days</code> dni, a walidacja poprzedzające go <code>valid_days</code> dni. Wcześniejsze dni należą do treningu.</p>
 
       <div class="pyrun" id="e2">
         <script type="text/x-python" data-role="starter">
@@ -323,7 +323,7 @@ assert not (_train & _valid).any() and not (_valid & _test).any() and (_train | 
 
     <div class="next">
       <h2>Teraz lab</h2>
-      <p>Podzielisz panel po czasie, postawisz baseline, napiszesz regresję liniową od zera i jej wersję produkcyjną, wpadniesz w pułapkę modelu z wynikiem zbyt dobrym i jeden raz zajrzysz do testu. Około 7 godzin.</p>
+      <p>W labie podzielisz panel według czasu i przygotujesz baseline. Napiszesz regresję liniową od zera, a potem porównasz ją z wersją scikit-learn.</p><p>Zbadasz też model z podejrzanie dobrym wynikiem, żeby odnaleźć przeciek informacji. Do testu zajrzysz raz, po wyborze rozwiązania. Zarezerwuj około 7 godzin.</p>
       <p>Otwórz <code>labs/08-ml-basics/08-ml-basics.ipynb</code>.</p>
     </div>
   </main>

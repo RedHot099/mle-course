@@ -27,7 +27,7 @@
   <main class="lecture">
     <p class="kicker">Moduł 19 · Część 3: produkcja</p>
     <h1>Capstone</h1>
-    <p class="lede">Na koniec pytanie, które zada Ci każdy zespół: czy ten model jest lepszy od tego, co mamy, i skąd to wiesz? Ten wykład nie wprowadza nowych technik. Dotyczy tego, jak z liczb z całego kursu zrobić decyzję, której da się bronić, i raport, który ktoś inny zrozumie bez Ciebie.</p>
+    <p class="lede">W projekcie końcowym odpowiesz na pytanie: który model warto wybrać i jakie wyniki to uzasadniają? Wykorzystasz metody z całego kursu. Przygotujesz porównanie, opiszesz ograniczenia i napiszesz raport zrozumiały dla osoby, która nie uczestniczyła w eksperymentach.</p>
 
     <ul class="meta">
       <li><b>Czas:</b> około 40 minut</li>
@@ -45,13 +45,13 @@
     </ul>
 
     <section id="dowody">
-      <h2>Dowody w kolejności</h2>
+      <h2>Uzasadnij wybór krok po kroku</h2>
 
-      <p>Decyzja o modelu stoi na czterech rodzajach dowodów. Czytelnik raportu sprawdza je w tej kolejności, więc w tej kolejności je podajesz:</p>
+      <p>Zacznij od prostego punktu odniesienia, potem pokaż powtarzalność wyników, końcowy test i koszt rozwiązania. Taka kolejność pomaga czytelnikowi ocenić argumenty za wybranym modelem:</p>
       <ol>
-        <li><strong>Baseline.</strong> Czy model bije najprostszą rozsądną prognozę, na tych samych wierszach? Bez tego reszta nie ma znaczenia (C6),</li>
+        <li><strong>Baseline.</strong> Porównaj model z prostą prognozą na tych samych wierszach. Sprawdź, czy dodatkowa złożoność daje poprawę wyniku, zgodnie z regułą C6.</li>
         <li><strong>Backtest.</strong> Średnia z kilku tygodni i wynik każdego tygodnia osobno. Czy przewaga powtarza się, czy wynika z jednego szczęśliwego tygodnia?</li>
-        <li><strong>Test.</strong> Jeden tydzień, którego żadna decyzja nie widziała. Potwierdza backtest albo mu przeczy,</li>
+        <li><strong>Test.</strong> Pokaż wynik tygodnia, którego nie używano do wyboru modelu ani ustawień. Porównaj go z oceną z backtestu.</li>
         <li><strong>Koszt.</strong> Czas uczenia, sprzęt, złożoność utrzymania. Model o 0.01 lepszy, ale wymagający karty graficznej w produkcji, musi tę kartę uzasadnić.</li>
       </ol>
 
@@ -61,7 +61,7 @@ gru = [0.407, 0.393, 0.382, 0.379]
 differences = [round(g - l, 3) for l, g in zip(lightgbm, gru)]
 print(differences, sum(d > 0 for d in differences))</code></pre>
         <ul class="quiz-options">
-          <li data-correct><code>[0.012, -0.001, 0.024, 0.018] 3</code><span class="why">Tak. W trzech tygodniach z czterech GRU jest gorsze, w jednym remisuje. Przewaga LightGBM powtarza się, a nie wynika z jednego tygodnia.</span></li>
+          <li data-correct><code>[0.012, -0.001, 0.024, 0.018] 3</code><span class="why">W trzech tygodniach z czterech GRU ma większy błąd, a w jednym minimalnie mniejszy. Wynik przemawia za powtarzalną przewagą LightGBM w tym porównaniu.</span></li>
           <li><code>[0.012, 0.001, 0.024, 0.018] 4</code><span class="why">W drugim tygodniu GRU jest odrobinę lepsze: 0.393 wobec 0.394.</span></li>
           <li><code>[-0.012, 0.001, -0.024, -0.018] 1</code><span class="why">Różnica to GRU minus LightGBM. Dodatnia znaczy, że GRU ma większy błąd.</span></li>
         </ul>
@@ -69,9 +69,9 @@ print(differences, sum(d > 0 for d in differences))</code></pre>
     </section>
 
     <section id="test">
-      <h2>Czym różni się test</h2>
+      <h2>Sprawdź, czym okres testowy różni się od treningu</h2>
 
-      <p>Test pokazuje, jak model radzi sobie z przyszłością, ale przyszłość rzadko wygląda jak przeszłość. Zanim przeczytasz wynik testu, opisz tydzień testowy: pogoda, promocje, święta, udział dni z brakami. W labie tydzień testowy jest cieplejszy niż prawie cały zbiór treningowy.</p>
+      <p>Test odtwarza prognozowanie późniejszych danych. Warunki tego okresu mogą różnić się od treningu. Przed interpretacją wyniku opisz pogodę, promocje, święta i udział dni z brakami towaru.</p><p>W labie tydzień testowy jest cieplejszy niż prawie cały zbiór treningowy. Uwzględnij to przy opisie, jak daleko można uogólnić wynik.</p>
 
       <div class="predict" id="p2" data-type="single">
 <pre><code class="language-python">import numpy as np
@@ -86,10 +86,10 @@ print((train_temperatures < test_mean).mean(), round((test_mean - train_temperat
         </ul>
       </div>
 
-      <p>Co z tego wynika? Jeśli model wypada na teście dobrze, to mimo nietypowego tygodnia, i to jest mocny argument. Jeśli wypada źle, raport musi odróżnić "model jest słaby" od "tydzień był inny". Pomaga porównanie z baselinem na tym samym tygodniu: baseline też cierpi na nietypowość, więc przewaga nad nim jest bardziej miarodajna niż sam WAPE.</p>
+      <p>Dobry lub słaby wynik dotyczy konkretnego okresu. Nie wystarczy sam w sobie, żeby stwierdzić, jak model poradzi sobie w każdych warunkach.</p><p>Porównaj go z baseline na tych samych dniach i opisz, gdzie warunki odbiegają od treningu. Nietypowy tydzień jest ograniczeniem oceny, ale nie powodem do pominięcia wyniku testowego.</p>
 
       <div class="quiz" id="q1" data-type="single">
-        <div class="quiz-q">Backtest mówi, że wybrany model bije baseline o 0.18 WAPE. Na teście przewaga to 0.02. Co robisz?</div>
+        <div class="quiz-q">W backteście wybrany model ma WAPE niższe od baseline o 0.18. Na teście różnica wynosi 0.02. Jak przedstawisz ten wynik?</div>
         <ul class="quiz-options">
           <li>Wracasz do strojenia, aż test znów pokaże 0.18.<span class="why">Wtedy test staje się walidacją i przestaje być testem (C5). Każda decyzja oparta na nim zawyża kolejny wynik.</span></li>
           <li data-correct>Raportujesz obie liczby i szukasz przyczyny: czym ten tydzień różni się od tygodni backtestu i czy ta różnica będzie się powtarzać.<span class="why">Tak. Rozbieżność to informacja o świecie, a nie błąd do usunięcia. Decyzję podejmujesz na podstawie wyjaśnienia, a nie jednej liczby.</span></li>
@@ -101,7 +101,7 @@ print((train_temperatures < test_mean).mean(), round((test_mean - train_temperat
     <section id="produkcja">
       <h2>Po wdrożeniu</h2>
 
-      <p>Wdrożony model zaczyna się starzeć od pierwszego dnia: zmieniają się ceny, asortyment, klienci, pogoda. Raport kończy się planem, jak to zauważysz:</p>
+      <p>Po wdrożeniu mogą zmieniać się ceny, asortyment, klienci i pogoda. Model nie musi działać tak samo jak w czasie eksperymentu. Zakończ raport planem sprawdzania, czy nadal jest użyteczny:</p>
       <ul>
         <li><strong>błąd na bieżąco</strong>: WAPE i bias liczone co tydzień, gdy wyniki są już znane, obok baseline'u. Rosnący bias to często pierwszy sygnał,</li>
         <li><strong>dryf wejść</strong>: rozkład cech w bieżącym tygodniu wobec treningu. Temperatura spoza zakresu treningu to ostrzeżenie, zanim błąd wzrośnie,</li>
@@ -121,7 +121,7 @@ print((train_temperatures < test_mean).mean(), round((test_mean - train_temperat
     <section id="raport">
       <h2>Raport</h2>
 
-      <p>Raport pisze się dla kogoś, kto nie był przy pracy i ma dziesięć minut. Pięć sekcji z szablonu labu:</p>
+      <p>Czytelnik raportu może nie znać historii Twoich prób. Powinien móc znaleźć wynik, jego uzasadnienie i ograniczenia bez odtwarzania rozmów czy notebooków. Szablon labu dzieli raport na pięć sekcji:</p>
       <table>
         <thead><tr><th>Sekcja</th><th>Odpowiada na pytanie</th></tr></thead>
         <tbody>
@@ -133,7 +133,7 @@ print((train_temperatures < test_mean).mean(), round((test_mean - train_temperat
         </tbody>
       </table>
 
-      <p>Kilka zasad, które odróżniają raport od reklamy:</p>
+      <p>Pisząc raport, stosuj następujące zasady:</p>
       <ul>
         <li>każda liczba ma źródło: run w MLflow, plik <code>test_scores.csv</code>, commit,</li>
         <li>wynik ma obok siebie rozrzut, na przykład wyniki per fold, a nie samą średnią,</li>
@@ -156,7 +156,7 @@ print((train_temperatures < test_mean).mean(), round((test_mean - train_temperat
 
       <h3>Ostrzeżenie o dryfie</h3>
 
-      <p>Napisz <code>drift_report(train, recent)</code>: słownik z dwiema liczbami: <code>"shift"</code>, czyli o ile odchyleń standardowych treningu średnia ostatnich wartości różni się od średniej treningu (odchylenie z <code>ddof=0</code>), i <code>"outside"</code>, czyli jaki udział ostatnich wartości leży poza zakresem treningu (poniżej minimum albo powyżej maksimum).</p>
+      <p>Napisz <code>drift_report(train, recent)</code>. Zwróć słownik z polami <code>"shift"</code> i <code>"outside"</code>.</p><p><code>shift</code> opisuje różnicę średnich ostatnich i treningowych wartości, wyrażoną w odchyleniach standardowych treningu. Odchylenie oblicz z <code>ddof=0</code>.</p><p><code>outside</code> to udział ostatnich wartości mniejszych niż minimum treningu lub większych niż jego maksimum.</p>
 
       <div class="pyrun" id="e1">
         <script type="text/x-python" data-role="starter">
@@ -184,7 +184,7 @@ assert _r["shift"] < 0 and abs(_r["outside"] - 0.5) < 1e-9, "Wartości poniżej 
 
     <div class="next">
       <h2>Teraz lab</h2>
-      <p>Porównasz baseline, LightGBM i GRU w jednym backteście zapisanym w MLflow, opiszesz tydzień testowy, raz ocenisz model na teście poleceniem <code>freshcast evaluate</code> i napiszesz raport. Potem ostatni punkt kontrolny. Około 9 godzin.</p>
+      <p>W labie porównasz baseline, LightGBM i GRU w jednym backteście zapisanym w MLflow. Opiszesz okres testowy, a po zakończeniu wyboru rozwiązania raz uruchomisz ocenę przez <code>freshcast evaluate</code>.</p><p>Na tej podstawie napiszesz raport i przygotujesz ostatni punkt kontrolny. Zarezerwuj około 9 godzin.</p>
       <p>Zacznij od <code>labs/19-capstone/README.md</code>.</p>
     </div>
   </main>

@@ -27,7 +27,7 @@
   <main class="lecture">
     <p class="kicker">Moduł 16 · Część 3: produkcja</p>
     <h1>Docker i CI</h1>
-    <p class="lede">Kod, który działa u Ciebie, musi działać też na serwerze, w CI i u kolegi. Kontener zamyka aplikację z całym jej środowiskiem, a ciągła integracja sprawdza każdą zmianę, zanim ktokolwiek zacznie ją czytać. Trzecia część tego modułu dotyczy ludzi: jak robić review, które pomaga, a nie tylko wyraża opinię.</p>
+    <p class="lede">Przygotujesz sposób uruchomienia projektu poza własnym środowiskiem. Docker zapisze aplikację wraz z potrzebnymi bibliotekami, a CI automatycznie wykona sprawdzenia po zmianie kodu. Poznasz też zasady przeglądu pull requesta, które pomagają znaleźć konkretny problem i uzasadnić poprawkę.</p>
 
     <ul class="meta">
       <li><b>Czas:</b> około 45 minut</li>
@@ -40,15 +40,15 @@
       <li>napisać Dockerfile dla aplikacji z uv: warstwy, cache, dwa etapy, zwykły użytkownik,</li>
       <li>uruchomić kontener z zamontowanymi danymi i ustawieniami ze środowiska,</li>
       <li>skonfigurować GitHub Actions i pre-commit tak, żeby sprawdzały to samo,</li>
-      <li>zrobić review według standardu: uwagi blokujące z konkretem, reszta jako sugestie.</li>
+      <li>przeprowadzić review według standardu, uzasadniając problemy blokujące zmianę i oddzielając je od sugestii.</li>
     </ul>
 
     <section id="docker">
       <h2>Obraz i kontener</h2>
 
-      <p><strong>Obraz</strong> to zapis systemu plików z aplikacją i wszystkim, czego ona potrzebuje: system, Python, pakiety, kod. <strong>Kontener</strong> to uruchomiony obraz: proces odizolowany od reszty maszyny, z własnym widokiem plików. Z jednego obrazu uruchomisz wiele kontenerów, na laptopie, w CI i w chmurze, i wszystkie zobaczą to samo środowisko.</p>
+      <p><strong>Obraz</strong> zawiera pliki aplikacji i potrzebne środowisko: Pythona, biblioteki oraz pliki systemowe. <strong>Kontener</strong> to działający proces uruchomiony na podstawie obrazu, z odizolowanym widokiem plików.</p><p>Z tego samego obrazu możesz uruchomić wiele kontenerów. Pozwala to ograniczyć różnice między środowiskiem lokalnym, CI i serwerem.</p>
 
-      <p>Obraz buduje się z <code>Dockerfile</code>, instrukcja po instrukcji. Każda instrukcja tworzy <strong>warstwę</strong>, a Docker zapamiętuje warstwy. Jeśli ani instrukcja, ani pliki, które kopiuje, się nie zmieniły, warstwa bierze się z cache. Dlatego kolejność ma znaczenie:</p>
+      <p>Obraz opisujesz w <code>Dockerfile</code>. Docker wykonuje instrukcje i może ponownie wykorzystywać zapisane wyniki wcześniejszych etapów. To pamięć podręczna budowania, czyli cache.</p><p>Jeśli zmieni się instrukcja lub jej wejście, trzeba ponownie wykonać także zależne od niej etapy. Dlatego kolejność kopiowania plików i instalacji bibliotek ma znaczenie:</p>
 
 <pre><code class="language-text"># 1. Dependencies: rebuilt only when uv.lock or pyproject.toml change
 RUN --mount=type=bind,source=uv.lock,target=uv.lock \
@@ -94,7 +94,7 @@ docker run --rm -v "$PWD":/work -e FRESHCAST_MODEL__ROUNDS=200 \
     <section id="ci">
       <h2>Ciągła integracja</h2>
 
-      <p>CI uruchamia sprawdzenia na czystej maszynie przy każdej zmianie. Czysta maszyna to ważne słowo: nie ma tam Twojego <code>.venv</code>, danych na dysku ani pakietu zainstalowanego ręcznie tydzień temu. Jeśli CI przechodzi, projekt da się postawić od zera.</p>
+      <p>CI uruchamia ustalone sprawdzenia w osobnym środowisku po zmianach w projekcie. Nie może polegać na Twoim lokalnym <code>.venv</code>, plikach z laptopa ani ręcznie zainstalowanej bibliotece.</p><p>Udany przebieg pokazuje, że udało się odtworzyć środowisko i wykonać skonfigurowane sprawdzenia. Nie zastępuje jednak testów, których w konfiguracji nie ma.</p>
 
 <pre><code class="language-yaml">name: CI
 on:
@@ -115,7 +115,7 @@ jobs:
       - run: uv run mypy
       - run: uv run pytest</code></pre>
 
-      <p><strong>pre-commit</strong> uruchamia te same narzędzia przed commitem, na zmienionych plikach. Po co oba? pre-commit daje odpowiedź w sekundę, ale da się go pominąć (<code>--no-verify</code>) albo nie zainstalować. CI jest ostatnią linią obrony i nie da się go obejść. Oba biorą narzędzia z tego samego <code>uv.lock</code>, więc nie spierają się o wersję ruff.</p>
+      <p><strong>pre-commit</strong> uruchamia narzędzia lokalnie przed zapisaniem commita. Pozwala wcześniej zauważyć problem, ale można go nie zainstalować albo pominąć przez <code>--no-verify</code>.</p><p>CI wykonuje sprawdzenia niezależnie od ustawień komputera autora. W projekcie oba sposoby korzystają z wersji zapisanych w <code>uv.lock</code>. Reguły repozytorium mogą wymagać zaliczonego CI przed połączeniem zmian.</p>
 
       <div class="quiz" id="q3" data-type="single">
         <div class="quiz-q">CI na Twoim pull requeście jest czerwone na kroku <code>pytest</code>, a lokalnie testy przechodzą. Co sprawdzasz najpierw?</div>
@@ -130,7 +130,7 @@ jobs:
     <section id="review">
       <h2>Review</h2>
 
-      <p>Review to nie ocena autora, tylko sprawdzenie zmiany, zanim trafi do wspólnego kodu. Dobre review:</p>
+      <p>Review to przegląd zmiany przed dołączeniem jej do wspólnego kodu. Uwagi powinny dotyczyć działania programu, wymagań i czytelności. Podczas przeglądu:</p>
       <ul>
         <li><strong>rozdziela uwagi blokujące od reszty</strong>. Blokujące to złamane reguły z oznaczeniem "blokuje", błąd poprawności albo wyciek. Reszta to sugestie, które autor może przyjąć albo nie,</li>
         <li><strong>jest konkretne</strong>: miejsce, reguła i przykład danych, na których kod zadziała źle. "Ten rolling miesza serie" jest słabe. "Na panelu dwóch serii pierwsza średnia serii B obejmuje ostatnie 6 dni serii A, <code>promo.py:18</code>, C1" jest mocne,</li>
@@ -149,7 +149,7 @@ jobs:
         </ul>
       </div>
 
-      <p>Gdy review dostajesz, pamiętaj, że uwagi dotyczą kodu, a nie Ciebie. Pytanie recenzenta to często sygnał, że kod nie mówi sam za siebie. Czasem lepiej dopisać komentarz albo zmienić nazwę, niż wyjaśniać w wątku.</p>
+      <p>Kiedy otrzymasz uwagi, spróbuj odtworzyć wskazany problem i odnieść go do wymagań. Jeśli recenzent nie zrozumiał kodu, sprawdź, czy pomoże lepsza nazwa lub komentarz. Wyjaśnienie zapisane w kodzie przyda się także kolejnej osobie.</p>
     </section>
 
     <section id="cwiczenie">
@@ -157,7 +157,7 @@ jobs:
 
       <h3>Przegląd Dockerfile</h3>
 
-      <p>Napisz <code>dockerfile_problems(text)</code>: lista problemów w treści Dockerfile. Szukaj trzech: brak <code>USER</code> (kontener jako root), <code>uv sync</code> bez <code>--locked</code>, kopiowanie katalogu <code>data</code>. Zwracaj krótkie nazwy: <code>"root"</code>, <code>"unlocked"</code>, <code>"data"</code>, w tej kolejności.</p>
+      <p>Napisz <code>dockerfile_problems(text)</code>, która analizuje treść Dockerfile. Wykryj trzy problemy: brak <code>USER</code>, <code>uv sync</code> bez <code>--locked</code> oraz kopiowanie katalogu <code>data</code>.</p><p>Zwróć listę odpowiednich nazw <code>"root"</code>, <code>"unlocked"</code> i <code>"data"</code>, zawsze w tej kolejności. Jeśli problem nie występuje, pomiń jego nazwę.</p>
 
       <div class="pyrun" id="e1">
         <script type="text/x-python" data-role="starter">
@@ -179,7 +179,7 @@ assert dockerfile_problems("FROM x\nUSER app\nRUN uv sync --frozen\n") == ["unlo
 
       <h3>Sprawdzenie workflow</h3>
 
-      <p>Napisz <code>missing_checks(workflow)</code>: dla workflow wczytanego do słownika (tak jak robi <code>yaml.safe_load</code>) zwróć posortowaną listę narzędzi spośród <code>mypy</code>, <code>pytest</code>, <code>ruff</code>, których żaden krok <code>run</code> nie uruchamia.</p>
+      <p>Napisz <code>missing_checks(workflow)</code>. Argument jest słownikiem powstałym po wczytaniu workflow, na przykład przez <code>yaml.safe_load</code>.</p><p>Sprawdź kroki <code>run</code> i zwróć alfabetycznie uporządkowaną listę brakujących narzędzi spośród <code>mypy</code>, <code>pytest</code> i <code>ruff</code>. Narzędzie jest brakujące, jeśli żaden krok go nie uruchamia.</p>
 
       <div class="pyrun" id="e2">
         <script type="text/x-python" data-role="starter">
@@ -202,7 +202,7 @@ assert missing_checks(_full) == [], "Kroki mogą być w różnych zadaniach (job
 
     <div class="next">
       <h2>Teraz lab</h2>
-      <p>Dockerfile, workflow CI i pre-commit, a potem review cudzego pull requesta z ukrytymi problemami. Na koniec punkt kontrolny 3 z zielonym CI. Około 5 godzin.</p>
+      <p>W labie przygotujesz Dockerfile, workflow CI i konfigurację pre-commit. Następnie przejrzysz cudzy pull request zawierający celowe problemy.</p><p>Trzeci punkt kontrolny obejmuje również poprawnie działające CI. Zarezerwuj około 5 godzin.</p>
       <p>Zacznij od <code>labs/16-docker-ci/README.md</code>.</p>
     </div>
   </main>

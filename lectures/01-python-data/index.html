@@ -27,7 +27,7 @@
   <main class="lecture">
     <p class="kicker">Moduł 01 · Część 1: inżynieria w Pythonie</p>
     <h1>Struktury danych i przepływ</h1>
-    <p class="lede">Umiesz napisać pętlę i funkcję. Ten moduł dotyczy tego, co dzieje się pod spodem, kiedy piszesz <code>b = a</code>. Od tej odpowiedzi zależy, czy funkcja czyszcząca dane zepsuje Ci oryginał.</p>
+    <p class="lede">Co się stanie, gdy przypiszesz listę do drugiej zmiennej, a potem zmienisz jeden z jej elementów? W tym wykładzie prześledzisz takie sytuacje. Nauczysz się też wybierać kolekcje, odczytywać pliki i rozpoznawać błędne dane.</p>
 
     <ul class="meta">
       <li><b>Czas:</b> około 60 minut</li>
@@ -44,12 +44,12 @@
       <li>zgłaszać i łapać wyjątki tak, żeby komunikat mówił, co jest nie tak.</li>
     </ul>
 
-    <p>W każdym bloku poniżej najpierw wybierz, co Twoim zdaniem wypisze kod. Dopiero potem go uruchom. Python ładuje się do przeglądarki przy pierwszym uruchomieniu, co trwa kilka sekund i wymaga sieci.</p>
+    <p>Przy każdym przykładzie najpierw spróbuj przewidzieć wynik. Dopiero potem uruchom kod i porównaj odpowiedź z wyjaśnieniem. Pierwsze uruchomienie wymaga internetu i chwili oczekiwania na pobranie Pythona do przeglądarki.</p>
 
     <section id="nazwy">
       <h2>Nazwy i obiekty</h2>
 
-      <p>W Pythonie zmienna nie jest pudełkiem z wartością. Jest <strong>nazwą</strong> przyczepioną do <strong>obiektu</strong>. Przypisanie <code>b = a</code> nie kopiuje niczego. Przyczepia drugą nazwę do tego samego obiektu.</p>
+      <p>W Pythonie kilka zmiennych może wskazywać ten sam obiekt. Przypisanie <code>b = a</code> nadaje obiektowi drugą nazwę, ale go nie kopiuje. Jeśli tym obiektem jest lista, zmiana wykonana przez <code>b</code> będzie widoczna także przez <code>a</code>.</p>
 
       <div class="predict" id="p1" data-type="single">
 <pre><code class="language-python">prices = [10, 12, 15]
@@ -90,7 +90,7 @@ print(a == b, a is b, a is c)</code></pre>
     <section id="mutowalnosc">
       <h2>Mutowalność</h2>
 
-      <p>Obiekty dzielą się na te, które da się zmienić w miejscu, i te, których się nie da.</p>
+      <p>Niektóre obiekty można zmieniać po utworzeniu. Nazywamy je mutowalnymi. Pozostałe są niemutowalne: żeby otrzymać inną wartość, trzeba użyć innego obiektu.</p>
 
       <div class="table-wrap">
         <table>
@@ -101,7 +101,7 @@ print(a == b, a is b, a is c)</code></pre>
         </table>
       </div>
 
-      <p>Dopóki obiekt jest niemutowalny, współdzielenie go między nazwami jest nieszkodliwe: nikt nie może go zmienić pod Twoją nieobecność. Z listą i słownikiem jest inaczej. Najczęściej wychodzi to przy funkcjach, bo argument funkcji to kolejna nazwa tego samego obiektu.</p>
+      <p>Gdy dwie nazwy wskazują tę samą liczbę lub tekst, nie można przez jedną z nich zmienić zawartości tego obiektu. Listę i słownik można natomiast zmieniać.</p><p>To ważne przy wywołaniu funkcji. Jej parametr może wskazywać tę samą listę co zmienna poza funkcją. Zmiana listy wewnątrz funkcji będzie wtedy widoczna również poza nią.</p>
 
       <div class="predict" id="p3" data-type="single">
 <pre><code class="language-python">def add_promo(calendar, day):
@@ -118,7 +118,7 @@ print(week)</code></pre>
         </ul>
       </div>
 
-      <p>Ta sama mechanika stoi za jedną z najsłynniejszych pułapek Pythona. Wartość domyślna argumentu powstaje <strong>raz</strong>, w chwili definiowania funkcji, a nie przy każdym wywołaniu.</p>
+      <p>Podobna sytuacja występuje przy domyślnych argumentach funkcji. Wartość domyślna powstaje <strong>raz, podczas definiowania funkcji</strong>. Kolejne wywołania korzystają z tego samego obiektu:</p>
 
       <div class="predict" id="p4" data-type="single">
 <pre><code class="language-python">def collect(sale, basket=[]):
@@ -136,7 +136,7 @@ print(collect(5))</code></pre>
 
       <h3>Kopia płytka i głęboka</h3>
 
-      <p>Skoro przypisanie nie kopiuje, kopię trzeba zrobić jawnie. <code>list(x)</code>, <code>x.copy()</code> i <code>x[:]</code> robią kopię <strong>płytką</strong>: nowy kontener, w którym siedzą te same obiekty co w starym.</p>
+      <p>Żeby utworzyć kopię, trzeba o to poprosić wprost. Zapisy <code>list(x)</code>, <code>x.copy()</code> i <code>x[:]</code> tworzą kopię płytką. Powstaje nowa kolekcja, ale jej elementy wskazują te same obiekty co elementy oryginału.</p><p>Dla listy liczb zwykle to wystarczy. Jeśli jednak w środku są inne listy, pozostaną one wspólne. Zobacz, co stanie się w poniższym słowniku:</p>
 
       <div class="predict" id="p5" data-type="single">
 <pre><code class="language-python">stock = {"jabłka": [5, 3], "gruszki": [2, 2]}
@@ -154,10 +154,10 @@ print(snapshot)</code></pre>
 
       <div class="callout rule">
         <span class="label">Reguła</span>
-        <p>Funkcja nie zmienia swoich argumentów. Zwraca nowy obiekt. Wyjątkiem jest funkcja, która w nazwie i w docstringu mówi wprost, że zmienia w miejscu.</p>
+        <p>W zadaniach kursu funkcja powinna pozostawiać przekazane dane bez zmian i zwracać osobny wynik. Jeśli celowo zmienia dane, zaznacz to w jej nazwie i docstringu.</p>
       </div>
 
-      <p>Ta reguła zostanie z Tobą do końca kursu. Wróci w module 06 jako "funkcja czyszcząca zwraca nową ramkę" i w każdym review.</p>
+      <p>Do tej zasady wrócimy w module 06: funkcja czyszcząca dane będzie zwracać nową tabelę. Tutor sprawdza ją również podczas przeglądu Twojego kodu.</p>
     </section>
 
 
@@ -178,9 +178,9 @@ print(snapshot)</code></pre>
         </table>
       </div>
 
-      <p>Różnica, którą czuć przy danych: sprawdzenie <code>x in lista</code> przegląda listę element po elemencie, a <code>x in zbior</code> i <code>x in slownik</code> trafia od razu. Dla 2 674 serii to bez znaczenia. Dla 4,5 miliona wierszy to minuty kontra ułamek sekundy.</p>
+      <p>Różnice między kolekcjami dotyczą też wyszukiwania. Zapis <code>x in lista</code> może wymagać sprawdzenia kolejnych elementów listy. Zbiór i słownik mają mechanizm szybkiego wyszukiwania po wartości lub kluczu. Przy dużych danych dobór kolekcji może więc istotnie zmienić czas działania programu.</p>
 
-      <p>Klucz słownika i element zbioru muszą być niezmienne. Krotka może być kluczem, lista nie.</p>
+      <p>Listy nie można użyć jako klucza słownika ani elementu zbioru. Krotka może pełnić tę rolę, jeśli również każdy z jej elementów nadaje się na klucz, na przykład jest liczbą lub napisem.</p>
 
       <div class="predict" id="p6" data-type="single">
 <pre><code class="language-python">stock = {("sklep", 1): 10}
@@ -221,7 +221,7 @@ known = [value for value in values if value is not None]      # to samo
 by_name = {name: sum(v) for name, v in series.items()}        # słownik
 codes = {name[0] for name in series}                          # zbiór</code></pre>
 
-      <p>Comprehension to wyrażenie, więc tworzy nową kolekcję i niczego nie zmienia po drodze. To pasuje do reguły "funkcja zwraca nowy obiekt". Kiedy logika ma więcej niż jeden warunek i jedno przekształcenie, zwykła pętla jest czytelniejsza. Nie ma nagrody za zmieszczenie wszystkiego w jednej linii.</p>
+      <p>Comprehension tworzy nową kolekcję. W pokazywanych przykładach odczytujemy dane z oryginału i zapisujemy wynik osobno.</p><p>Krótszy kod nie zawsze jest jednak czytelniejszy. Jeśli trudno prześledzić warunki i przekształcenia, użyj zwykłej pętli. Łatwiej będzie ją wyjaśnić i sprawdzić.</p>
 
       <div class="predict" id="p7" data-type="single">
 <pre><code class="language-python">values = [0, 2, None, 0, 5]
@@ -235,16 +235,16 @@ print([v * 10 for v in values if v])</code></pre>
 
       <div class="callout trap">
         <span class="label">Pułapka</span>
-        <p>Zero sprzedaży to informacja, a brak pomiaru to jej brak. W danych o popycie <code>if v</code> po cichu wyrzuca zera razem z brakami. Pisz warunek, który mówi dokładnie, o co Ci chodzi.</p>
+        <p>Zero oznacza znany wynik sprzedaży. <code>None</code> oznacza, że wyniku nie znamy. Warunek <code>if v</code> odrzuci obie wartości, więc do pomijania braków użyj dokładnego sprawdzenia <code>is not None</code>.</p>
       </div>
     </section>
 
     <section id="generatory">
       <h2>Iteracja i generatory</h2>
 
-      <p>Pętla <code>for</code> działa na wszystkim, co da się iterować: listach, słownikach (po kluczach), plikach (po liniach), zakresach. Pod spodem Python prosi obiekt o kolejne elementy, aż ten powie, że ich nie ma.</p>
+      <p>Pętla <code>for</code> pobiera kolejne elementy obiektu. Może przechodzić po liście, kluczach słownika, liniach pliku lub zakresie liczb. Pobieranie kolejnych elementów nazywamy iteracją. Pętla kończy się, gdy obiekt nie udostępnia już następnego elementu.</p>
 
-      <p><strong>Generator</strong> to funkcja, która zamiast <code>return</code> ma <code>yield</code>. Nie liczy wszystkiego od razu. Oddaje jeden element, zatrzymuje się i czeka, aż pętla poprosi o następny. Dzięki temu plik z milionem linii możesz przetwarzać linia po linii, trzymając w pamięci jedną.</p>
+      <p>Funkcja zawierająca <code>yield</code> tworzy generator. Przy wywołaniu nie oblicza od razu wszystkich wyników. Po rozpoczęciu iteracji wykonuje kod do <code>yield</code>, udostępnia wartość i czeka na kolejne pobranie.</p><p>Dzięki temu można odczytywać duży plik linia po linii, bez przechowywania całego tekstu w pamięci.</p>
 
 <pre><code class="language-python">def data_lines(lines):
     for line in lines:
@@ -274,7 +274,7 @@ print(next(gen))</code></pre>
     <section id="pliki">
       <h2>Pliki i <code>with</code></h2>
 
-      <p>Otwarty plik trzeba zamknąć, także wtedy, gdy w trakcie czytania poleci błąd. Robi to za Ciebie <code>with</code>: blok kończy się zamknięciem pliku, bez względu na to, jak się kończy.</p>
+      <p>Po odczycie plik trzeba zamknąć, również wtedy, gdy wystąpi błąd. Blok <code>with</code> robi to automatycznie. Nie musisz dopisywać osobnego zamknięcia dla każdej możliwej ścieżki wykonania.</p>
 
 <pre><code class="language-python">from pathlib import Path
 
@@ -290,10 +290,10 @@ with path.open(encoding="utf-8") as handle:
         <li>Zawsze podajesz <code>encoding="utf-8"</code>. Domyślne kodowanie zależy od systemu, a polskie znaki i symbole walut rozjeżdżają się pierwsze.</li>
       </ul>
 
-      <p><code>with</code> działa z każdym obiektem, który umie się "otworzyć" i "zamknąć": plikiem, połączeniem z bazą, blokadą. Takie obiekty nazywa się <strong>context managerami</strong>.</p>
+      <p>Plik jest przykładem obiektu obsługującego <code>with</code>, czyli <em>context managera</em>. Taki obiekt przygotowuje zasób przy wejściu do bloku i porządkuje go przy wyjściu. Podobnie można zarządzać połączeniem z bazą danych lub blokadą.</p>
 
       <h3 id="zapis-json">Zapis do pliku JSON</h3>
-      <p><strong>JSON</strong> to tekstowy format danych, który czyta człowiek i prawie każdy program. Słownik z napisami, liczbami, <code>None</code> i listami zamieniasz na tekst JSON funkcją <code>json.dumps</code> z modułu <code>json</code>. <code>indent=2</code> układa wynik w wiersze z wcięciem, <code>sort_keys=True</code> sortuje klucze słowników.</p>
+      <p><strong>JSON</strong> to tekstowy format zapisu danych, obsługiwany przez wiele języków programowania. Funkcja <code>json.dumps</code> zamienia słownik zawierający napisy, liczby, <code>None</code> i listy na tekst JSON.</p><p>Opcja <code>indent=2</code> dodaje wcięcia o szerokości dwóch spacji, a <code>sort_keys=True</code> porządkuje klucze alfabetycznie. Ułatwia to czytanie pliku i porównywanie jego wersji.</p>
 
 <pre><code class="language-python">import json
 from pathlib import Path
@@ -309,7 +309,7 @@ target.write_text(text, encoding="utf-8")</code></pre>
     <section id="wyjatki">
       <h2>Wyjątki</h2>
 
-      <p>Wyjątek to sygnał "nie mogę zrobić tego, o co prosisz". Ma typ i komunikat. Typ mówi, co za problem (<code>ValueError</code>: zła wartość, <code>KeyError</code>: brak klucza, <code>FileNotFoundError</code>: brak pliku), komunikat mówi szczegóły.</p>
+      <p>Wyjątek informuje, że program nie może wykonać danej operacji. Ma typ i komunikat. Na przykład <code>ValueError</code> oznacza niepoprawną wartość, <code>KeyError</code> brak klucza, a <code>FileNotFoundError</code> brak pliku. Komunikat powinien wskazać, które dane lub plik spowodowały problem.</p>
 
 <pre><code class="language-python">def parse_value(text):
     if text == "?":
@@ -322,7 +322,7 @@ target.write_text(text, encoding="utf-8")</code></pre>
       <p>Trzy zasady:</p>
       <ul>
         <li><strong>Łap konkretny typ.</strong> <code>except ValueError</code>, nie gołe <code>except</code>. Gołe łapie wszystko, także literówkę w nazwie zmiennej i Ctrl+C.</li>
-        <li><strong>Nie połykaj.</strong> <code>except: pass</code> zamienia błąd w cichy zły wynik. Jeśli łapiesz, to po to, żeby coś zrobić: dodać kontekst i rzucić dalej, albo świadomie obsłużyć.</li>
+        <li><strong>Nie ukrywaj przyczyny.</strong> Samo <code>except: pass</code> pozwala kontynuować program bez wyjaśnienia błędu. Obsłuż wyjątek wtedy, gdy możesz podjąć konkretną decyzję. W przeciwnym razie pozwól mu przerwać działanie albo dodaj kontekst i zgłoś go ponownie.</li>
         <li><strong>Komunikat z wartością.</strong> "Not a number: 'abc'" od razu mówi, co poszło nie tak. "Invalid input" nie mówi nic.</li>
       </ul>
 
@@ -346,7 +346,7 @@ print(safe_total(["1", "2", "?", "3O"]))</code></pre>
 
       <div class="callout rule">
         <span class="label">Reguła</span>
-        <p><code>except</code> łapie konkretny typ. Bez gołego <code>except</code> i bez <code>except: pass</code>.</p>
+        <p>W <code>except</code> podawaj konkretny typ wyjątku. Unikaj samego <code>except</code>, które obejmuje także nieoczekiwane problemy, oraz <code>except: pass</code>, które ukrywa błąd bez wyjaśnienia.</p>
       </div>
     </section>
 
@@ -355,7 +355,7 @@ print(safe_total(["1", "2", "?", "3O"]))</code></pre>
 
       <h3>Rabat bez skutków ubocznych</h3>
 
-      <p>Napisz funkcję, która stosuje rabat do listy cen. Ma zwrócić <strong>nową</strong> listę. Lista wejściowa ma zostać nietknięta. Ceny zaokrąglij do dwóch miejsc.</p>
+      <p>Napisz funkcję obliczającą ceny po rabacie. Ma zwrócić <strong>nową listę</strong>, a przekazaną listę cen pozostawić bez zmian. Każdą nową cenę zaokrąglij do dwóch miejsc po przecinku.</p>
 
       <div class="pyrun" id="e1">
         <script type="text/x-python" data-role="starter">
@@ -381,7 +381,7 @@ assert apply_discount([], 0.5) == [], "Dla pustej listy wynik to pusta lista."
 
       <h3>Tylko znane wartości</h3>
 
-      <p>Napisz generator <code>known</code>, który przechodzi po wartościach i oddaje tylko te, które nie są <code>None</code>. Zera zostają.</p>
+      <p>Napisz generator <code>known</code>, który udostępnia kolejne wartości inne niż <code>None</code>. Uwzględnij zera, ponieważ są znanymi wartościami.</p>
 
       <div class="pyrun" id="e2">
         <script type="text/x-python" data-role="starter">
@@ -404,7 +404,7 @@ assert list(known([])) == [], "Dla pustej listy generator nic nie oddaje."
 
     <div class="next">
       <h2>Teraz lab</h2>
-      <p>Napiszesz parser formatu <code>.tsf</code> i policzysz statystyki popytu 2 674 serii części samochodowych w czystym Pythonie, bez pandas. Około 6 godzin.</p>
+      <p>W labie odczytasz plik <code>.tsf</code> i obliczysz statystyki sprzedaży dla 2 674 części samochodowych. Użyjesz poznanych kolekcji i funkcji, bez pandas. Zarezerwuj około 6 godzin.</p>
       <p>Otwórz <code>labs/01-python-data/01-python-data.ipynb</code> w VS Code albo uruchom <code>uv run jupyter lab</code>.</p>
     </div>
   </main>

@@ -27,7 +27,7 @@
   <main class="lecture">
     <p class="kicker">Moduł 18 · Część 3: produkcja</p>
     <h1>Neuronowa prognoza na GPU</h1>
-    <p class="lede">W module 13 sieć przegrała z drzewami, bo dostała tabelę cech, na której drzewa są u siebie. Tu dostaje to, w czym sieci są dobre: surowe sekwencje dni, jeden model dla tysięcy serii i kartę graficzną, która liczy tysiące okien naraz. Na końcu staje w tym samym backteście co LightGBM, a Ty zobaczysz, co z tego wynika.</p>
+    <p class="lede">W module 13 sieć otrzymywała gotową tabelę cech. Teraz przekażesz jej sekwencje kolejnych dni. Jeden model będzie uczył się na wielu seriach, a GPU pomoże wykonać obliczenia dla wielu przykładów naraz. Na końcu porównasz prognozy z LightGBM w tym samym backteście.</p>
 
     <ul class="meta">
       <li><b>Czas:</b> około 60 minut</li>
@@ -48,9 +48,9 @@
     <section id="globalny">
       <h2>Jeden model dla wszystkich serii</h2>
 
-      <p>Modele z modułów 03-04 były <strong>lokalne</strong>: osobny model na każdą serię. LightGBM z modułu 10 jest <strong>globalny</strong>: jeden model uczy się na wszystkich seriach, a cechy mówią mu, która to seria. Sieć z tego modułu też jest globalna, tylko zamiast tabeli cech czyta surowe dni. Serie o małej sprzedaży uczą się od serii podobnych, a nowa seria dostaje sensowną prognozę po kilku tygodniach historii.</p>
+      <p>W modułach 03–04 tworzyliśmy osobny model dla każdej serii. Nazywamy je modelami <strong>lokalnymi</strong>. LightGBM z modułu 10 jest <strong>globalny</strong>: jeden model korzysta z przykładów pochodzących z wielu serii.</p><p>Sieć z tej lekcji również będzie globalna. Otrzyma kolejne dni oraz informacje o sklepie i produkcie. Pozwoli to wykorzystywać podobieństwa między seriami, choć jakość takiego przenoszenia trzeba sprawdzić w ocenie.</p>
 
-      <p>Przykład to <strong>okno</strong>: 28 dni historii jednej serii i 7 dni, które sieć ma przewidzieć. Z panelu 90 dni i 2 648 serii wychodzi dużo okien:</p>
+      <p>Jednym przykładem treningowym będzie <strong>okno</strong>: 28 dni historii jednej serii i 7 kolejnych dni do przewidzenia. Z jednej serii możemy pobrać wiele takich okien, przesuwając ich początek:</p>
 
       <div class="predict" id="p1" data-type="single">
 <pre><code class="language-python">series, days, past, horizon = 2648, 90, 28, 7
@@ -62,13 +62,13 @@ print(series * (days - past - horizon + 1))</code></pre>
         </ul>
       </div>
 
-      <p>Sprzedaż w oknie dzieli się przez średnią serii w historii tego okna. Wtedy seria sprzedająca 0.3 sztuki dziennie i seria sprzedająca 12 wyglądają dla sieci podobnie, a prognozę mnoży się z powrotem przez tę samą skalę. Bez tego największe serie zdominowałyby stratę.</p>
+      <p>Sprzedaż dzielimy przez średnią z historii danego okna. Dzięki temu duże i małe serie mają bardziej porównywalną skalę. Prognozę przeliczamy z powrotem za pomocą tej samej wartości.</p><p>Bez takiego przygotowania największe serie miałyby znacznie większy wpływ na stratę. Używamy tu skali danych źródłowych, nie zakładamy całkowitej liczby sztuk.</p>
     </section>
 
     <section id="gpu">
       <h2>GPU</h2>
 
-      <p>Karta graficzna ma tysiące prostych rdzeni. Opłaca się, gdy tę samą operację trzeba wykonać na wielu liczbach naraz: mnożenie macierzy dla batcha tysiąca okien to idealny przypadek. W labie epoka trwa na GPU 0.25 s, a na CPU około 4 s.</p>
+      <p>GPU jest przystosowane do wielu podobnych operacji wykonywanych równolegle. Przy uczeniu sieci przydaje się to między innymi do mnożenia macierzy dla całych partii przykładów, czyli batchy.</p><p>W pomiarze opisanym w labie epoka trwa około <code>0.25 s</code> na GPU i <code>4 s</code> na CPU. Różnica zależy od sprzętu, rozmiaru modelu i danych; na swoim komputerze sprawdzisz ją osobno.</p>
 
 <pre><code class="language-python">device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 net = GRUForecastNet(...).to(device)                 # weights go to the GPU once
@@ -84,13 +84,13 @@ for batch in loader:
         <li>w WSL2 sterownik NVIDIA instaluje się w Windowsie. W Ubuntu sprawdzasz tylko <code>nvidia-smi</code>.</li>
       </ul>
 
-      <p><code>Dataset</code> mówi, jak zrobić przykład o danym numerze. <code>DataLoader</code> składa z nich batche w losowej kolejności. W labie <code>WindowDataset</code> ma metodę <code>__getitems__</code>, która buduje cały batch naraz indeksowaniem tablic NumPy: dziesiątki razy szybciej niż składanie tysiąca przykładów jeden po drugim.</p>
+      <p><code>Dataset</code> określa sposób pobrania przykładu o danym numerze. <code>DataLoader</code> zbiera przykłady w partie, czyli batche, i może zmieniać ich kolejność.</p><p>W labie <code>WindowDataset.__getitems__</code> przygotuje całą partię za pomocą indeksowania NumPy. Porównasz to z tworzeniem każdego okna osobno.</p>
     </section>
 
     <section id="gru">
       <h2>GRU i embeddingi</h2>
 
-      <p>Sieć rekurencyjna czyta sekwencję dzień po dniu i niesie <strong>stan</strong>: wektor, który podsumowuje wszystko, co przeczytała. W każdym kroku łączy stary stan z nowym dniem. GRU (gated recurrent unit) ma do tego dwie bramki, które uczą się, ile starego stanu zachować, a ile zastąpić nowym. Najprostsza "sieć rekurencyjna" to średnia wykładnicza z modułu 03, z jedną stałą bramką:</p>
+      <p>Sieć rekurencyjna odczytuje kolejne dni i aktualizuje <strong>stan</strong>, czyli wektor podsumowujący dotychczasową historię. GRU, z angielskiego <em>gated recurrent unit</em>, uczy się, które elementy starego stanu zachować, a które zastąpić nową informacją.</p><p>Intuicję takiej aktualizacji pokazuje średnia wykładnicza z modułu 03: również łączy wcześniejsze podsumowanie z nową obserwacją. GRU ma jednak uczone bramki i wielowymiarowy stan, zamiast jednej stałej wagi:</p>
 
       <div class="predict" id="p2" data-type="single">
 <pre><code class="language-python">state = 0.0
@@ -104,15 +104,15 @@ print(state)</code></pre>
         </ul>
       </div>
 
-      <p>Stan po ostatnim dniu historii trafia do <strong>głowy</strong>: kilku warstw liniowych, które razem z kanałami przyszłych dni (rabat, promocje, dzień tygodnia) i embeddingami piszą 7 liczb prognozy.</p>
+      <p>Stan po ostatnim dniu historii przekazujemy do końcowych warstw, nazywanych <strong>głową modelu</strong>. Wraz z informacjami o przyszłych dniach, takimi jak rabat i dzień tygodnia, oraz embeddingami służy do obliczenia siedmiu wartości prognozy.</p>
 
-      <p><strong>Embedding</strong> to wyuczony wektor dla każdej wartości kategorii: 16 liczb na sklep, 16 na produkt. Sieć uczy się ich razem z resztą wag. Podobne sklepy dostają podobne wektory. To sieciowy odpowiednik kategorii w LightGBM i odpowiedź na problem z modułu 13, gdzie MLP nie miał tożsamości serii.</p>
+      <p><strong>Embedding</strong> zapisuje kategorię jako wektor uczony razem z pozostałymi parametrami sieci. Tutaj sklep i produkt otrzymają po 16 liczb.</p><p>Model może w ten sposób nauczyć się przydatnych podobieństw między kategoriami. To inny sposób uwzględnienia tożsamości serii niż natywne kategorie w LightGBM.</p>
     </section>
 
     <section id="strata">
       <h2>Strata tylko na dniach bez braków</h2>
 
-      <p>W module 09 LightGBM uczył się tylko na dniach bez braków, bo sprzedaż w dzień braku to nie popyt. Sieć nie może wyrzucić tych dni, bo potrzebuje ich jako historii: okno 28 dni ma być ciągłe. Rozwiązanie: dni z brakami są na wejściu, ale nie w stracie. Strata to średni błąd bezwzględny tylko na dniach prognozy, w których towar był:</p>
+      <p>W module 09 wykluczaliśmy z uczenia LightGBM dni z brakami towaru, bo ich sprzedaż nie pokazuje pełnego popytu. Sieć potrzebuje jednak ciągłej historii w oknie 28 dni.</p><p>Zachowamy więc te dni na wejściu, ale pominiemy je przy obliczaniu straty dla prognozowanych dni. Średni błąd bezwzględny policzymy tylko tam, gdzie cel jest znany i towar był dostępny:</p>
 
       <div class="predict" id="p3" data-type="single">
 <pre><code class="language-python">import numpy as np
@@ -133,7 +133,7 @@ print(float((np.abs(forecast - np.nan_to_num(target)) * weights).sum() / weights
     <section id="trening">
       <h2>Trening: mixed precision, harmonogram, early stopping</h2>
 
-      <p><strong>Mixed precision</strong> liczy większość operacji w 16-bitowych liczbach zmiennoprzecinkowych zamiast 32-bitowych. Na nowoczesnych kartach to kilka razy szybciej i o połowę mniej pamięci. Cena: 16 bitów to mała precyzja i mały zakres.</p>
+      <p><strong>Mixed precision</strong> łączy obliczenia w różnych precyzjach, zamiast używać wszędzie liczb 32-bitowych. Część operacji można wykonać w 16 bitach, co na odpowiednim GPU może skrócić trening i zmniejszyć zużycie pamięci.</p><p>Mniejsza precyzja oznacza jednak węższy zakres i większe błędy zaokrągleń. Dlatego nie zmieniamy w ten sposób wszystkich operacji bez rozróżnienia.</p>
 
       <div class="predict" id="p4" data-type="single">
 <pre><code class="language-python">import numpy as np
@@ -146,9 +146,9 @@ print(float(np.float16(2048) + np.float16(1)), float(np.float16(0.0001) * np.flo
         </ul>
       </div>
 
-      <p>Dlatego <code>autocast</code> liczy w 16 bitach tylko tam, gdzie to bezpieczne (mnożenia macierzy), a wagi i sumy trzyma w 32 bitach.</p>
+      <p>Mechanizm <code>autocast</code> dobiera precyzję dla obsługiwanych operacji. Pozwala wykonywać część mnożeń w niższej precyzji, pozostawiając inne obliczenia w wyższej. Wagi modelu w pokazanym treningu zachowujemy w 32 bitach.</p>
 
-      <p><strong>Harmonogram kroku uczenia</strong> (<code>OneCycleLR</code>) zaczyna od małego kroku, podnosi go do szczytu i opuszcza pod koniec. Duży krok w środku szybko przesuwa wagi, mały na końcu je dopracowuje. <strong>Early stopping</strong> działa jak w modułach 10 i 13: ostatni tydzień historii jest odłożony, a po znalezieniu najlepszej liczby epok sieć uczy się od nowa na wszystkim, żeby najświeższy tydzień nie przepadł.</p>
+      <p><strong>Harmonogram kroku uczenia</strong> zmienia jego wielkość podczas treningu. <code>OneCycleLR</code> zaczyna od małego kroku, zwiększa go, a potem zmniejsza pod koniec.</p><p>Do wyboru liczby epok użyjemy <strong>early stopping</strong> na ostatnim tygodniu historii. Następnie wytrenujemy model ponownie z wybraną liczbą epok, uwzględniając również ten tydzień.</p>
 
       <div class="quiz" id="q1" data-type="single">
         <div class="quiz-q">Trening na GPU kończy się błędem <code>CUDA out of memory</code> w pierwszym batchu. Co zmieniasz najpierw?</div>
@@ -163,7 +163,7 @@ print(float(np.float16(2048) + np.float16(1)), float(np.float16(0.0001) * np.flo
     <section id="lightning">
       <h2>Lightning</h2>
 
-      <p>Pętla treningowa z labu ma kilkadziesiąt linii: urządzenie, mixed precision, harmonogram, walidacja, early stopping, zapis najlepszych wag. W każdym projekcie te same. <strong>Lightning</strong> je zabiera. Ty piszesz, co robi jeden krok, a <code>Trainer</code> robi resztę:</p>
+      <p>Pętla treningowa musi obsłużyć urządzenie, precyzję obliczeń, harmonogram, walidację i zapis wag. Framework <strong>Lightning</strong> pozwala przekazać część tych zadań do <code>Trainer</code>.</p><p>Ty opisujesz model i pojedynczy krok obliczeń. Porównasz tę wersję z wcześniej napisaną pętlą, żeby rozumieć, które czynności wykonuje framework:</p>
 
 <pre><code class="language-python">class WindowModule(L.LightningModule):
     def training_step(self, batch, _):
@@ -194,10 +194,10 @@ trainer.fit(module, train_loader, valid_loader)</code></pre>
 
       <div class="callout story">
         <span class="label">Z labu</span>
-        <p>Na jednym mieście, w backteście 4 tygodni, GRU ma WAPE 0.390, a LightGBM 0.377. Na całym zbiorze, 50 000 serii, GRU ma 0.308, a LightGBM 0.306. Sieć zbliża się do drzew, gdy dostaje więcej danych, ale ich nie wyprzedza. Za to uczy się z surowych dni, bez ręcznie budowanych lagów, i dobrze łączy się z innymi modelami. Średnia prognoz obu to częsty następny krok.</p>
+        <p>W opisanym backteście na jednym mieście GRU ma WAPE <code>0.390</code>, a LightGBM <code>0.377</code>. Na pełnym zbiorze 50 000 serii wyniki wynoszą odpowiednio <code>0.308</code> i <code>0.306</code>.</p><p>W tym porównaniu większy zbiór zmniejsza różnicę, ale sieć nie wyprzedza drzew. Korzysta za to z sekwencji dni bez ręcznie przygotowanych lagów. Możesz później sprawdzić także połączenie prognoz obu modeli, oceniając je tak samo jak pozostałe warianty.</p>
       </div>
 
-      <p>Wniosek na capstone: wybór modelu to porównanie w tym samym backteście, na tych samych wierszach, z uwzględnieniem kosztu. Sieć na GPU trenuje się kilka razy dłużej niż LightGBM i wymaga karty w produkcji albo dłuższego czasu na CPU.</p>
+      <p>W projekcie końcowym porównaj modele na tych samych wierszach i w tym samym backteście. Uwzględnij również czas treningu, potrzebny sprzęt i koszt prognozowania. Sam fakt użycia sieci lub GPU nie uzasadnia wyboru rozwiązania.</p>
     </section>
 
     <section id="cwiczenie">
@@ -205,7 +205,7 @@ trainer.fit(module, train_loader, valid_loader)</code></pre>
 
       <h3>Początki okien</h3>
 
-      <p>Napisz <code>window_starts(days, past, horizon)</code>: lista dni, od których może zacząć się okno historii długości <code>past</code> z horyzontem <code>horizon</code>, tak żeby całe okno mieściło się w <code>days</code> dniach.</p>
+      <p>Napisz <code>window_starts(days, past, horizon)</code>. Zwróć listę możliwych początków okna z historią długości <code>past</code> i kolejnymi <code>horizon</code> dniami prognozy. Cała historia i prognoza muszą mieścić się w dostępnych <code>days</code> dniach.</p>
 
       <div class="pyrun" id="e1">
         <script type="text/x-python" data-role="starter">
@@ -225,7 +225,7 @@ assert window_starts(5, 4, 2) == [], "Okno dłuższe niż dane: brak okien."
 
       <h3>Strata z maską</h3>
 
-      <p>Napisz <code>masked_mae(forecast, target, in_stock)</code> w NumPy: średni błąd bezwzględny na dniach, w których <code>in_stock</code> wynosi 1, a cel jest znany. Gdy takich dni nie ma, <code>ValueError</code>.</p>
+      <p>Napisz <code>masked_mae(forecast, target, in_stock)</code> w NumPy. Oblicz średni błąd bezwzględny tylko dla dni, w których <code>in_stock</code> wynosi 1 i cel jest znany. Jeśli nie ma takich dni, zgłoś <code>ValueError</code>.</p>
 
       <div class="pyrun" id="e2">
         <script type="text/x-python" data-role="starter">
@@ -255,7 +255,7 @@ else:
 
     <div class="next">
       <h2>Teraz lab</h2>
-      <p>Siedem ticketów: urządzenie, panel jako tablica, okna jako tensory, sieć GRU, pętla treningowa na GPU, model w backteście obok LightGBM i to samo w Lightning. Około 10 godzin.</p>
+      <p>W labie wykonasz siedem ticketów. Przygotujesz wybór urządzenia, panel w tablicy, okna w tensorach, model GRU i pętlę treningową na GPU.</p><p>Następnie dodasz model do backtestu obok LightGBM i odtworzysz trening w Lightning. Zarezerwuj około 10 godzin.</p>
       <p>Zacznij od <code>labs/18-neural-gpu/README.md</code>.</p>
     </div>
   </main>

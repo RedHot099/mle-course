@@ -27,7 +27,7 @@
   <main class="lecture">
     <p class="kicker">Moduł 11 · Część 2: dane i ML</p>
     <h1>Walidacja i tuning</h1>
-    <p class="lede">Liczba z jednego tygodnia walidacji to jedna próbka. Decyzje oparte na jednej próbce są częściowo losowe, a po dwudziestu takich decyzjach wynik walidacji przestaje mówić prawdę. Ten moduł dotyczy tego, jak mierzyć tak, żeby pomiar przetrwał kontakt z przyszłością, i jak zapisywać eksperymenty, żeby dało się do nich wrócić.</p>
+    <p class="lede">Jeden tydzień walidacji może sprzyjać konkretnemu modelowi. W tym module powtórzysz ocenę dla kilku tygodni i sprawdzisz, czy przewaga się utrzymuje. Potem wykorzystasz te wyniki do wyboru ustawień i zapiszesz eksperymenty tak, żeby można było je odtworzyć.</p>
 
     <ul class="meta">
       <li><b>Czas:</b> około 60 minut</li>
@@ -47,7 +47,7 @@
     <section id="backtest">
       <h2>Backtest rolling origin</h2>
 
-      <p>Prognoza w produkcji wygląda zawsze tak samo: model uczy się na wszystkim do dziś i przewiduje następny tydzień. Backtest odtwarza tę sytuację w przeszłości, kilka razy: udaje, że "dziś" było cztery tygodnie temu, potem trzy, potem dwa. Każde takie "dziś" to <strong>fold</strong>. Ocena modelu to średnia z foldów, a rozrzut między foldami mówi, ile w tej średniej jest przypadku.</p>
+      <p>Backtest odtwarza prognozowanie w kilku momentach z przeszłości. Za każdym razem model dostaje wyłącznie wcześniejsze dane i przewiduje kolejny tydzień.</p><p>Jeden taki podział na trening i oceniany okres nazywamy <strong>foldem</strong>. Porównaj średni wynik oraz wyniki poszczególnych foldów. Zobaczysz, czy metoda działa podobnie w kolejnych tygodniach.</p>
 
       <figure class="widget" id="fold-widget">
         <p class="widget-title">Foldy na 90 dniach danych</p>
@@ -63,7 +63,7 @@
         <p class="verdict" data-role="verdict" role="status"></p>
       </figure>
 
-      <p>Losowy K-fold, standard z podręczników, miesza dni. Model uczy się na wtorku i czwartku i ocenia na środzie, która leży między nimi. Sąsiednie dni tej samej serii są podobne, więc środa jest "łatwa". W labie losowy K-fold daje WAPE 0.339, a backtest po czasie tego samego modelu 0.379. Różnica to nie lepszy model, tylko wyciek z przyszłości.</p>
+      <p>Losowy K-fold miesza dni między treningiem a walidacją. W efekcie model może uczyć się na danych późniejszych niż oceniany dzień.</p><p>W porównaniu z labu ten sam model uzyskuje WAPE <code>0.339</code> dla losowego podziału i <code>0.379</code> dla backtestu po czasie. Pierwszy wynik nie oznacza lepszej prognozy przyszłości, ponieważ korzysta z innego sposobu podziału.</p>
 
       <div class="predict" id="p1" data-type="single">
 <pre><code class="language-python">import pandas as pd
@@ -91,7 +91,7 @@ print([str(day.date()) for day in starts])</code></pre>
     <section id="metryka">
       <h2>Którą metrykę optymalizować</h2>
 
-      <p>Tuning i wybór modelu optymalizują jedną liczbę. Ta liczba powinna odpowiadać decyzji, którą prognoza wspiera. W kursie to WAPE na dniach bez braków, bo prognoza służy do zamawiania towaru, a dni z brakami zaniżają obraz popytu. Ale sklep ma też asymetrię kosztów: pusta półka to utracona sprzedaż i zirytowany klient, nadmiar to wyrzucony świeży towar.</p>
+      <p>Do wyboru ustawień potrzebujesz jednej głównej miary. Powinna odpowiadać zastosowaniu prognozy. W kursie wybieramy WAPE na dniach bez braków towaru, ponieważ ich sprzedaż lepiej odzwierciedla popyt.</p><p>Sama miara nie opisuje jednak wszystkich kosztów. Brak towaru może oznaczać utraconą sprzedaż, a nadmiar świeżego produktu jego wyrzucenie. Warto zapisać to ograniczenie oceny.</p>
 
       <ul>
         <li>WAPE traktuje pomyłkę w górę i w dół tak samo,</li>
@@ -133,7 +133,7 @@ study.optimize(objective, n_trials=25)</code></pre>
 
       <h3>Wynik najlepszej próby jest zawyżony</h3>
 
-      <p>Każda próba to pomiar z szumem. Najlepsza z dwudziestu to ta, której szum wypadł najkorzystniej. Nawet gdyby wszystkie ustawienia były równie dobre, najlepsza próba wyglądałaby lepiej niż reszta:</p>
+      <p>Każdy wynik zależy częściowo od przypadkowych cech ocenianej próbki. Wybierając najlepszą z wielu prób, możemy wybrać również tę, której ten przypadek najbardziej sprzyjał. Nawet jednakowo dobre ustawienia nie muszą uzyskać identycznej oceny:</p>
 
       <div class="predict" id="p2" data-type="single">
 <pre><code class="language-python">import numpy as np
@@ -153,14 +153,14 @@ print(round(valid[best], 3), round(test[best], 3))</code></pre>
 
       <div class="callout story">
         <span class="label">Z labu</span>
-        <p>Piętnaście prób Optuny poprawia backtest z 0.378 na 0.375. Decyzja o uczeniu tylko na dniach bez braków dała wcześniej 0.024. Strojenie jest na końcu listy, nie na początku: najpierw dane, cechy i poprawna walidacja.</p>
+        <p>W przykładzie piętnaście prób Optuny poprawia backtest z <code>0.378</code> do <code>0.375</code>. Wcześniejsza decyzja o uczeniu na dniach bez braków poprawiła wynik o <code>0.024</code>.</p><p>Zacznij więc od danych, cech i wiarygodnej walidacji. Strojenie ustawień ma sens, gdy te elementy są już sprawdzone.</p>
       </div>
     </section>
 
     <section id="mlflow">
       <h2>Dziennik eksperymentów</h2>
 
-      <p>Po tygodniu eksperymentów nikt nie pamięta, które ustawienia dały 0.375, na jakich danych i z którą wersją cech. <strong>MLflow</strong> zapisuje każdy eksperyment jako <strong>run</strong>: parametry, metryki, pliki (artefakty) i czas. Runy grupują się w <strong>eksperymenty</strong>. Lokalnie wystarczy plik bazy danych:</p>
+      <p>Żeby odtworzyć wynik, potrzebujesz ustawień, danych, wersji cech i zapisanego modelu. <strong>MLflow</strong> zbiera te informacje dla pojedynczej próby, nazywanej <strong>runem</strong>.</p><p>Run zawiera parametry, metryki, pliki, czyli artefakty, i czas wykonania. Powiązane runy grupujesz w eksperyment. Do lokalnej pracy wystarczy baza w pliku:</p>
 
 <pre><code class="language-python">mlflow.set_tracking_uri("sqlite:///data/mlflow/mlflow.db")
 mlflow.set_experiment("freshcast-tuning")
@@ -170,7 +170,7 @@ with mlflow.start_run(run_name="trial-3"):
     mlflow.log_metrics({"wape_in_stock": 0.375, "bias_in_stock": 0.026})
     mlflow.log_table(per_fold_results, "backtest.json")</code></pre>
 
-      <p>Potem <code>uv run mlflow ui --backend-store-uri sqlite:///data/mlflow/mlflow.db</code> otwiera przeglądarkę runów z sortowaniem, porównaniem i wykresami.</p>
+      <p>Następnie uruchom <code>uv run mlflow ui --backend-store-uri sqlite:///data/mlflow/mlflow.db</code>. Otrzymasz interfejs do przeglądania i porównywania zapisanych prób oraz ich wyników.</p>
 
       <h3>Wersja prostsza</h3>
 
@@ -181,7 +181,7 @@ with mlflow.start_run(run_name="trial-3"):
 └── metadata.json      # parametry, cechy, zakres dat treningu, wyniki backtestu,
                        # commit gita, wersja danych</code></pre>
 
-      <p>W module 14 zbudujesz taki zapis w pipeline'ie. Obojętnie, którą drogę wybierzesz, zapisuj to, bez czego nie odtworzysz wyniku.</p>
+      <p>Taki zapis przygotujesz w module 14. Niezależnie od narzędzia zachowaj wszystkie informacje potrzebne do odtworzenia wyniku.</p>
 
       <div class="quiz" id="q3" data-type="multi">
         <div class="quiz-q">Co trzeba zapisać, żeby za pół roku odtworzyć najlepszy model? Zaznacz wszystkie.</div>
@@ -200,7 +200,7 @@ with mlflow.start_run(run_name="trial-3"):
 
       <h3>Foldy</h3>
 
-      <p>Napisz <code>rolling_folds(last_day, n_folds, horizon)</code> na numerach dni: lista par <code>(start, end)</code> okien walidacji, od najstarszego, z końcami włącznie. Ostatnie okno kończy się w <code>last_day</code>.</p>
+      <p>Napisz <code>rolling_folds(last_day, n_folds, horizon)</code> dla dni zapisanych jako liczby. Zwróć listę par <code>(start, end)</code> opisujących okresy walidacji, od najstarszego do najnowszego.</p><p>Oba końce przedziału należą do okna. Ostatnie okno ma kończyć się w dniu <code>last_day</code>.</p>
 
       <div class="pyrun" id="e1">
         <script type="text/x-python" data-role="starter">
@@ -225,7 +225,7 @@ else:
 
       <h3>Porównanie fold po foldzie</h3>
 
-      <p>Napisz <code>compare(a, b)</code>: dla wyników dwóch modeli w tych samych foldach (niższy lepszy) zwraca średnią różnicę <code>a − b</code> i liczbę foldów, w których <code>a</code> było lepsze.</p>
+      <p>Napisz <code>compare(a, b)</code>. Listy zawierają wyniki dwóch modeli dla tych samych foldów, a niższy wynik oznacza lepszy model. Zwróć średnią różnicę <code>a − b</code> oraz liczbę foldów, w których model <code>a</code> był lepszy.</p>
 
       <div class="pyrun" id="e2">
         <script type="text/x-python" data-role="starter">
@@ -247,7 +247,7 @@ assert compare([0.5], [0.4]) == (compare([0.5], [0.4])[0], 0) and abs(compare([0
 
     <div class="next">
       <h2>Teraz lab</h2>
-      <p>Zbudujesz backtest, powtórzysz na nim decyzje z modułów 08-10, zobaczysz, ile losowy K-fold dodaje do wyniku, przeszukasz ustawienia LightGBM Optuną z zapisem do MLflow i raz zajrzysz do testu. Potem punkt kontrolny 2. Około 6 godzin.</p>
+      <p>W labie zbudujesz backtest i ponownie sprawdzisz decyzje z modułów 08–10. Porównasz go z losowym K-fold, a potem przeszukasz ustawienia LightGBM za pomocą Optuny i zapiszesz próby w MLflow.</p><p>Do testu zajrzysz raz, po wyborze rozwiązania. Następnie przygotujesz drugi punkt kontrolny. Zarezerwuj około 6 godzin.</p>
       <p>Otwórz <code>labs/11-validation-tuning/11-validation-tuning.ipynb</code>.</p>
     </div>
   </main>

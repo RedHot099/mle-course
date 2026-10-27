@@ -27,7 +27,7 @@
   <main class="lecture">
     <p class="kicker">Moduł 14 · Część 3: produkcja</p>
     <h1>Od notebooka do pipeline'u</h1>
-    <p class="lede">Notebook jest dobry do myślenia i złym miejscem na coś, co ma działać co noc bez Ciebie. Pipeline to ten sam kod, ale z ustawieniami w jednym pliku, poleceniem, które da się uruchomić z crona, logiem, który powie, co się stało, i modelem zapisanym tak, żeby za pół roku wiadomo było, skąd się wziął.</p>
+    <p class="lede">W notebooku sprawdzasz pomysły i oglądasz wyniki. Teraz przygotujesz uruchomienie, które nie wymaga ręcznego wykonywania komórek. Ustawienia zapiszesz w pliku, obliczenia wywołasz z terminala, a logi i metadane pozwolą odtworzyć przebieg pracy.</p>
 
     <ul class="meta">
       <li><b>Czas:</b> około 50 minut</li>
@@ -47,7 +47,7 @@
     <section id="dlaczego">
       <h2>Co zmienia pipeline</h2>
 
-      <p>W notebooku kolejność komórek, stan kernela i ręcznie wpisane ścieżki tworzą ukryte zależności. Uruchomiony jutro na innym komputerze daje inny wynik albo nie działa wcale. Pipeline ma cztery własności, których notebook nie ma:</p>
+      <p>Notebook może zależeć od kolejności wykonania komórek, zmiennych pozostałych w pamięci i ręcznie wpisanych ścieżek. Przy kolejnym uruchomieniu trudno wtedy ustalić, czego brakuje.</p><p>W tym module zapiszemy cały przebieg jako pipeline, czyli uporządkowane wywołania istniejących funkcji. Ma zapewnić cztery rzeczy:</p>
       <ul>
         <li><strong>jeden punkt wejścia</strong>: <code>freshcast train --config configs/standard.yaml</code> robi wszystko, w ustalonej kolejności,</li>
         <li><strong>ustawienia poza kodem</strong>: inny zbiór danych to inny plik YAML, a nie edycja funkcji,</li>
@@ -60,7 +60,7 @@
     <section id="ustawienia">
       <h2>Ustawienia</h2>
 
-      <p>Ustawienia opisuje model pydantic: klasa z polami, typami i ograniczeniami. Pydantic sprawdza je przy wczytaniu, więc zły plik zatrzymuje uruchomienie w pierwszej sekundzie, a nie po godzinie treningu.</p>
+      <p>Ustawienia opiszemy klasą pydantic. Jej pola określą nazwy, typy i dopuszczalne wartości. Sprawdzenie nastąpi przy wczytywaniu konfiguracji, zanim rozpoczniemy trening. Błąd w ustawieniach nie powinien ujawniać się dopiero po długich obliczeniach.</p>
 
 <pre><code class="language-yaml"># configs/standard.yaml
 data:
@@ -100,13 +100,13 @@ except ValidationError as error:
 
       <p><code>extra="forbid"</code> to ochrona przed literówką: <code>round: 200</code> zamiast <code>rounds: 200</code> bez tej opcji po cichu zostawiłoby 400.</p>
 
-      <p><strong>Nadpisanie ze środowiska.</strong> <code>pydantic-settings</code> czyta też zmienne środowiskowe: <code>FRESHCAST_MODEL__ROUNDS=150</code> ustawia <code>model.rounds</code>. W CI, w Dockerze i w harmonogramie zmienisz jedną wartość bez edycji pliku. Kolejność źródeł ustalasz sam: w kursie środowisko wygrywa z plikiem. Hasła i klucze trafiają tylko do środowiska, nigdy do YAML w repozytorium (G4).</p>
+      <p>Pakiet <code>pydantic-settings</code> pozwala odczytywać ustawienia ze zmiennych środowiskowych. Na przykład <code>FRESHCAST_MODEL__ROUNDS=150</code> ustawia <code>model.rounds</code>. Dzięki temu na serwerze lub w CI zmienisz wartość bez edycji pliku.</p><p>W kursie ustawienie ze środowiska ma pierwszeństwo przed plikiem. Haseł i kluczy nie zapisuj w YAML dodawanym do repozytorium. Przekazuj je przez środowisko, zgodnie z regułą G4.</p>
     </section>
 
     <section id="cli">
       <h2>CLI i kody wyjścia</h2>
 
-      <p>Polecenie w terminalu to funkcja, której wynikiem jest <strong>kod wyjścia</strong>. Cron, CI i skrypty patrzą tylko na niego: 0 znaczy sukces, każda inna liczba porażkę. Warto rozróżnić porażki, bo różnie się na nie reaguje:</p>
+      <p>Program uruchomiony z terminala kończy się <strong>kodem wyjścia</strong>. Wartość 0 oznacza sukces, a pozostałe wartości błąd. Skrypty, CI i harmonogram zadań mogą na tej podstawie rozpoznać, czy uruchomienie się powiodło.</p><p>W naszym CLI odróżnimy niepoprawne argumenty lub ustawienia od błędu podczas obliczeń:</p>
 
       <table>
         <thead><tr><th>Kod</th><th>Znaczy</th><th>Reakcja</th></tr></thead>
@@ -140,7 +140,7 @@ except SystemExit as exit:
     <section id="logi">
       <h2>Logowanie i błędy</h2>
 
-      <p><code>print</code> w pakiecie znika albo miesza się z wynikiem polecenia (K8). <code>logging</code> ma poziomy, znaczniki czasu i nazwę modułu, a o tym, co i gdzie trafia, decyduje punkt wejścia, a nie każda funkcja z osobna:</p>
+      <p>Zamiast <code>print</code> w funkcjach pakietu używamy <code>logging</code>, zgodnie z regułą K8. Log może zawierać czas, poziom komunikatu i nazwę modułu. Sposób jego wyświetlania lub zapisu konfigurujemy przy uruchamianiu programu:</p>
 
 <pre><code class="language-python">logger = logging.getLogger(__name__)          # in every module of the package
 
@@ -163,13 +163,13 @@ log.warning("3 series skipped")</code></pre>
         </ul>
       </div>
 
-      <p><strong>Jedna granica błędów.</strong> Wewnątrz pakietu funkcje rzucają konkretne wyjątki z czytelnym komunikatem i ich nie łapią (K4). W jednym miejscu, w punkcie wejścia CLI, jest <code>except Exception</code>: loguje pełny traceback przez <code>logger.exception</code> i zwraca kod 1. Błąd nie ginie po drodze, a proces kończy się czysto.</p>
+      <p>W funkcjach pakietu zgłaszamy konkretne wyjątki z czytelnym komunikatem. Obsługujemy je dopiero tam, gdzie można podjąć decyzję, co zrobić dalej.</p><p>W tym projekcie wspólnym miejscem obsługi jest punkt wejścia CLI. Tam <code>except Exception</code> zapisuje pełny traceback przez <code>logger.exception</code> i kończy program kodem 1. Pozwala to zachować informację o przyczynie błędu, zgodnie z regułą K4.</p>
 
       <div class="quiz" id="q1" data-type="single">
         <div class="quiz-q">Funkcja <code>prepare_daily</code> łapie każdy wyjątek, loguje "coś poszło nie tak" i zwraca pustą ramkę. Co się stanie w nocnym przebiegu, gdy plik będzie uszkodzony?</div>
         <ul class="quiz-options">
           <li>Przebieg zakończy się błędem z kodem 1.<span class="why">Wyjątek został połknięty. Dalsze kroki dostaną pustą ramkę.</span></li>
-          <li data-correct>Przebieg może skończyć się "sukcesem" z pustą albo błędną prognozą, a przyczyna zginie w jednej linii logu.<span class="why">Tak. Dlatego wyjątki łapie się tylko tam, gdzie wiadomo, co z nimi zrobić, a na brzegu programu jest jedna jawna granica.</span></li>
+          <li data-correct>Przebieg może skończyć się "sukcesem" z pustą albo błędną prognozą, a przyczyna zginie w jednej linii logu.<span class="why">Wyjątek obsługujemy tam, gdzie możemy zdecydować o dalszym działaniu. W tym projekcie wspólna obsługa kończąca program znajduje się w punkcie wejścia CLI.</span></li>
           <li>Python odmówi uruchomienia takiego kodu.<span class="why">Python pozwoli. Ostrzeże dopiero ruff albo recenzent.</span></li>
         </ul>
       </div>
@@ -178,7 +178,7 @@ log.warning("3 series skipped")</code></pre>
     <section id="model">
       <h2>Zapis modelu</h2>
 
-      <p>Model to plik plus wiedza o tym, skąd się wziął. Każdy zapis tworzy nowy katalog z sygnaturą, nigdy nie nadpisuje poprzedniego:</p>
+      <p>Sam plik z modelem nie wystarczy do odtworzenia eksperymentu. Potrzebne są też informacje o danych, cechach, ustawieniach i wersji kodu.</p><p>Każdy zapis utworzy nowy, jednoznacznie nazwany katalog z modelem i metadanymi. Poprzednia wersja pozostanie dostępna:</p>
 
 <pre><code class="language-text">artifacts/lightgbm_20240626-213000/
 ├── model.joblib        wytrenowany model
@@ -189,7 +189,7 @@ log.warning("3 series skipped")</code></pre>
 
       <p><code>joblib</code> i <code>pickle</code> zapisują dowolny obiekt Pythona, więc otwarcie pliku może wykonać dowolny kod. Wczytuj tylko modele, które sam zapisałeś albo które przyszły z zaufanego miejsca. Do wymiany między systemami służą formaty bez kodu, na przykład tekstowy zapis drzew LightGBM albo ONNX.</p>
 
-      <p><strong>Ziarna losowości</strong> zapisuje się razem z parametrami. Ten sam kod, dane i ziarno dają ten sam model na tej samej maszynie. Między maszynami drobne różnice w liczbach zmiennoprzecinkowych są normalne.</p>
+      <p>Zapisuj ziarna losowości razem z parametrami. Pomagają odtworzyć trening przy tym samym kodzie, danych i środowisku. Nie zakładaj jednak, że samo ziarno gwarantuje identyczne wyniki na każdym sprzęcie i dla wszystkich operacji.</p>
 
       <div class="quiz" id="q2" data-type="multi">
         <div class="quiz-q">Które z tych rzeczy powinny trafić do <code>metadata.json</code>? Zaznacz wszystkie.</div>
@@ -205,7 +205,7 @@ log.warning("3 series skipped")</code></pre>
     <section id="pamiec">
       <h2>Dane większe niż pamięć</h2>
 
-      <p>Profil <code>full</code> to 4,5 mln wierszy z tablicami godzinowymi. Wczytany naraz przez pandas zajmuje kilka razy więcej pamięci niż laptop ma. Przetwarzanie kawałkami, tu miasto po mieście, trzyma w pamięci naraz tylko największy kawałek: surowe kolumny godzinowe miasta zamieniają się w kilka liczb na wiersz, zanim wczytasz następne miasto. Szczyt pamięci zależy wtedy od największego miasta, a nie od całego pliku.</p>
+      <p>Profil <code>full</code> obejmuje 4,5 mln wierszy z tablicami godzinowymi. Odczyt wszystkich kolumn naraz może przekroczyć pamięć komputera.</p><p>Będziemy więc przetwarzać dane miasto po mieście. Tablice godzinowe zamienimy na kilka liczb, zanim odczytamy kolejną część. Potrzebna pamięć będzie zależeć przede wszystkim od największej przetwarzanej części, a nie od pełnego surowego zbioru.</p>
 
       <p>To ogólny wzorzec: czytaj tylko potrzebne kolumny (D1), zmniejszaj dane jak najwcześniej i łącz małe wyniki na końcu. W module 15 ten sam problem rozwiąże SQL w DuckDB, który sam czyta plik kawałkami.</p>
     </section>
@@ -215,7 +215,7 @@ log.warning("3 series skipped")</code></pre>
 
       <h3>Ustawienia backtestu</h3>
 
-      <p>Napisz model pydantic <code>BacktestSettings</code>: pola <code>folds</code> (domyślnie 4) i <code>horizon</code> (domyślnie 7), obie liczby całkowite co najmniej 1. Nieznany klucz ma być błędem.</p>
+      <p>Napisz model pydantic <code>BacktestSettings</code> z dwoma całkowitymi polami: <code>folds</code>, domyślnie 4, i <code>horizon</code>, domyślnie 7. Obie wartości muszą wynosić co najmniej 1. Nieznane nazwy ustawień mają powodować błąd.</p>
 
       <div class="pyrun" id="e1">
         <script type="text/x-python" data-role="starter">
@@ -246,7 +246,7 @@ for _bad in [{"folds": 0}, {"horizon": -1}, {"fold": 3}]:
 
       <h3>Kod wyjścia</h3>
 
-      <p>Napisz <code>run(load, execute)</code>: wywołuje <code>load()</code>, a jeśli zgłosi <code>FileNotFoundError</code> albo <code>ValueError</code>, zwraca 2. Potem wywołuje <code>execute(settings)</code> z wynikiem <code>load()</code>. Każdy wyjątek z <code>execute</code> loguje przez <code>logger.exception</code> i zwraca 1. Sukces to 0.</p>
+      <p>Napisz <code>run(load, execute)</code>. Najpierw wywołaj <code>load()</code>. Jeśli zgłosi <code>FileNotFoundError</code> lub <code>ValueError</code>, zwróć 2.</p><p>W przeciwnym razie przekaż otrzymane ustawienia do <code>execute(settings)</code>. Jeśli to wywołanie zgłosi wyjątek, zapisz go przez <code>logger.exception</code> i zwróć 1. Po pomyślnym wykonaniu zwróć 0.</p>
 
       <div class="pyrun" id="e2">
         <script type="text/x-python" data-role="starter">
@@ -280,7 +280,7 @@ assert run(lambda: {}, _crash) == 1, "Błąd w trakcie działania to kod 1."
 
     <div class="next">
       <h2>Teraz lab</h2>
-      <p>Pięć ticketów: ustawienia z pliku i środowiska, zapis modelu z metadanymi, przygotowanie danych kawałkami, funkcje <code>train</code> i <code>forecast</code> oraz CLI z kodami wyjścia. Na koniec przebieg z terminala i, jeśli masz pamięć, na całym zbiorze. Około 7 godzin.</p>
+      <p>W labie wykonasz pięć zadań opisanych jako tickety. Przygotujesz ustawienia z pliku i środowiska, zapis modelu z metadanymi, przetwarzanie danych częściami, funkcje <code>train</code> i <code>forecast</code> oraz CLI.</p><p>Na koniec uruchomisz cały przebieg z terminala. Jeśli komputer ma wystarczające zasoby, sprawdzisz go też na pełnym zbiorze. Zarezerwuj około 7 godzin.</p>
       <p>Zacznij od <code>labs/14-pipeline/README.md</code>.</p>
     </div>
   </main>

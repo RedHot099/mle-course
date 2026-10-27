@@ -27,7 +27,7 @@
   <main class="lecture">
     <p class="kicker">Moduł 05 · Część 2: dane i ML</p>
     <h1>NumPy</h1>
-    <p class="lede">W labach 01-03 liczyłeś w pętlach, wartość po wartości. NumPy liczy na całych tablicach naraz, setki razy szybciej, i na nim stoi cała reszta: pandas, scikit-learn, LightGBM, PyTorch. Ten moduł uczy myśleć tablicami i kończy się metrykami, którymi ocenisz każdy model do końca kursu.</p>
+    <p class="lede">Do tej pory obliczenia wykonywaliśmy w pętlach, po jednej wartości. NumPy pozwala zapisać wiele takich operacji dla całej tablicy naraz. Nauczysz się pracować z jej wymiarami, wybierać dane maską i obliczać miary błędu prognozy. NumPy przyda się później w pandas, scikit-learn i PyTorch.</p>
 
     <ul class="meta">
       <li><b>Czas:</b> około 60 minut</li>
@@ -49,7 +49,7 @@
     <section id="tablice">
       <h2>Tablica</h2>
 
-      <p><code>np.ndarray</code> to blok pamięci z liczbami jednego typu, ułożonymi jedna za drugą. Lista Pythona trzyma wskaźniki do osobnych obiektów, rozrzuconych po pamięci. Stąd różnica w szybkości: operacja na tablicy to jedna pętla w C po ciągłej pamięci, a nie milion wywołań Pythona.</p>
+      <p>Tablica <code>np.ndarray</code> przechowuje elementy jednego typu. Zwykła lista Pythona zawiera natomiast odwołania do osobnych obiektów.</p><p>NumPy wykonuje wiele operacji na tablicach w skompilowanym kodzie. Dzięki temu nie musisz przechodzić po każdej liczbie pętlą Pythona. Sposób ułożenia danych w pamięci również wpływa na szybkość obliczeń.</p>
 
 <pre><code class="language-python">import numpy as np
 
@@ -62,7 +62,7 @@ matrix = np.arange(12.0).reshape(3, 4)   # 3 wiersze, 4 kolumny
 matrix[1, 2]   # wiersz 1, kolumna 2: 6.0
 matrix[:, 0]   # pierwsza kolumna: array([0., 4., 8.])</code></pre>
 
-      <p>Kształt (<code>shape</code>) to krotka rozmiarów w każdym wymiarze. <code>reshape</code> zmienia kształt bez kopiowania danych, jeśli liczba elementów się zgadza.</p>
+      <p>Atrybut <code>shape</code> podaje rozmiar tablicy w każdym wymiarze. Metoda <code>reshape</code> zmienia jej kształt, zachowując liczbę elementów. W wielu przypadkach może to zrobić bez kopiowania danych, ale sam zgodny rozmiar nie gwarantuje, że kopia nie powstanie.</p>
 
       <div class="predict" id="p1" data-type="single">
 <pre><code class="language-python">import numpy as np
@@ -80,14 +80,14 @@ print(sales)</code></pre>
 
       <div class="callout trap">
         <span class="label">Pułapka</span>
-        <p>Wycinek (<code>a[1:3]</code>, <code>a[:, 0]</code>) to widok. Indeksowanie maską albo listą indeksów (<code>a[a > 0]</code>, <code>a[[0, 2]]</code>) daje kopię. Funkcja, która dostaje tablicę i zmienia jej wycinek, zmienia dane wołającego. To ta sama reguła co w module 01: nie zmieniaj argumentów.</p>
+        <p>Zwykły wycinek, na przykład <code>a[1:3]</code> lub <code>a[:, 0]</code>, jest widokiem tych samych danych. Jego zmiana może więc zmienić oryginalną tablicę.</p><p>Indeksowanie maską lub listą indeksów, takie jak <code>a[a &gt; 0]</code> i <code>a[[0, 2]]</code>, tworzy kopię. Pamiętaj o regule z modułu 01: funkcja powinna pozostawić przekazane dane bez zmian.</p>
       </div>
     </section>
 
     <section id="osie">
       <h2>Osie</h2>
 
-      <p>Funkcje agregujące przyjmują <code>axis</code>: wymiar, <em>wzdłuż którego</em> liczą, czyli ten, który znika z wyniku. W macierzy (serie, dni) <code>axis=1</code> sumuje dni każdej serii, a <code>axis=0</code> sumuje serie każdego dnia.</p>
+      <p>Przy sumowaniu lub liczeniu średniej <code>axis</code> wskazuje wymiar, po którym wykonujemy obliczenie. Dla macierzy o kształcie <code>(serie, dni)</code> zapis <code>axis=1</code> daje wynik osobno dla każdej serii, a <code>axis=0</code> osobno dla każdego dnia.</p><p>Po obliczeniu ten wymiar zwykle znika z kształtu wyniku. Zobaczysz to w poniższym przykładzie.</p>
 
       <div class="predict" id="p2" data-type="single">
 <pre><code class="language-python">import numpy as np
@@ -105,7 +105,7 @@ print(m.sum(axis=0), m.sum(axis=1))</code></pre>
     <section id="broadcasting">
       <h2>Broadcasting</h2>
 
-      <p>Działanie na dwóch tablicach o różnych kształtach NumPy wykonuje, jeśli kształty da się dopasować. Porównuje je od prawej: dwa wymiary pasują, gdy są równe albo jeden z nich to 1. Wymiar 1 jest wtedy "rozciągany" bez kopiowania.</p>
+      <p>NumPy potrafi łączyć tablice o różnych kształtach, jeśli ich wymiary da się dopasować. Nazywamy to broadcastingiem.</p><p>Kształty porównujemy od prawej strony. Wymiary pasują, gdy są równe albo jeden ma rozmiar 1. Wymiar o rozmiarze 1 może być wtedy użyty wielokrotnie, bez fizycznego powielania danych.</p>
 
       <table>
         <thead><tr><th>Kształty</th><th>Wynik</th></tr></thead>
@@ -137,7 +137,7 @@ except ValueError:
 
       <div class="callout trap">
         <span class="label">Pułapka</span>
-        <p>Gorzej niż błąd jest broadcasting, który się udaje, ale nie tak, jak chciałeś. Macierz <code>(24, 24)</code> podzielona przez sumy <code>(24,)</code> dzieli kolumny, a nie wiersze, i nie zgłasza żadnego błędu. Przy macierzach kwadratowych zawsze używaj <code>keepdims=True</code>.</p>
+        <p>Zgodność kształtów nie gwarantuje, że obliczenie ma zamierzony sens. Macierz <code>(24, 24)</code> podzielona przez tablicę <code>(24,)</code> dzieli każdą kolumnę przez inną wartość. Jeśli były to sumy wierszy, wynik będzie niepoprawny, choć NumPy nie zgłosi błędu.</p><p>Przy normalizacji wierszy zachowaj wymiar przez <code>keepdims=True</code> lub dopisz go jawnie. Sprawdzaj to również dla macierzy kwadratowych.</p>
       </div>
     </section>
 
@@ -172,7 +172,7 @@ print(sales[in_stock].mean(), (sales == 0).mean(), np.where(sales > 3, 1, 0))</c
     <section id="sortowanie">
       <h2>Sortowanie i powtarzanie</h2>
 
-      <p>Plik z danymi podaje wiersze w dowolnej kolejności. Żeby ułożyć je w macierz, trzeba je najpierw posortować, a potem porównać z kolejnością, jakiej się spodziewasz. NumPy sortuje przez <strong>indeksy</strong>: funkcja nie zwraca posortowanych wartości, tylko numery elementów w nowej kolejności. Tymi numerami indeksujesz potem każdą tablicę, która opisuje te same wiersze.</p>
+      <p>Żeby utworzyć macierz z wierszy pliku, trzeba nadać im właściwą kolejność. Funkcje takie jak <code>argsort</code> zwracają numery pozycji w uporządkowaniu, zamiast samych uporządkowanych wartości.</p><p>Tych samych numerów użyj do przestawienia każdej tablicy opisującej te wiersze. Dzięki temu daty, sprzedaż i pozostałe pola nadal będą do siebie pasować.</p>
 
 <pre><code class="language-python">import numpy as np
 
@@ -217,7 +217,7 @@ np.asarray([[1, 2], [3, 4]], dtype=np.float64).ravel()   # array([1., 2., 3., 4.
     <section id="nan">
       <h2>NaN i typy liczbowe</h2>
 
-      <p><code>NaN</code> (not a number) oznacza w tablicach float brak wartości. Zaraża każde działanie, w którym bierze udział, i nie jest równy niczemu, nawet sobie.</p>
+      <p><code>NaN</code>, czyli <em>not a number</em>, służy tu do oznaczania brakujących lub nieokreślonych wartości w tablicach typu float. W wielu działaniach wynik z udziałem <code>NaN</code> również będzie <code>NaN</code>. Nie sprawdzaj go przez równość: <code>NaN</code> nie jest równy nawet sobie.</p>
 
       <div class="predict" id="p5" data-type="single">
 <pre><code class="language-python">import numpy as np
@@ -231,7 +231,7 @@ print(x.mean(), np.nanmean(x), np.nan == np.nan, np.isnan(x).sum())</code></pre>
         </ul>
       </div>
 
-      <p>Kiedy <code>NaN</code> jest dobry? Gdy wartość naprawdę nie istnieje. Udział godzin w dniu bez sprzedaży nie istnieje: zero byłoby kłamstwem ("każda godzina miała zerowy udział"), a nieskończoność błędem. Dlatego <code>row_shares</code> w labie daje dla takiego wiersza <code>NaN</code>, a średni profil liczy się przez <code>np.nanmean</code>.</p>
+      <p>Jeśli w całym dniu nie było sprzedaży, nie da się określić, jaki jej udział przypadł na daną godzinę: dzielilibyśmy przez zero. Funkcja <code>row_shares</code> zwraca wtedy <code>NaN</code>.</p><p>Zero oznaczałoby konkretny udział, a nie brak możliwości jego obliczenia. Przy średnim profilu użyjemy <code>np.nanmean</code>, które pomija takie wartości.</p>
 
       <h3>Liczby całkowite i zmiennoprzecinkowe</h3>
 
@@ -249,13 +249,13 @@ print(units.sum(), units + units)</code></pre>
         </ul>
       </div>
 
-      <p>Zmniejszanie typów oszczędza pamięć (moduł 07), ale tylko tam, gdzie zakres na pewno wystarczy. Liczby zmiennoprzecinkowe mają inny problem: skończoną precyzję. <code>0.1 + 0.2</code> to nie dokładnie <code>0.3</code>, a <code>float32</code> ma tylko około 7 cyfr znaczących: milion razy dodane po kolei <code>0.1</code> w <code>float32</code> daje około 100 958 zamiast 100 000. Wyniki porównuj przez <code>np.isclose</code>, a sumy licz w <code>float64</code>.</p>
+      <p>Mniejsze typy zużywają mniej pamięci, ale muszą pomieścić wszystkie wartości. Do tego wrócimy w module 07. Liczby zmiennoprzecinkowe mają z kolei ograniczoną precyzję: <code>0.1 + 0.2</code> nie jest dokładnie równe <code>0.3</code>.</p><p>Typ <code>float32</code> zachowuje około 7 cyfr znaczących. Przy wielu kolejnych dodawaniach błędy mogą się kumulować. Dlatego wyniki porównuj przez <code>np.isclose</code>, a sumy w ćwiczeniach obliczaj w <code>float64</code>.</p>
     </section>
 
     <section id="metryki">
       <h2>Metryki błędu prognozy</h2>
 
-      <p>Metryka to jedna liczba, która mówi, jak bardzo prognoza <code>p</code> myli się wobec rzeczywistości <code>a</code>. Różne metryki karzą różne błędy, więc wybór metryki to wybór, jaki błąd jest dla Ciebie najgorszy.</p>
+      <p>Metryka podsumowuje różnicę między prognozą <code>p</code> i obserwacją <code>a</code>. Różne miary inaczej traktują duże pomyłki, małe wartości i kierunek błędu. Dobierając metrykę, ustalasz więc, które błędy będą miały największy wpływ na ocenę modelu.</p>
 
       <table>
         <thead><tr><th>Metryka</th><th>Wzór</th><th>Mówi</th></tr></thead>
@@ -267,7 +267,7 @@ print(units.sum(), units + units)</code></pre>
         </tbody>
       </table>
 
-      <p>Popularny MAPE, czyli średnia z procentowych błędów w wierszach, nie nadaje się do sprzedaży dziennej. Dzieli przez rzeczywistą wartość każdego dnia, a dzień z zerową sprzedażą daje dzielenie przez zero. Dni z małą sprzedażą dostają ogromne procenty. WAPE dzieli sumę przez sumę, więc zera mu nie przeszkadzają, a dni ważą tyle, ile sprzedały.</p>
+      <p>MAPE oblicza błąd procentowy osobno dla każdego wiersza. Przy zerowej sprzedaży wymaga dzielenia przez zero, a przy bardzo małej sprzedaży może dawać ogromny procent.</p><p>WAPE dzieli sumę wielkości błędów przez łączną sprzedaż. Pojedyncze dni z zerową sprzedażą nie powodują więc tego samego problemu, o ile łączna sprzedaż jest dodatnia.</p>
 
       <div class="quiz" id="q1" data-type="single">
         <div class="quiz-q">W labie 03 prognoza "zawsze zero" wygrała w MAE na seriach części samochodowych. Jaki ma WAPE i bias?</div>
@@ -295,7 +295,7 @@ print(units.sum(), units + units)</code></pre>
 
       <h3>Udział dni bez braków</h3>
 
-      <p><code>stockouts</code> to macierz (serie, dni) z liczbą godzin bez towaru. Napisz <code>in_stock_share</code>, która dla każdej serii zwraca udział dni bez żadnej godziny braku. Bez pętli.</p>
+      <p>Macierz <code>stockouts</code> ma wiersze odpowiadające seriom i kolumny odpowiadające dniom. Każda wartość mówi, ile godzin brakowało towaru.</p><p>Napisz <code>in_stock_share</code>, która dla każdej serii zwraca udział dni bez ani jednej godziny braku towaru. Wykorzystaj operacje na tablicach, bez pętli.</p>
 
       <div class="pyrun" id="e1">
         <script type="text/x-python" data-role="starter">
@@ -322,7 +322,7 @@ assert _np.allclose(in_stock_share(_np.zeros((3, 5))), 1.0), "Bez braków udzia�
 
       <h3>Standaryzacja kolumn</h3>
 
-      <p>Napisz <code>standardise</code>: od każdej kolumny odejmij jej średnią i podziel przez jej odchylenie standardowe. Kolumna stała (odchylenie 0) ma dać zera, a nie <code>NaN</code>. Przyda się w module 13, gdzie cechy o różnych skalach trafią do k-means.</p>
+      <p>Napisz funkcję <code>standardise</code>, która standaryzuje każdą kolumnę: odejmuje jej średnią i dzieli wynik przez jej odchylenie standardowe.</p><p>Jeśli kolumna ma stałą wartość, jej odchylenie wynosi zero. Dla takiej kolumny zwróć zera zamiast <code>NaN</code>. Ta operacja przyda się w module 13 przed klastrowaniem k-means.</p>
 
       <div class="pyrun" id="e2">
         <script type="text/x-python" data-role="starter">
@@ -352,7 +352,7 @@ assert _np.array_equal(_m, _before), "standardise zmieniło tablicę wejściową
 
     <div class="next">
       <h2>Teraz lab</h2>
-      <p>Wczytasz sprzedaż 2 648 serii z pliku Parquet prosto do tablic, ułożysz ją w macierz (serie, dni), napiszesz metryki w pakiecie i ocenisz trzy proste prognozy na ostatnim tygodniu, z maską dni bez braków towaru. Około 5 godzin.</p>
+      <p>W labie odczytasz sprzedaż 2 648 serii z pliku Parquet i utworzysz macierz o kształcie <code>(serie, dni)</code>. Następnie napiszesz metryki w pakiecie i porównasz trzy proste prognozy na ostatnim tygodniu.</p><p>Przy ocenie uwzględnisz maskę dni bez braków towaru. Zarezerwuj około 5 godzin.</p>
       <p>Otwórz <code>labs/05-numpy/05-numpy.ipynb</code>.</p>
     </div>
   </main>

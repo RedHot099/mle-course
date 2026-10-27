@@ -27,7 +27,7 @@
   <main class="lecture">
     <p class="kicker">Moduł 15 · Część 3: produkcja</p>
     <h1>Dane w chmurze i SQL</h1>
-    <p class="lede">W firmie dane i modele nie leżą na laptopie. Leżą w magazynie obiektów w chmurze, a pierwsze pytania zadaje się im w SQL. Ten moduł uczy obu na lokalnym serwerze, który mówi tym samym protokołem co Amazon S3, więc kod z labu działa w chmurze po zmianie adresu i kluczy.</p>
+    <p class="lede">Dane i modele często przechowuje się poza komputerem, na którym powstaje analiza. Poznasz magazyn obiektów zgodny z S3 i zapytania SQL do danych sprzedażowych. W ćwiczeniach będziesz korzystać z lokalnej usługi, bez potrzeby zakładania konta w chmurze.</p>
 
     <ul class="meta">
       <li><b>Czas:</b> około 60 minut</li>
@@ -48,7 +48,7 @@
     <section id="s3">
       <h2>Magazyn obiektów</h2>
 
-      <p>S3 (i jego odpowiedniki w innych chmurach) przechowuje <strong>obiekty</strong> w <strong>bucketach</strong>. Obiekt ma <strong>klucz</strong>, na przykład <code>models/lightgbm_20240626-213000/model.joblib</code>, treść i kilka metadanych. Katalogów nie ma: ukośniki w kluczu to tylko konwencja nazewnicza, a "katalog" to wspólny początek kluczy (prefiks).</p>
+      <p>Magazyn S3 przechowuje pliki jako <strong>obiekty</strong>, pogrupowane w <strong>buckety</strong>. Każdy obiekt ma treść, metadane i <strong>klucz</strong>, na przykład <code>models/lightgbm_20240626-213000/model.joblib</code>.</p><p>Klucz wygląda jak ścieżka, ale ukośniki nie tworzą zwykłych katalogów. Wspólny początek kluczy, nazywany prefiksem, pozwala porządkować obiekty podobnie do folderów.</p>
 
 <pre><code class="language-python">import boto3
 
@@ -70,15 +70,15 @@ s3.list_objects_v2(Bucket="freshcast-lab", Prefix="processed/")</code></pre>
 
       <h3>Klucze dostępu</h3>
 
-      <p>Klient boto3 szuka kluczy sam, w ustalonej kolejności: zmienne środowiskowe (<code>AWS_ACCESS_KEY_ID</code>, <code>AWS_SECRET_ACCESS_KEY</code>), plik profilu w katalogu domowym, rola maszyny w chmurze. Kod ich nie zna i nie powinien znać. Klucz wpisany w kod albo w plik w repozytorium prędzej czy później wycieknie, a w publicznym repozytorium boty znajdą go w kilka minut (G4).</p>
+      <p>Biblioteka boto3 potrafi pobrać dane dostępowe ze środowiska, profilu użytkownika lub roli przypisanej do usługi w chmurze. Nie musisz wpisywać ich do kodu.</p><p>Reguła G4 wymaga, żeby klucze nie trafiały do repozytorium. Usunięcie ich późniejszym commitem nie usuwa wartości z wcześniejszej historii.</p>
 
-      <p>Lokalny serwer z labu (moto) przyjmuje dowolne klucze, ale żądanie i tak musi być podpisane, więc jakaś para jest potrzebna. Kod labu działa z prawdziwym S3 po zmianie <code>endpoint_url</code> na brak (domyślny adres Amazona) i kluczy w środowisku.</p>
+      <p>Lokalna usługa moto nie wymaga prawdziwego konta AWS. W przykładach potrzebna jest jednak para testowych kluczy, żeby klient mógł podpisać żądanie.</p><p>Klient korzysta z takiego samego protokołu jak S3. Przy pracy z rzeczywistą usługą trzeba osobno skonfigurować właściwy adres, uprawnienia i dane dostępowe.</p>
     </section>
 
     <section id="retry">
       <h2>Ponawianie</h2>
 
-      <p>Sieć zawodzi. Część błędów mija sama: przekroczony czas, serwer przeciążony (<code>503</code>, <code>SlowDown</code>). Część nie minie nigdy: brak uprawnień, brak obiektu, zła nazwa bucketu. Ponawiasz tylko pierwsze, kilka razy, z rosnącymi odstępami, żeby przeciążony serwer miał czas odetchnąć:</p>
+      <p>Niektóre błędy sieciowe są przejściowe, na przykład timeout lub odpowiedź przeciążonego serwera <code>503</code> albo <code>SlowDown</code>. Takie operacje można ponowić kilka razy, zwiększając odstępy.</p><p>Inne problemy wymagają zmiany ustawień lub uprawnień. Samo ponowienie nie naprawi braku dostępu, nieistniejącego obiektu ani błędnej nazwy bucketu:</p>
 
       <div class="predict" id="p1" data-type="single">
 <pre><code class="language-python">base, factor, cap = 0.5, 2.0, 10.0
@@ -100,24 +100,24 @@ print([min(base * factor ** k, cap) for k in range(6)])</code></pre>
         </ul>
       </div>
 
-      <p>W testach nikt nie chce czekać naprawdę. Dlatego funkcja czekająca (<code>sleep</code>) jest parametrem: w produkcji to <code>time.sleep</code>, w teście funkcja, która tylko zapisuje, ile kazano czekać. To wstrzykiwanie zależności z modułu 04.</p>
+      <p>Test nie powinien naprawdę czekać między próbami. Dlatego przekażemy funkcję czekającą jako parametr. W uruchomieniu programu będzie to <code>time.sleep</code>, a w teście funkcja zapisująca żądany czas.</p><p>To przykład wstrzykiwania zależności z modułu 04: kod otrzymuje potrzebną operację z zewnątrz.</p>
     </section>
 
     <section id="publikacja">
-      <h2>Publikacja, której nie da się zobaczyć w połowie</h2>
+      <h2>Udostępnij model dopiero po wysłaniu wszystkich plików</h2>
 
-      <p>Model to kilka plików. Wysyłanie trwa, a proces może paść w środku. Serwer prognoz, który w tym czasie zajrzy do bucketu, nie może wziąć połowy modelu za cały. Dwie zasady:</p>
+      <p>Model składa się z kilku plików. Jeśli wysyłanie zostanie przerwane, w magazynie może pozostać tylko część z nich. Kod prognozujący nie powinien uznać takiej wersji za gotową. Zastosujemy dwie zasady:</p>
       <ul>
         <li><strong>znacznik na końcu</strong>: <code>metadata.json</code> wysyłasz jako ostatni. Model jest kompletny wtedy i tylko wtedy, gdy znacznik istnieje,</li>
         <li><strong>bez nadpisywania</strong>: opublikowana sygnatura się nie zmienia. Prognozy zrobione starym modelem wskazują na coś, co nadal istnieje.</li>
       </ul>
-      <p>Po stronie pobierania to samo w lustrze: pobierasz do katalogu tymczasowego i zmieniasz jego nazwę dopiero po pobraniu wszystkiego. Zmiana nazwy w obrębie jednego dysku jest atomowa, więc katalog modelu albo jest cały, albo go nie ma.</p>
+      <p>Przy pobieraniu najpierw zapisz wszystkie pliki w katalogu tymczasowym. Dopiero po zakończeniu udostępnij go pod docelową nazwą. Zmiana nazwy w obrębie tego samego systemu plików może stanowić pojedynczą operację, dzięki której odbiorca nie zobaczy częściowo pobranego modelu.</p>
     </section>
 
     <section id="testy">
       <h2>Testy kodu sieciowego</h2>
 
-      <p>Testy nie łączą się z siecią (T4). Dwie podróbki:</p>
+      <p>Zgodnie z regułą T4 testy nie korzystają z rzeczywistej usługi przez sieć. Zamiast niej użyjemy dwóch rozwiązań do testowania:</p>
       <ul>
         <li><strong>moto</strong> udaje całe S3 w pamięci procesu: <code>with mock_aws(): ...</code>. Test tworzy bucket, wysyła obiekt, sprawdza wynik, jak na prawdziwym serwerze,</li>
         <li><strong>własna podróbka klienta</strong>: mała klasa z jedną metodą, która najpierw rzuca błąd przejściowy, a potem odpowiada. Moto nie zawodzi przejściowo, więc ponawianie sprawdzasz tak.</li>
@@ -127,7 +127,7 @@ print([min(base * factor ** k, cap) for k in range(6)])</code></pre>
     <section id="sql">
       <h2>SQL</h2>
 
-      <p>SQL to język pytań do tabel. W labie używasz <strong>DuckDB</strong>: bazy, która działa w procesie Pythona i czyta plik parquet bezpośrednio, z dysku albo z bucketu. Pytania są te same, co w pandas, tylko zapisane inaczej:</p>
+      <p>SQL służy do wybierania, łączenia i agregowania danych w tabelach. W labie skorzystasz z <strong>DuckDB</strong>, które działa w procesie Pythona i potrafi odczytywać Parquet z dysku lub magazynu obiektów.</p><p>Wiele zadań będzie podobnych do znanych operacji pandas. Zmieni się sposób ich zapisania:</p>
 
       <table>
         <thead><tr><th>pandas</th><th>SQL</th></tr></thead>
@@ -158,7 +158,7 @@ print(con.execute("SELECT store, COUNT(*), SUM(units) FROM sales GROUP BY store 
 
       <h3>Funkcje okna</h3>
 
-      <p>Funkcja okna liczy coś dla każdego wiersza z jego otoczenia, bez zwijania wierszy. <code>PARTITION BY</code> wyznacza grupy (jak <code>groupby</code>), <code>ORDER BY</code> kolejność w grupie, a ramka (<code>ROWS BETWEEN ...</code>) zakres wierszy. Bez <code>PARTITION BY</code> wraca znany błąd z modułu 07:</p>
+      <p>Funkcja okna oblicza wynik dla każdego wiersza na podstawie innych wierszy z jego grupy. Nie zmniejsza przy tym ich liczby jak zwykła agregacja.</p><p><code>PARTITION BY</code> określa grupy, <code>ORDER BY</code> kolejność, a <code>ROWS BETWEEN ...</code> zakres pozycji użytych w obliczeniu. Bez podziału na serie średnia może uwzględnić inny produkt, podobnie jak w module 07:</p>
 
       <div class="predict" id="p3" data-type="single">
 <pre><code class="language-python">import sqlite3
@@ -176,7 +176,7 @@ print(con.execute(query.format("PARTITION BY series ORDER BY day")).fetchall()[2
         </ul>
       </div>
 
-      <p>Funkcji okna nie da się filtrować w <code>WHERE</code> tego samego zapytania, bo <code>WHERE</code> działa przed nimi. "Trzy najlepsze produkty w każdym sklepie" liczysz w dwóch krokach: ranking w <code>WITH</code>, filtr w zapytaniu zewnętrznym.</p>
+      <p><code>WHERE</code> jest wykonywane przed funkcjami okna, więc w tym samym zapytaniu nie można filtrować ich gotowego wyniku. Żeby wybrać trzy najlepsze produkty w sklepie, najpierw oblicz ranking w <code>WITH</code>. Następnie odfiltruj jego wynik w zapytaniu zewnętrznym.</p>
 
       <h3>Parametry, nie sklejanie</h3>
 
@@ -198,7 +198,7 @@ print(len(con.execute(f"SELECT * FROM products WHERE name = '{name}'").fetchall(
 
       <div class="callout rule">
         <span class="label">Reguła</span>
-        <p>Każda wartość, która zmienia się między wywołaniami (ścieżka, data, liczba, nazwa), trafia do zapytania jako parametr. Tylko nazw tabel i kolumn nie da się podać parametrem. Te piszesz wprost i nigdy nie bierzesz z danych od użytkownika.</p>
+        <p>Wartości zmieniające się między wywołaniami, takie jak data, ścieżka czy liczba, przekazuj jako parametry zapytania. Nie sklejaj ich z tekstem SQL.</p><p>Nazwy tabel i kolumn to osobny przypadek: nie zastąpisz ich zwykłymi parametrami wartości. W ćwiczeniach zapisuj te nazwy wprost w kodzie, zamiast pobierać je od użytkownika.</p>
       </div>
     </section>
 
@@ -222,7 +222,7 @@ print(len(con.execute(f"SELECT * FROM products WHERE name = '{name}'").fetchall(
 
       <h3>Odstępy ponawiania</h3>
 
-      <p>Napisz <code>delays(attempts, base, factor, cap)</code>: lista odstępów między kolejnymi próbami. Prób jest <code>attempts</code>, więc odstępów o jeden mniej. Każdy odstęp jest <code>factor</code> razy dłuższy od poprzedniego, ale nie dłuższy niż <code>cap</code>.</p>
+      <p>Napisz <code>delays(attempts, base, factor, cap)</code>, która zwraca listę odstępów między próbami. Dla <code>attempts</code> prób odstępów jest o jeden mniej.</p><p>Zaczynasz od <code>base</code>. Każdy kolejny odstęp mnożysz przez <code>factor</code>, ale żadna wartość nie może przekroczyć <code>cap</code>.</p>
 
       <div class="pyrun" id="e1">
         <script type="text/x-python" data-role="starter">
@@ -242,7 +242,7 @@ assert delays(6, 1.0, 3.0, 20.0) == [1.0, 3.0, 9.0, 20.0, 20.0], f"Limit obcina 
 
       <h3>Średnia z poprzednich dni w SQL</h3>
 
-      <p>Tabela <code>s(series, day, units)</code>. Napisz zapytanie <code>QUERY</code>, które dla każdego wiersza zwraca <code>series</code>, <code>day</code> i średnią <code>units</code> z dwóch poprzednich dni tej samej serii (bez bieżącego), posortowane po serii i dniu. Pierwszy dzień serii nie ma poprzednich dni: <code>NULL</code>.</p>
+      <p>Masz tabelę <code>s(series, day, units)</code>. Zapisz zapytanie w <code>QUERY</code>. Dla każdego wiersza ma zwrócić serię, dzień oraz średnią <code>units</code> z dwóch poprzednich dni tej samej serii, bez dnia bieżącego.</p><p>Uporządkuj wynik po serii i dniu. Dla pierwszego dnia serii, który nie ma poprzednich obserwacji, średnia ma być równa <code>NULL</code>.</p>
 
       <div class="pyrun" id="e2">
         <script type="text/x-python" data-role="starter">
@@ -270,7 +270,7 @@ assert _rows == [("a", 1, None), ("a", 2, 2.0), ("a", 3, 3.0), ("a", 4, 5.0), ("
 
     <div class="next">
       <h2>Teraz lab</h2>
-      <p>Osiem ticketów: ustawienia bucketu, ponawianie, serwis S3, cache z ETagiem, publikacja modelu, testy na podróbkach i dwa zestawy zapytań SQL, w tym funkcje okna porównane z pandas. Tu też instalujesz Dockera. Około 9 godzin.</p>
+      <p>W labie wykonasz osiem ticketów dotyczących ustawień magazynu, ponawiania operacji, klienta S3, pamięci podręcznej z ETagiem, publikacji modelu oraz testów. Przygotujesz też dwa zestawy zapytań SQL i porównasz funkcje okna z pandas.</p><p>Na tym etapie zainstalujesz również Dockera. Zarezerwuj około 9 godzin.</p>
       <p>Zacznij od <code>labs/15-cloud-sql/README.md</code>.</p>
     </div>
   </main>
