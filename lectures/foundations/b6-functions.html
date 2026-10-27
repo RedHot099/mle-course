@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>B6.1 · Funkcja ma wejście, wynik i umowę | ML Engineering from Scratch</title>
+  <title>B6.1 · Napisz funkcję o jasno opisanym działaniu | ML Engineering from Scratch</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="../assets/course.css">
 </head>
@@ -23,16 +23,16 @@
   <main class="lecture">
     <p class="kicker">B6.1 · <a href="index.html">Ścieżka A i B</a></p>
 
-    <h1>Funkcja ma wejście, wynik i umowę</h1>
+    <h1>Napisz funkcję o jasno opisanym działaniu</h1>
 
-    <p class="lede">Napisz funkcję liczącą średnią znanych pomiarów. Opisz jej wynik i zachowanie wtedy, gdy nie ma z czego policzyć średniej.</p>
+    <p class="lede">Napiszesz funkcję, która oblicza średnią znanych pomiarów. Najpierw ustalisz, co ma zwracać i co zrobić, gdy nie ma ani jednego pomiaru. Ten opis będzie podstawą kodu i późniejszych testów.</p>
 
     <ul class="meta"><li><b>Przed lekcją:</b> A2.5 oraz B5.1–B5.3.</li>
-<li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
+<li><b>Jak pracować:</b> przewiduj wyniki, uruchamiaj kod i wyjaśniaj to, co widzisz</li>
 </ul>
 
-    <section id="umowa"><h2>Przeczytaj umowę funkcji</h2>
-<p><strong>Sygnatura</strong> podaje nazwę i parametry funkcji. <strong>Docstring</strong> to opis umieszczony zaraz pod <code>def</code>. Określa, co funkcja przyjmuje, co zwraca i kiedy zgłasza błąd. Ten opis jest umową, według której piszesz kod i sprawdzasz wynik.</p>
+    <section id="umowa"><h2>Zacznij od opisu działania</h2>
+<p>Pierwsza linia definicji podaje nazwę i parametry funkcji. Nazywamy ją sygnaturą. Pod nią możesz umieścić <em>docstring</em>, czyli opis w potrójnym cudzysłowie.</p><p>Dobry opis odpowiada na pytania: jakie dane przekazać, jaki wynik otrzymamy i kiedy wystąpi błąd. To właśnie mamy na myśli, mówiąc o umowie funkcji. Kod i testy powinny być zgodne z tym opisem.</p>
 <pre><code class="language-python">def label_count(name, count=0):
     &quot;&quot;&quot;Return a label for a non-negative count.
 
@@ -47,7 +47,7 @@ print(label_count(&quot;rows&quot;))
 print(label_count(&quot;rows&quot;, count=3))</code></pre><p>Program wypisze <code>rows: 0</code> i <code>rows: 3</code>. Gdy pomijasz <code>count</code>, funkcja używa domyślnego zera. W drugim wywołaniu zapis <code>count=3</code> przekazuje argument po nazwie. Nie tworzy zmiennej <code>count</code> poza funkcją.</p>
 </section>
 <section id="lokalnie"><h2>Oddziel obliczenie od wypisywania</h2>
-<p>Funkcja może zwrócić wynik przez <code>return</code>, a kod poza nią zdecyduje, co z nim zrobić: wyświetlić, zapisać lub porównać z oczekiwaniem. Dzięki temu tę samą funkcję łatwo sprawdzisz na kilku małych wejściach.</p>
+<p>Funkcja może obliczyć wynik i zwrócić go przez <code>return</code>. Nie musi od razu go wyświetlać ani zapisywać w pliku. To kod, który ją wywołuje, zdecyduje, co zrobić z wynikiem.</p><p>Taki podział ułatwia testowanie. Możesz przekazać kilka małych list i za każdym razem porównać zwróconą wartość z własnym rachunkiem.</p>
 <div class="predict" id="scope" data-type="single" data-expected-output="9"><p>Co wypisze ostatnia linia?</p>
 <pre><code class="language-python">value = 9
 
@@ -57,14 +57,14 @@ def increase(value):
 
 increase(value)
 print(value)</code></pre><ul class="quiz-options"><li data-correct>9<span class="why">value wewnątrz funkcji jest lokalnym parametrem. Przypisanie go nie zmienia zewnętrznej nazwy.</span></li>
-<li>10<span class="why">Funkcja oddaje 10, ale wywołujący nie przypisuje tego wyniku do swojej nazwy value.</span></li>
+<li>10<span class="why">Funkcja zwraca 10, ale poza nią nie przypisujemy wyniku do value. Ta zmienna zachowuje poprzednią wartość.</span></li>
 </ul>
 </div>
-<p>W przykładzie przypisanie zmienia lokalną nazwę <code>value</code>. Natomiast <code>append</code> zmienia samą listę, co widziałeś w B5.1. Funkcję obliczającą wynik wyłącznie z argumentów, bez zmieniania wejścia i otoczenia, nazywamy czystą. W naszym zadaniu oddziel liczenie od odczytu i zapisu pliku.</p>
+<p>Przypisanie wewnątrz funkcji zmienia jej lokalną zmienną <code>value</code>. Nie zmienia zmiennej o tej samej nazwie poza funkcją. Inaczej działa <code>append</code>: zmienia samą listę, co widzieliśmy w B5.1.</p><p>Funkcję, która oblicza wynik tylko z przekazanych argumentów i nie zmienia danych ani niczego poza sobą, nazywamy czystą. W zadaniu poniżej funkcja ma tylko liczyć średnią. Odczyt i zapis plików pozostaw poza nią.</p>
 </section>
 <section id="cwiczenie"><h2>Średnia znanych wartości</h2>
 <h3>Zgłoś brak danych do średniej</h3>
-<p>Uzupełnij <code>mean_known(values)</code>. Wejście to lista nieujemnych liczb i wartości <code>None</code>. Zwróć średnią znanych liczb jako <code>float</code>, uwzględniając zera. Dla pustej listy lub samych <code>None</code> zgłoś <code>ValueError</code> z tekstem <code>no known values</code>. Zachowaj wejście bez zmian. Sprawdzanie innych typów i liczb ujemnych nie należy do tego zadania.</p>
+<p>Uzupełnij funkcję <code>mean_known(values)</code>. Otrzyma listę nieujemnych liczb oraz wartości <code>None</code>. Ma zwrócić średnią znanych liczb jako <code>float</code>. Uwzględnij zera i nie zmieniaj przekazanej listy.</p><p>Co zrobić, jeśli lista jest pusta albo zawiera wyłącznie <code>None</code>? W obu przypadkach nie ma z czego policzyć średniej. Funkcja ma wtedy zgłosić <code>ValueError</code> z komunikatem <code>no known values</code>.</p><p>W tym zadaniu możesz założyć, że inne typy danych i liczby ujemne nie wystąpią. Nie musisz dopisywać ich sprawdzania.</p>
 <div class="pyrun" id="mean-known"><script type="text/x-python" data-role="starter">
 def mean_known(values):
     """Return the mean of known values, including zeros.
@@ -94,16 +94,16 @@ for _values in [[], [None, None]]:
 <p>Najpierw ustal, ile jest znanych wartości i jaka jest ich suma.</p>
 </details>
 <details><summary>Podpowiedź 2</summary>
-<p>Przed dzieleniem sprawdź, czy istnieje mianownik różny od zera. Wynik oddaj po całej pętli.</p>
+<p>Zanim podzielisz sumę przez liczbę pomiarów, sprawdź, czy masz choć jeden znany pomiar. Wynik zwróć po zakończeniu pętli.</p>
 </details>
 </section>
-<section id="transfer"><h2>Sprawdź na własnym wejściu</h2>
+<section id="transfer"><h2>Wypróbuj funkcję na innych danych</h2>
 <p>Bez zaglądania do kodu oblicz ręcznie wynik dla <code>[None, 0, 8, 4]</code>, a potem wywołaj swoją funkcję. Własnymi słowami wyjaśnij, dlaczego [] nie powinno zwracać zera.</p>
 <details><summary>Sprawdź uzasadnienie</summary>
 <p>Wyjaśnij różnicę między wynikiem równym zero a brakiem danych do obliczenia wyniku. Zero może być średnią istniejących pomiarów. Dla pustej listy nie ma pomiarów, które można uśrednić. Porównaj też ręczny rachunek z wynikiem swojej funkcji.</p>
 </details>
 </section>
-<section id="powrot"><h2>Powrót bez zaglądania</h2>
+<section id="powrot"><h2>Sprawdź, co pamiętasz</h2>
 <p>Co kończy wykonanie funkcji? Jak przekazujesz obliczony wynik do innego fragmentu programu?</p>
 <details><summary>Sprawdź własne wyjaśnienie</summary>
 <p><code>return</code> kończy wywołanie i zwraca wynik. <code>print</code> wyświetla informację na ekranie. Jeśli nadal mylisz te czynności, wróć do przykładu w <a href="a2-functions.html">A2.5</a> i sprawdź wartość zmiennej <code>result</code>.</p>

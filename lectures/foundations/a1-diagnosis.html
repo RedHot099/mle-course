@@ -25,21 +25,21 @@
 
     <h1>Sprawdź, od czego zacząć</h1>
 
-    <p class="lede">Uruchom pierwszy program w przeglądarce. Potem sprawdź, które podstawy już znasz, a do których warto wrócić. Możesz zacząć bez żadnego doświadczenia z Pythonem.</p>
+    <p class="lede">Nie musisz niczego instalować ani znać Pythona, żeby zacząć. Najpierw uruchomisz krótki program na tej stronie. Potem kilka pytań pomoże Ci wybrać lekcje, od których warto zacząć naukę.</p>
 
-    <ul class="meta"><li><b>Przed lekcją:</b> Przeglądarka z dostępem do sieci. Bez instalowania Pythona, konta GitHub i tutora.</li>
-<li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
+    <ul class="meta"><li><b>Przed lekcją:</b> Wystarczy przeglądarka z internetem. Nie potrzebujesz konta GitHub ani zainstalowanego Pythona.</li>
+<li><b>Jak pracować:</b> przewiduj wyniki, uruchamiaj kod i wyjaśniaj to, co widzisz</li>
 </ul>
 
     <section id="runner"><h2>Najpierw uruchom kod</h2>
-<p>Naciśnij <strong>Uruchom</strong> pod kodem. Przy pierwszej próbie przeglądarka pobierze interpreter, czyli program wykonujący kod Python. Poczekaj na wynik pod polem.</p>
+<p>Naciśnij <strong>Uruchom</strong> pod kodem. Za pierwszym razem trzeba chwilę poczekać: przeglądarka pobiera interpreter, czyli program, który wykonuje polecenia Pythona.</p>
 <div class="pyrun" id="first-run"><script type="text/x-python" data-role="starter">print("Mogę zacząć")</script></div>
-<p>Pod polem powinien pojawić się napis <code>Mogę zacząć</code>. Zmień tekst w cudzysłowach i uruchom kod jeszcze raz. Możesz tu też wklejać przykłady z kolejnych lekcji, jeśli nie mają własnego przycisku uruchamiania.</p>
-<div class="callout rule"><span class="label">Gdy runner nie działa</span><p>Jeśli pobieranie interpretera się nie udało, sprawdź połączenie i ponów próbę. W międzyczasie możesz rozwiązać pytania na papierze. W <a href="a3-environment.html">A3</a> uruchomisz Python także na swoim komputerze.</p>
+<p>Pod kodem zobaczysz napis <code>Mogę zacząć</code>. Zmień tekst w cudzysłowach i naciśnij <strong>Uruchom</strong> ponownie. W tym samym polu możesz później sprawdzać przykłady z lekcji, które nie mają własnego przycisku uruchamiania.</p>
+<div class="callout rule"><span class="label">Jeśli kod się nie uruchamia</span><p>Jeśli pobieranie interpretera się nie udało, sprawdź połączenie i ponów próbę. W międzyczasie możesz rozwiązać pytania na papierze. W <a href="a3-environment.html">A3</a> uruchomisz Pythona także na swoim komputerze.</p>
 </div>
 </section>
 <section id="diagnoza"><h2>Przewidź, potem sprawdź</h2>
-<p>Wybierz odpowiedź, zanim uruchomisz kod. Jeśli się pomylisz, przeczytaj wyjaśnienie i zapisz temat do powtórki. Możesz przejść do dowolnej lekcji, niezależnie od wyniku quizów.</p>
+<p>Spróbuj przewidzieć wynik każdego programu, zanim go uruchomisz. Błędna odpowiedź jest wskazówką, co warto powtórzyć. Przeczytaj wyjaśnienie i zanotuj temat, który sprawił Ci trudność. Wynik quizu nie blokuje dostępu do żadnej lekcji.</p>
 <div class="predict" id="names" data-type="single" data-expected-output="7"><p>Co wypisze program?</p>
 <pre><code class="language-python">count = 4
 count = count + 3
@@ -54,7 +54,7 @@ print(count)</code></pre><ul class="quiz-options"><li>4<span class="why">Drugie 
 <li data-correct>None<span class="why">None oznacza brak wartości; zero jest znaną liczbą.</span></li>
 </ul>
 </div>
-<div class="predict" id="loop" data-type="single" data-expected-output="8"><p>Co pozostaje w total?</p>
+<div class="predict" id="loop" data-type="single" data-expected-output="8"><p>Jaką wartość będzie mieć total po wykonaniu pętli?</p>
 <pre><code class="language-python">total = 0
 for value in [2, 0, 6]:
     total = total + value
@@ -75,13 +75,13 @@ print(row[&quot;sale&quot;])</code></pre><ul class="quiz-options"><li>plum<span 
     return value * 2
 
 result = double(4)
-print(result)</code></pre><ul class="quiz-options"><li data-correct>8<span class="why">return oddaje wynik wywołującemu. Ten wynik trafia do result.</span></li>
+print(result)</code></pre><ul class="quiz-options"><li data-correct>8<span class="why">return zwraca wynik, który w tym przykładzie zapisujemy w result.</span></li>
 <li>4<span class="why">Funkcja mnoży argument przez dwa.</span></li>
 <li>None<span class="why">Bez return wynikiem byłoby None, ale tutaj return jest.</span></li>
 </ul>
 </div>
 </section>
-<section id="decyzja"><h2>Wybierz trasę według tematów</h2>
+<section id="decyzja"><h2>Wybierz lekcje dla siebie</h2>
 <div class="table-wrap"><table><thead><tr><th>Co było niejasne?</th><th>Dokąd przejść</th></tr>
 </thead>
 <tbody><tr><td>Nazwa, liczba, napis, print</td><td><a href="a2-values.html">A2.1 Wartości i nazwy</a></td></tr>
@@ -92,7 +92,7 @@ print(result)</code></pre><ul class="quiz-options"><li data-correct>8<span class
 </tbody>
 </table>
 </div>
-<p>Po pytaniach sprawdź też pisanie kodu: wykonaj samodzielne zadania w lekcjach A2. Jeśli radzisz sobie bez podpowiedzi, przejdź do <a href="a3-environment.html">A3</a>. Jeśli utkniesz, wróć do lekcji wskazanej w tabeli. Nie musisz powtarzać wszystkich podstaw.</p>
+<p>Same odpowiedzi na pytania nie mówią jeszcze, czy potrafisz napisać kod. Spróbuj więc wykonać ćwiczenia w A2. Jeśli rozwiązujesz je bez podpowiedzi, możesz przejść do A3. Jeśli któreś sprawia trudność, tabela poniżej wskaże lekcję do powtórzenia. Nie musisz przerabiać od nowa tego, co już umiesz.</p>
 </section>
 
     <div class="next"><h2>Następny krok</h2>

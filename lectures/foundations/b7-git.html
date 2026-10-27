@@ -25,14 +25,14 @@
 
     <h1>Pierwszy branch, commit i pull request</h1>
 
-    <p class="lede">Zapisz własną funkcję i testy na nowej gałęzi. Otwórz pull request i sprawdź, czy dostarczone CI potrafi powtórzyć Twoje lokalne sprawdzenia.</p>
+    <p class="lede">Funkcja i testy już działają lokalnie. Teraz zapiszesz ich historię w gicie i pokażesz zmianę w pull requeście. Skorzystasz też z gotowej konfiguracji, która uruchomi sprawdzenia na GitHub.</p>
 
     <ul class="meta"><li><b>Przed lekcją:</b> B7.1, konto GitHub oraz git. W razie braku konta możesz najpierw wykonać lokalne sprawdzenia.</li>
-<li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
+<li><b>Jak pracować:</b> przewiduj wyniki, uruchamiaj kod i wyjaśniaj to, co widzisz</li>
 </ul>
 
     <section id="pojecia"><h2>Zapisz konkretną zmianę</h2>
-<p><strong>Git</strong> zapisuje historię plików projektu. Projekt z taką historią to repozytorium. <strong>Branch</strong>, czyli gałąź, pozwala prowadzić pracę oddzielnie od wersji bazowej. <strong>Commit</strong> zapisuje wybrane zmiany. <strong>Pull request</strong> pokazuje różnicę między gałęziami i służy do przeglądu zmian przed ich połączeniem.</p>
+<p>Git zapisuje historię zmian w plikach. Projekt, dla którego prowadzisz taką historię, nazywamy repozytorium. <em>Commit</em> jest zapisem wybranych zmian.</p><p><em>Branch</em>, czyli gałąź, pozwala pracować nad zmianą osobno od wersji bazowej projektu. Gdy chcesz pokazać swoją pracę do przeglądu, otwierasz <em>pull request</em>. Pokazuje on różnice między Twoją gałęzią a gałęzią, do której zmiana ma trafić.</p>
 <p>Użyj małego projektu z poprzedniej lekcji. Jego pierwsze CI sprawdzi tylko Twoją funkcję i testy. Repozytorium całego kursu zostaw osobno.</p>
 <p>Jeśli git nie jest gotowy albo nie możesz zalogować się do GitHub, skorzystaj z instrukcji <a href="../00-setup/index.html#s-git">konfiguracji git</a> i <a href="../00-setup/index.html#s-gh">logowania</a>. W razie problemów zachowaj projekt i wyniki testów lokalnie. Do ćwiczenia współpracy możesz wrócić po uzyskaniu dostępu.</p>
 </section>
@@ -44,7 +44,7 @@
 <pre><code class="language-bash">git clone https://github.com/YOUR_LOGIN/ml-basics.git ~/mle-practice-review
 cd ~/mle-practice-review
 git switch -c learning/summary
-git status</code></pre><p><code>git status</code> powinien pokazać gałąź <code>learning/summary</code>. Jeśli klonowanie się nie udało, wyjaśnij problem z adresem lub dostępem, zanim przejdziesz do kolejnych poleceń. Twoja funkcja i testy pozostają w folderze <code>mle-practice</code>.</p>
+git status</code></pre><p>Po tych poleceniach <code>git status</code> powinien pokazać gałąź <code>learning/summary</code>. Jeśli nie udało się sklonować repozytorium, sprawdź adres i dostęp do konta, zanim pójdziesz dalej. Twoje pliki nadal są w folderze <code>mle-practice</code>.</p>
 </section>
 <section id="zmiana"><h2>Wybierz pliki przed commitem</h2>
 <p>Z folderu <code>mle-practice</code> skopiuj do <code>mle-practice-review</code> pliki <code>summary.py</code>, <code>test_summary.py</code>, <code>pyproject.toml</code>, <code>.python-version</code> i <code>uv.lock</code>. Uzupełnij README instrukcją testów. Zapisz <a href="resources/practice.gitignore">przygotowany plik wykluczeń</a> jako <code>.gitignore</code>. Środowisko <code>.venv</code> odtworzysz poleceniem <code>uv sync</code>, więc nie kopiuj tego folderu.</p>
@@ -56,19 +56,19 @@ uv run mypy --disallow-untyped-defs summary.py
 git diff</code></pre><p><code>git diff</code> pokazuje zmiany w plikach już śledzonych przez git. Nowe pliki zobaczysz w <code>git status</code>. Wybierz pliki do zapisu przez <code>git add</code>, a potem przeczytaj przygotowaną zmianę:</p>
 <pre><code class="language-bash">git add summary.py test_summary.py pyproject.toml .python-version uv.lock README.md .gitignore
 git diff --cached
-git commit -m &quot;Add observation summary with tests&quot;</code></pre><p><code>git add</code> wybiera zmiany do następnego commita. <code>git diff --cached</code> pozwala je przeczytać przed zapisem. Sprawdź zwłaszcza, czy nie wybrałeś danych, haseł, kluczy ani folderu <code>.venv</code>. Komunikat commita krótko opisuje zmianę, tutaj: dodanie podsumowania obserwacji wraz z testami.</p>
+git commit -m &quot;Add observation summary with tests&quot;</code></pre><p>Polecenie <code>git add</code> wybiera zmiany do zapisania w następnym commicie. Dzięki <code>git diff --cached</code> możesz przeczytać dokładnie to, co zostanie zapisane.</p><p>Sprawdź, czy wśród wybranych plików nie ma danych, haseł, kluczy ani folderu <code>.venv</code>. Komunikat commita powinien krótko mówić, co zmieniasz. Tutaj zapisujesz funkcję podsumowującą pomiary i jej testy.</p>
 </section>
 <section id="ci"><h2>Skorzystaj z gotowego sprawdzania</h2>
-<p><strong>CI</strong> uruchamia sprawdzenia projektu na innym komputerze po otwarciu lub aktualizacji pull requesta. Utwórz folder <code>.github/workflows</code> i zapisz w nim <a href="resources/checks.yml">gotowy plik checks.yml</a>. W tej lekcji korzystasz z przygotowanej konfiguracji.</p>
+<p>Po otwarciu lub aktualizacji pull requesta GitHub może uruchomić testy i inne sprawdzenia na osobnym komputerze. Takie automatyczne sprawdzanie zmian nazywamy CI.</p><p>Utwórz folder <code>.github/workflows</code> i umieść w nim gotowy plik <code>checks.yml</code>. W tej lekcji nie musisz pisać konfiguracji od początku.</p>
 <pre><code class="language-bash">git add .github/workflows/checks.yml
 git diff --cached
 git commit -m &quot;Run checks for pull requests&quot;
 git push -u origin learning/summary</code></pre><p>Na GitHub wybierz <strong>Compare &amp; pull request</strong>. Jako bazę ustaw <code>main</code>, a jako źródło <code>learning/summary</code>. W opisie napisz, co oblicza funkcja i jakie wymagania sprawdzają testy. W zakładce <strong>Checks</strong> znajdziesz wyniki CI. Jeśli krok się nie powiedzie, odczytaj polecenie i komunikat błędu, a potem uruchom to polecenie lokalnie.</p>
 <p>Jeśli GitHub Actions są niedostępne dla Twojego konta lub repozytorium, zapisz to ograniczenie i zachowaj wyniki lokalnych sprawdzeń. Możesz kontynuować naukę bez zakupu usługi. Gdy CI zadziała, wyjaśnij, jakie sprawdzenia wykonało.</p>
 </section>
-<section id="review"><h2>Sprawdź własną zmianę jak czytelnik</h2>
-<p>Przeczytaj diff tak, jakbyś widział kod po raz pierwszy. Czy funkcja zachowuje zera? Co robi bez znanych pomiarów? Czy zmienia wejście? Który test zauważyłby każde z tych naruszeń? Powiąż uwagi z <a href="../../docs/standard.md">regułami standardu</a>: K2 opis zachowania, K4 konkretny wyjątek, K9 format i lint, T2 małe jawne dane, T3 przypadki brzegowe, G4 brak danych i sekretów w repozytorium.</p>
-<p>Na końcu B masz mały moduł, testy i sposób powtórzenia sprawdzeń. To wystarczy do kolejnego etapu nauki. Reguły dotyczące późniejszych modułów będziemy stosować wtedy, gdy poznasz potrzebne narzędzia.</p>
+<section id="review"><h2>Przeczytaj zmianę tak, jakby napisał ją ktoś inny</h2>
+<p>Obejrzyj różnice w kodzie. Czy funkcja uwzględnia zera? Co robi, gdy nie ma znanych pomiarów? Czy pozostawia listę bez zmian? Do każdego pytania znajdź test, który wykryłby niepoprawne zachowanie.</p><p>W standardzie kursu odpowiadają temu reguły K2, opis działania, K4, konkretny wyjątek, K9, formatowanie i lint, T2, małe jawne dane, T3, przypadki brzegowe, oraz G4, brak danych i sekretów w repozytorium.</p>
+<p>Masz teraz mały moduł, testy i zapisane polecenia, które pozwalają powtórzyć sprawdzenia. Możesz przejść do dalszej nauki. Kolejne reguły standardu wprowadzimy wraz z narzędziami, do których się odnoszą.</p>
 <div class="quiz" id="commit" data-type="single"><p>Co zapisuje commit?</p>
 <ul class="quiz-options"><li>Wszystko z całego dysku<span class="why">Git nie zapisuje plików spoza repozytorium i nie wybiera automatycznie wszystkich zmian.</span></li>
 <li>Wynik ostatniej komórki notebooka z pamięci<span class="why">Pamięć kernela nie jest historią plików w git.</span></li>
@@ -76,7 +76,7 @@ git push -u origin learning/summary</code></pre><p>Na GitHub wybierz <strong>Com
 </ul>
 </div>
 </section>
-<section id="powrot"><h2>Powrót bez zaglądania</h2>
+<section id="powrot"><h2>Sprawdź, co pamiętasz</h2>
 <p>Wyjaśnij komuś innemu różnicę między testem, commitem i CI.</p>
 <details><summary>Sprawdź własne wyjaśnienie</summary>
 <p>Test sprawdza zachowanie kodu na określonych danych. Commit zapisuje wybrane zmiany w plikach. CI wykonuje uzgodnione sprawdzenia na innym komputerze. Wyjaśnij na swoim projekcie, co straciłbyś bez każdej z tych czynności.</p>

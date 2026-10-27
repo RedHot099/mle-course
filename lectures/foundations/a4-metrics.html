@@ -25,14 +25,14 @@
 
     <h1>Policz błąd małej prognozy</h1>
 
-    <p class="lede">Porównaj prognozę z obserwacją i oblicz MAE. Najpierw ustalisz, co było wiadomo w chwili prognozy, a potem policzysz błędy na tych samych dniach.</p>
+    <p class="lede">Masz już prognozę. Jak sprawdzić, o ile różni się od rzeczywistej sprzedaży? Zaczniesz od jednego dnia, a potem obliczysz średnią wielkość błędu dla kilku dni. Tak poznasz miarę MAE.</p>
 
-    <ul class="meta"><li><b>Przed lekcją:</b> Listy, pętle i dzielenie z A2. Wystarczy runner przeglądarkowy.</li>
-<li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
+    <ul class="meta"><li><b>Przed lekcją:</b> Listy, pętle i dzielenie z A2. Całą lekcję możesz wykonać w przeglądarce.</li>
+<li><b>Jak pracować:</b> przewiduj wyniki, uruchamiaj kod i wyjaśniaj to, co widzisz</li>
 </ul>
 
     <section id="pytanie"><h2>Co przewidujesz i kiedy?</h2>
-<p>Obserwacja jest zapisanym wynikiem pomiaru. Prognoza przewiduje wynik przyszłego pomiaru. <strong>Historia</strong> to obserwacje znane w chwili przygotowania prognozy. <strong>Horyzont</strong> mówi, ile kolejnych okresów prognozujesz.</p>
+<p>Załóżmy, że prognozujesz sprzedaż w sklepie. Sprzedaż zapisana dla minionego dnia jest <strong>obserwacją</strong>. Liczba, którą przewidujesz na przyszły dzień, jest <strong>prognozą</strong>.</p><p>Wyniki znane w chwili przygotowania prognozy nazywamy <strong>historią</strong>. <strong>Horyzont prognozy</strong> określa, na ile kolejnych okresów ją przygotowujesz, na przykład na dwa dni.</p>
 <p>W niedzielę wieczorem prognozujesz sprzedaż na poniedziałek i wtorek. Horyzont obejmuje dwa dni. Poniedziałkowej sprzedaży jeszcze nie znasz, więc nie możesz użyć jej do tej prognozy wtorku.</p>
 <div class="quiz" id="available" data-type="single"><p>W niedzielę wieczorem przygotowujesz prognozę na poniedziałek. Co jest historią?</p>
 <ul class="quiz-options"><li>Końcowa sprzedaż z poniedziałku<span class="why">Tę wartość poznasz dopiero po prognozowanym dniu.</span></li>
@@ -44,7 +44,7 @@
 <section id="srednia"><h2>Zacznij od średniej i odległości</h2>
 <p>Średnia to suma wartości podzielona przez ich liczbę. Dla 2, 4 i 6 suma wynosi 12, a liczba elementów 3. Średnia wynosi więc 4. Funkcja <code>sum</code> sumuje liczby z listy, a <code>len</code> podaje liczbę elementów:</p>
 <pre><code class="language-python">values = [2, 4, 6]
-print(sum(values) / len(values))</code></pre><p>W tym kursie błąd ze znakiem liczymy jako prognozę minus obserwację. Może być dodatni lub ujemny. Wartość bezwzględna opisuje samą wielkość błędu: odległość między 3 a 8 jest taka sama jak między 8 a 3. Obliczysz ją funkcją <code>abs</code>.</p>
+print(sum(values) / len(values))</code></pre><p>Dla jednego dnia odejmujemy zaobserwowaną sprzedaż od prognozy. Wynik może być dodatni lub ujemny: znak pokazuje, czy przewidzieliśmy za dużo, czy za mało.</p><p>Jeśli pytamy tylko o wielkość pomyłki, pomijamy znak. To wartość bezwzględna, którą oblicza funkcja <code>abs</code>. Różnica między 3 a 8 ma wielkość 5, niezależnie od kolejności tych liczb.</p>
 <div class="predict" id="absolute" data-type="single" data-expected-output="5 5"><p>Jakie dwie wartości zobaczysz?</p>
 <pre><code class="language-python">print(abs(3 - 8), abs(8 - 3))</code></pre><ul class="quiz-options"><li>0 0<span class="why">Odwrócenie kolejności zmienia znak, ale różnica nadal ma długość 5.</span></li>
 <li data-correct>5 5<span class="why">Obie różnice mają tę samą wartość bezwzględną.</span></li>
@@ -53,7 +53,7 @@ print(sum(values) / len(values))</code></pre><p>W tym kursie błąd ze znakiem l
 </div>
 </section>
 <section id="mae"><h2>Porównaj te same dni</h2>
-<p><strong>MAE</strong>, czyli <em>mean absolute error</em>, to średnia z bezwzględnych błędów. Dla obserwacji <code>[2, 6]</code> i prognozy <code>[3, 3]</code> błędy mają wielkość 1 i 3. Ich średnia wynosi 2. MAE jest wyrażone w tej samej jednostce co obserwacje.</p>
+<p><strong>MAE</strong>, z angielskiego <em>mean absolute error</em>, mówi, jak duża była pomyłka średnio dla jednego pomiaru. Obliczamy wartość bezwzględną każdego błędu, a następnie średnią tych wartości.</p><p>Dla obserwacji <code>[2, 6]</code> i prognozy <code>[3, 3]</code> pomyłki wynoszą 1 i 3. Ich średnia to 2, więc MAE wynosi 2. Jednostka pozostaje taka sama jak w danych: jeśli sprzedaż podajesz w sztukach, MAE też jest w sztukach.</p>
 <p>Każdą prognozę porównuj z obserwacją z tego samego dnia. Funkcja <code>zip</code> dobiera w pary elementy o tych samych pozycjach. Dwie nazwy w poniższej pętli odbierają dzień i jego wartość:</p>
 <pre><code class="language-python">days = [&quot;Mon&quot;, &quot;Tue&quot;]
 values = [4, 7]
@@ -64,7 +64,7 @@ for day, value in zip(days, values):
 </section>
 <section id="cwiczenie"><h2>Policz inną parę prognoz</h2>
 <h3>Średnia błędów</h3>
-<p>Porównaj prognozy i obserwacje z trzech dni. W liście <code>errors</code> zapisz bezwzględne błędy, a w <code>mae</code> ich średnią. Uwzględnij także dzień z zerową sprzedażą. Możesz użyć pętli z <code>zip</code>.</p>
+<p>Poniżej znajdziesz prognozy i rzeczywistą sprzedaż z trzech dni. W liście <code>errors</code> zapisz wielkość pomyłki dla każdego dnia, bez znaku. Następnie oblicz ich średnią i zapisz ją w <code>mae</code>.</p><p>Uwzględnij wszystkie trzy dni, także ten z zerową sprzedażą. Do łączenia prognozy z właściwą obserwacją możesz użyć pętli z <code>zip</code>.</p>
 <div class="pyrun" id="mae-practice"><script type="text/x-python" data-role="starter">
 actual = [0, 5, 4]
 predicted = [2, 3, 4]
@@ -85,7 +85,7 @@ assert math.isclose(mae, 4 / 3), "MAE to suma trzech błędów podzielona przez 
 <p>Do errors dodawaj jeden błąd na dzień. Średnią oblicz po zakończeniu pętli.</p>
 </details>
 </section>
-<section id="powrot"><h2>Powrót bez zaglądania</h2>
+<section id="powrot"><h2>Sprawdź, co pamiętasz</h2>
 <p>Czy wynik MAE = 2 sam wystarcza, żeby uznać model za dobry? Czy znasz poniedziałkową sprzedaż już w niedzielę?</p>
 <details><summary>Sprawdź własne wyjaśnienie</summary>
 <p>MAE oceniaj w odniesieniu do skali danych i błędu baseline. Prognozę budujesz z informacji dostępnych w chwili jej przygotowania. Wyniki modelu i baseline porównujesz na tych samych dniach.</p>

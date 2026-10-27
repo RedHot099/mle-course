@@ -25,15 +25,15 @@
 
     <h1>Pierwsza prognoza na danych Freshcast</h1>
 
-    <p class="lede">Przygotuj siedem prognoz z ostatniej znanej obserwacji. Potem porównaj je z rzeczywistą sprzedażą. Wystarczy Python poznany w A2.</p>
+    <p class="lede">Wykorzystasz to, co już znasz z Pythona, żeby przygotować pierwszą prognozę sprzedaży. Użyjesz prostej reguły: przez kolejny tydzień przewiduj taką samą sprzedaż jak w ostatnim znanym dniu. Potem sprawdzisz, jak duże były pomyłki.</p>
 
-    <ul class="meta"><li><b>Przed lekcją:</b> A4.1 i podstawy Python z A2.</li>
-<li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
+    <ul class="meta"><li><b>Przed lekcją:</b> A4.1 i podstawy Pythona z A2.</li>
+<li><b>Jak pracować:</b> przewiduj wyniki, uruchamiaj kod i wyjaśniaj to, co widzisz</li>
 </ul>
 
     <section id="dane"><h2>Jedna seria i czternaście dni</h2>
 <p>Prześledź sprzedaż jednego produktu w jednym sklepie przez 14 kolejnych dni. Dane pochodzą z publicznej próbki FreshRetailNet-50K dołączonej do kursu: sklep 70, produkt 116, od 28 marca do 10 kwietnia 2024. <a href="data/freshcast-sample.csv">Pobierz ten wycinek jako CSV</a>, jeśli chcesz zachować go lokalnie.</p>
-<p>Kolumna <code>sale_amount</code> zawiera wartości sprzedaży w skali zapisanej w źródle. Nie przeliczamy ich na całkowitą liczbę sztuk. Kolumna <code>stockout_hours</code> podaje godziny braku towaru w obserwowanym oknie dnia. Gdy produktu brakuje, sprzedaż nie pokazuje całego popytu: część klientów mogła nie dostać towaru.</p>
+<p>Kolumna <code>sale_amount</code> zawiera sprzedaż w jednostkach użytych w źródle. Zachowujemy te wartości, również ich części ułamkowe. Nie traktuj ich jako całkowitej liczby sprzedanych sztuk.</p><p>Kolumna <code>stockout_hours</code> mówi, przez ile godzin w obserwowanej części dnia towar był niedostępny. To ważne: gdy półka jest pusta, zapis sprzedaży nie mówi, ilu klientów chciało coś kupić. Sprzedaż może więc być mniejsza od popytu.</p>
 <div class="table-wrap"><table><thead><tr><th>Dzień</th><th>sale_amount</th><th>stockout_hours</th><th>Rola</th></tr>
 </thead>
 <tbody><tr><td>2024-03-28</td><td>0.8</td><td>7</td><td>historia</td></tr>
@@ -53,13 +53,13 @@
 </tbody>
 </table>
 </div>
-<p>Przyjmij, że przygotowujesz prognozę wieczorem 3 kwietnia. Znasz pierwsze siedem dni z tabeli. Następnych siedmiu jeszcze nie znasz. Widzisz je teraz po to, by przećwiczyć ocenę gotowej prognozy. Do jej zbudowania użyj wyłącznie historii.</p>
+<p>Wyobraź sobie, że jest wieczór 3 kwietnia. Znasz sprzedaż z pierwszych siedmiu dni tabeli i przygotowujesz prognozę na następny tydzień. Późniejszych wyników nie możesz jeszcze użyć.</p><p>W ćwiczeniu pokazujemy od razu całą tabelę, żeby można było potem ocenić prognozę. Podczas jej tworzenia korzystaj jednak wyłącznie z pierwszych siedmiu dni.</p>
 </section>
 <section id="baseline"><h2>Przygotuj prognozę przed odczytaniem wyników</h2>
 <p>Zastosuj jedną regułę: na każdy z kolejnych siedmiu dni przewiduj wartość z ostatniego dnia historii. Cała prognoza powstaje raz, wieczorem 3 kwietnia. Obserwacje z 4 i 5 kwietnia posłużą później do oceny, nie do poprawiania tej prognozy.</p>
-<p>Mnożenie pozwala powtórzyć element listy. Na przykład <code>["pending"] * 3</code> daje <code>["pending", "pending", "pending"]</code>. W prognozie liczba elementów ma odpowiadać ustalonemu horyzontowi.</p>
+<p>W Pythonie możesz powtórzyć element listy przez mnożenie. Na przykład <code>["pending"] * 3</code> tworzy listę <code>["pending", "pending", "pending"]</code>. W swoim zadaniu przygotuj tyle wartości, ile dni obejmuje prognoza. Tę liczbę dni nazywamy horyzontem.</p>
 <h3>Siedem prognoz</h3>
-<p>Najpierw zbuduj listę <code>forecast</code> z danych <code>history</code> i horyzontu. Dopiero potem odczytaj <code>actual</code> i oblicz błędy. Zapisz je w <code>errors</code>, a ich średnią w <code>mae</code>. Zachowaj tę kolejność pracy.</p>
+<p>Najpierw uzupełnij listę <code>forecast</code>, korzystając wyłącznie z <code>history</code> i podanego horyzontu. Powinna zawierać prognozę na każdy z siedmiu dni.</p><p>Dopiero gdy lista jest gotowa, porównaj ją z <code>actual</code>, czyli rzeczywistą sprzedażą. Zapisz wielkości pomyłek w <code>errors</code>, a ich średnią w <code>mae</code>. Nie poprawiaj prognozy po obejrzeniu wyników.</p>
 <div class="pyrun" id="forecast"><script type="text/x-python" data-role="starter">
 history = [0.8, 0.6, 0.7, 0.76, 0.0, 0.7, 0.9]
 horizon = 7
@@ -93,13 +93,13 @@ assert isinstance(mae, (int, float)) and math.isclose(mae, 2.84 / 7), "MAE to ś
 </figure>
 </section>
 <section id="wnioski"><h2>Zapisz wynik i ograniczenie</h2>
-<p>Zapisz w notebooku lub pliku tekstowym regułę prognozy, okres oceny i jedno ograniczenie wyniku. MAE liczymy tutaj na zaobserwowanej sprzedaży ze wszystkich siedmiu dni, także dni z brakami towaru. Nie znamy pełnego popytu, więc nie oceniamy prognozy tego popytu.</p>
+<p>W notebooku lub pliku tekstowym zapisz, jak powstała prognoza i dla jakich dni ją oceniasz. Dodaj jedno ograniczenie tej oceny.</p><p>W tym ćwiczeniu obliczamy MAE dla sprzedaży ze wszystkich siedmiu dni, także tych z brakami towaru. Pełnego popytu nie znamy, dlatego wynik nie mówi, jak dobrze prognozujemy potrzeby klientów, których nie udało się obsłużyć.</p>
 <details><summary>Sprawdź własną odpowiedź</summary>
 <p>Wyjaśnienie powinno wskazywać, że prognoza korzysta tylko z historii, a ocena obejmuje późniejsze obserwacje. Powinno też rozróżniać sprzedaż od popytu. Jeden tydzień jednej serii nie wystarcza do oceny metody dla wszystkich sklepów. Nawet poprawnie napisany baseline może mieć duży błąd.</p>
 </details>
 <p>Źródło: Dingdong-Inc, <a href="https://huggingface.co/datasets/Dingdong-Inc/FreshRetailNet-50K">FreshRetailNet-50K</a>, CC BY 4.0. Wycinek pochodzi z kursowego <code>frn_sample.parquet</code>. Zachowano wartości, uporządkowano dni i nazwano kolumnę godzin <code>stockout_hours</code>. To jawny przykład do nauki, a nie końcowy zamknięty test kursu.</p>
 </section>
-<section id="powrot"><h2>Powrót bez zaglądania</h2>
+<section id="powrot"><h2>Sprawdź, co pamiętasz</h2>
 <p>Czy MAE = 0 oznacza zero sprzedaży? Czy to samo co brak danych?</p>
 <details><summary>Sprawdź własne wyjaśnienie</summary>
 <p><code>MAE = 0</code> oznacza, że każda oceniana prognoza zgadza się z obserwacją. Same obserwacje mogą być dodatnie lub zerowe. Brak obserwacji to osobna sytuacja. Jeśli te znaczenia się mieszają, wróć do A2.2 i A4.1.</p>

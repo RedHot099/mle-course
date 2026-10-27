@@ -25,14 +25,14 @@
 
     <h1>Warunki, zero i brak obserwacji</h1>
 
-    <p class="lede">Napisz program, który rozpoznaje brak obserwacji. Sprawdzisz, dlaczego zero i brak wymagają różnych odpowiedzi.</p>
+    <p class="lede">Pomiar równy zero mówi coś innego niż brak pomiaru. Napiszesz program, który rozpoznaje te sytuacje, i zobaczysz, jak warunki pozwalają wybrać właściwe działanie.</p>
 
-    <ul class="meta"><li><b>Przed lekcją:</b> A2.1 albo samodzielna praca z liczbą i nazwą.</li>
-<li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
+    <ul class="meta"><li><b>Przed lekcją:</b> Wykonaj A2.1 lub upewnij się, że potrafisz używać liczb i zmiennych.</li>
+<li><b>Jak pracować:</b> przewiduj wyniki, uruchamiaj kod i wyjaśniaj to, co widzisz</li>
 </ul>
 
     <section id="warunek"><h2>Wybierz jedną z dróg</h2>
-<p>Porównanie <code>stock &gt; 0</code> ma wynik <code>True</code>, gdy stan jest dodatni, albo <code>False</code> w pozostałych przypadkach. Po <code>if</code> podajesz taki warunek. Python wykona blok pod nim, jeśli warunek jest prawdziwy. W przeciwnym razie wykona blok pod <code>else</code>.</p>
+<p>Czy towar jest dostępny? Możemy to sprawdzić warunkiem <code>stock &gt; 0</code>. Wynik to <code>True</code>, jeśli stan magazynu jest większy od zera, lub <code>False</code> w przeciwnym razie.</p><p>Instrukcja <code>if</code> pozwala wykonać kod tylko wtedy, gdy warunek jest prawdziwy. Pod <code>else</code> zapisujemy, co zrobić w pozostałych przypadkach.</p>
 <pre><code class="language-python">stock = 4
 if stock &gt; 0:
     print(&quot;available&quot;)
@@ -53,7 +53,7 @@ elif value == 0:
 else:
     print(&quot;positive&quot;)</code></pre></section>
 <section id="brak"><h2>Oddziel brak od zera</h2>
-<p><code>None</code> oznacza brak wartości. Zapis <code>0</code> mówi, że zmierzona sprzedaż wyniosła zero. Zapis <code>None</code> mówi, że nie znamy wyniku pomiaru. Te obserwacje niosą inną informację.</p>
+<p>W naszych przykładach <code>None</code> oznacza brak pomiaru. Sprzedaż równa <code>0</code> to znany wynik: w danym dniu nic się nie sprzedało. Wartość <code>None</code> mówi natomiast, że nie wiemy, ile się sprzedało.</p>
 <div class="predict" id="missing" data-type="single" data-expected-output="known"><p>Co wypisze ten kod?</p>
 <pre><code class="language-python">value = 0
 if value is None:
@@ -63,11 +63,11 @@ else:
 <li>missing<span class="why">Warunek is None pyta o brak, nie o zerową sprzedaż.</span></li>
 </ul>
 </div>
-<p>O brak pytaj przez <code>is None</code>, a o znaną wartość przez <code>is not None</code>. Sam warunek <code>if value:</code> uzna zarówno <code>None</code>, jak i zero za fałsz. Przez taki skrót możesz przypadkiem usunąć zera z obliczeń.</p>
+<p>Brak pomiaru sprawdzaj warunkiem <code>is None</code>, a jego obecność warunkiem <code>is not None</code>. Skrót <code>if value:</code> nie rozróżnia tych sytuacji: zarówno dla zera, jak i dla <code>None</code> warunek jest fałszywy. Jeśli użyjesz go do wybierania pomiarów, możesz przez przypadek pominąć zera.</p>
 </section>
 <section id="cwiczenia"><h2>Nadaj obserwacji status</h2>
 <h3>Znana liczba</h3>
-<p>Przypisz do <code>status</code> napis <code>"missing"</code>, gdy <code>value</code> jest <code>None</code>. Dla liczby, także zera, przypisz <code>"known"</code>. Po pierwszej próbie zmień <code>value</code> na <code>None</code>, a potem na <code>5</code>. Sprawdź każdą z tych trzech sytuacji.</p>
+<p>Uzupełnij kod tak, żeby w zmiennej <code>status</code> znalazł się napis <code>"missing"</code>, gdy <code>value</code> jest równe <code>None</code>. Dla liczby zapisz <code>"known"</code>. Zero również jest znaną wartością.</p><p>Sprawdź swój kod dla trzech przypadków: zera, <code>None</code> i liczby <code>5</code>. Po każdej zmianie <code>value</code> uruchom sprawdzenie ponownie.</p>
 <div class="pyrun" id="status"><script type="text/x-python" data-role="starter">
 value = 0
 status = None
@@ -82,10 +82,10 @@ assert status == _expected[value], "Dla None status to missing. Dla 0 i 5 to kno
 <p>Sprawdź dokładnie brak wartości, nie to, czy liczba jest dodatnia.</p>
 </details>
 <details><summary>Podpowiedź 2</summary>
-<p>Obie drogi powinny przypisać napis do nazwy status.</p>
+<p>Zarówno pod <code>if</code>, jak i pod <code>else</code> przypisz odpowiedni napis do <code>status</code>.</p>
 </details>
 </section>
-<section id="powrot"><h2>Powrót bez zaglądania</h2>
+<section id="powrot"><h2>Sprawdź, co pamiętasz</h2>
 <p>Czy brak obserwacji oznacza zero? Dlaczego używasz == zamiast = w porównaniu?</p>
 <details><summary>Sprawdź własne wyjaśnienie</summary>
 <p>Zero jest znanym wynikiem pomiaru, a brak oznacza, że wyniku nie mamy. Znak <code>=</code> przypisuje wartość. Operator <code>==</code> porównuje dwie wartości. Wyjaśnij każdą z tych różnic na własnym przykładzie.</p>

@@ -25,10 +25,10 @@
 
     <h1>Listy i pętle krok po kroku</h1>
 
-    <p class="lede">Policz sumę obserwacji i sprawdź, ile z nich jest znanych. Nauczysz się śledzić zmiany wartości w kolejnych krokach pętli.</p>
+    <p class="lede">Gdy pomiarów jest kilka, nie trzeba pisać osobnego polecenia dla każdego z nich. Zapiszesz je w liście, a potem użyjesz pętli, żeby policzyć ich sumę i liczbę znanych wartości.</p>
 
     <ul class="meta"><li><b>Przed lekcją:</b> A2.1 i A2.2.</li>
-<li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
+<li><b>Jak pracować:</b> przewiduj wyniki, uruchamiaj kod i wyjaśniaj to, co widzisz</li>
 </ul>
 
     <section id="lista"><h2>Przechowaj kolejne obserwacje</h2>
@@ -41,7 +41,7 @@ print(len(values))</code></pre><p>Program wypisze <code>3</code>, <code>5</code>
 print([3, 0, 5, 8][2:])</code></pre><p>Otrzymasz <code>[3, 0]</code> i <code>[5, 8]</code>. Taki podział przyda się do oddzielenia historii od przyszłości.</p>
 </section>
 <section id="petla"><h2>Prześledź każdą iterację</h2>
-<p>Pętla <code>for value in values</code> pobiera kolejne elementy listy. W każdym kroku aktualny element jest dostępny pod nazwą <code>value</code>. Wcięty blok wykonuje się raz dla każdego elementu. Taki krok nazywamy iteracją.</p>
+<p>Zapis <code>for value in values</code> rozpoczyna pętlę po liście. W pierwszym kroku zmienna <code>value</code> przyjmuje pierwszy element, w drugim drugi i tak dalej. Za każdym razem Python wykonuje kod zapisany z wcięciem pod pętlą. Jeden taki krok nazywamy iteracją.</p>
 <div class="predict" id="accumulator" data-type="single" data-expected-output="7"><p>Jaki jest wynik?</p>
 <pre><code class="language-python">total = 0
 for value in [2, 5, 0]:
@@ -55,11 +55,11 @@ print(total)</code></pre><ul class="quiz-options"><li>3<span class="why">To licz
 <pre><code class="language-python">doubled = []
 for value in [1, 4]:
     doubled.append(value * 2)
-print(doubled)</code></pre><p>Wynik to <code>[2, 8]</code>. Pusta lista nie ma ostatniego elementu, ale pętla po niej jest poprawna i wykonuje zero iteracji.</p>
+print(doubled)</code></pre><p>Wynikiem jest lista <code>[2, 8]</code>. Jeśli lista jest pusta, nie można wybrać z niej ostatniego elementu. Można jednak przejść po niej pętlą: kod wewnątrz pętli nie wykona się wtedy ani razu.</p>
 </section>
 <section id="cwiczenia"><h2>Policz znane wartości</h2>
 <h3>Zero też się liczy</h3>
-<p>W <code>known_count</code> policz obserwacje inne niż <code>None</code>, a w <code>total</code> ich sumę. Zero jest znaną obserwacją. Użyj pętli i podanych nazw, aby ten sam kod działał po zmianie listy.</p>
+<p>Na liście są pomiary oraz wartości <code>None</code>, oznaczające brak pomiaru. Policz znane wartości i zapisz ich liczbę w <code>known_count</code>. W zmiennej <code>total</code> zapisz ich sumę.</p><p>Uwzględnij zera, bo są poprawnymi pomiarami. Użyj pętli i zmiennych z przykładu, żeby program działał również po zmianie listy.</p>
 <div class="pyrun" id="known-total"><script type="text/x-python" data-role="starter">
 values = [0, 4, None, 2, None]
 known_count = 0
@@ -71,13 +71,13 @@ assert known_count == 3, "Są trzy znane wartości: 0, 4 i 2. Czy warunek nie us
 assert total == 6, "Suma znanych wartości powinna wynosić 6."
 </script></div>
 <details><summary>Podpowiedź 1</summary>
-<p>Oddziel pytanie o brak od pytania o wartość liczby.</p>
+<p>Zastanów się, które elementy chcesz pominąć. Czy zero jest jednym z nich?</p>
 </details>
 <details><summary>Podpowiedź 2</summary>
 <p>Licznik i sumę aktualizuj wewnątrz warunku value is not None.</p>
 </details>
 </section>
-<section id="powrot"><h2>Powrót bez zaglądania</h2>
+<section id="powrot"><h2>Sprawdź, co pamiętasz</h2>
 <p>Co da pętla po pustej liście? Jak wybierzesz pierwsze trzy elementy?</p>
 <details><summary>Sprawdź własne wyjaśnienie</summary>
 <p>Dla pustej listy blok pętli nie wykona się ani razu. Wycinek <code>[:3]</code> zawiera elementy o indeksach 0, 1 i 2. Uruchom też swój kod dla <code>[]</code> oraz <code>[0, None]</code> i wyjaśnij wyniki.</p>

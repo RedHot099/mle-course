@@ -25,34 +25,34 @@
 
     <h1>Moduł, podstawowe typy i jakość kodu</h1>
 
-    <p class="lede">Zbierz własną funkcję i testy w mały projekt. Zapisz potrzebne narzędzia, dodaj podstawowe typy i uruchom sprawdzenia z terminala.</p>
+    <p class="lede">Twoja funkcja i testy staną się małym projektem, który można uruchomić także poza notebookiem. Zapiszesz potrzebne narzędzia, opiszesz typy danych i wykonasz sprawdzenia w terminalu.</p>
 
     <ul class="meta"><li><b>Przed lekcją:</b> B6.1 i B6.2. Własne summary.py i test_summary.py, oba w mle-practice.</li>
-<li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
+<li><b>Jak pracować:</b> przewiduj wyniki, uruchamiaj kod i wyjaśniaj to, co widzisz</li>
 </ul>
 
     <section id="modul"><h2>Zaimportuj funkcję z własnego pliku</h2>
-<p>Plik <code>summary.py</code> jest modułem. Po <code>import summary</code> możesz wywołać funkcję przez <code>summary.mean_known(...)</code>. Zapis <code>from summary import mean_known</code> pozwala wywołać ją bez nazwy modułu. Obie formy korzystają z funkcji zapisanej w tym samym pliku.</p>
+<p>Plik <code>summary.py</code> jest modułem, czyli plikiem Pythona, z którego możesz korzystać w innym kodzie. Po <code>import summary</code> wywołasz funkcję jako <code>summary.mean_known(...)</code>.</p><p>Możesz też napisać <code>from summary import mean_known</code>. Wtedy używasz samej nazwy <code>mean_known(...)</code>. Oba zapisy korzystają z tej samej funkcji z pliku <code>summary.py</code>.</p>
 <p>Przy pierwszym imporcie Python wykonuje zawartość pliku od góry do dołu. Jeśli na końcu pliku umieścisz uruchomienie raportu, import też go uruchomi. Zostaw w module definicję funkcji, a doświadczenia wykonuj w notebooku lub testach.</p>
 <div class="quiz" id="import" data-type="single"><p>Moduł ma na górze print("loading"). Co zrobią dwa importy w jednym świeżym procesie?</p>
 <ul class="quiz-options"><li>Wypiszą loading dwa razy<span class="why">Import nie wykonuje ponownie już załadowanego modułu bez dodatkowej operacji.</span></li>
 <li data-correct>Wypiszą loading raz<span class="why">Kolejny import korzysta z zapamiętanego modułu.</span></li>
 </ul>
 </div>
-<p>Kernel pamięta zaimportowany moduł. Po zmianie <code>summary.py</code> uruchom notebook ponownie od początku po restarcie kernela. Sam kolejny import może nadal korzystać z poprzedniej wersji. Pytest uruchomiony z terminala wykonuje kod w nowym procesie.</p>
+<p>Kernel zapamiętuje zaimportowany moduł. Dlatego po zmianie <code>summary.py</code> kolejne <code>import</code> może nadal korzystać ze starej wersji.</p><p>Zrestartuj kernel i uruchom notebook od początku, żeby wczytać aktualny plik. Testy uruchamiane przez <code>pytest</code> z terminala zaczynają pracę w nowym procesie i odczytują kod z dysku.</p>
 </section>
 <section id="projekt"><h2>Zapisz narzędzia projektu</h2>
 <p>Otwórz terminal w folderze <code>mle-practice</code>, w którym są Twoja funkcja i testy. To osobny projekt, nie folder <code>mle-course</code>. Jeśli istnieje już w nim <code>pyproject.toml</code>, pomiń pierwsze polecenie <code>uv init</code>.</p>
 <pre><code class="language-bash">cd ~/mle-practice
 uv init --bare --python 3.12
 uv python pin 3.12
-uv add --dev pytest ruff mypy</code></pre><p>W projekcie powstają pliki o różnych zadaniach:</p><ul><li><code>pyproject.toml</code> opisuje projekt i potrzebne narzędzia.</li><li><code>.python-version</code> wybiera Python 3.12.</li><li><code>uv.lock</code> zapisuje wybrane wersje bibliotek.</li><li>Folder <code>.venv</code> zawiera środowisko utworzone na Twoim komputerze.</li></ul><p>Teraz uruchamiaj narzędzia przez <code>uv run</code>. Ich nazwy i wersje są zapisane w projekcie, więc nie potrzebujesz już opcji <code>--no-project</code> ani <code>--with</code>.</p>
+uv add --dev pytest ruff mypy</code></pre><p>Każdy z utworzonych plików ma inne zadanie:</p><ul><li><code>pyproject.toml</code> opisuje projekt i potrzebne narzędzia.</li><li><code>.python-version</code> wybiera Python 3.12.</li><li><code>uv.lock</code> zapisuje wybrane wersje bibliotek.</li><li>Folder <code>.venv</code> zawiera środowisko utworzone na Twoim komputerze.</li></ul><p>Teraz uruchamiaj narzędzia przez <code>uv run</code>. Ich nazwy i wersje są zapisane w projekcie, więc nie potrzebujesz już opcji <code>--no-project</code> ani <code>--with</code>.</p>
 <pre><code class="language-bash">uv run pytest -q
 uv run ruff format summary.py test_summary.py
 uv run ruff check summary.py test_summary.py</code></pre><p><code>ruff format</code> porządkuje układ kodu. <code>ruff check</code> szuka między innymi nieznanych nazw i nieużytych importów. Żadne z tych poleceń nie sprawdza, czy średnia ma poprawną wartość. To zadanie Twoich testów.</p>
 </section>
 <section id="typy"><h2>Opisz argument i wynik</h2>
-<p>Adnotacja typu opisuje oczekiwane dane i wynik. Typ argumentu piszesz po dwukropku, a typ wyniku po strzałce <code>-&gt;</code>. Python nie zmienia wartości na podstawie adnotacji. Osobne narzędzie, mypy, sprawdza zgodność typów w kodzie:</p>
+<p>Adnotacje typów opisują, jakich danych oczekuje funkcja i jaki wynik zwraca. Typ parametru zapisujemy po dwukropku, a typ wyniku po strzałce <code>-&gt;</code>.</p><p>Sam Python nie zamienia wartości na podstawie tych opisów. Narzędzie <code>mypy</code> czyta natomiast kod i wskazuje miejsca, w których typy się nie zgadzają:</p>
 <pre><code class="language-python">def triple(number: float) -&gt; float:
     return number * 3
 
@@ -68,12 +68,12 @@ uv run pytest -q</code></pre><p>Jeśli mypy wskazuje możliwe <code>None</code> 
 </div>
 </section>
 <section id="zadanie"><h2>Uruchom od czystego startu</h2>
-<p>Uruchom z terminala cztery sprawdzenia pokazane wyżej. Zapisz, które bada wyniki, które typy, a które format i wzorce w kodzie. Dodaj do <code>README.md</code> instrukcję uruchomienia testów, aby inna osoba mogła je powtórzyć.</p>
+<p>Uruchom w terminalu cztery sprawdzenia pokazane wyżej. Zapisz własnymi słowami, które sprawdza wynik obliczenia, które typy, a które zapis kodu.</p><p>Dodaj do <code>README.md</code> polecenie uruchomienia testów. Wyobraź sobie, że ktoś otwiera projekt pierwszy raz: powinien wiedzieć, co wpisać, żeby je powtórzyć.</p>
 <details><summary>Sprawdź własną odpowiedź</summary>
 <p>Osoba czytająca projekt powinna znaleźć funkcję, jej docstring i polecenie uruchomienia testów. Format, lint, mypy oraz pytest mają przechodzić dla Twojego małego projektu. Nie wymagamy ukończenia późniejszych zadań z repozytorium kursu.</p>
 </details>
 </section>
-<section id="powrot"><h2>Powrót bez zaglądania</h2>
+<section id="powrot"><h2>Sprawdź, co pamiętasz</h2>
 <p>Dlaczego po zmianie pliku notebook może nadal używać starej funkcji?</p>
 <details><summary>Sprawdź własne wyjaśnienie</summary>
 <p>Import korzysta z modułu zapamiętanego w kernelu. Restart i wykonanie komórek od początku pozwalają wczytać bieżący plik. Ponowna instalacja Pythona nie jest do tego potrzebna.</p>

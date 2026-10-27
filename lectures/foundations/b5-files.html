@@ -25,20 +25,20 @@
 
     <h1>Odczytaj i zapisz mały plik</h1>
 
-    <p class="lede">Odczytaj pomiary z małego pliku i zapisz raport w innym pliku. Sprawdzisz przy tym, w którym folderze Python szuka danych.</p>
+    <p class="lede">Pomiary nie zawsze są wpisane bezpośrednio w kodzie. Odczytasz je z małego pliku, a raport zapiszesz w drugim. Jeśli Python nie znajdzie pliku, będziesz wiedzieć, jak sprawdzić, gdzie go szuka.</p>
 
-    <ul class="meta"><li><b>Przed lekcją:</b> B5.1. Pliki lokalne wymagają A3; doświadczenia w runnerze działają bez instalacji.</li>
-<li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
+    <ul class="meta"><li><b>Przed lekcją:</b> B5.1. Przykłady na stronie działają bez instalacji. Do pracy z plikami na komputerze przygotuj środowisko z A3.</li>
+<li><b>Jak pracować:</b> przewiduj wyniki, uruchamiaj kod i wyjaśniaj to, co widzisz</li>
 </ul>
 
     <section id="sciezka"><h2>Ustal, gdzie szukasz pliku</h2>
-<p>Ścieżka <code>readings.txt</code> oznacza plik w bieżącym katalogu programu. To ścieżka względna. Ścieżka bezwzględna, na przykład <code>/home/anna/mle-practice/readings.txt</code>, wskazuje miejsce od korzenia systemu plików. Notebook i terminal mogą mieć różne katalogi robocze.</p>
+<p>Gdy podajesz samą nazwę <code>readings.txt</code>, Python szuka pliku w swoim bieżącym folderze, nazywanym katalogiem roboczym. Taki zapis to ścieżka względna.</p><p>Pełny adres, na przykład <code>/home/anna/mle-practice/readings.txt</code>, to ścieżka bezwzględna. Wskazuje miejsce w systemie plików niezależnie od katalogu roboczego. Uważaj: terminal i notebook nie muszą pracować w tym samym folderze.</p>
 <p>Moduł <code>pathlib</code> jest częścią Pythona i służy do pracy ze ścieżkami. Instrukcja <code>from pathlib import Path</code> udostępnia nazwę <code>Path</code> w Twoim kodzie. Utworzony obiekt opisuje ścieżkę, a po kropce wywołujesz jego metody:</p>
 <pre><code class="language-python">from pathlib import Path
 
 print(Path.cwd())
 path = Path(&quot;lesson_readings.txt&quot;)
-print(path.name)</code></pre><p>Pierwsza linia pokaże katalog roboczy, a druga nazwę <code>lesson_readings.txt</code>. Jeśli program nie znajduje pliku, porównaj wynik <code>Path.cwd()</code> z folderem, w którym plik zapisałeś.</p>
+print(path.name)</code></pre><p>Program najpierw wyświetli katalog roboczy, a potem nazwę <code>lesson_readings.txt</code>. Jeśli dostaniesz komunikat o braku pliku, sprawdź wynik <code>Path.cwd()</code>. Czy jest to folder, w którym znajduje się Twój plik?</p>
 </section>
 <section id="tekst"><h2>Zamknij plik także przy błędzie</h2>
 <p>Poniższy przykład najpierw tworzy plik z trzema liniami, a potem go odczytuje. Zapis <code>\n</code> oznacza koniec linii w napisie. Parametr <code>encoding="utf-8"</code> określa sposób zapisu i odczytu znaków:</p>
@@ -54,7 +54,7 @@ with path.open(encoding=&quot;utf-8&quot;) as handle:
 </section>
 <section id="cwiczenie"><h2>Odczytaj kilka obserwacji</h2>
 <h3>Zachowaj zero, oznacz brak</h3>
-<p>Kod startowy tworzy plik wejściowy. Odczytaj go do listy <code>values</code>: liczby zamień na <code>float</code>, a znak <code>?</code> na <code>None</code>. Użyj <code>with</code>, pętli i <code>strip()</code>. Treść pliku ma pozostać bez zmian.</p>
+<p>Kod poniżej tworzy plik z czterema liniami danych. Dopisz odczyt tego pliku i zbierz wyniki w liście <code>values</code>. Tekst przedstawiający liczbę zamień na <code>float</code>, a znak <code>?</code> na <code>None</code>. Zero ma pozostać zerem.</p><p>Przy odczycie użyj <code>with</code> i pętli. Metodą <code>strip()</code> usuń znaki końca linii. Nie zmieniaj zawartości pliku.</p>
 <div class="pyrun" id="read-lines"><script type="text/x-python" data-role="starter">
 from pathlib import Path
 
@@ -71,7 +71,7 @@ assert path.read_text(encoding="utf-8") == "2.5\n?\n0\n4\n", "Odczyt nie powinie
 <p>Każda linia jest napisem, także gdy wygląda jak liczba.</p>
 </details>
 <details><summary>Podpowiedź 2</summary>
-<p>Najpierw usuń znak końca linii. Przed float sprawdź znak braku.</p>
+<p>Po usunięciu znaku końca linii sprawdź, czy został znak <code>?</code>. Dopiero tekst z liczbą przekaż do <code>float</code>.</p>
 </details>
 </section>
 <section id="lokalnie"><h2>Przenieś wynik na dysk</h2>
@@ -95,15 +95,15 @@ print(list(items))
 print(list(items))</code></pre><p>Pierwsze <code>list(items)</code> pobierze obie etykiety. Drugie zwróci pustą listę, bo z tego generatora pobrano już wszystkie wartości. Aby zacząć ponownie, trzeba jeszcze raz wywołać <code>labels</code>.</p><p>Pobieranie elementów po jednym nazywamy iteracją. Otwarty plik też pozwala pobierać kolejne linie. Dlatego pętla może zacząć odczyt, zanim cały plik znajdzie się w pamięci. Plik jest iteratorem, choć nie jest funkcją z <code>yield</code>.</p>
 <p>Przed B6 i B7 wystarczy opanować odczyt pliku z głównej części lekcji. Do generatora możesz wrócić później. Wtedy wyjaśnij, dlaczego utworzenie generatora i pobranie jego elementów to dwie różne czynności.</p>
 </section>
-<section id="powrot"><h2>Powrót bez zaglądania</h2>
-<p>Dlaczego poprawna nazwa pliku może kończyć się FileNotFoundError?</p>
+<section id="powrot"><h2>Sprawdź, co pamiętasz</h2>
+<p>Dlaczego Python może zgłosić <code>FileNotFoundError</code>, mimo że nazwa pliku jest poprawna?</p>
 <details><summary>Sprawdź własne wyjaśnienie</summary>
-<p>Sprawdź <code>Path.cwd()</code> i ścieżkę do pliku. Poprawna nazwa nie wystarczy, jeśli Python szuka jej w innym folderze. Brakujący plik wymaga wyjaśnienia, zanim rozpoczniesz obliczenia.</p>
+<p>Sama nazwa pliku nie wystarczy, jeśli Python szuka w innym folderze. Sprawdź <code>Path.cwd()</code> i porównaj ścieżkę z miejscem zapisania pliku. Rozwiąż ten problem przed rozpoczęciem obliczeń.</p>
 </details>
 </section>
 
     <div class="next"><h2>Następny krok</h2>
-<p><a href="b5-errors.html">B5.3 · Przeczytaj błąd i zachowaj jego znaczenie</a></p>
+<p><a href="b5-errors.html">B5.3 · Zrozum komunikat błędu</a></p>
 <p><a href="b5-collections.html">Poprzednia: B5.1</a> · <a href="index.html">Mapa A i B</a></p>
 </div>
 

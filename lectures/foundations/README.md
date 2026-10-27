@@ -33,7 +33,7 @@ Materiały wymagają pilotażu z początkującymi. Kontrola techniczna nie potwi
 
 ## Redakcja i diagramy
 
-Tekst przeszedł redakcję z użyciem technical-writing i unslop. Instrukcje nazywają czynność i oczekiwany wynik, a nowe pojęcia są wyjaśniane przy pierwszym użyciu. Kod przykładów, startery i sprawdzenia zadań zachowano.
+Lekcje najpierw przedstawiają problem, a potem wyjaśniają zadanie. Polecenia są podzielone na krótkie akapity. Przykłady pokazują, co funkcja ma otrzymać i zwrócić, a sytuacje wyjątkowe są opisane osobno. Nowe pojęcia wyjaśniamy przy pierwszym użyciu. Tę samą redakcję zastosowano do opisów w labie 01. Kod przykładów, startery, sprawdzenia i istniejące podpowiedzi w notebooku zachowano.
 
 Diagram-design zastosowano w trzech miejscach:
 
@@ -47,7 +47,7 @@ Przy prognozie pozostawiono istniejący wykres. Pokazuje już historię, granic�
 
 Zgodnie z wyborem autora styl diagramów pochodzi z `lectures/assets/course.css`: tło `--plane`, tekst `--ink`, opisy `--ink-2`, akcent `--accent` i jego jasne wypełnienie `--accent-wash`. Nazwy używają systemowego fontu kursu. Monospace jest zarezerwowany dla kodu. Samodzielne pliki zawierają te same kolory dla motywu jasnego i ciemnego, bez pobierania fontów.
 
-Każdy diagram jest samodzielnym HTML z inline SVG w folderze `diagrams/`. Lekcja zawiera kopię tego SVG, aby dziedziczyć wybrany motyw kursu bez iframe i dodatkowego JavaScript. Przy zmianie diagramu zaktualizuj obie kopie. Weryfikator porównuje je i odrzuca rozbieżności. Sprawdza też dostępne opisy figur.
+Każdy diagram jest samodzielnym HTML z inline SVG w folderze `diagrams/`. Lekcja zawiera kopię tego SVG, aby dziedziczyć wybrany motyw kursu bez iframe i dodatkowego JavaScript. Przy zmianie diagramu zaktualizuj obie kopie. Weryfikator porównuje je i wykrywa rozbieżności. Sprawdza też opisy diagramów dla czytników ekranu.
 
 ## Wykonywanie i zapis pracy
 
@@ -76,7 +76,7 @@ uv run ruff check tools
 uv run --with playwright mypy tools
 ```
 
-Weryfikator sprawdza strukturę HTML, unikalne identyfikatory, lokalne pliki i anchory, pojedynczą poprawną odpowiedź quizu, składnię ćwiczeń i wykonanie dostarczonych przykładów. Sprawdza także, że nieuzupełnione startery nie przechodzą i dają wyjaśniający AssertionError. Dodatkowa metadana `data-expected-output` pozwala porównać wynik przykładu z opisem, a `data-expected-error` oznacza celowy błąd demonstracyjny. Fragment importujący kod uczestnika ma `data-needs-learner` i nie jest wykonywany bez jego modułu.
+Weryfikator sprawdza strukturę HTML, unikalne identyfikatory, lokalne pliki i odsyłacze do sekcji, pojedynczą poprawną odpowiedź quizu, składnię ćwiczeń i wykonanie dostarczonych przykładów. Sprawdza także, że nieuzupełnione startery nie przechodzą i dają wyjaśniający AssertionError. Atrybut `data-expected-output` pozwala porównać wynik przykładu z opisem, a `data-expected-error` oznacza celowy błąd demonstracyjny. Fragment importujący kod uczestnika ma `data-needs-learner` i nie jest wykonywany bez jego modułu.
 
 Kontrola przeglądarkowa wymaga opcjonalnego Playwright i przeglądarki w katalogu użytkownika:
 
@@ -87,4 +87,4 @@ uv run --with playwright python tools/verify_foundations_browser.py
 
 Ta kontrola sprawdza wszystkie strony i samodzielne diagramy na szerokości 1280 i 390 px, inicjalizację edytorów, brak błędów JavaScript i przewijania całej strony w poziomie. Sprawdza granice napisów diagramów w obu motywach. W rzeczywistym Pyodide wykonuje pierwszy program oraz wszystkie nieuzupełnione sprawdzenia, sprawdza zapis quizu i kodu po odświeżeniu, reset kodu oraz przełączanie motywu. Nie wpisuje rozwiązań ćwiczeń.
 
-Pełna suite `tests/` dotyczy kodu pisanego przez uczestnika w obecnych modułach. Nie jest zaliczeniem ścieżki A/B ani podstawą do żądania rozwiązania późniejszych zadań.
+Pełny zestaw testów w `tests/` dotyczy kodu pisanego przez uczestnika w obecnych modułach. Nie jest zaliczeniem ścieżki A/B ani podstawą do żądania rozwiązania późniejszych zadań.

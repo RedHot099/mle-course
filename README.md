@@ -12,7 +12,7 @@ Po kursie potrafisz wziąć zadanie w cudzym repozytorium i oddać pull request 
 
 ## Jak zacząć
 
-Jeśli zaczynasz od zera albo chcesz sprawdzić podstawy, otwórz [ścieżkę A i B](lectures/foundations/index.html). Pierwsze ćwiczenia działają w przeglądarce. Diagnoza kieruje do potrzebnych lekcji, a kolejne kroki prowadzą do małej prognozy i własnej funkcji z testami. Ta ścieżka ma własne sprawdzenia na stronach, bez `course check`.
+Jeśli zaczynasz od zera albo chcesz sprawdzić podstawy, otwórz [ścieżkę A i B](lectures/foundations/index.html). Pierwsze ćwiczenia działają w przeglądarce. Pytania i ćwiczenia w A1 pomogą Ci wybrać lekcje do powtórzenia. Dalej przygotujesz prostą prognozę i napiszesz funkcję z testami. Zadania tej ścieżki sprawdzasz bezpośrednio na stronach lekcji.
 
 Repozytorium kursu: [github.com/RedHot099/mle-course](https://github.com/RedHot099/mle-course). Pracujesz we własnym forku, a to repozytorium dodajesz jako `upstream`.
 
@@ -60,7 +60,7 @@ Kod referencyjny jest na gałęzi `solutions`. Pobierzesz ją przez `git fetch u
 
 Kurs jest w budowie. Gotowe: lekcja 00, moduł 07 i fragment wykładu 01. Plan wszystkich 20 modułów jest na [mapie kursu](lectures/index.html).
 
-Nowa [ścieżka fundamentów A i B](lectures/foundations/index.html) zawiera diagnozę, podstawy Python, pracę z notebookiem, pierwszą prognozę oraz funkcje, testy i mały projekt. Jest przygotowana do pilotażu z uczestnikami; nie zastępuje jeszcze kolejności pozostałych modułów.
+Nowa [ścieżka fundamentów A i B](lectures/foundations/index.html) prowadzi przez podstawy Pythona, pracę z notebookiem i pierwszą prognozę. Na końcu przygotujesz mały projekt z własną funkcją i testami. Jest przygotowana do pilotażu z uczestnikami; nie zastępuje jeszcze kolejności pozostałych modułów.
 
 ## Licencja
 

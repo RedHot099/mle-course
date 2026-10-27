@@ -25,14 +25,14 @@
 
     <h1>Pierwsza własna funkcja</h1>
 
-    <p class="lede">Napisz funkcję, zapisz zwrócony przez nią wynik i użyj jej na innych danych. Sprawdzisz też różnicę między wyświetleniem wartości a jej zwróceniem.</p>
+    <p class="lede">Znasz już kilka obliczeń, które można wykonać na liście. Teraz zapiszesz takie obliczenie jako własną funkcję, żeby używać go z różnymi danymi. Sprawdzisz też, dlaczego wyświetlenie wyniku i zwrócenie go to dwie różne rzeczy.</p>
 
     <ul class="meta"><li><b>Przed lekcją:</b> A2.1–A2.4.</li>
-<li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
+<li><b>Jak pracować:</b> przewiduj wyniki, uruchamiaj kod i wyjaśniaj to, co widzisz</li>
 </ul>
 
     <section id="def"><h2>Nadaj operacji nazwę</h2>
-<p>Funkcja to nazwany fragment kodu, który możesz wywołać z różnymi danymi. Po <code>def</code> podajesz jej nazwę i parametry. Podczas wywołania parametr otrzymuje przekazaną wartość. Polecenie <code>return</code> zwraca wynik do miejsca wywołania i kończy pracę funkcji.</p>
+<p>Funkcja pozwala nadać nazwę fragmentowi kodu i wykonać go wtedy, gdy jest potrzebny. Po <code>def</code> zapisujesz nazwę funkcji i jej parametry. Parametr jest nazwą, pod którą funkcja otrzyma dane przy wywołaniu.</p><p>W przykładzie poniżej <code>number</code> to parametr. Wywołanie <code>triple(2)</code> przekazuje mu wartość <code>2</code>. Polecenie <code>return</code> kończy obliczenie i zwraca wynik, który można zapisać w zmiennej.</p>
 <pre><code class="language-python">def triple(number):
     return number * 3
 
@@ -45,7 +45,7 @@ None"><p>Co wypisze ostatnia linia?</p>
     print(number * 2)
 
 result = show_double(3)
-print(result)</code></pre><ul class="quiz-options"><li data-correct>None<span class="why">Funkcja tylko wypisuje 6. Bez return oddaje None.</span></li>
+print(result)</code></pre><ul class="quiz-options"><li data-correct>None<span class="why">Funkcja wyświetla 6, ale nie zwraca tej liczby. Bez return jej wynikiem jest None.</span></li>
 <li>6<span class="why">To wypisze sama funkcja, ale zmienna result otrzyma None.</span></li>
 </ul>
 </div>
@@ -79,7 +79,7 @@ print(result)</code></pre><ul class="quiz-options"><li data-correct>None<span cl
 </figure>
 </section>
 <section id="argument"><h2>Przekaż inne dane</h2>
-<p>Argumentem może być też lista. Funkcja poniżej zwraca jej ostatni element, a dla pustej listy <code>None</code>. Każde wywołanie otrzymuje własny argument:</p>
+<p>Do funkcji możesz przekazać również listę. Poniższa funkcja zwraca ostatni element podanej listy. Jeśli lista jest pusta, zwraca <code>None</code>, ponieważ nie ma elementu do odczytania:</p>
 <pre><code class="language-python">def last_value(values):
     if len(values) == 0:
         return None
@@ -90,7 +90,7 @@ print(last_value([]))</code></pre><p>Program wypisze <code>7</code> i <code>None
 </section>
 <section id="cwiczenia"><h2>Napisz funkcję od początku</h2>
 <h3>Liczba znanych obserwacji</h3>
-<p>Uzupełnij ciało <code>count_known(values)</code>. Funkcja ma zwrócić liczbę elementów innych niż <code>None</code>, także dla pustej listy. Zachowaj listę wejściową bez zmian. Nazwa funkcji i parametr są już przygotowane.</p>
+<p>Uzupełnij funkcję <code>count_known(values)</code>. Ma policzyć, ile elementów listy jest różnych od <code>None</code>, i zwrócić tę liczbę. Zero również się liczy.</p><p>Funkcja powinna działać także dla pustej listy i pozostawiać przekazaną listę bez zmian. Nazwa i parametr są już gotowe. Twój kod wpisz w ciele funkcji.</p>
 <div class="pyrun" id="known-count"><script type="text/x-python" data-role="starter">
 def count_known(values):
     # Tutaj napisz ciało funkcji.
@@ -106,13 +106,13 @@ assert count_known([0, 0]) == 2, "Zera to znane obserwacje."
 assert _data == [None, 0, 4], "Funkcja nie może zmieniać listy wejściowej."
 </script></div>
 <details><summary>Podpowiedź 1</summary>
-<p>Początek, przejście po danych i oddanie wyniku to trzy różne momenty.</p>
+<p>Zastanów się, kiedy zacząć liczenie, co robić dla każdego elementu i kiedy zwrócić końcowy wynik.</p>
 </details>
 <details><summary>Podpowiedź 2</summary>
-<p>Zacznij licznik przed pętlą. W pętli sprawdzaj tylko None. Return potrzebny jest po pętli.</p>
+<p>Utwórz licznik przed pętlą. W pętli rozpoznawaj elementy inne niż <code>None</code>. Zwróć wynik dopiero po sprawdzeniu całej listy.</p>
 </details>
 </section>
-<section id="powrot"><h2>Powrót bez zaglądania</h2>
+<section id="powrot"><h2>Sprawdź, co pamiętasz</h2>
 <p>Czy print i return robią to samo? Dlaczego count powstaje przed pętlą?</p>
 <details><summary>Sprawdź własne wyjaśnienie</summary>
 <p><code>print</code> wyświetla wartość, a <code>return</code> pozwala zapisać ją w zmiennej lub użyć w innym obliczeniu. Licznik utworzony przed pętlą zachowuje sumę z poprzednich kroków. Gdybyś zerował go w każdym kroku, traciłbyś wcześniejszy wynik.</p>

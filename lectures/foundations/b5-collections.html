@@ -25,14 +25,14 @@
 
     <h1>Kolekcje i zmiany danych</h1>
 
-    <p class="lede">Wybierz kolekcję pasującą do danych. Potem zbuduj nową listę i sprawdź, czy oryginał pozostał bez zmian.</p>
+    <p class="lede">Lista i słownik to dwa sposoby przechowywania danych. Poznasz jeszcze krotkę i zbiór oraz sprawdzisz, kiedy się przydają. Zobaczysz też, dlaczego przypisanie listy do drugiej zmiennej nie tworzy jej kopii.</p>
 
     <ul class="meta"><li><b>Przed lekcją:</b> A2 i A4. Możesz pracować w przeglądarce.</li>
-<li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
+<li><b>Jak pracować:</b> przewiduj wyniki, uruchamiaj kod i wyjaśniaj to, co widzisz</li>
 </ul>
 
     <section id="wybor"><h2>Wybierz kolekcję do pytania</h2>
-<p>Lista zachowuje kolejne obserwacje, a słownik pozwala odczytać wartość po kluczu. Dobierzmy do nich jeszcze dwie kolekcje: <code>tuple</code> do stałego zestawu elementów i <code>set</code> do unikalnych wartości.</p>
+<p>Gdy ważna jest kolejność pomiarów, używamy listy. Gdy chcemy odczytać wartość po nazwie pola, przydaje się słownik. Teraz zobaczmy dwa inne przykłady: stały zestaw elementów zapisany jako krotka, czyli <code>tuple</code>, oraz zbiór niepowtarzających się wartości, czyli <code>set</code>.</p>
 <div class="table-wrap"><table><thead><tr><th>Potrzeba</th><th>Kolekcja</th><th>Przykład</th></tr>
 </thead>
 <tbody><tr><td>Wartości w kolejności dni</td><td>list</td><td><code>[3, 0, 5]</code></td></tr>
@@ -42,7 +42,7 @@
 </tbody>
 </table>
 </div>
-<p>Elementów <code>tuple</code> nie zastępujesz przypisaniem. Kolekcja <code>set</code> usuwa powtórzenia i nie zachowuje kolejności obserwacji. Operator <code>in</code> sprawdza, czy wartość należy do kolekcji. Funkcja <code>sorted</code> tworzy listę uporządkowanych elementów:</p>
+<p>W krotce nie można zastąpić elementu przez przypisanie mu nowej wartości. Zbiór pomija powtórzenia i nie zachowuje kolejności obserwacji.</p><p>Operator <code>in</code> pozwala zapytać, czy dana wartość znajduje się w kolekcji. Funkcja <code>sorted</code> tworzy nową listę, której elementy są uporządkowane:</p>
 <pre><code class="language-python">cities = [&quot;north&quot;, &quot;south&quot;, &quot;north&quot;]
 unique = set(cities)
 print(len(unique))
@@ -58,8 +58,8 @@ print(original)</code></pre><ul class="quiz-options"><li data-correct>[3, 5, 8]<
 <li>[3, 5]<span class="why">Nowej listy nie utworzono. Przypisanie nie kopiuje.</span></li>
 </ul>
 </div>
-<p>Listę można zmieniać, dlatego nazywamy ją mutowalną. Przypisanie dodało tylko drugą nazwę tej samej listy. Aby utworzyć osobną listę, możesz użyć <code>list(original)</code>. Dla listy liczb taka kopia wystarczy. Kopiowaniem kolekcji zagnieżdżonych zajmiemy się później.</p>
-<p>Przekazanie listy do funkcji też nie tworzy kopii. Jeśli funkcja zmieni tę listę, zobaczysz zmianę również poza funkcją. W następnym zadaniu zachowaj wejście i zbuduj osobny wynik.</p>
+<p>Wynik może zaskakiwać: zmiana wykonana przez <code>other</code> jest widoczna również przez <code>original</code>. Obie nazwy wskazują tę samą listę. Listę można zmieniać, dlatego mówimy, że jest mutowalna.</p><p>Jeśli potrzebujesz osobnej listy, użyj <code>list(original)</code>. Dla listy liczb taka kopia wystarczy. Do kopiowania list zawierających inne listy wrócimy później.</p>
+<p>Przekazanie listy do funkcji też nie tworzy kopii. Jeśli funkcja zmieni tę listę, zobaczysz zmianę również poza funkcją. W następnym zadaniu utwórz nową listę z wynikiem. Nie zmieniaj listy przekazanej do funkcji.</p>
 
 <figure data-diagram-source="diagrams/shared-list.html">
 <svg id="shared-list" class="diagram" viewBox="0 0 368 384" role="img" aria-labelledby="shared-list-title shared-list-desc" style="display:block;width:100%;max-width:368px;height:auto;margin:0 auto">
@@ -97,9 +97,9 @@ print(doubled)</code></pre><p>Pętla powyżej tworzy listę <code>[2, 6, 8]</cod
 <pre><code class="language-python">doubled = [value * 2 for value in [1, 3, 4]]
 print(doubled)</code></pre><p>Ten zapis to <em>list comprehension</em>. Buduje nową listę, wykonując obliczenie dla każdego elementu. Najpierw prześledź go tak samo jak zwykłą pętlę. W następnym zadaniu użyj pętli, żeby osobno zobaczyć wybór elementów i tworzenie wyniku.</p>
 </section>
-<section id="cwiczenia"><h2>Zachowaj wejście</h2>
+<section id="cwiczenia"><h2>Utwórz nową listę, nie zmieniając oryginału</h2>
 <h3>Nowa lista znanych wartości</h3>
-<p>Uzupełnij <code>without_missing(values)</code>, aby zwracała nową listę bez <code>None</code>. Zachowaj kolejność, zera i powtarzające się liczby. Użyj pętli z warunkiem. Lista przekazana do funkcji ma pozostać bez zmian.</p>
+<p>Uzupełnij funkcję <code>without_missing(values)</code>. Ma zwrócić nową listę, w której nie ma elementów <code>None</code>. Wszystkie pozostałe wartości powinny zostać w tej samej kolejności, także zera i powtarzające się liczby.</p><p>Użyj pętli z warunkiem. Nie usuwaj elementów z listy przekazanej do funkcji: po wywołaniu ma ona wyglądać tak samo jak wcześniej.</p>
 <div class="pyrun" id="without-missing"><script type="text/x-python" data-role="starter">
 def without_missing(values):
     ...
@@ -121,7 +121,7 @@ assert without_missing([None]) == [], "Po odrzuceniu jedynego braku zostaje pust
 <p>Buduj nową listę i dodawaj tylko wartości inne niż None.</p>
 </details>
 </section>
-<section id="powrot"><h2>Powrót bez zaglądania</h2>
+<section id="powrot"><h2>Sprawdź, co pamiętasz</h2>
 <p>Dlaczego set nie nadaje się do historii? Co może zmienić append wykonane przez inną nazwę?</p>
 <details><summary>Sprawdź własne wyjaśnienie</summary>
 <p><code>set</code> usuwa powtórzenia, więc nie zachowa historii dzień po dniu. Metoda <code>append</code> zmienia samą listę. Każda nazwa wskazująca tę listę pozwala zobaczyć zmianę. Sprawdź to na własnej parze nazw.</p>
