@@ -15,7 +15,7 @@ def check_layout(browser: Browser, width: int) -> None:
     page = context.new_page()
     errors: list[str] = []
     page.on("pageerror", lambda error: errors.append(str(error)))
-    for path in sorted(PAGES.glob("*.html")):
+    for path in sorted(PAGES.rglob("*.html")):
         page.goto(path.as_uri())
         assert page.locator("h1").count() == 1, path.name
         editors = page.locator(".pyrun").count()
@@ -26,6 +26,31 @@ def check_layout(browser: Browser, width: int) -> None:
     assert not errors, errors
     context.close()
     print(f"All foundations pages render without overflow or page errors at {width}px.")
+
+
+def check_diagrams(browser: Browser) -> None:
+    for theme in ("light", "dark"):
+        context = browser.new_context(
+            viewport={"width": 390, "height": 844}, color_scheme=theme
+        )
+        page = context.new_page()
+        for path in sorted((PAGES / "diagrams").glob("*.html")):
+            page.goto(path.as_uri())
+            assert page.locator('svg[role="img"]').count() == 1
+            assert page.evaluate(
+                """() => {
+                    const svg = document.querySelector('svg');
+                    const frame = svg.viewBox.baseVal;
+                    return [...svg.querySelectorAll('text')].every(text => {
+                        const bounds = text.getBBox();
+                        return bounds.x >= 0 && bounds.y >= 0 &&
+                            bounds.x + bounds.width <= frame.width &&
+                            bounds.y + bounds.height <= frame.height;
+                    });
+                }"""
+            ), f"Clipped diagram text: {path.name}: {theme}"
+        context.close()
+    print("Diagram labels fit in both color schemes at phone width.")
 
 
 def visit(page: Page, name: str) -> None:
@@ -96,6 +121,7 @@ def main() -> None:
         browser = playwright.chromium.launch()
         for width in (1280, 390):
             check_layout(browser, width)
+        check_diagrams(browser)
         context = browser.new_context(viewport={"width": 1100, "height": 800})
         page = context.new_page()
         check_quiz_and_runner(page)

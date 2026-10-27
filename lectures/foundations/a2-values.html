@@ -25,22 +25,22 @@
 
     <h1>Wartości, nazwy i wynik programu</h1>
 
-    <p class="lede">Napiszesz mały rachunek i odróżnisz liczbę od tekstu.</p>
+    <p class="lede">Oblicz, ile towaru zostanie po dostawie i sprzedaży. Po drodze odróżnisz liczby od tekstu i zapiszesz wyniki pod własnymi nazwami.</p>
 
     <ul class="meta"><li><b>Przed lekcją:</b> Pierwsze uruchomienie w A1.</li>
 <li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
 </ul>
 
     <section id="wartosci"><h2>Wyświetl wartość</h2>
-<p>Python wykonuje polecenia od góry do dołu. <code>print</code> to funkcja wyświetlająca wartość podaną w nawiasach. Liczby wpisujesz bez cudzysłowów. Tekst, czyli <em>string</em>, umieszczasz w cudzysłowach.</p>
+<p>Python wykonuje polecenia od góry do dołu. Funkcja <code>print</code> wyświetla wartość podaną w nawiasach. Liczby zapisujesz bez cudzysłowów, a tekst, czyli <em>string</em>, w cudzysłowach.</p>
 <pre><code class="language-python">print(12)
 print(&quot;12&quot;)
-print(2 + 5)</code></pre><p>Wynikiem są kolejno <code>12</code>, <code>12</code> i <code>7</code>, każdy w nowej linii. Pierwsze dwie wartości wyglądają podobnie na ekranie, ale pierwsza jest liczbą, druga tekstem. Funkcja <code>type</code> pozwala sprawdzić ich typ.</p>
+print(2 + 5)</code></pre><p>Zobaczysz kolejno <code>12</code>, <code>12</code> i <code>7</code>, każde w osobnej linii. Pierwsze dwie wartości wyglądają tak samo, ale mają różne typy: pierwsza jest liczbą, druga tekstem. Sprawdź tę różnicę funkcją <code>type</code>:</p>
 <pre><code class="language-python">print(type(12))
-print(type(&quot;12&quot;))</code></pre><p><code>int</code> oznacza liczbę całkowitą, <code>str</code> tekst. <code>float</code> to liczba zmiennoprzecinkowa, na przykład <code>2.5</code>. W kodzie stosujemy kropkę, nie przecinek dziesiętny.</p>
+print(type(&quot;12&quot;))</code></pre><p><code>int</code> oznacza liczbę całkowitą, a <code>str</code> tekst. Typ <code>float</code> pozwala zapisywać liczby z częścią ułamkową, na przykład <code>2.5</code>. W kodzie część ułamkową oddzielasz kropką.</p>
 </section>
 <section id="nazwy"><h2>Nazwij wynik rachunku</h2>
-<p>Znak <code>=</code> przypisuje wynik do nazwy. Prawa strona jest obliczana najpierw. Nazwa pozwala później użyć tej wartości.</p>
+<p>Znak <code>=</code> przypisuje wartość do nazwy. Python najpierw oblicza prawą stronę, a potem zapisuje wynik pod nazwą po lewej. Dzięki temu możesz go użyć w kolejnych poleceniach.</p>
 <div class="predict" id="assignment" data-type="single" data-expected-output="9"><p>Ile wynosi stock po ostatnim przypisaniu?</p>
 <pre><code class="language-python">stock = 12
 sold = 3
@@ -50,14 +50,14 @@ print(stock)</code></pre><ul class="quiz-options"><li>12<span class="why">Drugie
 <li data-correct>9<span class="why">Najpierw stock to 12, potem odejmujemy 3.</span></li>
 </ul>
 </div>
-<p>Nazwy w przykładach są po angielsku, jak w kodzie kursu. <code>stock</code> oznacza stan, a <code>sold</code> sprzedaż. Wielkość liter ma znaczenie: <code>Stock</code> i <code>stock</code> to różne nazwy.</p>
+<p>Nazwy w kodzie są po angielsku: <code>stock</code> to stan towaru, a <code>sold</code> liczba sprzedanych sztuk. Python rozróżnia wielkie i małe litery. Używaj więc dokładnie tej samej nazwy przy przypisaniu i później w obliczeniach.</p>
 <pre><code class="language-python">print(7 * 3)
 print(7 / 2)
-print(&quot;7&quot; + &quot;2&quot;)</code></pre><p><code>*</code> mnoży, <code>/</code> dzieli, a <code>+</code> skleja dwa napisy. W tym przykładzie zobaczysz <code>21</code>, <code>3.5</code> i <code>72</code>. <code>#</code> rozpoczyna komentarz, który Python pomija.</p>
+print(&quot;7&quot; + &quot;2&quot;)</code></pre><p>Operator <code>*</code> mnoży, a <code>/</code> dzieli liczby. Dla dwóch napisów <code>+</code> łączy tekst. Powyższe polecenia wypiszą <code>21</code>, <code>3.5</code> i <code>72</code>. Znak <code>#</code> rozpoczyna komentarz, który Python pomija do końca linii.</p>
 </section>
 <section id="cwiczenia"><h2>Policz samodzielnie</h2>
 <h3>Dostawa i sprzedaż</h3>
-<p>Masz 18 sztuk, dostawa dodaje 7, a sprzedaż zabiera 9. Uzupełnij <code>remaining</code> rachunkiem korzystającym z podanych nazw. Kliknij Sprawdź.</p>
+<p>Na początku masz 18 sztuk towaru. Dostawa dodaje 7 sztuk, a sprzedaż zabiera 9. W <code>remaining</code> zapisz rachunek korzystający z podanych nazw. Naciśnij <strong>Sprawdź</strong>, aby porównać swój wynik z oczekiwanym.</p>
 <div class="pyrun" id="stock"><script type="text/x-python" data-role="starter">
 stock = 18
 delivery = 7
@@ -74,7 +74,7 @@ assert remaining == 16, "Po dostawie i sprzedaży powinno zostać 16. Zapisz rac
 <p>W rachunku użyj nazw stock, delivery i sold.</p>
 </details>
 <h3>Udział odczytanych pomiarów</h3>
-<p>Spośród 20 pomiarów udało się odczytać 15. W <code>share</code> zapisz udział od 0 do 1, a w <code>percent</code> tę samą informację w procentach. Przykład innego udziału: 2 z 5 to 0.4, czyli 40%.</p>
+<p>Odczytano 15 z 20 pomiarów. Zapisz w <code>share</code> udział odczytanych pomiarów jako liczbę od 0 do 1. W <code>percent</code> zapisz ten sam udział w procentach. Na przykład 2 z 5 to udział 0.4, czyli 40%.</p>
 <div class="pyrun" id="share"><script type="text/x-python" data-role="starter">
 read = 15
 expected = 20
@@ -95,7 +95,7 @@ assert percent == 75, "Procent to udział pomnożony przez 100."
 <section id="powrot"><h2>Powrót bez zaglądania</h2>
 <p>Jaka jest różnica między 8 a "8"? Co robi znak =?</p>
 <details><summary>Sprawdź własne wyjaśnienie</summary>
-<p>Osiem bez cudzysłowów jest liczbą. Napis przechowuje znaki. Przypisanie wiąże nazwę z wynikiem prawej strony. Jeśli brakuje tej różnicy, wróć do sekcji Wartości.</p>
+<p><code>8</code> jest liczbą, a <code>"8"</code> tekstem z jednym znakiem. Przypisanie <code>=</code> wiąże nazwę z wartością prawej strony. Jeśli mylisz te pojęcia, wróć do <a href="#wartosci">pierwszego przykładu</a> i sprawdź oba typy.</p>
 </details>
 </section>
 

@@ -31,6 +31,24 @@ Sprawdzone źródła techniczne: [uv scripts](https://docs.astral.sh/uv/guides/s
 
 Materiały wymagają pilotażu z początkującymi. Kontrola techniczna nie potwierdza czasu nauki ani skuteczności dydaktycznej.
 
+## Redakcja i diagramy
+
+Tekst przeszedł redakcję z użyciem technical-writing i unslop. Instrukcje nazywają czynność i oczekiwany wynik, a nowe pojęcia są wyjaśniane przy pierwszym użyciu. Kod przykładów, startery i sprawdzenia zadań zachowano.
+
+Diagram-design zastosowano w trzech miejscach:
+
+| Lekcja | Diagram | Co pozwala zobaczyć |
+|---|---|---|
+| A2.5 | [Wyświetlenie i zwrócenie wyniku](diagrams/function-result.html) | Wyświetlona wartość i wynik zapisany w zmiennej trafiają do różnych miejsc. |
+| A3 | [Stan kernela](diagrams/kernel-state.html) | Restart usuwa zmienne z pamięci, a ponowne wykonanie kodu je odtwarza. Plik pozostaje na dysku. |
+| B5.1 | [Dwie nazwy, jedna lista](diagrams/shared-list.html) | Dwie nazwy wskazują jeden obiekt, więc zmiana listy jest widoczna przez obie. |
+
+Przy prognozie pozostawiono istniejący wykres. Pokazuje już historię, granicę czasu i prognozę, więc kolejny schemat powtarzałby tę samą informację.
+
+Zgodnie z wyborem autora styl diagramów pochodzi z `lectures/assets/course.css`: tło `--plane`, tekst `--ink`, opisy `--ink-2`, akcent `--accent` i jego jasne wypełnienie `--accent-wash`. Nazwy używają systemowego fontu kursu. Monospace jest zarezerwowany dla kodu. Samodzielne pliki zawierają te same kolory dla motywu jasnego i ciemnego, bez pobierania fontów.
+
+Każdy diagram jest samodzielnym HTML z inline SVG w folderze `diagrams/`. Lekcja zawiera kopię tego SVG, aby dziedziczyć wybrany motyw kursu bez iframe i dodatkowego JavaScript. Przy zmianie diagramu zaktualizuj obie kopie. Weryfikator porównuje je i odrzuca rozbieżności. Sprawdza też dostępne opisy figur.
+
 ## Wykonywanie i zapis pracy
 
 Strony używają istniejących `lectures/assets/course.css` i `course.js`. Skrypt pobiera Pyodide przy pierwszym wykonaniu kodu. Każde pole kodu dostaje osobną przestrzeń nazw. Wirtualne pliki interpretera mogą istnieć między próbami, dlatego przykłady tworzą własne jawne wejście.
@@ -67,6 +85,6 @@ uv run --with playwright python -m playwright install chromium --only-shell
 uv run --with playwright python tools/verify_foundations_browser.py
 ```
 
-Ta kontrola sprawdza wszystkie strony na szerokości 1280 i 390 px, inicjalizację edytorów, brak błędów JavaScript i przewijania całej strony w poziomie. W rzeczywistym Pyodide wykonuje pierwszy program oraz wszystkie nieuzupełnione sprawdzenia, sprawdza zapis quizu i kodu po odświeżeniu, reset kodu oraz przełączanie motywu. Nie wpisuje rozwiązań ćwiczeń.
+Ta kontrola sprawdza wszystkie strony i samodzielne diagramy na szerokości 1280 i 390 px, inicjalizację edytorów, brak błędów JavaScript i przewijania całej strony w poziomie. Sprawdza granice napisów diagramów w obu motywach. W rzeczywistym Pyodide wykonuje pierwszy program oraz wszystkie nieuzupełnione sprawdzenia, sprawdza zapis quizu i kodu po odświeżeniu, reset kodu oraz przełączanie motywu. Nie wpisuje rozwiązań ćwiczeń.
 
 Pełna suite `tests/` dotyczy kodu pisanego przez uczestnika w obecnych modułach. Nie jest zaliczeniem ścieżki A/B ani podstawą do żądania rozwiązania późniejszych zadań.

@@ -25,16 +25,16 @@
 
     <h1>Przeczytaj błąd i zachowaj jego znaczenie</h1>
 
-    <p class="lede">Rozróżnisz brak pomiaru od błędnego zapisu i wskażesz przyczynę wyjątku.</p>
+    <p class="lede">Odtwórz błąd na jednej wartości i przeczytaj jego komunikat. Potem napisz funkcję, która odróżnia brak pomiaru od uszkodzonego zapisu.</p>
 
     <ul class="meta"><li><b>Przed lekcją:</b> B5.2 i pierwsze funkcje z A2.5.</li>
 <li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
 </ul>
 
     <section id="traceback"><h2>Czytaj od końca</h2>
-<p>Traceback pokazuje drogę do błędu. Ostatnia linia podaje typ wyjątku oraz komunikat. Linie wyżej wskazują miejsce w kodzie. Zamiast zgadywać całą funkcję, odtwórz problem na jednym wejściu.</p>
+<p><em>Traceback</em> to opis miejsca i przebiegu błędu. Zacznij od ostatniej linii: podaje nazwę wyjątku i komunikat. Wyżej znajdziesz linię kodu, w której błąd wystąpił. Sprawdź, jaka wartość do niej trafiła.</p>
 <pre><code class="language-python" data-expected-error="ValueError">text = &quot;blue&quot;
-number = float(text)</code></pre><p>Ten fragment celowo kończy się <code>ValueError</code>: blue nie jest zapisem liczby. <code>FileNotFoundError</code> mówi o brakującym pliku, <code>KeyError</code> o kluczu słownika, a <code>NameError</code> o nieznanej nazwie.</p>
+number = float(text)</code></pre><p>Ten fragment celowo zgłosi <code>ValueError</code>, bo <code>"blue"</code> nie jest zapisem liczby. Inne nazwy wyjątków wskazują inne problemy: <code>FileNotFoundError</code> brakujący plik, <code>KeyError</code> nieznany klucz słownika, a <code>NameError</code> nieznaną nazwę w kodzie.</p>
 <div class="quiz" id="which-error" data-type="single"><p>Plik istnieje, ale float("blue") zgłasza wyjątek. Co sprawdzasz najpierw?</p>
 <ul class="quiz-options"><li>Zastępuję blue zerem<span class="why">To zmieni znaczenie danych i ukryje problem.</span></li>
 <li data-correct>Dokładną wartość tekstu przekazaną do float<span class="why">Typ błędu wskazuje problem z zamianą wartości.</span></li>
@@ -42,22 +42,22 @@ number = float(text)</code></pre><p>Ten fragment celowo kończy się <code>Value
 </ul>
 </div>
 </section>
-<section id="raise"><h2>Zgłoś złamane założenie</h2>
-<p>Gdy wymaganie wejścia nie jest spełnione, użyj <code>raise</code> z konkretnym wyjątkiem. Wiadomość powinna mówić, co było wymagane.</p>
+<section id="raise"><h2>Zgłoś, że wejście nie spełnia wymagania</h2>
+<p>Jeśli funkcja otrzyma dane, na których nie powinna pracować, może zgłosić wyjątek przez <code>raise</code>. W komunikacie nazwij niespełnione wymaganie. W przykładzie poniżej krok musi być dodatni:</p>
 <pre><code class="language-python">def require_positive_step(step):
     if step &lt;= 0:
         raise ValueError(&quot;step must be positive&quot;)
     return step
 
-print(require_positive_step(2))</code></pre><p>Wynik to 2. Wywołanie z zerem zgłosi ValueError. Jeśli chcesz obsłużyć oczekiwany wyjątek, wskaż konkretny typ:</p>
+print(require_positive_step(2))</code></pre><p>Wywołanie z argumentem 2 zwróci 2. Argument 0 spowoduje <code>ValueError</code>. Aby obsłużyć spodziewany wyjątek, wskaż jego typ w <code>except</code>:</p>
 <pre><code class="language-python">try:
     number = float(&quot;blue&quot;)
 except ValueError:
-    print(&quot;This text is not a number&quot;)</code></pre><p>Nie stosuj <code>except: pass</code>. Ukryłby także błędy, których nie przewidziałeś. Zły zapis nie jest tym samym co umówiony znak braku.</p>
+    print(&quot;This text is not a number&quot;)</code></pre><p>Powyższy <code>except ValueError</code> obsługuje błąd zamiany tekstu na liczbę. Samo <code>except: pass</code> ukryłoby również inne wyjątki i pozwoliło programowi pracować dalej bez wyjaśnienia. Ustal osobno, co jest umówionym brakiem, a co błędnym wejściem.</p>
 </section>
 <section id="cwiczenie"><h2>Odczytaj jedną wartość według umowy</h2>
 <h3>Brak albo poprawna liczba</h3>
-<p>Napisz <code>parse_reading(text)</code>. Usuń białe znaki. Dla ? zwróć None. Dla poprawnej nieujemnej liczby zwróć float, także 0. Dla błędnego zapisu i liczby ujemnej zgłoś ValueError. Ujemna wartość ma mieć komunikat zawierający słowo negative.</p>
+<p>Uzupełnij <code>parse_reading(text)</code>. Usuń białe znaki z końców tekstu. Dla <code>?</code> zwróć <code>None</code>. Poprawną nieujemną liczbę, także zero, zwróć jako <code>float</code>. Błędny zapis lub liczbę ujemną odrzuć przez <code>ValueError</code>. Komunikat dla liczby ujemnej ma zawierać słowo <code>negative</code>.</p>
 <div class="pyrun" id="parse-reading"><script type="text/x-python" data-role="starter">
 def parse_reading(text):
     ...
@@ -84,15 +84,15 @@ for _text in ["blue", "-1"]:
 </details>
 </section>
 <section id="naprawa"><h2>Odtwórz jeden problem</h2>
-<p>W notebooku zrób trzy osobne próby: nieznana nazwa, brakujący plik oraz zły zapis liczby. Dla każdej zapisz typ błędu, linię i wartość, która do niej dotarła. Potem napraw jedną rzecz i uruchom od początku.</p>
-<details><summary>Rubryka samooceny</summary>
-<p>Dobra notatka łączy objaw z wejściem: nie "Python nie działa", tylko "float dostał blue w linii konwersji i zgłosił ValueError". Nie musisz przepisywać całego tracebacka.</p>
+<p>W notebooku wywołaj osobno błędy nieznanej nazwy, brakującego pliku i złego zapisu liczby. Przy każdym zapisz nazwę wyjątku, linię kodu i problematyczną wartość. Następnie napraw przyczynę i uruchom przykład od początku.</p>
+<details><summary>Sprawdź własną odpowiedź</summary>
+<p>Z notatki powinno wynikać, jak odtworzyć błąd. Na przykład: funkcja <code>float</code> otrzymała napis <code>"blue"</code> i zgłosiła <code>ValueError</code>. Taki opis pozwala sprawdzić jedną konwersję bez uruchamiania reszty programu.</p>
 </details>
 </section>
 <section id="powrot"><h2>Powrót bez zaglądania</h2>
 <p>Czy parse_reading powinno zwrócić ten sam wynik dla ? i blue? Dlaczego?</p>
 <details><summary>Sprawdź własne wyjaśnienie</summary>
-<p>Nie. Pierwszy napis jest umówionym brakiem, drugi uszkodzonym wejściem. Ich zrównanie usunęłoby informację o problemie.</p>
+<p>Znak <code>?</code> oznacza umówiony brak. Napis <code>"blue"</code> jest niepoprawnym zapisem liczby. Gdyby oba przypadki zwracały <code>None</code>, nie można byłoby odróżnić brakującego pomiaru od uszkodzonych danych.</p>
 </details>
 </section>
 

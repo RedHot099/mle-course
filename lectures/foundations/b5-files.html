@@ -25,36 +25,36 @@
 
     <h1>Odczytaj i zapisz mały plik</h1>
 
-    <p class="lede">Odczytasz tekst linia po linii, rozpoznasz katalog roboczy i zapiszesz osobny wynik.</p>
+    <p class="lede">Odczytaj pomiary z małego pliku i zapisz raport w innym pliku. Sprawdzisz przy tym, w którym folderze Python szuka danych.</p>
 
     <ul class="meta"><li><b>Przed lekcją:</b> B5.1. Pliki lokalne wymagają A3; doświadczenia w runnerze działają bez instalacji.</li>
 <li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
 </ul>
 
     <section id="sciezka"><h2>Ustal, gdzie szukasz pliku</h2>
-<p>Ścieżka względna, taka jak <code>readings.txt</code>, jest liczona od bieżącego katalogu programu. Notebook i terminal mogą mieć inny katalog. Ścieżka bezwzględna zaczyna się od korzenia systemu plików.</p>
-<p><code>pathlib</code> to moduł standardowej biblioteki Python. Import udostępnia potrzebne nazwy. Nie musisz instalować pathlib. <code>Path</code> opisuje ścieżkę; po kropce wybierasz jego metodę.</p>
+<p>Ścieżka <code>readings.txt</code> oznacza plik w bieżącym katalogu programu. To ścieżka względna. Ścieżka bezwzględna, na przykład <code>/home/anna/mle-practice/readings.txt</code>, wskazuje miejsce od korzenia systemu plików. Notebook i terminal mogą mieć różne katalogi robocze.</p>
+<p>Moduł <code>pathlib</code> jest częścią Pythona i służy do pracy ze ścieżkami. Instrukcja <code>from pathlib import Path</code> udostępnia nazwę <code>Path</code> w Twoim kodzie. Utworzony obiekt opisuje ścieżkę, a po kropce wywołujesz jego metody:</p>
 <pre><code class="language-python">from pathlib import Path
 
 print(Path.cwd())
 path = Path(&quot;lesson_readings.txt&quot;)
-print(path.name)</code></pre><p>Pierwsza linia wyniku to katalog roboczy. Druga to nazwa lesson_readings.txt. Jeśli czytasz nie ten plik, zacznij diagnozę od katalogu, nie od zmieniania danych.</p>
+print(path.name)</code></pre><p>Pierwsza linia pokaże katalog roboczy, a druga nazwę <code>lesson_readings.txt</code>. Jeśli program nie znajduje pliku, porównaj wynik <code>Path.cwd()</code> z folderem, w którym plik zapisałeś.</p>
 </section>
 <section id="tekst"><h2>Zamknij plik także przy błędzie</h2>
-<p>Doświadczenie tworzy mały plik demonstracyjny, a następnie go czyta. <code>\n</code> w napisie oznacza nową linię. UTF-8 to jawne kodowanie znaków.</p>
+<p>Poniższy przykład najpierw tworzy plik z trzema liniami, a potem go odczytuje. Zapis <code>\n</code> oznacza koniec linii w napisie. Parametr <code>encoding="utf-8"</code> określa sposób zapisu i odczytu znaków:</p>
 <pre><code class="language-python">from pathlib import Path
 
 path = Path(&quot;lesson_readings.txt&quot;)
 path.write_text(&quot;8\n?\n0\n&quot;, encoding=&quot;utf-8&quot;)
 with path.open(encoding=&quot;utf-8&quot;) as handle:
     for line in handle:
-        print(line.strip())</code></pre><p>Zobaczysz 8, ?, 0. Blok <code>with</code> pilnuje zamknięcia pliku. <code>strip()</code> zwraca tekst bez białych znaków na początku i końcu. Nie zmienia napisu w liczbę. <code>float("8")</code> zwraca 8.0.</p>
-<div class="callout rule"><span class="label">Plik w przeglądarce</span><p>W runnerze plik znajduje się w wirtualnym systemie plików interpretera w przeglądarce. Nie pojawi się w Twoim folderze Downloads. Odświeżenie może go usunąć. Do zachowania pracy kopiuj kod i uruchom go w lokalnym notebooku.</p>
+        print(line.strip())</code></pre><p>Program wypisze <code>8</code>, <code>?</code> i <code>0</code>. Blok <code>with</code> zamknie plik także wtedy, gdy w jego środku wystąpi błąd. Metoda <code>strip()</code> usuwa białe znaki z końców tekstu, na przykład znak końca linii. Wynik nadal jest napisem. Dopiero <code>float("8")</code> zamienia go na liczbę <code>8.0</code>.</p>
+<div class="callout rule"><span class="label">Plik w przeglądarce</span><p>Pliki tworzone przez kod na stronie istnieją wewnątrz interpretera w przeglądarce. Nie trafiają do folderu Downloads i możesz je utracić po odświeżeniu strony. Aby zachować własne pliki, wykonaj kod w notebooku na swoim komputerze.</p>
 </div>
 </section>
 <section id="cwiczenie"><h2>Odczytaj kilka obserwacji</h2>
 <h3>Zachowaj zero, oznacz brak</h3>
-<p>Przygotowanie pliku jest dostarczone. W <code>values</code> odczytaj liczby typu float. Znak ? zamień na None. Użyj with, pętli oraz strip. Nie zmieniaj treści pliku.</p>
+<p>Kod startowy tworzy plik wejściowy. Odczytaj go do listy <code>values</code>: liczby zamień na <code>float</code>, a znak <code>?</code> na <code>None</code>. Użyj <code>with</code>, pętli i <code>strip()</code>. Treść pliku ma pozostać bez zmian.</p>
 <div class="pyrun" id="read-lines"><script type="text/x-python" data-role="starter">
 from pathlib import Path
 
@@ -75,30 +75,30 @@ assert path.read_text(encoding="utf-8") == "2.5\n?\n0\n4\n", "Odczyt nie powinie
 </details>
 </section>
 <section id="lokalnie"><h2>Przenieś wynik na dysk</h2>
-<p>W notebooku z A3 utwórz plik o innej nazwie, na przykład <code>my_readings.txt</code>, z co najmniej czterema własnymi pomiarami. Odczytaj go tym samym sposobem. Zapisz krótki raport do nowego pliku <code>my_report.txt</code> przez write_text. Nie nadpisuj wejścia.</p>
-<p>Możesz zapisać znaną wartość przez zamianę jej na napis: <code>str(total)</code>. Gdy wynik ma zawierać wiele pól, przyda się JSON:</p>
+<p>W notebooku z A3 utwórz <code>my_readings.txt</code> z co najmniej czterema własnymi pomiarami. Odczytaj plik tym samym kodem po zmianie ścieżki. Następnie zapisz krótki raport do <code>my_report.txt</code> za pomocą <code>write_text</code>. Otwórz oba pliki i sprawdź, czy wejście pozostało bez zmian.</p>
+<p>Metoda <code>write_text</code> zapisuje tekst. Liczbę możesz wcześniej zamienić na napis przez <code>str</code>, na przykład <code>str(total)</code>, jeśli obliczyłeś już sumę. Jeśli raport ma kilka nazwanych pól, możesz użyć formatu JSON:</p>
 <pre><code class="language-python">import json
 from pathlib import Path
 
 report = {&quot;status&quot;: &quot;ready&quot;, &quot;rows&quot;: 4}
 text = json.dumps(report, ensure_ascii=False)
-Path(&quot;lesson_report.json&quot;).write_text(text, encoding=&quot;utf-8&quot;)</code></pre><p>To gotowy przykład formatu, nie zadanie do uzupełnienia. W pliku zobaczysz nazwy pól i ich wartości. Zanim uznasz własny zapis za poprawny, otwórz utworzony plik i przeczytaj jego treść.</p>
+Path(&quot;lesson_report.json&quot;).write_text(text, encoding=&quot;utf-8&quot;)</code></pre><p>Przykład zapisuje pola <code>status</code> i <code>rows</code> do pliku JSON. Otwórz plik i znajdź obie wartości. Podobnie sprawdź później własny raport: samo zakończenie programu bez błędu nie mówi jeszcze, co zostało zapisane.</p>
 </section>
-<section id="generator"><h2>Dodatek po działającym odczycie: generator</h2>
-<p>W tym dodatku wynik nie musi od razu być całą listą. Generator oddaje wartości po jednej, na żądanie. Zamiast return jednej gotowej kolekcji używa yield dla kolejnych wartości.</p>
+<section id="generator"><h2>Dodatek: pobieraj wartości z generatora</h2>
+<p>Ten dodatek możesz przeczytać po wykonaniu zadania z odczytem. Generator pozwala pobierać wartości po jednej, zamiast od razu budować całą listę. Polecenie <code>yield</code> oddaje jedną wartość i wstrzymuje funkcję do kolejnego pobrania:</p>
 <pre><code class="language-python">def labels(names):
     for name in names:
         yield &quot;item: &quot; + name
 
 items = labels([&quot;red&quot;, &quot;blue&quot;])
 print(list(items))
-print(list(items))</code></pre><p>Pierwsze list(items) zbiera dwie etykiety. Drugie daje pustą listę, bo generator został zużyty. Nowe wywołanie labels tworzy nowy generator. To wyjaśnia też, dlaczego czytanie pliku po jednej linii nie wymaga zebrania wszystkich linii w pamięci przed pierwszym obliczeniem. Obiekt otwartego pliku jest iteratorem, choć nie jest funkcją generatorową.</p>
-<p>Dodatek nie blokuje B6 ani B7. Zanim użyjesz generatora w większym zadaniu, wyjaśnij różnicę między utworzeniem generatora a pobraniem jego elementów.</p>
+print(list(items))</code></pre><p>Pierwsze <code>list(items)</code> pobierze obie etykiety. Drugie zwróci pustą listę, bo z tego generatora pobrano już wszystkie wartości. Aby zacząć ponownie, trzeba jeszcze raz wywołać <code>labels</code>.</p><p>Pobieranie elementów po jednym nazywamy iteracją. Otwarty plik też pozwala pobierać kolejne linie. Dlatego pętla może zacząć odczyt, zanim cały plik znajdzie się w pamięci. Plik jest iteratorem, choć nie jest funkcją z <code>yield</code>.</p>
+<p>Przed B6 i B7 wystarczy opanować odczyt pliku z głównej części lekcji. Do generatora możesz wrócić później. Wtedy wyjaśnij, dlaczego utworzenie generatora i pobranie jego elementów to dwie różne czynności.</p>
 </section>
 <section id="powrot"><h2>Powrót bez zaglądania</h2>
 <p>Dlaczego poprawna nazwa pliku może kończyć się FileNotFoundError?</p>
 <details><summary>Sprawdź własne wyjaśnienie</summary>
-<p>Program może działać w innym katalogu. Sprawdź Path.cwd oraz ścieżkę. Nie zamieniaj błędu odczytu automatycznie na pustą listę.</p>
+<p>Sprawdź <code>Path.cwd()</code> i ścieżkę do pliku. Poprawna nazwa nie wystarczy, jeśli Python szuka jej w innym folderze. Brakujący plik wymaga wyjaśnienia, zanim rozpoczniesz obliczenia.</p>
 </details>
 </section>
 

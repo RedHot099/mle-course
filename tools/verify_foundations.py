@@ -98,6 +98,23 @@ def check_target(path: Path, target: str) -> None:
         assert unquote(url.fragment) in ids, f"Missing anchor: {path.name}: {target}"
 
 
+def check_diagrams(path: Path, document: Node) -> None:
+    for node in document.walk():
+        if "data-diagram-source" not in node.attrs:
+            continue
+        source = path.parent / node.attrs["data-diagram-source"]
+        original = next(n for n in Document(source).root.walk() if n.tag == "svg")
+        embedded = next(n for n in node.walk() if n.tag == "svg")
+        assert embedded == original, f"Diagram differs from its source: {path.name}"
+        labels = embedded.attrs.get("aria-labelledby", "").split()
+        assert embedded.attrs.get("role") == "img" and len(labels) == 2
+        children = [n for n in embedded.children if isinstance(n, Node)]
+        assert children[0].tag == "title", f"SVG title must come first: {path.name}"
+        for name in labels:
+            labelled = next(n for n in embedded.walk() if n.attrs.get("id") == name)
+            assert labelled.text().strip(), f"Empty accessible label: {path.name}"
+
+
 def run_example(source: str, expected_error: str | None) -> str:
     output = io.StringIO()
     with contextlib.redirect_stdout(output):
@@ -154,7 +171,7 @@ def check_exercise(path: Path, node: Node) -> None:
 
 def main() -> None:
     quizzes = exercises = examples = 0
-    pages = sorted(PAGES.glob("*.html"))
+    pages = sorted(PAGES.rglob("*.html"))
     previous = Path.cwd()
     with tempfile.TemporaryDirectory() as directory:
         os.chdir(directory)
@@ -162,6 +179,7 @@ def main() -> None:
             for path in pages:
                 document = Document(path).root
                 check_links(path, document)
+                check_diagrams(path, document)
                 q, e, x = check_content(path, document)
                 quizzes += q
                 exercises += e

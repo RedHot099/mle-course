@@ -25,26 +25,26 @@
 
     <h1>Policz błąd małej prognozy</h1>
 
-    <p class="lede">Wyjaśnisz historię, horyzont i baseline oraz policzysz MAE na małych liczbach.</p>
+    <p class="lede">Porównaj prognozę z obserwacją i oblicz MAE. Najpierw ustalisz, co było wiadomo w chwili prognozy, a potem policzysz błędy na tych samych dniach.</p>
 
     <ul class="meta"><li><b>Przed lekcją:</b> Listy, pętle i dzielenie z A2. Wystarczy runner przeglądarkowy.</li>
 <li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
 </ul>
 
     <section id="pytanie"><h2>Co przewidujesz i kiedy?</h2>
-<p>Obserwacja mówi, co już zmierzono. Prognoza mówi, czego oczekujesz później. Historia to obserwacje dostępne w chwili wykonania prognozy. Horyzont oznacza liczbę kolejnych okresów, które przewidujesz.</p>
-<p>Jeśli w niedzielę wieczorem prognozujesz poniedziałek i wtorek, horyzont obejmuje dwa dni. Sprzedaż z poniedziałku nie jest jeszcze znana. Nie może pomóc w niedzielnej prognozie wtorku.</p>
+<p>Obserwacja jest zapisanym wynikiem pomiaru. Prognoza przewiduje wynik przyszłego pomiaru. <strong>Historia</strong> to obserwacje znane w chwili przygotowania prognozy. <strong>Horyzont</strong> mówi, ile kolejnych okresów prognozujesz.</p>
+<p>W niedzielę wieczorem prognozujesz sprzedaż na poniedziałek i wtorek. Horyzont obejmuje dwa dni. Poniedziałkowej sprzedaży jeszcze nie znasz, więc nie możesz użyć jej do tej prognozy wtorku.</p>
 <div class="quiz" id="available" data-type="single"><p>W niedzielę wieczorem przygotowujesz prognozę na poniedziałek. Co jest historią?</p>
 <ul class="quiz-options"><li>Końcowa sprzedaż z poniedziałku<span class="why">Tę wartość poznasz dopiero po prognozowanym dniu.</span></li>
 <li data-correct>Zapisana sprzedaż z soboty<span class="why">To wynik wcześniejszego dnia, który już się zakończył.</span></li>
 </ul>
 </div>
-<p><strong>Baseline</strong> to prosty punkt odniesienia. Może przewidywać, że kolejny dzień będzie taki jak ostatni znany dzień. W kolejnej lekcji sprawdzisz tę regułę na małym fragmencie prawdziwych danych.</p>
+<p><strong>Baseline</strong> to prosta reguła, z którą porównujesz późniejsze modele. Przykładowa reguła przewiduje na przyszłość tę samą wartość, co w ostatnim znanym dniu. W A4.2 sprawdzisz ją na danych sprzedażowych.</p>
 </section>
 <section id="srednia"><h2>Zacznij od średniej i odległości</h2>
-<p>Średnia to suma podzielona przez liczbę elementów. Dla 2, 4 i 6 suma wynosi 12, elementów jest 3, więc średnia to 4. <code>sum</code> sumuje listę liczb, a <code>len</code> podaje ich liczbę.</p>
+<p>Średnia to suma wartości podzielona przez ich liczbę. Dla 2, 4 i 6 suma wynosi 12, a liczba elementów 3. Średnia wynosi więc 4. Funkcja <code>sum</code> sumuje liczby z listy, a <code>len</code> podaje liczbę elementów:</p>
 <pre><code class="language-python">values = [2, 4, 6]
-print(sum(values) / len(values))</code></pre><p>Błąd ze znakiem to prognoza minus obserwacja. Wartość bezwzględna usuwa znak: odległość między 3 a 8 jest taka sama jak między 8 a 3. Funkcja <code>abs</code> liczy tę odległość.</p>
+print(sum(values) / len(values))</code></pre><p>W tym kursie błąd ze znakiem liczymy jako prognozę minus obserwację. Może być dodatni lub ujemny. Wartość bezwzględna opisuje samą wielkość błędu: odległość między 3 a 8 jest taka sama jak między 8 a 3. Obliczysz ją funkcją <code>abs</code>.</p>
 <div class="predict" id="absolute" data-type="single" data-expected-output="5 5"><p>Jakie dwie wartości zobaczysz?</p>
 <pre><code class="language-python">print(abs(3 - 8), abs(8 - 3))</code></pre><ul class="quiz-options"><li>0 0<span class="why">Odwrócenie kolejności zmienia znak, ale różnica nadal ma długość 5.</span></li>
 <li data-correct>5 5<span class="why">Obie różnice mają tę samą wartość bezwzględną.</span></li>
@@ -53,18 +53,18 @@ print(sum(values) / len(values))</code></pre><p>Błąd ze znakiem to prognoza mi
 </div>
 </section>
 <section id="mae"><h2>Porównaj te same dni</h2>
-<p>MAE, czyli mean absolute error, to średnia bezwzględnych błędów. Dla obserwacji <code>[2, 6]</code> i prognozy <code>[3, 3]</code> błędy bezwzględne wynoszą 1 i 3. MAE wynosi 2. Jednostka jest taka sama jak jednostka obserwacji.</p>
-<p>Ustaw obserwację i prognozę tego samego dnia w jednej parze. <code>zip</code> łączy kolejne elementy list, a dwie nazwy w pętli odbierają elementy pary:</p>
+<p><strong>MAE</strong>, czyli <em>mean absolute error</em>, to średnia z bezwzględnych błędów. Dla obserwacji <code>[2, 6]</code> i prognozy <code>[3, 3]</code> błędy mają wielkość 1 i 3. Ich średnia wynosi 2. MAE jest wyrażone w tej samej jednostce co obserwacje.</p>
+<p>Każdą prognozę porównuj z obserwacją z tego samego dnia. Funkcja <code>zip</code> dobiera w pary elementy o tych samych pozycjach. Dwie nazwy w poniższej pętli odbierają dzień i jego wartość:</p>
 <pre><code class="language-python">days = [&quot;Mon&quot;, &quot;Tue&quot;]
 values = [4, 7]
 for day, value in zip(days, values):
-    print(day, value)</code></pre><p>Wynik to Mon 4, a potem Tue 7. Zip kończy się wraz z krótszą listą, dlatego przed oceną sprawdzamy, czy obie listy mają tę samą długość.</p>
+    print(day, value)</code></pre><p>Program wypisze <code>Mon 4</code>, a potem <code>Tue 7</code>. Funkcja <code>zip</code> kończy pracę, gdy skończą się elementy krótszej listy. Przed oceną sprawdź więc, czy prognozy i obserwacje mają tę samą długość i kolejność dni.</p>
 <div class="callout rule"><span class="label">Dwa różne rachunki</span><p>Średnia błędów ze znakiem nie jest MAE. Dodatnie i ujemne błędy mogą się skasować, choć obie prognozy są nietrafione.</p>
 </div>
 </section>
 <section id="cwiczenie"><h2>Policz inną parę prognoz</h2>
 <h3>Średnia błędów</h3>
-<p>Dla tych samych trzech dni policz listę <code>errors</code> z wartościami bezwzględnymi, a następnie <code>mae</code>. Obserwacje zawierają zero, które trzeba uwzględnić. Możesz użyć pętli i zip.</p>
+<p>Porównaj prognozy i obserwacje z trzech dni. W liście <code>errors</code> zapisz bezwzględne błędy, a w <code>mae</code> ich średnią. Uwzględnij także dzień z zerową sprzedażą. Możesz użyć pętli z <code>zip</code>.</p>
 <div class="pyrun" id="mae-practice"><script type="text/x-python" data-role="starter">
 actual = [0, 5, 4]
 predicted = [2, 3, 4]
@@ -88,7 +88,7 @@ assert math.isclose(mae, 4 / 3), "MAE to suma trzech błędów podzielona przez 
 <section id="powrot"><h2>Powrót bez zaglądania</h2>
 <p>Czy wynik MAE = 2 sam wystarcza, żeby uznać model za dobry? Czy znasz poniedziałkową sprzedaż już w niedzielę?</p>
 <details><summary>Sprawdź własne wyjaśnienie</summary>
-<p>Potrzebujesz skali danych i punktu odniesienia. Przyszłej obserwacji nie ma jeszcze w historii. Baseline i model porównujesz na tych samych dniach.</p>
+<p>MAE oceniaj w odniesieniu do skali danych i błędu baseline. Prognozę budujesz z informacji dostępnych w chwili jej przygotowania. Wyniki modelu i baseline porównujesz na tych samych dniach.</p>
 </details>
 </section>
 

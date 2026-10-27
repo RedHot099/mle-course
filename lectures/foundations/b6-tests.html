@@ -25,17 +25,17 @@
 
     <h1>Pierwsze własne testy</h1>
 
-    <p class="lede">Napiszesz test na małych danych, sprawdzisz wyjątek i zobaczysz, czy test zauważa błąd.</p>
+    <p class="lede">Napisz testy własnej funkcji. Następnie wprowadź kontrolowany błąd i sprawdź, czy testy go zauważą.</p>
 
     <ul class="meta"><li><b>Przed lekcją:</b> Własna funkcja mean_known z B6.1. Do pytest lokalnie potrzebne A3; pierwsze doświadczenie działa w przeglądarce.</li>
 <li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
 </ul>
 
     <section id="assert"><h2>Oczekiwany wynik policz sam</h2>
-<p><code>assert</code> sprawdza zdanie. Jeśli jest prawdziwe, program idzie dalej. Jeśli fałszywe, zgłasza AssertionError. Wiadomość po przecinku pomaga nazwać niespełnione wymaganie.</p>
+<p>Polecenie <code>assert</code> sprawdza warunek. Gdy warunek jest prawdziwy, program wykonuje kolejne polecenie. Gdy jest fałszywy, zgłasza <code>AssertionError</code>. Tekst po przecinku opisuje, czego oczekiwaliśmy:</p>
 <pre><code class="language-python">result = 2 + 3
 assert result == 5, &quot;Suma 2 i 3 powinna wynosić 5&quot;
-print(&quot;check passed&quot;)</code></pre><p>Wynikiem jest check passed. Test nie ma powtarzać obliczenia funkcji po drugiej stronie porównania. Oczekiwana wartość ma wynikać z ręcznego rachunku i umowy.</p>
+print(&quot;check passed&quot;)</code></pre><p>Program wypisze <code>check passed</code>. W teście oczekiwana wartość powinna wynikać z umowy i ręcznego rachunku. Jeśli obie strony porównania obliczysz tą samą funkcją, ten sam błąd może pozostać niewidoczny.</p>
 <div class="quiz" id="oracle" data-type="single"><p>Które sprawdzenie ma niezależne oczekiwanie?</p>
 <ul class="quiz-options"><li data-correct><code>assert length_cm(2) == 200</code><span class="why">Wiemy z przelicznika, że dwa metry to 200 cm.</span></li>
 <li><code>assert length_cm(2) == length_cm(2)</code><span class="why">Obie strony korzystają z tego samego kodu, więc wspólny błąd pozostanie niezauważony.</span></li>
@@ -43,17 +43,17 @@ print(&quot;check passed&quot;)</code></pre><p>Wynikiem jest check passed. Test 
 </div>
 </section>
 <section id="plik"><h2>Zapisz funkcję i pierwszy test</h2>
-<p>W JupyterLab z A3 wybierz nowy plik tekstowy. Zapisz go jako <code>summary.py</code> w katalogu mle-practice. Przenieś do niego własną funkcję mean_known, bez wywołań print z końca ćwiczenia. Plik .py jest modułem. Inny plik może importować jego definicje.</p>
-<p>Obok zapisz <code>test_summary.py</code>. Pierwszy test jest dostarczony jako wzór. Nie podaje sposobu obliczenia średniej.</p>
+<p>W JupyterLab utwórz plik tekstowy <code>summary.py</code> w folderze <code>mle-practice</code>. Wklej do niego własną funkcję <code>mean_known</code> z B6.1. Pomiń wywołanie <code>print</code> spod definicji. Plik z rozszerzeniem <code>.py</code> jest modułem, z którego możesz importować funkcje.</p>
+<p>W tym samym folderze utwórz <code>test_summary.py</code>. Zapisz w nim poniższy pierwszy test. Sprawdza wynik funkcji na małym wejściu, nie opisuje sposobu obliczenia średniej.</p>
 <pre><code class="language-python" data-needs-learner="true">from summary import mean_known
 
 def test_mean_includes_zero():
-    assert mean_known([0, None, 6]) == 3.0</code></pre><p>Import <code>from summary import mean_known</code> bierze funkcję z pliku summary.py. Oba pliki leżą w tym samym katalogu. Pytest rozpoznaje pliki i funkcje zaczynające się od test_. Uruchom w terminalu tego katalogu:</p>
+    assert mean_known([0, None, 6]) == 3.0</code></pre><p>Instrukcja <code>from summary import mean_known</code> udostępnia funkcję z pliku <code>summary.py</code>. Narzędzie <strong>pytest</strong> znajduje pliki i funkcje, których nazwy zaczynają się od <code>test_</code>, i wykonuje ich sprawdzenia. Uruchom je w terminalu z folderu zawierającego oba pliki:</p>
 <pre><code class="language-bash">cd ~/mle-practice
-uv run --no-project --python 3.12 --with pytest pytest -q</code></pre><p>Jeśli Twoja funkcja spełnia ten przypadek, zobaczysz <code>1 passed</code>. Jeśli nie, pytest pokaże oczekiwany i otrzymany wynik. Brak modułu summary zwykle oznacza inny katalog albo niepoprawną nazwę pliku, nie brak biblioteki z internetu.</p>
+uv run --no-project --python 3.12 --with pytest pytest -q</code></pre><p>Gdy funkcja zwraca oczekiwany wynik, zobaczysz <code>1 passed</code>. W przeciwnym razie pytest pokaże różnicę. Jeśli nie może zaimportować <code>summary</code>, sprawdź nazwę pliku i bieżący folder przed instalowaniem dodatkowych bibliotek.</p>
 </section>
 <section id="pytest"><h2>Liczby przybliżone i oczekiwane błędy</h2>
-<p>Liczby float przechowują przybliżenia. Zamiast wymagać dokładnej równości wyniku niekończącego się ułamka, użyj <code>pytest.approx</code>. Do sprawdzenia oczekiwanego wyjątku służy <code>pytest.raises</code>. To gotowe narzędzia, nie klasy do napisania.</p>
+<p>Liczby typu <code>float</code> są zapisywane z ograniczoną precyzją. Do porównania wyniku obliczeń użyj <code>pytest.approx</code>, które dopuszcza niewielką różnicę liczbową. Oczekiwany wyjątek sprawdzisz przez <code>pytest.raises</code>:</p>
 <pre><code class="language-python">import pytest
 
 def half(value):
@@ -66,24 +66,24 @@ def test_half():
 
 def test_half_rejects_negative():
     with pytest.raises(ValueError, match=&quot;non-negative&quot;):
-        half(-1)</code></pre><p>Ten przykład używa innej funkcji niż zadanie. match sprawdza fragment komunikatu. Jeśli wyjątek nie wystąpi, test ma się nie udać. Przepisanie przykładu do testów mean_known wymaga wybrania jej własnych przypadków i oczekiwań.</p>
+        half(-1)</code></pre><p>W tym przykładzie <code>match</code> sprawdza fragment komunikatu wyjątku. Jeśli wyjątek nie wystąpi, test zakończy się niepowodzeniem. W testach własnej funkcji dobierz wejścia i komunikaty do jej umowy.</p>
 </section>
 <section id="zadanie"><h2>Dopisz testy własnej funkcji</h2>
-<p>Do test_summary.py dopisz co najmniej cztery własne testy. Wybierz: pustą listę, same braki, wynik ułamkowy oraz zachowanie wejścia. Dla każdego najpierw zapisz oczekiwanie słowami. Nie kopiuj całej pętli z implementacji do testu.</p>
+<p>Dopisz cztery testy w <code>test_summary.py</code>: dla pustej listy, samych braków, wyniku ułamkowego oraz zachowania danych wejściowych. Przed każdym testem oblicz lub opisz oczekiwany wynik. Kod testu ma sprawdzić wymaganie, nie odtwarzać całą implementację.</p>
 <ol><li>Uruchom testy na swojej funkcji.</li>
 <li>W kopii pliku wprowadź jeden kontrolowany błąd, na przykład pomijanie zer.</li>
 <li>Sprawdź, czy testy przestają przechodzić i czy komunikat dotyczy tego błędu.</li>
 <li>Przywróć poprawną wersję i uruchom komplet ponownie.</li>
 </ol>
-<p>Robisz to na swoim małym module, nie na kodzie reszty kursu. Nie musisz jeszcze znać narzędzi mutation testing.</p>
-<details><summary>Rubryka samooceny bez tutora</summary>
-<p>Testy przechodzą na Twojej poprawnej wersji, a co najmniej jeden pada po kontrolowanym zepsuciu. Każdy sprawdza konkretne wymaganie. Oczekiwany błąd nie jest zamieniany na puste except. Wejście do testu jest małe i widoczne w jego treści. Liczba zaliczonych testów sama nie dowodzi jakości.</p>
+<p>Wykonaj te próby na swoim małym module. W ten sposób sprawdzasz użyteczność testów bez dodatkowego narzędzia do celowego psucia kodu.</p>
+<details><summary>Sprawdź swoje testy</summary>
+<p>Sprawdź, czy testy przechodzą przed zmianą i po naprawie, a co najmniej jeden nie przechodzi po wprowadzeniu błędu. W każdym teście powinny być widoczne małe dane wejściowe i konkretne oczekiwanie. Test oczekiwanego wyjątku ma się nie udać, gdy funkcja go nie zgłasza.</p>
 </details>
 </section>
 <section id="powrot"><h2>Powrót bez zaglądania</h2>
 <p>Czy zielony test dowodzi, że funkcja działa na wszystkich danych?</p>
 <details><summary>Sprawdź własne wyjaśnienie</summary>
-<p>Nie. Dowodzi tylko zgodności z wybranymi przypadkami. Potrzebne są przypadki odróżniające poprawne zachowanie od typowego błędu. Nowy przykład po przerwie sprawdza także Twoje rozumienie.</p>
+<p>Przejście testu potwierdza wynik dla danych, które ten test sprawdził. Dobieraj przypadki, na których typowe błędy dają inną odpowiedź niż poprawna funkcja. Po przerwie sprawdź też nowe wejście i wyjaśnij jego wynik bez zaglądania do kodu.</p>
 </details>
 </section>
 

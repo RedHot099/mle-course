@@ -25,7 +25,7 @@
 
     <h1>Przenieś pracę do notebooka</h1>
 
-    <p class="lede">Zapiszesz notebook lokalnie, uruchomisz go od początku i rozpoznasz trzy różne miejsca wpisywania poleceń.</p>
+    <p class="lede">Utwórz notebook na swoim komputerze, zapisz go i wykonaj ponownie od początku. Zobaczysz, co zostaje w pliku, a co znika po restarcie kernela.</p>
 
     <ul class="meta"><li><b>Przed lekcją:</b> Podstawy Python z A2 albo zaliczona diagnoza.</li>
 <li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
@@ -40,27 +40,55 @@
 </tbody>
 </table>
 </div>
-<p><strong>Kernel</strong> to proces Python wykonujący komórki notebooka. Pamięta nazwy między uruchomieniami komórek. Zapisany plik notebooka nie jest tym samym co pamięć kernela.</p>
-<div class="callout rule"><span class="label">Dwa środowiska</span><p>Runner na stronach A i B wykonuje każde Uruchom i Sprawdź w nowej przestrzeni nazw. Kod jednego pola nie przekazuje zmiennych do następnego. W lokalnym notebooku komórki współdzielą kernel. Dlatego uruchamianie notebooka od początku jest ważną kontrolą.</p>
+<p><strong>Kernel</strong> to uruchomiony Python, który wykonuje komórki notebooka. Pamięta utworzone zmienne, dopóki działa. Plik notebooka zapisuje kod i widoczne wyniki, ale nie zachowuje działającego procesu Python.</p>
+<div class="callout rule"><span class="label">Dwa środowiska</span><p>Pola kodu na tych stronach nie pamiętają zmiennych z poprzedniego uruchomienia. W notebooku jest inaczej: komórki korzystają ze wspólnego kernela. Wynik komórki może więc zależeć od kodu wykonanego wcześniej, nawet jeśli ten kod później usuniesz.</p>
 </div>
+
+<figure data-diagram-source="diagrams/kernel-state.html">
+<svg id="kernel-state" class="diagram" viewBox="0 0 352 408" role="img" aria-labelledby="kernel-state-title kernel-state-desc" style="display:block;width:100%;max-width:352px;height:auto;margin:0 auto">
+<title id="kernel-state-title">Co zmienia restart kernela</title>
+<desc id="kernel-state-desc">Restart usuwa nazwę stock z pamięci kernela, a ponowne wykonanie przypisania ją odtwarza; zapisany kod pozostaje w pliku.</desc>
+<defs>
+<marker id="kernel-state-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--ink-2, #52514e)"/></marker>
+<marker id="kernel-state-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--accent, #2a78d6)"/></marker>
+<marker id="kernel-state-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--accent-ink, #1c5cab)"/></marker>
+</defs>
+<style>
+#kernel-state text { fill: var(--ink, #0b0b0b); font-family: var(--sans, system-ui, sans-serif); font-size: 12px; }
+#kernel-state .name { font-size: 14px; font-weight: 600; }
+#kernel-state .code { font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace; }
+#kernel-state .muted { fill: var(--ink-2, #52514e); }
+#kernel-state .accent-text { fill: var(--accent-ink, #1c5cab); }
+#kernel-state .paper { fill: var(--plane, #f9f9f7); }
+#kernel-state .node { fill: var(--surface, #fcfcfb); stroke: var(--ink-2, #52514e); stroke-width: 1; }
+#kernel-state .focus { fill: var(--accent-wash, #e8f1fd); stroke: var(--accent, #2a78d6); }
+#kernel-state .edge { fill: none; stroke: var(--ink-2, #52514e); stroke-width: 1.2; }
+#kernel-state .accent-edge { stroke: var(--accent, #2a78d6); }
+#kernel-state .lifeline { stroke: var(--axis, #c3c2b7); stroke-width: 1; stroke-dasharray: 3 5; }
+#kernel-state .rule { stroke: var(--hairline, #e1e0d9); stroke-width: 1; }
+</style>
+<path d="M176 104 V184" class="edge" marker-end="url(#kernel-state-arrow)"/><rect x="192" y="132" width="72" height="16" class="paper"/><text x="228.0" y="144" class="code muted" text-anchor="middle">restart</text><path d="M56 216 H48 Q40 216 40 208 V80 Q40 72 48 72 H56" class="edge" marker-end="url(#kernel-state-arrow)"/><rect x="56" y="136" width="112" height="16" class="paper"/><text x="112.0" y="148" class="code muted" text-anchor="middle">stock = 6</text><rect x="56" y="40" width="240" height="64" rx="6" class="node"/><text x="176.0" y="66" class="name" text-anchor="middle">Po wykonaniu komórki</text><text x="176.0" y="88" class="code muted" text-anchor="middle">stock = 6</text><rect x="56" y="184" width="240" height="64" rx="6" class="node focus"/><text x="176.0" y="210" class="name" text-anchor="middle">Po restarcie kernela</text><text x="176.0" y="232" class="code muted" text-anchor="middle">brak nazwy stock</text><text x="176" y="280" class="muted" text-anchor="middle">Plik notebooka nadal zawiera kod.</text><text x="176" y="304" class="muted" text-anchor="middle">Kod odtwarza zmienną po uruchomieniu.</text><line x1="40" y1="336" x2="312" y2="336" class="rule"/><text x="40" y="360" class="muted" text-anchor="start">Prostokąty: stan pamięci kernela.</text><text x="40" y="384" class="muted" text-anchor="start">Strzałki: czynności zmieniające ten stan.</text>
+</svg>
+<figcaption>Restart czyści pamięć kernela. Zapisany kod zostaje w pliku. Aby zmienne znów były dostępne, wykonaj komórki w potrzebnej kolejności. <a href="diagrams/kernel-state.html">Otwórz diagram osobno</a>.</figcaption>
+</figure>
 </section>
 <section id="system"><h2>Przygotuj terminal</h2>
-<p>Na Linuxie otwórz terminal. Na Windowsie używamy Linuxa w WSL2. Jeśli masz działające Ubuntu w WSL, otwórz jego terminal. Jeśli jeszcze go nie masz, wykonaj tylko <a href="../00-setup/index.html#windows">część Windows istniejącej instrukcji</a>, pomijając na razie opcjonalny sterownik NVIDIA. Potem wróć tutaj. Nie musisz teraz przechodzić całej lekcji 00.</p>
-<p>Instalacja na komputerze współdzielonym może wymagać pomocy jego właściciela. Wtedy kontynuuj A i B w przeglądarce, a kroki lokalne wykonaj później. Nie jest to niezaliczenie zadania programistycznego.</p>
+<p>Na Linuxie otwórz terminal. Na Windowsie korzystamy z Ubuntu w WSL2. Jeśli masz już WSL2, otwórz terminal Ubuntu. Jeśli nie, przejdź przez <a href="../00-setup/index.html#windows">instalację WSL2 z lekcji 00</a> i wróć tutaj. Na tym etapie pomiń sterownik NVIDIA.</p>
+<p>Jeśli instalacja wymaga pomocy właściciela komputera, możesz najpierw wykonać ćwiczenia przeglądarkowe. Do notebooka i plików lokalnych wrócisz, gdy środowisko będzie dostępne.</p>
 <p>W terminalu Linux sprawdź uv:</p>
-<pre><code class="language-bash">uv --version</code></pre><p>Jeśli widzisz numer wersji, pomiń instalację. Jeśli polecenie nie istnieje, zainstaluj uv instrukcją użytkownika z <a href="https://docs.astral.sh/uv/getting-started/installation/">oficjalnej dokumentacji</a>. Na Linuxie i w terminalu WSL jest to:</p>
+<pre><code class="language-bash">uv --version</code></pre><p>Jeśli widzisz numer wersji, uv jest gotowe. Jeśli terminal nie rozpoznaje polecenia, zainstaluj uv. Poniższe polecenie pochodzi z <a href="https://docs.astral.sh/uv/getting-started/installation/">oficjalnej instrukcji uv</a> i jest przeznaczone dla terminala Linux lub Ubuntu w WSL:</p>
 <pre><code class="language-bash">curl --retry 5 --retry-all-errors -LsSf https://astral.sh/uv/install.sh | sh</code></pre><p>Zamknij i otwórz terminal. Ponownie sprawdź <code>uv --version</code>. Nie wpisuj powyższych poleceń do komórki Python.</p>
 </section>
 <section id="katalog"><h2>Utwórz osobne miejsce do nauki</h2>
-<p>Pracujemy w Twoim katalogu domowym, w osobnym folderze. <code>mkdir -p</code> tworzy folder, <code>cd</code> przechodzi do niego, a <code>pwd</code> pokazuje bieżącą ścieżkę.</p>
+<p>Utwórz folder <code>mle-practice</code> w swoim katalogu domowym. <code>mkdir -p</code> tworzy folder, <code>cd</code> przechodzi do niego, a <code>pwd</code> pokazuje bieżącą ścieżkę. Ostatnie polecenie uruchomi prosty rachunek w Pythonie:</p>
 <pre><code class="language-bash">mkdir -p ~/mle-practice
 cd ~/mle-practice
 pwd
-uv run --no-project --python 3.12 python -c &quot;print(2 + 3)&quot;</code></pre><p>Ostatni wynik powinien wynosić 5. Opcja <code>--no-project</code> pozwala wykonać program bez instalowania całego projektu ML. <code>--python 3.12</code> wybiera wersję Pythona. Uv pobierze ją, jeśli jej brakuje. Nie potrzebujesz jeszcze git, danych FreshRetailNet ani bibliotek ML.</p>
+uv run --no-project --python 3.12 python -c &quot;print(2 + 3)&quot;</code></pre><p>Ostatnie polecenie powinno wypisać <code>5</code>. Opcja <code>--python 3.12</code> wybiera wersję Pythona; uv pobierze ją, jeśli jej brakuje. Dzięki <code>--no-project</code> uruchamiasz sam Python, bez instalowania bibliotek całego kursu.</p>
 </section>
 <section id="notebook"><h2>Uruchom i zapisz notebook</h2>
 <p>Z tego samego terminala uruchom:</p>
-<pre><code class="language-bash">uv run --no-project --python 3.12 --with jupyterlab --with ipykernel jupyter lab</code></pre><p>Uv przygotowuje oddzielne środowisko z JupyterLab. Terminal wypisze adres lokalnej strony. Otwórz go na swoim komputerze. Zostaw terminal uruchomiony. Jeśli korzystasz z WSL, adres otwierasz w przeglądarce Windows.</p>
+<pre><code class="language-bash">uv run --no-project --python 3.12 --with jupyterlab --with ipykernel jupyter lab</code></pre><p>Uv przygotuje środowisko z JupyterLab i wypisze adres strony działającej na Twoim komputerze. Otwórz ten adres w przeglądarce i zostaw terminal uruchomiony. Jeśli używasz WSL, otwórz adres w przeglądarce Windows.</p>
 <ol><li>W JupyterLab wybierz nowy notebook z kernelem Python 3.</li>
 <li>Nazwij plik <code>first_steps.ipynb</code>.</li>
 <li>W pierwszej komórce wpisz <code>stock = 6</code> i uruchom ją przez Shift+Enter.</li>
@@ -68,18 +96,18 @@ uv run --no-project --python 3.12 python -c &quot;print(2 + 3)&quot;</code></pre
 <li>Zapisz notebook przez Ctrl+S.</li>
 <li>W menu Kernel wybierz Restart Kernel and Run All Cells. Nazwa może nieznacznie różnić się między wersjami. Ponownie powinieneś zobaczyć 8.</li>
 </ol>
-<p>Teraz otwórz drugi nowy notebook, bez definiowania stock, i wykonaj <code>print(stock)</code>. Zobaczysz NameError. To celowe doświadczenie: wynik zależy od wcześniejszych poleceń w danym kernelu.</p>
-<div class="callout rule"><span class="label">Zakończenie pracy</span><p>Po wykonaniu zamknij niepotrzebny kernel przez menu Kernel → Shut Down Kernel. Serwer Jupyter zatrzymasz przez Ctrl+C w jego terminalu i potwierdzenie. Nie wyłączasz w ten sposób komputera.</p>
+<p>Otwórz drugi notebook i uruchom w nim <code>print(stock)</code>, bez wcześniejszego przypisania. Zobaczysz <code>NameError</code>. Nowy notebook ma własny kernel, w którym nazwa <code>stock</code> jeszcze nie istnieje.</p>
+<div class="callout rule"><span class="label">Zakończenie pracy</span><p>Po zakończeniu wybierz <strong>Kernel → Shut Down Kernel</strong>, aby zatrzymać Python wykonujący notebook. Następnie wróć do terminala Jupyter, naciśnij Ctrl+C i potwierdź zatrzymanie serwera.</p>
 </div>
 </section>
-<section id="sprawdzenie"><h2>Sprawdź środowisko, nie rozwiązanie</h2>
-<p>Gotowość oznacza, że potrafisz zapisać notebook, zamknąć go, otworzyć i wykonać od początku. Zapisz w komórce tekstowej: gdzie leży plik, co wykonuje kernel i po czym rozpoznajesz wynik.</p>
+<section id="sprawdzenie"><h2>Sprawdź zapis i ponowne uruchomienie</h2>
+<p>Zamknij notebook, otwórz go ponownie i wykonaj od początku po restarcie kernela. Czy nadal otrzymujesz 8? Dodaj komórkę tekstową i zapisz, gdzie leży plik oraz dlaczego przed obliczeniem potrzebne jest przypisanie <code>stock = 6</code>.</p>
 <div class="quiz" id="terminal" data-type="single"><p>Gdzie wpiszesz uv --version?</p>
 <ul class="quiz-options"><li data-correct>W terminalu<span class="why">To polecenie uruchamiające program uv.</span></li>
 <li>W komórce Python<span class="why">Zwykła komórka oczekuje składni Python, a nie polecenia terminala.</span></li>
 </ul>
 </div>
-<p>Jeśli notebook nie startuje, zachowaj nazwę polecenia i treść błędu bez tokenu z adresu Jupyter. Wróć do runnera. Jeśli startuje, ale Twój kod daje zły wynik, dalsza praca dotyczy rozwiązania, nie instalacji.</p>
+<p>Jeśli Jupyter nie startuje, zachowaj polecenie i komunikat błędu. Pomiń token dostępu z wypisanego adresu. Do ćwiczeń Python możesz tymczasowo wrócić w przeglądarce. Jeśli Jupyter działa, ale kod zwraca zły wynik, sprawdź najpierw dane i kolejność wykonania komórek.</p>
 </section>
 
     <div class="next"><h2>Następny krok</h2>

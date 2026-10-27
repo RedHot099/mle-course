@@ -25,15 +25,15 @@
 
     <h1>Pierwsza prognoza na danych Freshcast</h1>
 
-    <p class="lede">Zbudujesz baseline na siedem dni i sprawdzisz jego błąd bez uczenia modelu ani instalowania pandas.</p>
+    <p class="lede">Przygotuj siedem prognoz z ostatniej znanej obserwacji. Potem porównaj je z rzeczywistą sprzedażą. Wystarczy Python poznany w A2.</p>
 
     <ul class="meta"><li><b>Przed lekcją:</b> A4.1 i podstawy Python z A2.</li>
 <li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
 </ul>
 
     <section id="dane"><h2>Jedna seria i czternaście dni</h2>
-<p>Dane poniżej pochodzą z publicznego FreshRetailNet-50K, z małej próbki dołączonej do kursu. To sklep 70, produkt 116, od 28 marca do 10 kwietnia 2024. Jeden wiersz oznacza jeden dzień tej samej serii. <a href="data/freshcast-sample.csv">Plik CSV</a> ma tylko te obserwacje i nie wymaga pobierania całego zbioru.</p>
-<p>Pracujemy na skali kolumny <code>sale_amount</code> z pliku. Wartości nie są tu interpretowane jako całkowita liczba sztuk. <code>stockout_hours</code> oznacza godziny braku towaru w obserwowanym oknie dnia. Sprzedaż nie musi być pełnym popytem: kiedy produktu brakuje, nie widzimy zakupów, które mogłyby się wydarzyć.</p>
+<p>Prześledź sprzedaż jednego produktu w jednym sklepie przez 14 kolejnych dni. Dane pochodzą z publicznej próbki FreshRetailNet-50K dołączonej do kursu: sklep 70, produkt 116, od 28 marca do 10 kwietnia 2024. <a href="data/freshcast-sample.csv">Pobierz ten wycinek jako CSV</a>, jeśli chcesz zachować go lokalnie.</p>
+<p>Kolumna <code>sale_amount</code> zawiera wartości sprzedaży w skali zapisanej w źródle. Nie przeliczamy ich na całkowitą liczbę sztuk. Kolumna <code>stockout_hours</code> podaje godziny braku towaru w obserwowanym oknie dnia. Gdy produktu brakuje, sprzedaż nie pokazuje całego popytu: część klientów mogła nie dostać towaru.</p>
 <div class="table-wrap"><table><thead><tr><th>Dzień</th><th>sale_amount</th><th>stockout_hours</th><th>Rola</th></tr>
 </thead>
 <tbody><tr><td>2024-03-28</td><td>0.8</td><td>7</td><td>historia</td></tr>
@@ -53,13 +53,13 @@
 </tbody>
 </table>
 </div>
-<p>Wyobraź sobie wieczór 3 kwietnia. Znasz pierwsze siedem dni. Kolejne siedem jest przyszłością. W tej lekcji widzisz je do ćwiczenia oceny, ale nie wolno korzystać z ich wartości przy budowie baseline’u. To przykład dydaktyczny, nie zamknięty końcowy test kursu.</p>
+<p>Przyjmij, że przygotowujesz prognozę wieczorem 3 kwietnia. Znasz pierwsze siedem dni z tabeli. Następnych siedmiu jeszcze nie znasz. Widzisz je teraz po to, by przećwiczyć ocenę gotowej prognozy. Do jej zbudowania użyj wyłącznie historii.</p>
 </section>
-<section id="baseline"><h2>Zamroź regułę przed oceną</h2>
-<p>Reguła brzmi: każdy z kolejnych siedmiu dni ma taką wartość jak ostatni dzień historii. Prognozę tworzysz raz, wieczorem 3 kwietnia. Nie aktualizujesz jej obserwacjami z 4 ani 5 kwietnia.</p>
-<p>Do powtarzania elementu listy możesz użyć mnożenia. Na przykład <code>["pending"] * 3</code> tworzy <code>["pending", "pending", "pending"]</code>. Długość prognozy wynika z ustalonego horyzontu.</p>
+<section id="baseline"><h2>Przygotuj prognozę przed odczytaniem wyników</h2>
+<p>Zastosuj jedną regułę: na każdy z kolejnych siedmiu dni przewiduj wartość z ostatniego dnia historii. Cała prognoza powstaje raz, wieczorem 3 kwietnia. Obserwacje z 4 i 5 kwietnia posłużą później do oceny, nie do poprawiania tej prognozy.</p>
+<p>Mnożenie pozwala powtórzyć element listy. Na przykład <code>["pending"] * 3</code> daje <code>["pending", "pending", "pending"]</code>. W prognozie liczba elementów ma odpowiadać ustalonemu horyzontowi.</p>
 <h3>Siedem prognoz</h3>
-<p>Zbuduj listę <code>forecast</code> według podanej reguły. Źródłem wartości jest wyłącznie history. W <code>errors</code> i <code>mae</code> policz ocenę na actual. To dwie różne fazy: najpierw prognoza, potem odczyt wyników.</p>
+<p>Najpierw zbuduj listę <code>forecast</code> z danych <code>history</code> i horyzontu. Dopiero potem odczytaj <code>actual</code> i oblicz błędy. Zapisz je w <code>errors</code>, a ich średnią w <code>mae</code>. Zachowaj tę kolejność pracy.</p>
 <div class="pyrun" id="forecast"><script type="text/x-python" data-role="starter">
 history = [0.8, 0.6, 0.7, 0.76, 0.0, 0.7, 0.9]
 horizon = 7
@@ -88,21 +88,21 @@ assert isinstance(mae, (int, float)) and math.isclose(mae, 2.84 / 7), "MAE to ś
 </details>
 </section>
 <section id="wykres"><h2>Obejrzyj, gdzie reguła się myli</h2>
-<p>Gotowy wykres poniżej jest pomocą do interpretacji. Nie musisz jeszcze znać biblioteki do rysowania. Oś pozioma pokazuje kolejne dni, pionowa sale_amount. Przerywana linia oddziela historię od przyszłości, a poziomy odcinek to baseline.</p>
+<p>Na wykresie pozioma oś pokazuje dni, a pionowa wartości <code>sale_amount</code>. Pionowa przerywana linia oznacza chwilę przygotowania prognozy. Pozioma przerywana linia pokazuje baseline. Zwróć uwagę na ostatnie dni: czy ta prosta reguła trafia we wzrost sprzedaży?</p>
 <figure><svg viewBox="0 0 640 250" role="img" aria-labelledby="forecast-title forecast-desc"><title id="forecast-title">Historia i baseline jednej serii</title><desc id="forecast-desc">Siedem dni historii do 3 kwietnia. Baseline na siedem kolejnych dni jest stały, 0.9. Na końcu okresu obserwowana sprzedaż rośnie do 1.5 i 1.6.</desc><g fill="none" stroke="currentColor" opacity="0.4"><path d="M45 20V210H615"/><path d="M45 110H615"/><path stroke-dasharray="5 5" d="M330 20V210"/></g><g fill="currentColor" font-size="13"><text x="15" y="215">0</text><text x="10" y="115">0.9</text><text x="40" y="235">28 III</text><text x="290" y="235">3 IV</text><text x="570" y="235">10 IV</text></g><polyline fill="none" stroke="var(--accent, #8b5cf6)" stroke-width="3" points="50,121 93,143 136,132 179,126 222,210 265,132 308,110"/><polyline fill="none" stroke="var(--accent, #8b5cf6)" stroke-width="3" opacity="0.6" points="351,132 394,132 437,143 480,126 523,188 566,43 609,32"/><path fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="6 4" d="M351 110H609"/></svg><figcaption>Kolorowa linia: obserwacje. Przerywana pozioma: prognoza. Pionowa granica: chwila prognozy.</figcaption>
 </figure>
 </section>
 <section id="wnioski"><h2>Zapisz wynik i ograniczenie</h2>
-<p>Zapisz trzy zdania w notebooku albo własnym pliku tekstowym: jaką regułę zastosowałeś, na których dniach policzyłeś błąd i czego ta ocena nie mówi. MAE jest tu liczone na sprzedaży ze wszystkich siedmiu dni, także z brakami towaru. Nie jest oceną nieobserwowanego pełnego popytu.</p>
-<details><summary>Rubryka samooceny</summary>
-<p>Reguła używa wyłącznie historii i jest stała przez cały horyzont. MAE opisuje różnicę wobec zaobserwowanej sprzedaży. Jedna seria i jeden tydzień nie wystarczą do oceny modelu dla wszystkich sklepów. Gorszy wynik nie dowodzi błędu w kodzie.</p>
+<p>Zapisz w notebooku lub pliku tekstowym regułę prognozy, okres oceny i jedno ograniczenie wyniku. MAE liczymy tutaj na zaobserwowanej sprzedaży ze wszystkich siedmiu dni, także dni z brakami towaru. Nie znamy pełnego popytu, więc nie oceniamy prognozy tego popytu.</p>
+<details><summary>Sprawdź własną odpowiedź</summary>
+<p>Wyjaśnienie powinno wskazywać, że prognoza korzysta tylko z historii, a ocena obejmuje późniejsze obserwacje. Powinno też rozróżniać sprzedaż od popytu. Jeden tydzień jednej serii nie wystarcza do oceny metody dla wszystkich sklepów. Nawet poprawnie napisany baseline może mieć duży błąd.</p>
 </details>
-<p>Źródło danych: Dingdong-Inc, <a href="https://huggingface.co/datasets/Dingdong-Inc/FreshRetailNet-50K">FreshRetailNet-50K</a>, CC BY 4.0. Wycinek przygotowano z kursowego frn_sample.parquet; zachowano wartości, uporządkowano dni i zmieniono nazwę kolumny godzin na stockout_hours.</p>
+<p>Źródło: Dingdong-Inc, <a href="https://huggingface.co/datasets/Dingdong-Inc/FreshRetailNet-50K">FreshRetailNet-50K</a>, CC BY 4.0. Wycinek pochodzi z kursowego <code>frn_sample.parquet</code>. Zachowano wartości, uporządkowano dni i nazwano kolumnę godzin <code>stockout_hours</code>. To jawny przykład do nauki, a nie końcowy zamknięty test kursu.</p>
 </section>
 <section id="powrot"><h2>Powrót bez zaglądania</h2>
 <p>Czy MAE = 0 oznacza zero sprzedaży? Czy to samo co brak danych?</p>
 <details><summary>Sprawdź własne wyjaśnienie</summary>
-<p>MAE = 0 oznacza trafienie wszystkich ocenianych obserwacji, nie ich zerową wartość. Brak danych to osobna sytuacja. Jeśli obie interpretacje się mieszają, wróć do A2.2 i A4.1.</p>
+<p><code>MAE = 0</code> oznacza, że każda oceniana prognoza zgadza się z obserwacją. Same obserwacje mogą być dodatnie lub zerowe. Brak obserwacji to osobna sytuacja. Jeśli te znaczenia się mieszają, wróć do A2.2 i A4.1.</p>
 </details>
 </section>
 

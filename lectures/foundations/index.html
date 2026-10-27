@@ -25,15 +25,15 @@
 
     <h1>Fundamenty Python i pierwszy eksperyment</h1>
 
-    <p class="lede">Zaczynasz od tego, co umiesz. Każda lekcja kończy się własną próbą i wyjaśnieniem wyniku.</p>
+    <p class="lede">Zacznij od krótkiej diagnozy, wybierz potrzebne podstawy i przejdź do pierwszej prognozy. W każdej lekcji napiszesz własny kod i wyjaśnisz jego wynik.</p>
 
     <ul class="meta"><li><b>Przed lekcją:</b> Przeglądarka. Python może być zupełnie nowy.</li>
 <li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
 </ul>
 
     <section id="start"><h2>Zacznij bez instalowania</h2>
-<p>Ta ścieżka prowadzi od pierwszego wyrażenia Python do małej prognozy i własnej funkcji z testami. W <a href="a1-diagnosis.html">A1</a> jest gotowy runner przeglądarkowy. Nie potrzebujesz konta GitHub, tutora AI ani karty graficznej, żeby zacząć.</p>
-<p>Jeśli znasz pętle, funkcje, listy i słowniki, diagnoza skieruje Cię do wybranych powtórek. Jeśli zaczynasz od zera, wykonaj A2 po kolei. A3 umożliwia przejście do plików i notebooka na własnym komputerze. Kod zadań piszesz samodzielnie. Trzykropki lub None w kodzie startowym oznaczają miejsce do uzupełnienia. Podpowiedzi rozwijasz pojedynczo; nie zawierają gotowych ciał funkcji.</p>
+<p>Najpierw uruchomisz Python w przeglądarce, potem przygotujesz prognozę i własną funkcję z testami. <a href="a1-diagnosis.html">A1</a> zawiera pole do pierwszego uruchomienia. Wystarczy przeglądarka z dostępem do sieci.</p>
+<p>Jeśli znasz już podstawy Python, diagnoza wskaże potrzebne powtórki. Jeśli zaczynasz od zera, wykonaj lekcje A2 po kolei. W A3 przejdziesz do notebooka na własnym komputerze.</p><p>Rozwiązania piszesz samodzielnie. Trzykropki lub <code>None</code> w kodzie startowym wskazują miejsce do uzupełnienia. Gdy utkniesz, otwórz jedną podpowiedź i wróć do próby.</p>
 </section>
 <section id="praca"><h2>Jak wygląda jedna sesja</h2>
 <ol><li>Przeczytaj cel i wymagane podstawy.</li>
@@ -42,29 +42,29 @@
 <li>Gdy utkniesz, rozwiń jedną podpowiedź. Wróć do konkretnego pojęcia, jeśli nie umiesz policzyć małego przykładu ręcznie.</li>
 <li>Na końcu odpowiedz na pytanie bez zaglądania. Po przerwie sprawdź się na innych danych.</li>
 </ol>
-<p>Praca w polach kodu i wyniki sprawdzeń są zapamiętywane lokalnie w tej przeglądarce, dla danego adresu strony. Nie są synchronizowane między komputerami ani z poleceniem course check. Tryb prywatny lub wyczyszczenie danych witryny może usunąć zapis. Ważny kod zachowaj w swoim notebooku lub pliku.</p>
-<p>Każde pole uruchamia Python w nowej przestrzeni nazw. Gdy przenosisz kod między polami, dodaj wszystkie potrzebne definicje. Pliki demonstracyjne w przeglądarce są tymczasowe. Szczegóły pracy lokalnej znajdziesz w A3.</p>
+<p>Strony zapamiętują wpisany kod i wyniki sprawdzeń w tej przeglądarce. Zapis zależy od adresu strony i nie przenosi się na inne urządzenia. Możesz go stracić po wyczyszczeniu danych witryny lub zakończeniu sesji prywatnej. Ważny kod zachowuj też w swoim pliku. Polecenie <code>course check</code> obsługuje pozostałe moduły kursu, nie te zadania.</p>
+<p>Przyciski <strong>Uruchom</strong> i <strong>Sprawdź</strong> wykonują cały kod danego pola od początku. Zmienne z poprzedniej próby nie są pamiętane. Jeśli kopiujesz kod z innej lekcji, dołącz potrzebne definicje. Przykłady bez własnego pola uruchomisz po wklejeniu do <a href="a1-diagnosis.html#first-run">edytora w A1</a> lub do notebooka z A3.</p>
 </section>
 <section id="a"><h2>A. Wejście i pierwszy wynik</h2>
-<ul class="modules"><li><a class="module" data-module="foundations-a1-diagnosis" href="a1-diagnosis.html"><span class="no">A1</span><span class="name">Sprawdź, od czego zacząć</span><span class="what">Uruchomisz pierwszy kod i wybierzesz potrzebne lekcje podstaw. Diagnoza nie jest egzaminem. Nie musisz znać odpowiedzi, żeby zacząć kurs.</span><span class="side"></span></a></li>
-<li><a class="module" data-module="foundations-a2-values" href="a2-values.html"><span class="no">A2.1</span><span class="name">Wartości, nazwy i wynik programu</span><span class="what">Napiszesz mały rachunek i odróżnisz liczbę od tekstu.</span><span class="side"></span></a></li>
-<li><a class="module" data-module="foundations-a2-conditions" href="a2-conditions.html"><span class="no">A2.2</span><span class="name">Warunki, zero i brak obserwacji</span><span class="what">Wybierzesz działanie zależnie od danych i zachowasz różnicę między zerem a brakiem.</span><span class="side"></span></a></li>
-<li><a class="module" data-module="foundations-a2-loops" href="a2-loops.html"><span class="no">A2.3</span><span class="name">Listy i pętle krok po kroku</span><span class="what">Policzysz sumę i liczbę znanych obserwacji bez gubienia zer.</span><span class="side"></span></a></li>
-<li><a class="module" data-module="foundations-a2-records" href="a2-records.html"><span class="no">A2.4</span><span class="name">Słowniki i lista rekordów</span><span class="what">Odczytasz nazwane pola i wybierzesz obserwacje spełniające warunek.</span><span class="side"></span></a></li>
-<li><a class="module" data-module="foundations-a2-functions" href="a2-functions.html"><span class="no">A2.5</span><span class="name">Pierwsza własna funkcja</span><span class="what">Oddasz wynik obliczenia wywołującemu i użyjesz tej samej funkcji na innych danych.</span><span class="side"></span></a></li>
-<li><a class="module" data-module="foundations-a3-environment" href="a3-environment.html"><span class="no">A3</span><span class="name">Przenieś pracę do notebooka</span><span class="what">Zapiszesz notebook lokalnie, uruchomisz go od początku i rozpoznasz trzy różne miejsca wpisywania poleceń.</span><span class="side"></span></a></li>
-<li><a class="module" data-module="foundations-a4-metrics" href="a4-metrics.html"><span class="no">A4.1</span><span class="name">Policz błąd małej prognozy</span><span class="what">Wyjaśnisz historię, horyzont i baseline oraz policzysz MAE na małych liczbach.</span><span class="side"></span></a></li>
-<li><a class="module" data-module="foundations-a4-forecast" href="a4-forecast.html"><span class="no">A4.2</span><span class="name">Pierwsza prognoza na danych Freshcast</span><span class="what">Zbudujesz baseline na siedem dni i sprawdzisz jego błąd bez uczenia modelu ani instalowania pandas.</span><span class="side"></span></a></li>
+<ul class="modules"><li><a class="module" data-module="foundations-a1-diagnosis" href="a1-diagnosis.html"><span class="no">A1</span><span class="name">Sprawdź, od czego zacząć</span><span class="what">Uruchom pierwszy program w przeglądarce. Potem sprawdź, które podstawy już znasz, a do których warto wrócić. Możesz zacząć bez żadnego doświadczenia z Pythonem.</span><span class="side"></span></a></li>
+<li><a class="module" data-module="foundations-a2-values" href="a2-values.html"><span class="no">A2.1</span><span class="name">Wartości, nazwy i wynik programu</span><span class="what">Oblicz, ile towaru zostanie po dostawie i sprzedaży. Po drodze odróżnisz liczby od tekstu i zapiszesz wyniki pod własnymi nazwami.</span><span class="side"></span></a></li>
+<li><a class="module" data-module="foundations-a2-conditions" href="a2-conditions.html"><span class="no">A2.2</span><span class="name">Warunki, zero i brak obserwacji</span><span class="what">Napisz program, który rozpoznaje brak obserwacji. Sprawdzisz, dlaczego zero i brak wymagają różnych odpowiedzi.</span><span class="side"></span></a></li>
+<li><a class="module" data-module="foundations-a2-loops" href="a2-loops.html"><span class="no">A2.3</span><span class="name">Listy i pętle krok po kroku</span><span class="what">Policz sumę obserwacji i sprawdź, ile z nich jest znanych. Nauczysz się śledzić zmiany wartości w kolejnych krokach pętli.</span><span class="side"></span></a></li>
+<li><a class="module" data-module="foundations-a2-records" href="a2-records.html"><span class="no">A2.4</span><span class="name">Słowniki i lista rekordów</span><span class="what">Wybierz z listy obserwacje jednego produktu i policz ich sprzedaż. Zamiast numerów pozycji użyjesz nazw pól.</span><span class="side"></span></a></li>
+<li><a class="module" data-module="foundations-a2-functions" href="a2-functions.html"><span class="no">A2.5</span><span class="name">Pierwsza własna funkcja</span><span class="what">Napisz funkcję, zapisz zwrócony przez nią wynik i użyj jej na innych danych. Sprawdzisz też różnicę między wyświetleniem wartości a jej zwróceniem.</span><span class="side"></span></a></li>
+<li><a class="module" data-module="foundations-a3-environment" href="a3-environment.html"><span class="no">A3</span><span class="name">Przenieś pracę do notebooka</span><span class="what">Utwórz notebook na swoim komputerze, zapisz go i wykonaj ponownie od początku. Zobaczysz, co zostaje w pliku, a co znika po restarcie kernela.</span><span class="side"></span></a></li>
+<li><a class="module" data-module="foundations-a4-metrics" href="a4-metrics.html"><span class="no">A4.1</span><span class="name">Policz błąd małej prognozy</span><span class="what">Porównaj prognozę z obserwacją i oblicz MAE. Najpierw ustalisz, co było wiadomo w chwili prognozy, a potem policzysz błędy na tych samych dniach.</span><span class="side"></span></a></li>
+<li><a class="module" data-module="foundations-a4-forecast" href="a4-forecast.html"><span class="no">A4.2</span><span class="name">Pierwsza prognoza na danych Freshcast</span><span class="what">Przygotuj siedem prognoz z ostatniej znanej obserwacji. Potem porównaj je z rzeczywistą sprzedażą. Wystarczy Python poznany w A2.</span><span class="side"></span></a></li>
 </ul>
 </section>
 <section id="b"><h2>B. Samodzielna praca z małym kodem</h2>
-<ul class="modules"><li><a class="module" data-module="foundations-b5-collections" href="b5-collections.html"><span class="no">B5.1</span><span class="name">Kolekcje i zmiany danych</span><span class="what">Dobierzesz kolekcję do pytania i zbudujesz wynik bez zmiany danych wejściowych.</span><span class="side"></span></a></li>
-<li><a class="module" data-module="foundations-b5-files" href="b5-files.html"><span class="no">B5.2</span><span class="name">Odczytaj i zapisz mały plik</span><span class="what">Odczytasz tekst linia po linii, rozpoznasz katalog roboczy i zapiszesz osobny wynik.</span><span class="side"></span></a></li>
-<li><a class="module" data-module="foundations-b5-errors" href="b5-errors.html"><span class="no">B5.3</span><span class="name">Przeczytaj błąd i zachowaj jego znaczenie</span><span class="what">Rozróżnisz brak pomiaru od błędnego zapisu i wskażesz przyczynę wyjątku.</span><span class="side"></span></a></li>
-<li><a class="module" data-module="foundations-b6-functions" href="b6-functions.html"><span class="no">B6.1</span><span class="name">Funkcja ma wejście, wynik i umowę</span><span class="what">Zaprojektujesz małą funkcję, która zwraca wynik i jawnie odrzuca przypadek bez poprawnej odpowiedzi.</span><span class="side"></span></a></li>
-<li><a class="module" data-module="foundations-b6-tests" href="b6-tests.html"><span class="no">B6.2</span><span class="name">Pierwsze własne testy</span><span class="what">Napiszesz test na małych danych, sprawdzisz wyjątek i zobaczysz, czy test zauważa błąd.</span><span class="side"></span></a></li>
-<li><a class="module" data-module="foundations-b7-modules" href="b7-modules.html"><span class="no">B7.1</span><span class="name">Moduł, podstawowe typy i jakość kodu</span><span class="what">Uruchomisz swój moduł i testy w małym projekcie z powtarzalnymi zależnościami.</span><span class="side"></span></a></li>
-<li><a class="module" data-module="foundations-b7-git" href="b7-git.html"><span class="no">B7.2</span><span class="name">Pierwszy branch, commit i pull request</span><span class="what">Przygotujesz małą zmianę z własną funkcją i testami oraz przeczytasz wynik gotowego CI.</span><span class="side"></span></a></li>
+<ul class="modules"><li><a class="module" data-module="foundations-b5-collections" href="b5-collections.html"><span class="no">B5.1</span><span class="name">Kolekcje i zmiany danych</span><span class="what">Wybierz kolekcję pasującą do danych. Potem zbuduj nową listę i sprawdź, czy oryginał pozostał bez zmian.</span><span class="side"></span></a></li>
+<li><a class="module" data-module="foundations-b5-files" href="b5-files.html"><span class="no">B5.2</span><span class="name">Odczytaj i zapisz mały plik</span><span class="what">Odczytaj pomiary z małego pliku i zapisz raport w innym pliku. Sprawdzisz przy tym, w którym folderze Python szuka danych.</span><span class="side"></span></a></li>
+<li><a class="module" data-module="foundations-b5-errors" href="b5-errors.html"><span class="no">B5.3</span><span class="name">Przeczytaj błąd i zachowaj jego znaczenie</span><span class="what">Odtwórz błąd na jednej wartości i przeczytaj jego komunikat. Potem napisz funkcję, która odróżnia brak pomiaru od uszkodzonego zapisu.</span><span class="side"></span></a></li>
+<li><a class="module" data-module="foundations-b6-functions" href="b6-functions.html"><span class="no">B6.1</span><span class="name">Funkcja ma wejście, wynik i umowę</span><span class="what">Napisz funkcję liczącą średnią znanych pomiarów. Opisz jej wynik i zachowanie wtedy, gdy nie ma z czego policzyć średniej.</span><span class="side"></span></a></li>
+<li><a class="module" data-module="foundations-b6-tests" href="b6-tests.html"><span class="no">B6.2</span><span class="name">Pierwsze własne testy</span><span class="what">Napisz testy własnej funkcji. Następnie wprowadź kontrolowany błąd i sprawdź, czy testy go zauważą.</span><span class="side"></span></a></li>
+<li><a class="module" data-module="foundations-b7-modules" href="b7-modules.html"><span class="no">B7.1</span><span class="name">Moduł, podstawowe typy i jakość kodu</span><span class="what">Zbierz własną funkcję i testy w mały projekt. Zapisz potrzebne narzędzia, dodaj podstawowe typy i uruchom sprawdzenia z terminala.</span><span class="side"></span></a></li>
+<li><a class="module" data-module="foundations-b7-git" href="b7-git.html"><span class="no">B7.2</span><span class="name">Pierwszy branch, commit i pull request</span><span class="what">Zapisz własną funkcję i testy na nowej gałęzi. Otwórz pull request i sprawdź, czy dostarczone CI potrafi powtórzyć Twoje lokalne sprawdzenia.</span><span class="side"></span></a></li>
 </ul>
 </section>
 <section id="gotowosc"><h2>Po czym poznasz, że możesz iść dalej</h2>
@@ -74,7 +74,7 @@
 <li>Twoje testy sprawdzają konkretne wyniki i zauważają kontrolowany błąd.</li>
 <li>Rozróżniasz błąd programu, środowiska i brak dostępu do usługi.</li>
 </ul>
-<p>Zielony licznik quizów jest pomocą, nie dowodem pełnego zrozumienia. Pierwszy PR jest ćwiczeniem współpracy; problem z kontem nie blokuje nauki danych i ML.</p>
+<p>Po zadaniu sprawdź się na nowych danych i wyjaśnij wynik bez zaglądania. Licznik quizów przypomina o wykonanych próbach, ale nie zastępuje tej samodzielnej kontroli. Jeśli nie możesz jeszcze otworzyć PR, zachowaj lokalny projekt i kontynuuj naukę.</p>
 </section>
 
     <div class="next"><h2>Następny krok</h2>

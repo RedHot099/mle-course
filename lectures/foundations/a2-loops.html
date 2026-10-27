@@ -25,23 +25,23 @@
 
     <h1>Listy i pętle krok po kroku</h1>
 
-    <p class="lede">Policzysz sumę i liczbę znanych obserwacji bez gubienia zer.</p>
+    <p class="lede">Policz sumę obserwacji i sprawdź, ile z nich jest znanych. Nauczysz się śledzić zmiany wartości w kolejnych krokach pętli.</p>
 
     <ul class="meta"><li><b>Przed lekcją:</b> A2.1 i A2.2.</li>
 <li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
 </ul>
 
     <section id="lista"><h2>Przechowaj kolejne obserwacje</h2>
-<p>Lista trzyma elementy w kolejności. Nawiasy kwadratowe tworzą listę. Indeks zaczyna się od zera, a <code>len</code> daje jej długość.</p>
+<p>Lista przechowuje elementy w określonej kolejności. Tworzysz ją za pomocą nawiasów kwadratowych. Pozycję elementu wskazuje indeks, a liczbę elementów podaje <code>len</code>. Indeksy zaczynają się od zera:</p>
 <pre><code class="language-python">values = [3, 0, 5]
 print(values[0])
 print(values[2])
-print(len(values))</code></pre><p>Wyniki to 3, 5 i 3. Ostatni element można też wybrać przez <code>values[-1]</code>. Przez <code>values[:2]</code> wybierasz pierwsze dwa elementy. Zapis przed dwukropkiem to początek, za nim koniec bez tego elementu.</p>
+print(len(values))</code></pre><p>Program wypisze <code>3</code>, <code>5</code> i <code>3</code>. Zapis <code>values[-1]</code> wybiera ostatni element. Wycinek <code>values[:2]</code> wybiera elementy przed indeksem 2, czyli dwa pierwsze. Z kolei <code>values[2:]</code> wybiera elementy od indeksu 2 do końca:</p>
 <pre><code class="language-python">print([3, 0, 5, 8][:2])
 print([3, 0, 5, 8][2:])</code></pre><p>Otrzymasz <code>[3, 0]</code> i <code>[5, 8]</code>. Taki podział przyda się do oddzielenia historii od przyszłości.</p>
 </section>
 <section id="petla"><h2>Prześledź każdą iterację</h2>
-<p><code>for value in values</code> przypisuje kolejne elementy do nazwy value. Każde przejście to iteracja. Wcięty blok wykonuje się dla każdego elementu.</p>
+<p>Pętla <code>for value in values</code> pobiera kolejne elementy listy. W każdym kroku aktualny element jest dostępny pod nazwą <code>value</code>. Wcięty blok wykonuje się raz dla każdego elementu. Taki krok nazywamy iteracją.</p>
 <div class="predict" id="accumulator" data-type="single" data-expected-output="7"><p>Jaki jest wynik?</p>
 <pre><code class="language-python">total = 0
 for value in [2, 5, 0]:
@@ -51,7 +51,7 @@ print(total)</code></pre><ul class="quiz-options"><li>3<span class="why">To licz
 <li>0<span class="why">Zero na końcu jest dodawane, a nie przypisywane zamiast sumy.</span></li>
 </ul>
 </div>
-<p>Po ostatniej iteracji pętla się kończy. Linia bez wcięcia jest wykonywana raz. Aby budować nową listę, zacznij od <code>[]</code> i użyj <code>append</code>. To metoda listy: po kropce piszesz jej nazwę, a w nawiasach nowy element.</p>
+<p>W powyższym kodzie <code>print</code> stoi za pętlą, więc wypisuje końcową sumę tylko raz. Możesz też zbudować nową listę. Zacznij od <code>[]</code> i dodawaj do niej elementy przez <code>append</code>. To metoda listy, czyli operacja wywoływana po kropce:</p>
 <pre><code class="language-python">doubled = []
 for value in [1, 4]:
     doubled.append(value * 2)
@@ -59,7 +59,7 @@ print(doubled)</code></pre><p>Wynik to <code>[2, 8]</code>. Pusta lista nie ma o
 </section>
 <section id="cwiczenia"><h2>Policz znane wartości</h2>
 <h3>Zero też się liczy</h3>
-<p>Dla podanej listy policz <code>known_count</code> i <code>total</code>, pomijając tylko None. Użyj pętli. Nie wpisuj samej oczekiwanej liczby, bo dane będą się zmieniać w dalszych ćwiczeniach.</p>
+<p>W <code>known_count</code> policz obserwacje inne niż <code>None</code>, a w <code>total</code> ich sumę. Zero jest znaną obserwacją. Użyj pętli i podanych nazw, aby ten sam kod działał po zmianie listy.</p>
 <div class="pyrun" id="known-total"><script type="text/x-python" data-role="starter">
 values = [0, 4, None, 2, None]
 known_count = 0
@@ -80,7 +80,7 @@ assert total == 6, "Suma znanych wartości powinna wynosić 6."
 <section id="powrot"><h2>Powrót bez zaglądania</h2>
 <p>Co da pętla po pustej liście? Jak wybierzesz pierwsze trzy elementy?</p>
 <details><summary>Sprawdź własne wyjaśnienie</summary>
-<p>Pętla wykona zero iteracji. Wycinek [:3] zawiera indeksy 0, 1 i 2. Przetestuj też swoją pętlę dla [] oraz [0, None].</p>
+<p>Dla pustej listy blok pętli nie wykona się ani razu. Wycinek <code>[:3]</code> zawiera elementy o indeksach 0, 1 i 2. Uruchom też swój kod dla <code>[]</code> oraz <code>[0, None]</code> i wyjaśnij wyniki.</p>
 </details>
 </section>
 

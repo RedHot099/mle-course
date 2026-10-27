@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Co zmienia restart kernela</title><style>
+:root { color-scheme:light; --plane:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b; --ink-2:#52514e; --axis:#c3c2b7; --hairline:#e1e0d9; --accent:#2a78d6; --accent-ink:#1c5cab; --accent-wash:#e8f1fd; --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+@media(prefers-color-scheme:dark) { :root { color-scheme:dark; --plane:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink-2:#c3c2b7; --axis:#383835; --hairline:#2c2c2a; --accent:#3987e5; --accent-ink:#86b6ef; --accent-wash:#13263f; } }
+body { margin:0; padding:16px; background:var(--plane); color:var(--ink); font-family:var(--sans); }
+main { max-width:480px; margin:auto; }
+h1 { font-size:1.25rem; line-height:1.3; font-weight:700; }
+p { font-size:.9rem; line-height:1.55; }
+a { color:var(--accent-ink); }
+</style></head>
+<body><main><h1>Co zmienia restart kernela</h1><svg id="kernel-state" class="diagram" viewBox="0 0 352 408" role="img" aria-labelledby="kernel-state-title kernel-state-desc" style="display:block;width:100%;max-width:352px;height:auto;margin:0 auto">
+<title id="kernel-state-title">Co zmienia restart kernela</title>
+<desc id="kernel-state-desc">Restart usuwa nazwę stock z pamięci kernela, a ponowne wykonanie przypisania ją odtwarza; zapisany kod pozostaje w pliku.</desc>
+<defs>
+<marker id="kernel-state-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--ink-2, #52514e)"/></marker>
+<marker id="kernel-state-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--accent, #2a78d6)"/></marker>
+<marker id="kernel-state-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--accent-ink, #1c5cab)"/></marker>
+</defs>
+<style>
+#kernel-state text { fill: var(--ink, #0b0b0b); font-family: var(--sans, system-ui, sans-serif); font-size: 12px; }
+#kernel-state .name { font-size: 14px; font-weight: 600; }
+#kernel-state .code { font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace; }
+#kernel-state .muted { fill: var(--ink-2, #52514e); }
+#kernel-state .accent-text { fill: var(--accent-ink, #1c5cab); }
+#kernel-state .paper { fill: var(--plane, #f9f9f7); }
+#kernel-state .node { fill: var(--surface, #fcfcfb); stroke: var(--ink-2, #52514e); stroke-width: 1; }
+#kernel-state .focus { fill: var(--accent-wash, #e8f1fd); stroke: var(--accent, #2a78d6); }
+#kernel-state .edge { fill: none; stroke: var(--ink-2, #52514e); stroke-width: 1.2; }
+#kernel-state .accent-edge { stroke: var(--accent, #2a78d6); }
+#kernel-state .lifeline { stroke: var(--axis, #c3c2b7); stroke-width: 1; stroke-dasharray: 3 5; }
+#kernel-state .rule { stroke: var(--hairline, #e1e0d9); stroke-width: 1; }
+</style>
+<path d="M176 104 V184" class="edge" marker-end="url(#kernel-state-arrow)"/><rect x="192" y="132" width="72" height="16" class="paper"/><text x="228.0" y="144" class="code muted" text-anchor="middle">restart</text><path d="M56 216 H48 Q40 216 40 208 V80 Q40 72 48 72 H56" class="edge" marker-end="url(#kernel-state-arrow)"/><rect x="56" y="136" width="112" height="16" class="paper"/><text x="112.0" y="148" class="code muted" text-anchor="middle">stock = 6</text><rect x="56" y="40" width="240" height="64" rx="6" class="node"/><text x="176.0" y="66" class="name" text-anchor="middle">Po wykonaniu komórki</text><text x="176.0" y="88" class="code muted" text-anchor="middle">stock = 6</text><rect x="56" y="184" width="240" height="64" rx="6" class="node focus"/><text x="176.0" y="210" class="name" text-anchor="middle">Po restarcie kernela</text><text x="176.0" y="232" class="code muted" text-anchor="middle">brak nazwy stock</text><text x="176" y="280" class="muted" text-anchor="middle">Plik notebooka nadal zawiera kod.</text><text x="176" y="304" class="muted" text-anchor="middle">Kod odtwarza zmienną po uruchomieniu.</text><line x1="40" y1="336" x2="312" y2="336" class="rule"/><text x="40" y="360" class="muted" text-anchor="start">Prostokąty: stan pamięci kernela.</text><text x="40" y="384" class="muted" text-anchor="start">Strzałki: czynności zmieniające ten stan.</text>
+</svg><p>Restart czyści pamięć kernela. Zapisany kod zostaje w pliku. Aby zmienne znów były dostępne, wykonaj komórki w potrzebnej kolejności.</p><p><a href="../a3-environment.html#miejsca">Wróć do lekcji</a></p></main></body></html>

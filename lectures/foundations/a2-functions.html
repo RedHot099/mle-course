@@ -25,20 +25,20 @@
 
     <h1>Pierwsza własna funkcja</h1>
 
-    <p class="lede">Oddasz wynik obliczenia wywołującemu i użyjesz tej samej funkcji na innych danych.</p>
+    <p class="lede">Napisz funkcję, zapisz zwrócony przez nią wynik i użyj jej na innych danych. Sprawdzisz też różnicę między wyświetleniem wartości a jej zwróceniem.</p>
 
     <ul class="meta"><li><b>Przed lekcją:</b> A2.1–A2.4.</li>
 <li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
 </ul>
 
     <section id="def"><h2>Nadaj operacji nazwę</h2>
-<p>Funkcja pozwala nazwać operację. <code>def</code> rozpoczyna definicję. Parametr to nazwa danych otrzymanych przy wywołaniu. <code>return</code> oddaje wynik i kończy to wywołanie.</p>
+<p>Funkcja to nazwany fragment kodu, który możesz wywołać z różnymi danymi. Po <code>def</code> podajesz jej nazwę i parametry. Podczas wywołania parametr otrzymuje przekazaną wartość. Polecenie <code>return</code> zwraca wynik do miejsca wywołania i kończy pracę funkcji.</p>
 <pre><code class="language-python">def triple(number):
     return number * 3
 
 first = triple(2)
 second = triple(5)
-print(first, second)</code></pre><p>Wynik to <code>6 15</code>. Definicja nie uruchamia obliczenia. Robi to wywołanie, na przykład triple(2). Nazwa number otrzymuje wtedy wartość 2.</p>
+print(first, second)</code></pre><p>Program wypisze <code>6 15</code>. Samo <code>def</code> definiuje funkcję. Obliczenie zaczyna się przy <code>triple(2)</code>: parametr <code>number</code> otrzymuje 2, a zwrócone 6 trafia do <code>first</code>. Drugie wywołanie wykonuje ten sam kod z wartością 5.</p>
 <div class="predict" id="print-return" data-type="single" data-expected-output="6
 None"><p>Co wypisze ostatnia linia?</p>
 <pre><code class="language-python">def show_double(number):
@@ -49,20 +49,48 @@ print(result)</code></pre><ul class="quiz-options"><li data-correct>None<span cl
 <li>6<span class="why">To wypisze sama funkcja, ale zmienna result otrzyma None.</span></li>
 </ul>
 </div>
+
+<figure data-diagram-source="diagrams/function-result.html">
+<svg id="function-result" class="diagram" viewBox="0 0 368 512" role="img" aria-labelledby="function-result-title function-result-desc" style="display:block;width:100%;max-width:368px;height:auto;margin:0 auto">
+<title id="function-result-title">Wyświetlenie a zwrócenie wyniku</title>
+<desc id="function-result-desc">Funkcja triple zwraca 6 do zmiennej result; show_double wyświetla 6, lecz bez return zwraca None.</desc>
+<defs>
+<marker id="function-result-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--ink-2, #52514e)"/></marker>
+<marker id="function-result-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--accent, #2a78d6)"/></marker>
+<marker id="function-result-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--accent-ink, #1c5cab)"/></marker>
+</defs>
+<style>
+#function-result text { fill: var(--ink, #0b0b0b); font-family: var(--sans, system-ui, sans-serif); font-size: 12px; }
+#function-result .name { font-size: 14px; font-weight: 600; }
+#function-result .code { font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace; }
+#function-result .muted { fill: var(--ink-2, #52514e); }
+#function-result .accent-text { fill: var(--accent-ink, #1c5cab); }
+#function-result .paper { fill: var(--plane, #f9f9f7); }
+#function-result .node { fill: var(--surface, #fcfcfb); stroke: var(--ink-2, #52514e); stroke-width: 1; }
+#function-result .focus { fill: var(--accent-wash, #e8f1fd); stroke: var(--accent, #2a78d6); }
+#function-result .edge { fill: none; stroke: var(--ink-2, #52514e); stroke-width: 1.2; }
+#function-result .accent-edge { stroke: var(--accent, #2a78d6); }
+#function-result .lifeline { stroke: var(--axis, #c3c2b7); stroke-width: 1; stroke-dasharray: 3 5; }
+#function-result .rule { stroke: var(--hairline, #e1e0d9); stroke-width: 1; }
+</style>
+<line x1="80" y1="88" x2="80" y2="408" class="lifeline"/><line x1="184" y1="88" x2="184" y2="408" class="lifeline"/><line x1="288" y1="88" x2="288" y2="408" class="lifeline"/><text x="40" y="116" class="name" text-anchor="start">1. Funkcja z return</text><text x="40" y="264" class="name" text-anchor="start">2. Funkcja z print</text><path d="M80 152 H180" class="edge" marker-end="url(#function-result-arrow)"/><rect x="92" y="128" width="80" height="16" class="paper"/><text x="132.0" y="140" class="code muted" text-anchor="middle">triple(2)</text><path d="M180 208 H80" class="edge accent-edge" marker-end="url(#function-result-arrow-accent)" stroke-dasharray="5 4"/><rect x="112" y="184" width="40" height="16" class="paper"/><text x="132.0" y="196" class="code muted" text-anchor="middle">6</text><path d="M80 300 H180" class="edge" marker-end="url(#function-result-arrow)"/><rect x="80" y="276" width="104" height="16" class="paper"/><text x="132.0" y="288" class="code muted" text-anchor="middle">show_double(3)</text><path d="M188 344 H288" class="edge" marker-end="url(#function-result-arrow)"/><rect x="204" y="320" width="68" height="16" class="paper"/><text x="238.0" y="332" class="code muted" text-anchor="middle">print(6)</text><path d="M180 392 H80" class="edge" marker-end="url(#function-result-arrow)" stroke-dasharray="5 4"/><rect x="108" y="368" width="48" height="16" class="paper"/><text x="132.0" y="380" class="code muted" text-anchor="middle">None</text><rect x="180" y="152" width="8" height="56" class="node"/><rect x="180" y="300" width="8" height="92" class="node"/><rect x="40" y="40" width="80" height="48" rx="6" class="node"/><text x="80.0" y="69.0" class="name" text-anchor="middle">Twój kod</text><rect x="144" y="40" width="80" height="48" rx="6" class="node"/><text x="184.0" y="69.0" class="name" text-anchor="middle">Funkcja</text><rect x="248" y="40" width="80" height="48" rx="6" class="node"/><text x="288.0" y="69.0" class="name" text-anchor="middle">Ekran</text><text x="40" y="236" class="code accent-text" text-anchor="start">result = 6</text><text x="40" y="420" class="code" text-anchor="start">result = None</text><line x1="40" y1="444" x2="328" y2="444" class="rule"/><text x="40" y="464" class="muted" text-anchor="start">Czytaj od góry. Linia ciągła: wywołanie.</text><text x="40" y="488" class="muted" text-anchor="start">Linia przerywana: zwrócony wynik.</text>
+</svg>
+<figcaption>Prześledź dwa wywołania z przykładów. Po return wartość trafia do zmiennej result. Print wypisuje wartość na ekranie, ale bez return funkcja zwraca None. <a href="diagrams/function-result.html">Otwórz diagram osobno</a>.</figcaption>
+</figure>
 </section>
 <section id="argument"><h2>Przekaż inne dane</h2>
-<p>Funkcja może otrzymać listę. Zmienne utworzone w jej wnętrzu są lokalne dla wywołania. Kolejne wywołanie zaczyna obliczenie od nowa.</p>
+<p>Argumentem może być też lista. Funkcja poniżej zwraca jej ostatni element, a dla pustej listy <code>None</code>. Każde wywołanie otrzymuje własny argument:</p>
 <pre><code class="language-python">def last_value(values):
     if len(values) == 0:
         return None
     return values[-1]
 
 print(last_value([2, 7]))
-print(last_value([]))</code></pre><p>Wyniki to 7 i None. Funkcja ma dwie drogi oddania wyniku: dla pustej i niepustej listy. W funkcji z pętlą uważaj na return wewnątrz pętli, bo zakończy wywołanie już przy pierwszym wykonaniu tej linii.</p>
+print(last_value([]))</code></pre><p>Program wypisze <code>7</code> i <code>None</code>. W pustej liście nie ma ostatniego elementu, więc pierwszy <code>return</code> kończy wywołanie wcześniej. Zwróć uwagę na położenie tego polecenia. Jeśli umieścisz <code>return</code> wewnątrz pętli, może zakończyć funkcję przed sprawdzeniem pozostałych elementów.</p>
 </section>
 <section id="cwiczenia"><h2>Napisz funkcję od początku</h2>
 <h3>Liczba znanych obserwacji</h3>
-<p>Napisz <code>count_known(values)</code>. Wynik to liczba elementów innych niż None. Funkcja ma działać także dla pustej listy i nie może zmieniać listy wejściowej. Podpis i pusty środek są już przygotowane.</p>
+<p>Uzupełnij ciało <code>count_known(values)</code>. Funkcja ma zwrócić liczbę elementów innych niż <code>None</code>, także dla pustej listy. Zachowaj listę wejściową bez zmian. Nazwa funkcji i parametr są już przygotowane.</p>
 <div class="pyrun" id="known-count"><script type="text/x-python" data-role="starter">
 def count_known(values):
     # Tutaj napisz ciało funkcji.
@@ -87,7 +115,7 @@ assert _data == [None, 0, 4], "Funkcja nie może zmieniać listy wejściowej."
 <section id="powrot"><h2>Powrót bez zaglądania</h2>
 <p>Czy print i return robią to samo? Dlaczego count powstaje przed pętlą?</p>
 <details><summary>Sprawdź własne wyjaśnienie</summary>
-<p>Print pokazuje komunikat. Return udostępnia wynik innemu kodowi. Licznik powstaje przed pętlą, żeby nie zerować go przy każdym elemencie. Jeśli nie umiesz samodzielnie napisać podobnej funkcji, powtórz lekcję przed przejściem do B.</p>
+<p><code>print</code> wyświetla wartość, a <code>return</code> pozwala zapisać ją w zmiennej lub użyć w innym obliczeniu. Licznik utworzony przed pętlą zachowuje sumę z poprzednich kroków. Gdybyś zerował go w każdym kroku, traciłbyś wcześniejszy wynik.</p>
 </details>
 </section>
 

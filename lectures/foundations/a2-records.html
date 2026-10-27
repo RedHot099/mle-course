@@ -25,17 +25,17 @@
 
     <h1>Słowniki i lista rekordów</h1>
 
-    <p class="lede">Odczytasz nazwane pola i wybierzesz obserwacje spełniające warunek.</p>
+    <p class="lede">Wybierz z listy obserwacje jednego produktu i policz ich sprzedaż. Zamiast numerów pozycji użyjesz nazw pól.</p>
 
     <ul class="meta"><li><b>Przed lekcją:</b> A2.2 i A2.3.</li>
 <li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
 </ul>
 
     <section id="rekord"><h2>Nazwij pola jednej obserwacji</h2>
-<p>Słownik, czyli <code>dict</code>, łączy klucz z wartością. Rekord to opis jednego obiektu lub zdarzenia. W tym przykładzie klucz "day" nazywa dzień, a "sale" sprzedaż.</p>
+<p>Słownik, czyli <code>dict</code>, przechowuje pary: klucz i przypisana mu wartość. W rekordzie poniżej klucz <code>"day"</code> opisuje dzień, a <code>"sale"</code> sprzedaż. Rekord to tutaj komplet informacji o jednej obserwacji.</p>
 <pre><code class="language-python">row = {&quot;day&quot;: &quot;Monday&quot;, &quot;sale&quot;: 3}
 print(row[&quot;day&quot;])
-print(row[&quot;sale&quot;])</code></pre><p>Wyniki to Monday i 3. W liście wybieraliśmy po indeksie, w słowniku po kluczu. Nieistniejący klucz wywoła <code>KeyError</code>, zamiast zwrócić przypadkowe dane.</p>
+print(row[&quot;sale&quot;])</code></pre><p>Program wypisze <code>Monday</code> i <code>3</code>. Listę odczytujesz po indeksie, a słownik po kluczu. Jeśli podasz klucz, którego nie ma w słowniku, Python zgłosi <code>KeyError</code>.</p>
 <div class="quiz" id="key" data-type="single"><p>Jak odczytasz sprzedaż z row?</p>
 <ul class="quiz-options"><li><code>row["day"]</code><span class="why">To inne pole rekordu.</span></li>
 <li data-correct><code>row["sale"]</code><span class="why">Klucz sale opisuje potrzebne pole.</span></li>
@@ -49,12 +49,12 @@ print(row[&quot;sale&quot;])</code></pre><p>Wyniki to Monday i 3. W liście wybi
     {&quot;city&quot;: &quot;south&quot;, &quot;sale&quot;: 7},
 ]
 for row in rows:
-    print(row[&quot;city&quot;], row[&quot;sale&quot;])</code></pre><p>Pętla daje po jednym słowniku. Wypisze north 3, a potem south 7. Możesz zadać pytanie o pole aktualnego rekordu i dopiero wtedy włączyć jego wartość do obliczeń.</p>
-<p>Do zmiany pola słownika używasz przypisania, na przykład <code>row["sale"] = 4</code>. Taka zmiana zmienia istniejący rekord. W zadaniu poniżej nie zmieniaj rekordów wejściowych.</p>
+    print(row[&quot;city&quot;], row[&quot;sale&quot;])</code></pre><p>W każdym kroku pętli <code>row</code> oznacza jeden słownik z listy. Program wypisze <code>north 3</code>, a potem <code>south 7</code>. Możesz sprawdzić pole tego rekordu i zdecydować, czy uwzględnić obserwację w obliczeniu.</p>
+<p>Przypisanie <code>row["sale"] = 4</code> zmieniłoby pole w istniejącym rekordzie. W następnym zadaniu tylko odczytuj rekordy. Wyniki zbieraj osobno, aby zachować dane wejściowe.</p>
 </section>
 <section id="cwiczenia"><h2>Wybierz właściwy produkt</h2>
 <h3>Suma dla wybranego produktu</h3>
-<p>W <code>total</code> policz sprzedaż tylko produktu "pear". Zachowaj zero jako obserwację, a None pomiń. Zbuduj też listę <code>selected_days</code> z dniami tych znanych obserwacji, w kolejności danych.</p>
+<p>Policz w <code>total</code> sprzedaż produktu <code>"pear"</code>. Uwzględnij znane wartości, także zero. Pomiń rekordy z <code>None</code>. W liście <code>selected_days</code> zbierz dni uwzględnionych obserwacji, zachowując kolejność z danych.</p>
 <div class="pyrun" id="select"><script type="text/x-python" data-role="starter">
 rows = [
     {"day": "Mon", "product": "pear", "sale": 0},

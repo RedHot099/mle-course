@@ -25,14 +25,14 @@
 
     <h1>Funkcja ma wejście, wynik i umowę</h1>
 
-    <p class="lede">Zaprojektujesz małą funkcję, która zwraca wynik i jawnie odrzuca przypadek bez poprawnej odpowiedzi.</p>
+    <p class="lede">Napisz funkcję liczącą średnią znanych pomiarów. Opisz jej wynik i zachowanie wtedy, gdy nie ma z czego policzyć średniej.</p>
 
     <ul class="meta"><li><b>Przed lekcją:</b> A2.5 oraz B5.1–B5.3.</li>
 <li><b>Tryb:</b> najpierw przewidź, potem wykonaj i wyjaśnij</li>
 </ul>
 
-    <section id="umowa"><h2>Opisz zachowanie przed środkiem funkcji</h2>
-<p>Sygnatura to nazwa i parametry funkcji. Docstring to napis zaraz pod def. Opisuje jej umowę: co przyjmuje, co zwraca i kiedy zgłasza błąd. W tym kursie czytaj docstring przed pisaniem środka.</p>
+    <section id="umowa"><h2>Przeczytaj umowę funkcji</h2>
+<p><strong>Sygnatura</strong> podaje nazwę i parametry funkcji. <strong>Docstring</strong> to opis umieszczony zaraz pod <code>def</code>. Określa, co funkcja przyjmuje, co zwraca i kiedy zgłasza błąd. Ten opis jest umową, według której piszesz kod i sprawdzasz wynik.</p>
 <pre><code class="language-python">def label_count(name, count=0):
     &quot;&quot;&quot;Return a label for a non-negative count.
 
@@ -44,10 +44,10 @@
     return name + &quot;: &quot; + str(count)
 
 print(label_count(&quot;rows&quot;))
-print(label_count(&quot;rows&quot;, count=3))</code></pre><p>Wyniki to rows: 0 i rows: 3. Domyślny argument jest używany, gdy go pominiesz. W drugim wywołaniu podajesz argument po nazwie. To opis wywołania, nie tworzenie nowej zmiennej poza funkcją.</p>
+print(label_count(&quot;rows&quot;, count=3))</code></pre><p>Program wypisze <code>rows: 0</code> i <code>rows: 3</code>. Gdy pomijasz <code>count</code>, funkcja używa domyślnego zera. W drugim wywołaniu zapis <code>count=3</code> przekazuje argument po nazwie. Nie tworzy zmiennej <code>count</code> poza funkcją.</p>
 </section>
 <section id="lokalnie"><h2>Oddziel obliczenie od wypisywania</h2>
-<p>Funkcja obliczeniowa nie musi pytać o dane ani wypisywać raportu. Wynik oddaje przez return. Inny kod decyduje, czy go pokazać, zapisać czy porównać z oczekiwaniem. Ułatwia to sprawdzanie na małych wejściach.</p>
+<p>Funkcja może zwrócić wynik przez <code>return</code>, a kod poza nią zdecyduje, co z nim zrobić: wyświetlić, zapisać lub porównać z oczekiwaniem. Dzięki temu tę samą funkcję łatwo sprawdzisz na kilku małych wejściach.</p>
 <div class="predict" id="scope" data-type="single" data-expected-output="9"><p>Co wypisze ostatnia linia?</p>
 <pre><code class="language-python">value = 9
 
@@ -60,11 +60,11 @@ print(value)</code></pre><ul class="quiz-options"><li data-correct>9<span class=
 <li>10<span class="why">Funkcja oddaje 10, ale wywołujący nie przypisuje tego wyniku do swojej nazwy value.</span></li>
 </ul>
 </div>
-<p>Przy liście sytuacja jest inna: append zmienia sam obiekt, co widziałeś w B5.1. Funkcja czysta oblicza wynik z argumentów i nie zmienia wejścia ani plików. Odczyt i zapis pliku trzymamy oddzielnie od liczenia.</p>
+<p>W przykładzie przypisanie zmienia lokalną nazwę <code>value</code>. Natomiast <code>append</code> zmienia samą listę, co widziałeś w B5.1. Funkcję obliczającą wynik wyłącznie z argumentów, bez zmieniania wejścia i otoczenia, nazywamy czystą. W naszym zadaniu oddziel liczenie od odczytu i zapisu pliku.</p>
 </section>
 <section id="cwiczenie"><h2>Średnia znanych wartości</h2>
-<h3>Jawnie odrzuć brak odpowiedzi</h3>
-<p>Napisz <code>mean_known(values)</code>. Przyjmuje listę liczb nieujemnych i None. Zwraca float: średnią znanych wartości, zachowując zera. Dla [] oraz samych None zgłasza ValueError z tekstem "no known values". Nie zmienia listy wejściowej. Nie musisz jeszcze walidować innych typów ani liczb ujemnych.</p>
+<h3>Zgłoś brak danych do średniej</h3>
+<p>Uzupełnij <code>mean_known(values)</code>. Wejście to lista nieujemnych liczb i wartości <code>None</code>. Zwróć średnią znanych liczb jako <code>float</code>, uwzględniając zera. Dla pustej listy lub samych <code>None</code> zgłoś <code>ValueError</code> z tekstem <code>no known values</code>. Zachowaj wejście bez zmian. Sprawdzanie innych typów i liczb ujemnych nie należy do tego zadania.</p>
 <div class="pyrun" id="mean-known"><script type="text/x-python" data-role="starter">
 def mean_known(values):
     """Return the mean of known values, including zeros.
@@ -100,13 +100,13 @@ for _values in [[], [None, None]]:
 <section id="transfer"><h2>Sprawdź na własnym wejściu</h2>
 <p>Bez zaglądania do kodu oblicz ręcznie wynik dla <code>[None, 0, 8, 4]</code>, a potem wywołaj swoją funkcję. Własnymi słowami wyjaśnij, dlaczego [] nie powinno zwracać zera.</p>
 <details><summary>Sprawdź uzasadnienie</summary>
-<p>Wymagana jest różnica między średnią równą zero a brakiem danych do średniej. W pierwszym przypadku obserwacje istnieją. W drugim nie ma wartości, po których można uśredniać. Ręczny wynik nowego wejścia porównaj z kodem, zamiast ufać samemu zielonemu sprawdzeniu.</p>
+<p>Wyjaśnij różnicę między wynikiem równym zero a brakiem danych do obliczenia wyniku. Zero może być średnią istniejących pomiarów. Dla pustej listy nie ma pomiarów, które można uśrednić. Porównaj też ręczny rachunek z wynikiem swojej funkcji.</p>
 </details>
 </section>
 <section id="powrot"><h2>Powrót bez zaglądania</h2>
-<p>Gdzie funkcja kończy wywołanie? Czy rezultat ma być wypisany, czy zwrócony?</p>
+<p>Co kończy wykonanie funkcji? Jak przekazujesz obliczony wynik do innego fragmentu programu?</p>
 <details><summary>Sprawdź własne wyjaśnienie</summary>
-<p>Return kończy wywołanie i oddaje wartość. Print jest osobnym efektem ubocznym. Wróć do A2.5, jeśli mylisz widoczny tekst z wynikiem funkcji.</p>
+<p><code>return</code> kończy wywołanie i zwraca wynik. <code>print</code> wyświetla informację na ekranie. Jeśli nadal mylisz te czynności, wróć do przykładu w <a href="a2-functions.html">A2.5</a> i sprawdź wartość zmiennej <code>result</code>.</p>
 </details>
 </section>
 
