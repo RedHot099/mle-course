@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Jedno pytanie, dwa liście</title><style>
+:root { color-scheme:light; --plane:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b; --ink-2:#52514e; --axis:#c3c2b7; --hairline:#e1e0d9; --accent:#2a78d6; --accent-ink:#1c5cab; --accent-wash:#e8f1fd; --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+@media(prefers-color-scheme:dark) { :root { color-scheme:dark; --plane:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink-2:#c3c2b7; --axis:#383835; --hairline:#2c2c2a; --accent:#3987e5; --accent-ink:#86b6ef; --accent-wash:#13263f; } }
+body { margin:0; padding:16px; background:var(--plane); color:var(--ink); font-family:var(--sans); }
+main { max-width:480px; margin:auto; }
+h1 { font-size:1.25rem; line-height:1.3; font-weight:700; }
+p { font-size:.9rem; line-height:1.55; }
+a { color:var(--accent-ink); }
+</style></head>
+<body><main><h1>Jedno pytanie, dwa liście</h1><svg id="tree-split" class="diagram" viewBox="0 0 352 304" role="img" aria-labelledby="tree-split-title tree-split-desc" style="display:block;width:100%;max-width:352px;height:auto;margin:0 auto"><title id="tree-split-title">Jedno pytanie, dwa liście</title><desc id="tree-split-desc">Warunek cena nie większa niż 4 wybiera lewy liść o średniej 3, a pozostałe przypadki prawy o średniej 10.</desc><defs>
+<marker id="tree-split-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--ink-2, #52514e)"/></marker>
+<marker id="tree-split-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--accent, #2a78d6)"/></marker>
+<marker id="tree-split-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--accent-ink, #1c5cab)"/></marker>
+</defs><style>
+#tree-split text { fill: var(--ink, #0b0b0b); font-family: var(--sans, system-ui, sans-serif); font-size: 12px; }
+#tree-split .name { font-size: 14px; font-weight: 600; }
+#tree-split .code { font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace; }
+#tree-split .muted { fill: var(--ink-2, #52514e); }
+#tree-split .accent-text { fill: var(--accent-ink, #1c5cab); }
+#tree-split .paper { fill: var(--plane, #f9f9f7); }
+#tree-split .node { fill: var(--surface, #fcfcfb); stroke: var(--ink-2, #52514e); stroke-width: 1; }
+#tree-split .focus { fill: var(--accent-wash, #e8f1fd); stroke: var(--accent, #2a78d6); }
+#tree-split .edge { fill: none; stroke: var(--ink-2, #52514e); stroke-width: 1.2; }
+#tree-split .accent-edge { stroke: var(--accent, #2a78d6); }
+#tree-split .lifeline { stroke: var(--axis, #c3c2b7); stroke-width: 1; stroke-dasharray: 3 5; }
+#tree-split .rule { stroke: var(--hairline, #e1e0d9); stroke-width: 1; }
+</style><path d="M136 104 V128 Q136 136 128 136 H80 Q72 136 72 144 V184" class="edge" marker-end="url(#tree-split-arrow)"/><path d="M216 104 V128 Q216 136 224 136 H272 Q280 136 280 144 V184" class="edge" marker-end="url(#tree-split-arrow)"/><rect x="76" y="40" width="200" height="64" rx="6" class="node"/><text x="176.0" y="66" class="name" text-anchor="middle">Cena ≤ 4?</text><rect x="12" y="184" width="120" height="64" rx="6" class="node"/><text x="72.0" y="210" class="name" text-anchor="middle">Średnia 3</text><text x="72.0" y="232" class="muted" text-anchor="middle">Cele: 2 i 4</text><rect x="220" y="184" width="120" height="64" rx="6" class="node focus"/><text x="280.0" y="210" class="name" text-anchor="middle">Średnia 10</text><text x="280.0" y="232" class="muted" text-anchor="middle">Cele: 8 i 12</text><rect x="52" y="108" width="40" height="18" class="paper"/><text x="72" y="120" class="muted" text-anchor="middle">tak</text><rect x="260" y="108" width="40" height="18" class="paper"/><text x="280" y="120" class="muted" text-anchor="middle">nie</text><text x="176" y="280" class="muted" text-anchor="middle">Liść przechowuje wynik grupy treningowej.</text></svg><p>Nowy punkt przechodzi przez warunek. Prognoza liścia nie przedłuża liniowego trendu poza zakres treningu.</p><p><a href="../d15-tree.html">Wróć do lekcji</a></p></main></body></html>

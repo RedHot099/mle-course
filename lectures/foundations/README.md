@@ -1,90 +1,83 @@
-# Utrzymanie fundamentów A i B
+# Utrzymanie ścieżki A–F
 
-Punkt wejścia uczestnika: [index.html](index.html). Materiały są osobną ścieżką przed modułami liczbowymi. Nie zmieniają ich identyfikatorów, `course check`, `catchup` ani kodu zadań w `src/freshcast`.
+Punkt wejścia: [mapa 70 lekcji](index.html). Nowy rdzeń obejmuje wszystkie 21 punktów uzgodnionego planu A–F. [Plan i kontrola kolejności](../../docs/research/beginner-curriculum-audit.md) wyjaśniają zakres. Starsze moduły 00–19 są dostępne przez [wcześniejszą mapę](../legacy.html); ich ukończenie nie jest dodatkowym wymaganiem nowej ścieżki.
 
-## Zakres
+## Pokrycie planu
 
-| Sekcja planu | Przygotowane materiały |
-|---|---|
-| A1 | Uruchomienie runnera przed diagnozą, diagnoza podstaw i wybór powtórek |
-| A2 | Wartości, warunki, listy i pętle, rekordy, pierwsza funkcja |
-| A3 | Minimalne środowisko lokalne, notebook, kernel i ponowne wykonanie od początku |
-| A4 | Średnia i wartość bezwzględna przed MAE, historia i horyzont, baseline na publicznym wycinku danych |
-| B5 | Kolekcje, mutowalność, pliki, błędy; generator jako dodatek po działającym odczycie |
-| B6 | Umowa funkcji, obliczenie bez zmiany wejścia, pierwsze własne testy i kontrolowane zepsucie kodu |
-| B7 | Własny moduł, podstawowe typy, ruff i mypy, mały PR oraz dostarczone CI |
+| Sekcja | Punkty planu | Lekcje | Zakres |
+|---|---|---:|---|
+| A | 1–4 | 9 | Diagnoza, Python, notebook, pierwsza prognoza |
+| B | 5–7 | 7 | Kolekcje, pliki, błędy, funkcje, testy, moduł i git |
+| C | 8–12 | 13 | Tabele, statystyka, wykresy, NumPy, relacje, czas, estimator i Pipeline |
+| D | 13–16 | 16 | Strata, pochodne, gradient, macierze, ocena, drzewa i klasyfikacja |
+| E | 17 | 2 | Własna klasa i odtworzenie eksperymentu |
+| F | 18–21 | 23 | Generalizacja, prawdopodobieństwo, reprezentacje, sieci, język, search i decyzje |
 
-B6.2 i B7 pracują w osobnym projekcie `~/mle-practice`. Pierwszy PR powstaje w jego kopii sklonowanej z własnego repozytorium GitHub. Dzięki temu testy nie zależą od nieukończonych zadań późniejszych modułów. Pełne projektowanie CI i infrastruktury pozostaje poza rdzeniem.
+Źródłem identyfikatorów, kolejności i wymagań jest [curriculum.json](curriculum.json). Treść lekcji znajduje się bezpośrednio w HTML. Weryfikator sprawdza kompletność katalogu, pokrycie punktów 1–21 i to, że wymagania nie wskazują późniejszych lekcji. Ścieżka jest gotowa do przeglądu autora i pilotażu. Sprawdzenia techniczne nie zastępują obserwacji początkujących uczestników.
 
-## Zasady redakcyjne i źródła
+Zadania na stronach mają dwa rodzaje zakończenia. Edytory z przyciskiem Sprawdź sprawdzają wynik małego ćwiczenia. Zadania notebookowe i wyjaśnienia mają jawne kryteria w sekcji „Sprawdź, co pamiętasz”. Nie pozorujemy ich zaliczenia przez szukanie słów kluczowych. Tutor wymaga wyniku, ręcznego przykładu i wyjaśnienia na nowych danych.
 
-Podstawą zakresu jest [audyt i kontrola kolejności z Astrą](../../docs/research/beginner-curriculum-audit.md). [Notatka źródłowa](../../docs/research/beginner-course-sources.md) rozróżnia fakty z syllabusów i autorskie rekomendacje.
+## Kolejność i źródła
 
-Zastosowane wzorce:
+Statystyka w C8 poprzedza scaler, geometria w F20.1 poprzedza k-means, a rzut i wariancja poprzedzają PCA. Model w C12 poprzedza wyprowadzanie algorytmu w D13. Prawdopodobieństwo i likelihood poprzedzają log-loss, a iloczyn skalarny i softmax poprzedzają attention. E17 nie jest warunkiem rozumienia F18 ani F19; wraca przy własnej klasie sieci.
 
-- PY4E i CS106A: stopniowe rozwiązywanie małych problemów przed pisaniem klas.
-- CS50P: testy zwykłych funkcji przed OOP.
-- Udemy: widoczny mały rezultat kolejnych etapów; bez przenoszenia marketingowych szacunków czasu.
-- Rekomendacje IES: przykład na innym problemie, przewidywanie wyniku, własne zadanie, pytanie wymagające wyjaśnienia i powrót po przerwie.
+Inspiracje programowe opisano w [notatce źródłowej](../../docs/research/beginner-course-sources.md). CS229 stanowi punkt odniesienia dla modelowania, generalizacji i probabilistycznego spojrzenia na uczenie. CS221 rozszerza zakres o search, inference i decyzje. Nie kopiujemy ich tempa, wymagań wejściowych ani pełnego zakresu.
 
-Sprawdzone źródła techniczne: [uv scripts](https://docs.astral.sh/uv/guides/scripts/), [instalacja uv](https://docs.astral.sh/uv/getting-started/installation/), [środowiska Python](https://docs.python.org/3.12/tutorial/venv.html), [setup-uv](https://github.com/astral-sh/setup-uv). Polecenia małego projektu sprawdzono także lokalnie na dostarczonym przykładzie `half`, bez rozwiązywania zadań uczestnika.
+Sprawdzone materiały pierwotne:
 
-Materiały wymagają pilotażu z początkującymi. Kontrola techniczna nie potwierdza czasu nauki ani skuteczności dydaktycznej.
+- [Stanford SEE, CS229](https://see.stanford.edu/Course/CS229).
+- [Stanford CS221, Autumn 2025](https://stanford-cs221.github.io/autumn2025/).
+- [Stanford CS336, Spring 2025](https://cs336.stanford.edu/spring2025/index.html), jako granica dalszej specjalizacji językowej.
+- [pandas: wybór danych](https://pandas.pydata.org/docs/getting_started/intro_tutorials/03_subset_data.html).
+- [scikit-learn: Pipeline](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.make_pipeline.html), [Naive Bayes](https://scikit-learn.org/stable/modules/naive_bayes.html).
+- [PyTorch: autograd](https://docs.pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html), [własny model](https://docs.pytorch.org/tutorials/beginner/basics/buildmodel_tutorial.html).
 
-## Redakcja i diagramy
+Wyjaśnienia, ćwiczenia i dane syntetyczne są autorskie. Biblioteki służą do wykonywania eksperymentów, a nie zastępują wyjaśnienia pojęć. Pełne wdrożenie, GPU, ABC, Protocol, zaawansowane generyki, tuning i trenowanie LLM pozostają rozszerzeniami.
 
-Lekcje najpierw przedstawiają problem, a potem wyjaśniają zadanie. Polecenia są podzielone na krótkie akapity. Przykłady pokazują, co funkcja ma otrzymać i zwrócić, a sytuacje wyjątkowe są opisane osobno. Nowe pojęcia wyjaśniamy przy pierwszym użyciu. Tę samą redakcję zastosowano do opisów w labie 01. Kod przykładów, startery, sprawdzenia i istniejące podpowiedzi w notebooku zachowano.
+## Dane i końcowy test
 
-Diagram-design zastosowano w trzech miejscach:
+`data/freshcast-sample.csv` zawiera 14 kolejnych obserwacji: sklep 70, produkt 116, 2024-03-28–2024-04-10. Pochodzi z publicznego `src/coursekit/fixtures/frn_sample.parquet`, FreshRetailNet-50K, Dingdong-Inc, CC BY 4.0. Zachowano `sale_amount`; `stock_hour6_22_cnt` nazwano `stockout_hours`. Cały wycinek jest widoczny w A4, więc nie służy jako zamknięty test.
 
-| Lekcja | Diagram | Co pozwala zobaczyć |
-|---|---|---|
-| A2.5 | [Wyświetlenie i zwrócenie wyniku](diagrams/function-result.html) | Wyświetlona wartość i wynik zapisany w zmiennej trafiają do różnych miejsc. |
-| A3 | [Stan kernela](diagrams/kernel-state.html) | Restart usuwa zmienne z pamięci, a ponowne wykonanie kodu je odtwarza. Plik pozostaje na dysku. |
-| B5.1 | [Dwie nazwy, jedna lista](diagrams/shared-list.html) | Dwie nazwy wskazują jeden obiekt, więc zmiana listy jest widoczna przez obie. |
+Projekt od C12 korzysta z osobnych, jawnie syntetycznych danych: 56 dni od 2024-01-01. Pierwsze 49 są w `project-development.csv`, ostatnie 7 w `project-holdout.csv`. Trening obejmuje dni 1–42, walidacja 43–49, test 50–56. Wartości wygenerowano z trendu, cyklu tygodniowego i niewielkiego szumu, bez danych klientów. To demonstracja procesu, nie pomiar jakości biznesowej.
 
-Przy prognozie pozostawiono istniejący wykres. Pokazuje już historię, granicę czasu i prognozę, więc kolejny schemat powtarzałby tę samą informację.
+Projekt zaczyna od codziennie aktualizowanej prognozy jednodniowej: rzeczywisty poprzedni dzień może być cechą kolejnego. Zamrożony horyzont wielodniowy jest osobnym doświadczeniem D15.4. Finał F21.5 nie zmienia po fakcie protokołu C12. Plik holdoutu jest dostępny w repozytorium; ograniczenie jest dydaktyczne. Jeśli uczestnik obejrzy go wcześniej, odnotowuje to i nie nazywa późniejszego wyniku niezależnym testem.
 
-Zgodnie z wyborem autora styl diagramów pochodzi z `lectures/assets/course.css`: tło `--plane`, tekst `--ink`, opisy `--ink-2`, akcent `--accent` i jego jasne wypełnienie `--accent-wash`. Nazwy używają systemowego fontu kursu. Monospace jest zarezerwowany dla kodu. Samodzielne pliki zawierają te same kolory dla motywu jasnego i ciemnego, bez pobierania fontów.
+## Środowisko i zapis pracy
 
-Każdy diagram jest samodzielnym HTML z inline SVG w folderze `diagrams/`. Lekcja zawiera kopię tego SVG, aby dziedziczyć wybrany motyw kursu bez iframe i dodatkowego JavaScript. Przy zmianie diagramu zaktualizuj obie kopie. Weryfikator porównuje je i wykrywa rozbieżności. Sprawdza też opisy diagramów dla czytników ekranu.
+Pola kodu używają istniejącego `course.js`, który ładuje Pyodide i potrzebne biblioteki przy pierwszym imporcie. Każde wykonanie zaczyna w osobnej przestrzeni nazw. Pliki w przeglądarce są tymczasowe. Kod i postęp są zapisywane w localStorage według `foundations-*`, bez zapisu do `.course/progress.json`.
 
-## Wykonywanie i zapis pracy
+B6.2 i dalsze doświadczenia lokalne korzystają z osobnego `~/mle-practice`. Biblioteki do C dodaje uczestnik, a Jupyter można uruchomić przez `uv run --with jupyterlab --with ipykernel jupyter lab`. PyTorch w F20 działa na CPU. Przykłady oznaczone `data-local-only` mają być wykonywane lokalnie; nie próbujemy pobierać PyTorch w Pyodide. Weryfikacja autora wykonuje je w swoim środowisku z CPU-owym PyTorch.
 
-Strony używają istniejących `lectures/assets/course.css` i `course.js`. Skrypt pobiera Pyodide przy pierwszym wykonaniu kodu. Każde pole kodu dostaje osobną przestrzeń nazw. Wirtualne pliki interpretera mogą istnieć między próbami, dlatego przykłady tworzą własne jawne wejście.
+Przykłady pokazują inne małe problemy. Funkcje i testy uczestnika pozostają jego pracą. Katalog nie korzysta z gałęzi `solutions`. Identyfikatory A–F nie są numerami `course check` ani `catchup`.
 
-Quizy i pola kodu zapisują stan w localStorage według osobnych identyfikatorów `foundations-*`. Nie zapisują do `.course/progress.json`. Wynik poprzedniego przejścia jest historią, nie gwarancją poprawności później edytowanego kodu. Uczestnik ma wykonać bieżące sprawdzenie i zachować ważny kod lokalnie.
+## Diagramy i język
 
-Specyfikacje i sprawdzenia ćwiczeń znajdują się przy odpowiednich polach w HTML. Przykłady pokazują inne problemy, a startery zadań pozostają nieuzupełnione. Przyciski Sprawdź nie korzystają z kodu gałęzi `solutions`.
+Tekst najpierw przedstawia problem, potem mały przykład i zadanie. Nowe terminy są wyjaśniane przed użyciem. Składnia, obliczenie i interpretacja wyniku są rozdzielone. Redakcja korzysta z technical-writing i unslop.
 
-Instrukcje dla tutora i zakres review są w [tutor/notes/foundations.md](../../tutor/notes/foundations.md).
+Dziesięć diagramów obejmuje: return i print, stan kernela, współdzielenie listy, dostępność cech w czasie, role danych, drzewo, przepływ przez sieć, attention, szukanie trasy i odroczoną nagrodę. Schematy służą pokazaniu relacji; rachunki, definicje i listy pozostają tekstem lub tabelą.
 
-## Dane pierwszej prognozy
+Styl pochodzi z `lectures/assets/course.css`: systemowy font, tło `--plane`, tekst `--ink`, opisy `--ink-2` i niebieski `--accent`. Każdy diagram ma samodzielny HTML w `diagrams/` i kopię SVG w lekcji. Weryfikator porównuje obie kopie oraz opisy dostępności. Przy zmianie aktualizuj oba miejsca. Nie dodajemy zewnętrznych fontów, rastrów ani animacji.
 
-`data/freshcast-sample.csv` zawiera 14 kolejnych obserwacji serii sklep 70, produkt 116, od 2024-03-28 do 2024-04-10. Źródłem jest publiczna próbka `src/coursekit/fixtures/frn_sample.parquet`, pochodząca z FreshRetailNet-50K, Dingdong-Inc, CC BY 4.0. Zachowano wartości `sale_amount`; `stock_hour6_22_cnt` nazwano czytelniej `stockout_hours`. Dane uporządkowano po `dt`.
+## Sprawdzanie zmian
 
-Pierwsze siedem dni jest historią, drugie siedem służy ćwiczeniu oceny. Uczestnik widzi cały wycinek, więc nie jest to niezależny końcowy holdout. MAE dotyczy zaobserwowanej sprzedaży na wszystkich dniach, także z brakami towaru. Nie opisuje pełnego nieobserwowanego popytu.
-
-## Weryfikacja zmian
-
-Z katalogu repozytorium:
+Instrukcje tutora: [core.md](../../tutor/notes/core.md). Kontrole autora wykonuj z katalogu repozytorium:
 
 ```bash
-uv run python tools/verify_foundations.py
-uv run ruff format --check tools
-uv run ruff check tools
-uv run --with playwright mypy tools
+uv sync
+uv pip install --python .venv/bin/python --index-url https://download.pytorch.org/whl/cpu "torch>=2.9,<2.10"
+uv run --no-sync python tools/verify_foundations.py
+uv run --no-sync ruff format --check tools
+uv run --no-sync ruff check tools
+uv run --no-sync --with playwright mypy tools
 ```
 
-Weryfikator sprawdza strukturę HTML, unikalne identyfikatory, lokalne pliki i odsyłacze do sekcji, pojedynczą poprawną odpowiedź quizu, składnię ćwiczeń i wykonanie dostarczonych przykładów. Sprawdza także, że nieuzupełnione startery nie przechodzą i dają wyjaśniający AssertionError. Atrybut `data-expected-output` pozwala porównać wynik przykładu z opisem, a `data-expected-error` oznacza celowy błąd demonstracyjny. Fragment importujący kod uczestnika ma `data-needs-learner` i nie jest wykonywany bez jego modułu.
+Przykłady PyTorch wymagają wersji CPU w środowisku autora. Opcja --no-sync zachowuje dodatkowo zainstalowany pakiet, bez pobierania całej grupy neural z wcześniejszej ścieżki. Nie uruchamiaj pełnych testów nieuzupełnionych zadań uczestnika jako zaliczenia nowych lekcji.
 
-Kontrola przeglądarkowa wymaga opcjonalnego Playwright i przeglądarki w katalogu użytkownika:
+Kontrola przeglądarkowa wymaga opcjonalnego Playwright i Chromium:
 
 ```bash
 uv run --with playwright python -m playwright install chromium --only-shell
 uv run --with playwright python tools/verify_foundations_browser.py
 ```
 
-Ta kontrola sprawdza wszystkie strony i samodzielne diagramy na szerokości 1280 i 390 px, inicjalizację edytorów, brak błędów JavaScript i przewijania całej strony w poziomie. Sprawdza granice napisów diagramów w obu motywach. W rzeczywistym Pyodide wykonuje pierwszy program oraz wszystkie nieuzupełnione sprawdzenia, sprawdza zapis quizu i kodu po odświeżeniu, reset kodu oraz przełączanie motywu. Nie wpisuje rozwiązań ćwiczeń.
-
-Pełny zestaw testów w `tests/` dotyczy kodu pisanego przez uczestnika w obecnych modułach. Nie jest zaliczeniem ścieżki A/B ani podstawą do żądania rozwiązania późniejszych zadań.
+Kontrola obejmuje układ na komputerze i telefonie, oba motywy diagramów, inicjalizację edytorów, zapis pracy i rzeczywiste wykonanie nieuzupełnionych sprawdzeń w Pyodide. Weryfikacja przykładów lokalnych obejmuje również małą pętlę sieci na CPU. Żadna z tych kontroli nie jest dowodem skuteczności dydaktycznej całej ścieżki.

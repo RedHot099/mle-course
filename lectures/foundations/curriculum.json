@@ -1,0 +1,591 @@
+[
+  {
+    "id": "A1",
+    "slug": "a1-diagnosis",
+    "title": "Sprawdź, od czego zacząć",
+    "requires": []
+  },
+  {
+    "id": "A2.1",
+    "slug": "a2-values",
+    "title": "Wartości, nazwy i wynik programu",
+    "requires": [
+      "A1"
+    ]
+  },
+  {
+    "id": "A2.2",
+    "slug": "a2-conditions",
+    "title": "Warunki, zero i brak obserwacji",
+    "requires": [
+      "A2.1"
+    ]
+  },
+  {
+    "id": "A2.3",
+    "slug": "a2-loops",
+    "title": "Listy i pętle krok po kroku",
+    "requires": [
+      "A2.2"
+    ]
+  },
+  {
+    "id": "A2.4",
+    "slug": "a2-records",
+    "title": "Słowniki i lista rekordów",
+    "requires": [
+      "A2.3"
+    ]
+  },
+  {
+    "id": "A2.5",
+    "slug": "a2-functions",
+    "title": "Pierwsza własna funkcja",
+    "requires": [
+      "A2.4"
+    ]
+  },
+  {
+    "id": "A3",
+    "slug": "a3-environment",
+    "title": "Przenieś pracę do notebooka",
+    "requires": [
+      "A2.5"
+    ]
+  },
+  {
+    "id": "A4.1",
+    "slug": "a4-metrics",
+    "title": "Policz błąd małej prognozy",
+    "requires": [
+      "A2.5"
+    ]
+  },
+  {
+    "id": "A4.2",
+    "slug": "a4-forecast",
+    "title": "Pierwsza prognoza na danych Freshcast",
+    "requires": [
+      "A4.1"
+    ]
+  },
+  {
+    "id": "B5.1",
+    "slug": "b5-collections",
+    "title": "Kolekcje i zmiany danych",
+    "requires": [
+      "A4.2"
+    ]
+  },
+  {
+    "id": "B5.2",
+    "slug": "b5-files",
+    "title": "Odczytaj i zapisz mały plik",
+    "requires": [
+      "B5.1"
+    ]
+  },
+  {
+    "id": "B5.3",
+    "slug": "b5-errors",
+    "title": "Zrozum komunikat błędu",
+    "requires": [
+      "B5.2"
+    ]
+  },
+  {
+    "id": "B6.1",
+    "slug": "b6-functions",
+    "title": "Napisz funkcję o jasno opisanym działaniu",
+    "requires": [
+      "B5.3"
+    ]
+  },
+  {
+    "id": "B6.2",
+    "slug": "b6-tests",
+    "title": "Pierwsze własne testy",
+    "requires": [
+      "B6.1",
+      "A3"
+    ]
+  },
+  {
+    "id": "B7.1",
+    "slug": "b7-modules",
+    "title": "Moduł, podstawowe typy i jakość kodu",
+    "requires": [
+      "B6.2"
+    ]
+  },
+  {
+    "id": "B7.2",
+    "slug": "b7-git",
+    "title": "Pierwszy branch, commit i pull request",
+    "requires": [
+      "B7.1"
+    ]
+  },
+  {
+    "id": "C8.1",
+    "slug": "c8-tables",
+    "title": "Odczytaj i wybierz dane z tabeli",
+    "requires": [
+      "B7.1"
+    ]
+  },
+  {
+    "id": "C8.2",
+    "slug": "c8-statistics",
+    "title": "Opisz rozkład kilku pomiarów",
+    "requires": [
+      "C8.1"
+    ]
+  },
+  {
+    "id": "C8.3",
+    "slug": "c8-plots",
+    "title": "Dobierz wykres do pytania",
+    "requires": [
+      "C8.2"
+    ]
+  },
+  {
+    "id": "C9.1",
+    "slug": "c9-arrays",
+    "title": "Oblicz błędy całej tablicy",
+    "requires": [
+      "C8.2"
+    ]
+  },
+  {
+    "id": "C9.2",
+    "slug": "c9-axes",
+    "title": "Zrozum osie i dopasowanie kształtów",
+    "requires": [
+      "C9.1"
+    ]
+  },
+  {
+    "id": "C10.1",
+    "slug": "c10-cleaning",
+    "title": "Ustal klucz i znaczenie braków",
+    "requires": [
+      "C8.1"
+    ]
+  },
+  {
+    "id": "C10.2",
+    "slug": "c10-groups",
+    "title": "Policz wynik dla grupy i dla wiersza",
+    "requires": [
+      "C10.1"
+    ]
+  },
+  {
+    "id": "C10.3",
+    "slug": "c10-joins",
+    "title": "Połącz tabele i sprawdź dopasowania",
+    "requires": [
+      "C10.2"
+    ]
+  },
+  {
+    "id": "C11.1",
+    "slug": "c11-time",
+    "title": "Przesuwaj historię wewnątrz serii",
+    "requires": [
+      "C10.3",
+      "C9.1"
+    ]
+  },
+  {
+    "id": "C11.2",
+    "slug": "c11-horizon",
+    "title": "Sprawdź, co wiadomo w chwili prognozy",
+    "requires": [
+      "C11.1",
+      "A4.2"
+    ]
+  },
+  {
+    "id": "C12.1",
+    "slug": "c12-linear",
+    "title": "Oblicz prognozę z jednej cechy",
+    "requires": [
+      "C11.2"
+    ]
+  },
+  {
+    "id": "C12.2",
+    "slug": "c12-fit",
+    "title": "Wytrenuj pierwszy model i zachowaj test",
+    "requires": [
+      "C12.1",
+      "C9.2"
+    ]
+  },
+  {
+    "id": "C12.3",
+    "slug": "c12-pipeline",
+    "title": "Dopasuj skalowanie tylko na treningu",
+    "requires": [
+      "C12.2",
+      "C8.2"
+    ]
+  },
+  {
+    "id": "D13.1",
+    "slug": "d13-loss",
+    "title": "Zobacz stratę jako funkcję parametru",
+    "requires": [
+      "C12.3"
+    ]
+  },
+  {
+    "id": "D13.2",
+    "slug": "d13-slope",
+    "title": "Od małej zmiany do pochodnej",
+    "requires": [
+      "D13.1"
+    ]
+  },
+  {
+    "id": "D13.3",
+    "slug": "d13-gradient",
+    "title": "Zrób kilka kroków gradient descent",
+    "requires": [
+      "D13.2"
+    ]
+  },
+  {
+    "id": "D13.4",
+    "slug": "d13-partials",
+    "title": "Zmień jeden parametr naraz",
+    "requires": [
+      "D13.3"
+    ]
+  },
+  {
+    "id": "D13.5",
+    "slug": "d13-dot",
+    "title": "Policz iloczyn skalarny",
+    "requires": [
+      "D13.4",
+      "C9.2"
+    ]
+  },
+  {
+    "id": "D13.6",
+    "slug": "d13-matrix",
+    "title": "Połącz prognozy i gradient w macierzy",
+    "requires": [
+      "D13.5"
+    ]
+  },
+  {
+    "id": "D14.1",
+    "slug": "d14-metrics",
+    "title": "Czytaj metryki razem z ich ograniczeniami",
+    "requires": [
+      "D13.1"
+    ]
+  },
+  {
+    "id": "D14.2",
+    "slug": "d14-overfit",
+    "title": "Porównaj trening i walidację",
+    "requires": [
+      "D14.1",
+      "C12.3"
+    ]
+  },
+  {
+    "id": "D14.3",
+    "slug": "d14-backtest",
+    "title": "Powtórz prognozę w kilku tygodniach",
+    "requires": [
+      "D14.2",
+      "C11.2"
+    ]
+  },
+  {
+    "id": "D15.1",
+    "slug": "d15-calendar",
+    "title": "Zapisz kalendarz i kategorie jako cechy",
+    "requires": [
+      "D14.3",
+      "C8.1"
+    ]
+  },
+  {
+    "id": "D15.2",
+    "slug": "d15-tree",
+    "title": "Prześledź podział drzewa",
+    "requires": [
+      "D15.1",
+      "D13.1"
+    ]
+  },
+  {
+    "id": "D15.3",
+    "slug": "d15-ensembles",
+    "title": "Połącz drzewa w las i boosting",
+    "requires": [
+      "D15.2",
+      "D13.3"
+    ]
+  },
+  {
+    "id": "D15.4",
+    "slug": "d15-multistep",
+    "title": "Odróżnij direct od recursive forecasting",
+    "requires": [
+      "D15.3",
+      "C11.2"
+    ]
+  },
+  {
+    "id": "D16.1",
+    "slug": "d16-frequency",
+    "title": "Od częstości do prawdopodobieństwa",
+    "requires": [
+      "D14.1"
+    ]
+  },
+  {
+    "id": "D16.2",
+    "slug": "d16-alarms",
+    "title": "Zamień prawdopodobieństwo na alarm",
+    "requires": [
+      "D16.1"
+    ]
+  },
+  {
+    "id": "D16.3",
+    "slug": "d16-logistic",
+    "title": "Zbuduj etykietę jutra i model logistyczny",
+    "requires": [
+      "D16.2",
+      "C12.2"
+    ]
+  },
+  {
+    "id": "E17.1",
+    "slug": "e17-objects",
+    "title": "Napisz klasę pamiętającą wynik fit",
+    "requires": [
+      "D16.3"
+    ]
+  },
+  {
+    "id": "E17.2",
+    "slug": "e17-experiments",
+    "title": "Zapisz przebieg eksperymentu",
+    "requires": [
+      "E17.1",
+      "D14.3"
+    ]
+  },
+  {
+    "id": "F18.1",
+    "slug": "f18-learning",
+    "title": "Oddziel model, rodzinę modeli i uczenie",
+    "requires": [
+      "D14.3"
+    ]
+  },
+  {
+    "id": "F18.2",
+    "slug": "f18-regularization",
+    "title": "Zobacz założenia i rolę regularyzacji",
+    "requires": [
+      "F18.1",
+      "D13.6"
+    ]
+  },
+  {
+    "id": "F18.3",
+    "slug": "f18-curves",
+    "title": "Sprawdź więcej danych, szum i zmianę warunków",
+    "requires": [
+      "F18.2"
+    ]
+  },
+  {
+    "id": "F19.1",
+    "slug": "f19-probability",
+    "title": "Zbuduj rozkład i rozróżnij niezależność",
+    "requires": [
+      "D16.1"
+    ]
+  },
+  {
+    "id": "F19.2",
+    "slug": "f19-bayes",
+    "title": "Zaktualizuj prawdopodobieństwo po obserwacji",
+    "requires": [
+      "F19.1"
+    ]
+  },
+  {
+    "id": "F19.3",
+    "slug": "f19-likelihood",
+    "title": "Zmień parametr przy ustalonych danych",
+    "requires": [
+      "F19.2",
+      "D13.1"
+    ]
+  },
+  {
+    "id": "F19.4",
+    "slug": "f19-logloss",
+    "title": "Od iloczynu do log-loss",
+    "requires": [
+      "F19.3",
+      "D16.3"
+    ]
+  },
+  {
+    "id": "F19.5",
+    "slug": "f19-naive-bayes",
+    "title": "Porównaj model generative i discriminative",
+    "requires": [
+      "F19.4"
+    ]
+  },
+  {
+    "id": "F19.6",
+    "slug": "f19-uncertainty",
+    "title": "Rozróżnij niepewność, kalibrację i koszt",
+    "requires": [
+      "F19.5",
+      "D16.2"
+    ]
+  },
+  {
+    "id": "F19.7",
+    "slug": "f19-causal",
+    "title": "Nie myl prognozy ze skutkiem działania",
+    "requires": [
+      "F19.6"
+    ]
+  },
+  {
+    "id": "F20.1",
+    "slug": "f20-geometry",
+    "title": "Oceń podobieństwo przed klastrowaniem",
+    "requires": [
+      "F18.3",
+      "D13.5"
+    ]
+  },
+  {
+    "id": "F20.2",
+    "slug": "f20-pca",
+    "title": "Zobacz, co zachowuje projekcja PCA",
+    "requires": [
+      "F20.1",
+      "D13.5",
+      "C8.2"
+    ]
+  },
+  {
+    "id": "F20.3",
+    "slug": "f20-chain",
+    "title": "Połącz funkcje i ich pochodne",
+    "requires": [
+      "D13.6",
+      "F19.4"
+    ]
+  },
+  {
+    "id": "F20.4",
+    "slug": "f20-autograd",
+    "title": "Sprawdź autograd na CPU",
+    "requires": [
+      "F20.3"
+    ]
+  },
+  {
+    "id": "F20.5",
+    "slug": "f20-network",
+    "title": "Wytrenuj małą sieć z etykietami",
+    "requires": [
+      "F20.4",
+      "E17.1",
+      "F18.3"
+    ]
+  },
+  {
+    "id": "F20.6",
+    "slug": "f20-embeddings",
+    "title": "Zapytaj, skąd bierze się reprezentacja",
+    "requires": [
+      "F20.5",
+      "F20.1"
+    ]
+  },
+  {
+    "id": "F20.7",
+    "slug": "f20-tokens",
+    "title": "Od tekstu do celu modelu językowego",
+    "requires": [
+      "F20.6",
+      "F19.4"
+    ]
+  },
+  {
+    "id": "F20.8",
+    "slug": "f20-attention",
+    "title": "Policz małe attention",
+    "requires": [
+      "F20.7",
+      "D13.5"
+    ]
+  },
+  {
+    "id": "F21.1",
+    "slug": "f21-search",
+    "title": "Zapisz problem jako graf i znajdź plan",
+    "requires": [
+      "F20.8"
+    ]
+  },
+  {
+    "id": "F21.2",
+    "slug": "f21-inference",
+    "title": "Wnioskuj o ukrytym stanie z obserwacji",
+    "requires": [
+      "F21.1",
+      "F19.2"
+    ]
+  },
+  {
+    "id": "F21.3",
+    "slug": "f21-return",
+    "title": "Uwzględnij przyszłe skutki działania",
+    "requires": [
+      "F21.2",
+      "F19.6"
+    ]
+  },
+  {
+    "id": "F21.4",
+    "slug": "f21-planning-rl",
+    "title": "Odróżnij planowanie od uczenia przez doświadczenie",
+    "requires": [
+      "F21.3"
+    ]
+  },
+  {
+    "id": "F21.5",
+    "slug": "f21-review",
+    "title": "Sprawdź rozumienie i raz oceń zamrożony model",
+    "requires": [
+      "F21.4",
+      "E17.2",
+      "F20.5"
+    ]
+  }
+]

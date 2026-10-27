@@ -1,69 +1,68 @@
 # ML Engineering from Scratch
 
-Otwarty kurs po polsku: od podstaw Pythona do pracy inżyniera ML. Około 160 godzin, jeden projekt przez cały kurs.
+Otwarty kurs po polsku: od pierwszych programów w Pythonie do samodzielnych eksperymentów i rozumienia ML oraz AI.
 
-Budujesz prognozę dziennej sprzedaży świeżych produktów w 898 sklepach: od surowego pliku, przez czyszczenie, cechy, modele i walidację, do pipeline'u z testami, CI i obrazem Dockera. Dane to [FreshRetailNet-50K](https://huggingface.co/datasets/Dingdong-Inc/FreshRetailNet-50K), prawdziwy zbiór z brakami towaru, rabatami i pogodą.
+Nowy rdzeń to [70 lekcji w sekcjach A–F](lectures/foundations/index.html). Najpierw poznasz Python, dane i prostą prognozę. Potem przejdziesz do uczenia modeli, ich oceny, generalizacji, prawdopodobieństwa, reprezentacji, sieci neuronowych i decyzji. Każde pojęcie sprawdzisz w małym przykładzie, własnym kodzie lub wyjaśnieniu.
 
 ## Dla kogo
 
-Umiesz napisać pętlę, funkcję, użyć listy i słownika. Nie musisz znać klas, gita, terminala, NumPy ani pandas. Matematyka na poziomie liceum wystarczy.
+Możesz zacząć bez doświadczenia programistycznego. Lekcja A1 pomoże Ci wybrać podstawy do nauki lub powtórki. Potrzebną matematykę wprowadzamy przed jej użyciem: od średniej i odległości, przez pochodną, do prawdopodobieństwa i reprezentacji.
 
-Po kursie potrafisz wziąć zadanie w cudzym repozytorium i oddać pull request z testami, typami i zielonym CI. Potrafisz też samodzielnie przejść od prostego baseline'u do dostrojonego modelu i obronić jego wynik.
+Pierwsze ćwiczenia wykonasz w przeglądarce. W dalszej części przygotujesz lokalny notebook i niewielki projekt. Rdzeń nie wymaga GPU, konta w chmurze ani płatnego API. Małe sieci działają na CPU.
 
 ## Jak zacząć
 
-Jeśli zaczynasz od zera albo chcesz sprawdzić podstawy, otwórz [ścieżkę A i B](lectures/foundations/index.html). Pierwsze ćwiczenia działają w przeglądarce. Pytania i ćwiczenia w A1 pomogą Ci wybrać lekcje do powtórzenia. Dalej przygotujesz prostą prognozę i napiszesz funkcję z testami. Zadania tej ścieżki sprawdzasz bezpośrednio na stronach lekcji.
+1. Otwórz [mapę A–F](lectures/foundations/index.html), a następnie [A1: pierwszy program i diagnozę](lectures/foundations/a1-diagnosis.html).
+2. Jeśli zaczynasz od zera, wykonaj A2 po kolei. Jeśli znasz podstawy, wybierz potrzebne powtórki na podstawie ćwiczeń.
+3. W A3 przygotuj notebook. Przed każdą dalszą lekcją sprawdź podane wymagania.
 
-Repozytorium kursu: [github.com/RedHot099/mle-course](https://github.com/RedHot099/mle-course). Pracujesz we własnym forku, a to repozytorium dodajesz jako `upstream`.
+Przykłady działają w HTML. W polach kodu piszesz rozwiązanie i korzystasz z przycisku Sprawdź. Zadania notebookowe i pytania o rozumienie mają widoczne kryteria oceny. Ważny kod zapisuj lokalnie: stan przeglądarki nie przenosi się automatycznie na inne urządzenie.
 
-1. Otwórz [lekcję 00](lectures/00-setup/index.html) w przeglądarce i przejdź ją krok po kroku.
-2. Na końcu uruchom tutora (`claude`, potem `/setup`) albo dokończ ścieżką bez tutora.
-3. `uv run course check 00` pokazuje trzy zaliczone punkty. Zaczynasz moduł 01.
+Identyfikatory A–F mają własne ćwiczenia i kryteria. Nie przekazuj ich do `course check` ani `catchup`, które obsługują wcześniejsze moduły liczbowe.
 
-Wymagania: Windows 10/11 z WSL2 albo Linux, 8 GB RAM (16 GB zalecane), karta NVIDIA do modułu 18.
+## Co obejmuje rdzeń
 
-## Jak wygląda moduł
+| Sekcja | Co przygotujesz lub wyjaśnisz |
+|---|---|
+| A | Pierwsze programy, notebook i mała prognoza |
+| B | Funkcje, pliki, testy i własny moduł |
+| C | Tabele, statystyka, wykresy, NumPy i pierwszy uczony model |
+| D | Strata, gradient, macierze, porównanie modeli, drzewa i klasyfikacja |
+| E | Własna klasa i odtworzenie eksperymentu |
+| F | Generalizacja, niepewność, reprezentacje, sieci, modele językowe, search i decyzje |
 
-- **Wykład** w `lectures/`: strona HTML z quizami i interaktywnymi przykładami. Zacznij od [mapy kursu](lectures/index.html).
-- **Lab** w `labs/`: notebook, który prowadzi przez zadania. Kod piszesz w pakiecie `src/freshcast/`.
-- **Sprawdzenie**: `uv run course check 07` mówi, które zadania działają, a przy pozostałych, co jest nie tak.
-- **Podpowiedzi**: trzy poziomy pod każdym zadaniem. Do tego tutor.
+W projekcie wybierasz model na walidacji i raz oceniasz zamrożone rozwiązanie na osobnym okresie. Finał obejmuje krótki raport i nowe przypadki wymagające uzasadnienia. Pełne wdrożenie nie jest dodatkowym warunkiem ukończenia.
+
+Przykład A4 korzysta z publicznego [FreshRetailNet-50K](https://huggingface.co/datasets/Dingdong-Inc/FreshRetailNet-50K). Późniejszy mały projekt ma osobne, jawnie syntetyczne dane i odłożony test. Szczegóły pochodzenia, zakresu i kontroli opisuje [dokumentacja ścieżki](lectures/foundations/README.md).
+
+## Tutor
+
+Agent uruchomiony w katalogu kursu korzysta z `AGENTS.md`. Możesz pisać do niego po polsku, na przykład: „Utknąłem w C11.1” albo „Sprawdź moje wyjaśnienie z F19.2”. Tutor czyta aktualną lekcję, zadaje pytania i podaje wskazówki. Rozwiązania ćwiczeń piszesz samodzielnie.
+
+Instrukcja konfiguracji tutora jest dostępna w [starszej lekcji środowiska](lectures/00-setup/index.html). Tutor jest pomocą, a nie wymaganiem rozpoczęcia kursu. Postępy przeglądarkowe nie zapisują się do `.course/progress.json`; notatki tutora są w `.course/progress.md`.
+
+## Materiały do dalszej praktyki
+
+[Wcześniejsza mapa modułów 00–19](lectures/legacy.html) pozostaje dostępna. Zawiera laboratoria Freshcast oraz rozszerzenia: pełny pakiet, CLI, magazyn obiektów, SQL, CI, Docker, pracę z cudzym kodem i sieci na GPU. Ta ścieżka ma własne wymagania sprzętowe i nie jest obowiązkową kontynuacją A/B.
+
+Polecenia poniżej dotyczą tych wcześniejszych modułów:
 
 | Polecenie | Co robi |
 |---|---|
 | `uv run course doctor` | Sprawdza środowisko i dobiera profil danych |
 | `uv run course data` | Pobiera dane |
-| `uv run course check 07` | Sprawdza zadania modułu albo jednego zadania (`07.2`) |
+| `uv run course check 07` | Sprawdza zadania modułu 07 |
 | `uv run course profile small` | Zmienia profil danych |
-| `uv run course catchup 08` | Wpisuje kod referencyjny modułów przed podanym |
+| `uv run course catchup 08` | Wpisuje kod referencyjny wcześniejszych modułów, zachowując kopię pracy |
 
-## Tutor
+Repozytorium: [RedHot099/mle-course](https://github.com/RedHot099/mle-course). Starsza instrukcja pracy wykorzystuje własny fork jako `origin` i repozytorium kursu jako `upstream`. Gałąź `solutions` i polecenie `catchup` odnoszą się do wcześniejszych laboratoriów, nie są zbiorem rozwiązań całej nowej ścieżki.
 
-W repozytorium są instrukcje dla agenta AI (`AGENTS.md`). Uruchomiony w katalogu kursu, na przykład przez Claude Code, staje się tutorem: tłumaczy, zadaje pytania naprowadzające, robi review. Rozwiązań zadań nie pisze.
+## Stan materiałów
 
-| Komenda | Kiedy |
-|---|---|
-| `/setup` | Konfiguracja środowiska w lekcji 00 |
-| `/hint 07.3` | Utknąłeś w zadaniu |
-| `/check 07.3` | Sprawdzenie nie przechodzi i nie wiesz dlaczego |
-| `/explain rolling` | Nie rozumiesz pojęcia |
-| `/quiz 07` | Chcesz się sprawdzić |
-| `/review` | Punkt kontrolny: review pull requesta |
-
-Kurs da się przejść bez tutora.
-
-## Rozwiązania
-
-Kod referencyjny jest na gałęzi `solutions`. Pobierzesz ją przez `git fetch upstream solutions`. Jeśli utkniesz i chcesz iść dalej, `uv run course catchup NN` wpisze rozwiązania modułów przed `NN` do Twojego pakietu, a poprzednie wersje plików zachowa w `.course/backup/`.
-
-## Stan
-
-Kurs jest w budowie. Gotowe: lekcja 00, moduł 07 i fragment wykładu 01. Plan wszystkich 20 modułów jest na [mapie kursu](lectures/index.html).
-
-Nowa [ścieżka fundamentów A i B](lectures/foundations/index.html) prowadzi przez podstawy Pythona, pracę z notebookiem i pierwszą prognozę. Na końcu przygotujesz mały projekt z własną funkcją i testami. Jest przygotowana do pilotażu z uczestnikami; nie zastępuje jeszcze kolejności pozostałych modułów.
+Wszystkie 21 punktów planu A–F ma przygotowane lekcje. Materiały są gotowe do przeglądu autora i pilotażu z początkującymi. Sprawdzenia techniczne obejmują przykłady, nieuzupełnione zadania, linki, diagramy i działanie stron. Nie potwierdzają czasu nauki ani skuteczności dydaktycznej.
 
 ## Licencja
 
-Kod na licencji MIT (`LICENSE`). Treści na licencji CC BY 4.0 (`LICENSE-CONTENT.md`). Autor: Jakub Eichner.
+Kod: MIT (`LICENSE`). Treści: CC BY 4.0 (`LICENSE-CONTENT.md`). Autor: Jakub Eichner.
 
-Dane: FreshRetailNet-50K, Dingdong-Inc, CC BY 4.0. Wang i in., "FreshRetailNet-50K: A Stockout-Annotated Censored Demand Dataset for Latent Demand Recovery and Forecasting in Fresh Retail", arXiv:2505.16319.
+Dane FreshRetailNet-50K: Dingdong-Inc, CC BY 4.0. Wang i in., "FreshRetailNet-50K: A Stockout-Annotated Censored Demand Dataset for Latent Demand Recovery and Forecasting in Fresh Retail", arXiv:2505.16319. Dane syntetyczne do nowego projektu przygotowano na potrzeby kursu.

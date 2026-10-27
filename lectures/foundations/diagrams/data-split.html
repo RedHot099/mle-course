@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Trzy role danych</title><style>
+:root { color-scheme:light; --plane:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b; --ink-2:#52514e; --axis:#c3c2b7; --hairline:#e1e0d9; --accent:#2a78d6; --accent-ink:#1c5cab; --accent-wash:#e8f1fd; --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+@media(prefers-color-scheme:dark) { :root { color-scheme:dark; --plane:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink-2:#c3c2b7; --axis:#383835; --hairline:#2c2c2a; --accent:#3987e5; --accent-ink:#86b6ef; --accent-wash:#13263f; } }
+body { margin:0; padding:16px; background:var(--plane); color:var(--ink); font-family:var(--sans); }
+main { max-width:480px; margin:auto; }
+h1 { font-size:1.25rem; line-height:1.3; font-weight:700; }
+p { font-size:.9rem; line-height:1.55; }
+a { color:var(--accent-ink); }
+</style></head>
+<body><main><h1>Trzy role danych</h1><svg id="data-split" class="diagram" viewBox="0 0 352 416" role="img" aria-labelledby="data-split-title data-split-desc" style="display:block;width:100%;max-width:352px;height:auto;margin:0 auto"><title id="data-split-title">Trzy role danych</title><desc id="data-split-desc">Trening dopasowuje parametry, walidacja wybiera rozwiązanie, a test ocenia zamrożony wybór na końcu ścieżki.</desc><defs>
+<marker id="data-split-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--ink-2, #52514e)"/></marker>
+<marker id="data-split-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--accent, #2a78d6)"/></marker>
+<marker id="data-split-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--accent-ink, #1c5cab)"/></marker>
+</defs><style>
+#data-split text { fill: var(--ink, #0b0b0b); font-family: var(--sans, system-ui, sans-serif); font-size: 12px; }
+#data-split .name { font-size: 14px; font-weight: 600; }
+#data-split .code { font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace; }
+#data-split .muted { fill: var(--ink-2, #52514e); }
+#data-split .accent-text { fill: var(--accent-ink, #1c5cab); }
+#data-split .paper { fill: var(--plane, #f9f9f7); }
+#data-split .node { fill: var(--surface, #fcfcfb); stroke: var(--ink-2, #52514e); stroke-width: 1; }
+#data-split .focus { fill: var(--accent-wash, #e8f1fd); stroke: var(--accent, #2a78d6); }
+#data-split .edge { fill: none; stroke: var(--ink-2, #52514e); stroke-width: 1.2; }
+#data-split .accent-edge { stroke: var(--accent, #2a78d6); }
+#data-split .lifeline { stroke: var(--axis, #c3c2b7); stroke-width: 1; stroke-dasharray: 3 5; }
+#data-split .rule { stroke: var(--hairline, #e1e0d9); stroke-width: 1; }
+</style><path d="M176 104 V152" class="edge" marker-end="url(#data-split-arrow)"/><path d="M176 216 V264" class="edge" marker-end="url(#data-split-arrow)"/><rect x="56" y="40" width="240" height="64" rx="6" class="node"/><text x="176.0" y="66" class="name" text-anchor="middle">Trening</text><text x="176.0" y="88" class="muted" text-anchor="middle">Dni 1–42: dopasowanie</text><rect x="56" y="152" width="240" height="64" rx="6" class="node"/><text x="176.0" y="178" class="name" text-anchor="middle">Walidacja</text><text x="176.0" y="200" class="muted" text-anchor="middle">Dni 43–49: wybór</text><rect x="56" y="264" width="240" height="64" rx="6" class="node focus"/><text x="176.0" y="290" class="name" text-anchor="middle">Test</text><text x="176.0" y="312" class="muted" text-anchor="middle">Dni 50–56: finał</text><text x="176" y="368" class="muted" text-anchor="middle">Czas płynie od góry do dołu.</text><text x="176" y="392" class="muted" text-anchor="middle">Bez powrotu do strojenia na teście.</text></svg><p>Trzy kolejne okresy mają różne zadania. Wynik końcowego testu nie służy do wyboru modelu.</p><p><a href="../c12-fit.html">Wróć do lekcji</a></p></main></body></html>

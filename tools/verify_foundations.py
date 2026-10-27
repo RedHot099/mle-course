@@ -8,7 +8,9 @@ from __future__ import annotations
 
 import contextlib
 import io
+import json
 import os
+import re
 import tempfile
 from collections.abc import Iterator
 from dataclasses import dataclass, field
@@ -169,7 +171,37 @@ def check_exercise(path: Path, node: Node) -> None:
         raise AssertionError(f"Unsolved exercise already passes: {path.name}")
 
 
+def check_curriculum() -> None:
+    """Validate the authored route against its IDs and prerequisite order."""
+    lessons = json.loads((PAGES / "curriculum.json").read_text())
+    seen: set[str] = set()
+    files: set[str] = set()
+    blocks: set[int] = set()
+    for lesson in lessons:
+        identifier = lesson["id"]
+        assert identifier not in seen, f"Duplicate lesson: {identifier}"
+        assert set(lesson["requires"]) <= seen, (
+            f"Missing or later prerequisite: {identifier}"
+        )
+        slug = lesson["slug"]
+        assert slug not in files, f"Duplicate lesson file: {slug}"
+        document = Document(PAGES / f"{slug}.html").root
+        headings = [node.text() for node in document.walk() if node.tag == "h1"]
+        assert headings == [lesson["title"]], f"Catalogue title: {identifier}"
+        seen.add(identifier)
+        files.add(slug)
+        match = re.fullmatch(r"[A-F](\d+)(?:\.\d+)?", identifier)
+        assert match is not None, f"Invalid lesson ID: {identifier}"
+        blocks.add(int(match[1]))
+    assert {identifier[0] for identifier in seen} == set("ABCDEF")
+    assert blocks == set(range(1, 22)), "The core must cover plan blocks 1–21"
+    authored = {path.stem for path in PAGES.glob("*.html")} - {"index"}
+    assert authored == files, "Catalogue and authored lesson files differ"
+    print(f"Curriculum: {len(lessons)} lessons; blocks 1–21; prerequisites ordered.")
+
+
 def main() -> None:
+    check_curriculum()
     quizzes = exercises = examples = 0
     pages = sorted(PAGES.rglob("*.html"))
     previous = Path.cwd()

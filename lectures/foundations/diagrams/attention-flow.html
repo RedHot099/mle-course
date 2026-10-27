@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Od dopasowania do sumy ważonej</title><style>
+:root { color-scheme:light; --plane:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b; --ink-2:#52514e; --axis:#c3c2b7; --hairline:#e1e0d9; --accent:#2a78d6; --accent-ink:#1c5cab; --accent-wash:#e8f1fd; --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+@media(prefers-color-scheme:dark) { :root { color-scheme:dark; --plane:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink-2:#c3c2b7; --axis:#383835; --hairline:#2c2c2a; --accent:#3987e5; --accent-ink:#86b6ef; --accent-wash:#13263f; } }
+body { margin:0; padding:16px; background:var(--plane); color:var(--ink); font-family:var(--sans); }
+main { max-width:480px; margin:auto; }
+h1 { font-size:1.25rem; line-height:1.3; font-weight:700; }
+p { font-size:.9rem; line-height:1.55; }
+a { color:var(--accent-ink); }
+</style></head>
+<body><main><h1>Od dopasowania do sumy ważonej</h1><svg id="attention-flow" class="diagram" viewBox="0 0 352 456" role="img" aria-labelledby="attention-flow-title attention-flow-desc" style="display:block;width:100%;max-width:352px;height:auto;margin:0 auto"><title id="attention-flow-title">Od dopasowania do sumy ważonej</title><desc id="attention-flow-desc">Iloczyny query i keys dają wyniki, softmax zmienia je na wagi, a wagi łączą wartości kontekstu.</desc><defs>
+<marker id="attention-flow-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--ink-2, #52514e)"/></marker>
+<marker id="attention-flow-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--accent, #2a78d6)"/></marker>
+<marker id="attention-flow-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--accent-ink, #1c5cab)"/></marker>
+</defs><style>
+#attention-flow text { fill: var(--ink, #0b0b0b); font-family: var(--sans, system-ui, sans-serif); font-size: 12px; }
+#attention-flow .name { font-size: 14px; font-weight: 600; }
+#attention-flow .code { font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace; }
+#attention-flow .muted { fill: var(--ink-2, #52514e); }
+#attention-flow .accent-text { fill: var(--accent-ink, #1c5cab); }
+#attention-flow .paper { fill: var(--plane, #f9f9f7); }
+#attention-flow .node { fill: var(--surface, #fcfcfb); stroke: var(--ink-2, #52514e); stroke-width: 1; }
+#attention-flow .focus { fill: var(--accent-wash, #e8f1fd); stroke: var(--accent, #2a78d6); }
+#attention-flow .edge { fill: none; stroke: var(--ink-2, #52514e); stroke-width: 1.2; }
+#attention-flow .accent-edge { stroke: var(--accent, #2a78d6); }
+#attention-flow .lifeline { stroke: var(--axis, #c3c2b7); stroke-width: 1; stroke-dasharray: 3 5; }
+#attention-flow .rule { stroke: var(--hairline, #e1e0d9); stroke-width: 1; }
+</style><path d="M176 88 V120" class="edge" marker-end="url(#attention-flow-arrow)"/><path d="M176 184 V216" class="edge" marker-end="url(#attention-flow-arrow)"/><path d="M176 280 V312" class="edge" marker-end="url(#attention-flow-arrow)"/><rect x="56" y="24" width="240" height="64" rx="6" class="node"/><text x="176.0" y="50" class="name" text-anchor="middle">Query i keys</text><text x="176.0" y="72" class="muted" text-anchor="middle">Iloczyny skalarne</text><rect x="56" y="120" width="240" height="64" rx="6" class="node"/><text x="176.0" y="146" class="name" text-anchor="middle">Wyniki dopasowania</text><text x="176.0" y="168" class="muted" text-anchor="middle">Skalowanie i maska</text><rect x="56" y="216" width="240" height="64" rx="6" class="node focus"/><text x="176.0" y="242" class="name" text-anchor="middle">Softmax</text><text x="176.0" y="264" class="muted" text-anchor="middle">Wagi o sumie 1</text><rect x="56" y="312" width="240" height="64" rx="6" class="node"/><text x="176.0" y="338" class="name" text-anchor="middle">Suma ważona values</text><text x="176.0" y="360" class="muted" text-anchor="middle">Wektor kontekstu</text><text x="176" y="416" class="muted" text-anchor="middle">Przyszłe pozycje dostają wagę 0.</text><text x="176" y="440" class="muted" text-anchor="middle">To nie jest jeszcze rozkład słów.</text></svg><p>Po attention kolejne warstwy przygotowują wyniki dla słownika. Nie utożsamiaj wagi kontekstu z dowodem prawdziwości.</p><p><a href="../f20-attention.html">Wróć do lekcji</a></p></main></body></html>
