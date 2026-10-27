@@ -1,10 +1,12 @@
 # Jak przebudować kurs dla początkującej osoby
 
-Audyt z 27 października 2026. Stan repozytorium: `951c88c`, gałąź `main`. Dokument proponuje zmiany. Nie zmienia zadań ani nie zawiera ich rozwiązań.
+Audyt z 27 października 2026, zaktualizowany po uwagach autora o przewadze infrastruktury nad rozumieniem ML/AI. Stan analizowanego repozytorium: `951c88c`, gałąź `main`. Dokument proponuje zmiany. Nie zmienia zadań ani nie zawiera ich rozwiązań.
 
 ## Najważniejsza decyzja
 
-Rekomenduję zachować projekt Freshcast i standardy inżynierskie, ale zmienić moment, w którym uczestnik musi je samodzielnie realizować. Najpierw powinien zbudować małą, zrozumiałą prognozę i umieć ją ocenić. Następnie przenosi ją do funkcji, testów, klas i pakietu. Dopiero potem rozszerza rozwiązanie na wiele serii i narzędzia produkcyjne.
+Rekomenduję zachować projekt Freshcast oraz podstawy jakości kodu, ale zmienić moment, w którym uczestnik musi je samodzielnie realizować. Najpierw powinien zbudować małą, zrozumiałą prognozę i umieć ją ocenić. Następnie porządkuje rozwiązanie w funkcje, testy i prosty moduł. Po zdobyciu tych kompetencji przechodzi do głębszego rozumienia uczenia, niepewności, reprezentacji i szerszych metod AI.
+
+Usuwam z rdzenia wcześniejsze punkty propozycji: 18 "Pipeline i odtwarzalność", 20 "CI, kontener i praca z cudzym kodem" oraz 21 "Capstone główny". Ich miejsce zajmuje blok pojęciowy opisany poniżej. SQL z wcześniejszego punktu 19 może pozostać dodatkiem po tabelach; storage trafia do opcjonalnej ścieżki inżynierskiej. Odtwarzalny eksperyment i uczciwa walidacja nadal są potrzebne, ale nie wymagają osobnego projektu produkcyjnego.
 
 Obecny kurs jest bliższy intensywnemu kursowi dla osoby, która już swobodnie programuje w Pythonie, niż nauce od zera. [README](../../README.md#dla-kogo) uczciwie wymaga pętli, funkcji, list i słowników. Hasło "od podstaw Pythona" może jednak sugerować inny poziom wejścia. Potrzebne są dwie ścieżki wejścia, zakończone tym samym sprawdzianem podstaw.
 
@@ -26,7 +28,7 @@ Porównanie z innymi kursami opiera się na publicznych stronach organizatorów 
 - Testy mutacyjne w 04, 05 i 15 pokazują, dlaczego zielony test może niczego nie chronić. Zachowałbym je po krótkim wprowadzeniu do zwykłych testów.
 - Leakage, baseline, jawne założenia o danych i ocena na tych samych wierszach przewijają się przez projekt. To ważniejsze niż kolekcjonowanie modeli.
 - `small`, lokalne atrapy usług i ścieżka bez tutora ograniczają zależności sprzętowe i usługowe.
-- Moduł Shelfwise uczy pracy z cudzym kodem i odtwarzania objawu. To szczególnie wartościowy element przygotowania do pracy.
+- Moduł Shelfwise uczy pracy z cudzym kodem i odtwarzania objawu. Warto zachować go jako opcjonalny materiał dla osób wybierających dalszą ścieżkę inżynierską.
 
 Kurs ma już też poprawkę kolejności pojęć. [Wykład 03](../../lectures/03-classes/index.html#prognoza) tłumaczy prognozę, horyzont, holdout i MAE przed klasami. [ADR 0001](../adr/0001-concept-before-interface.md) świadomie zachowuje dotychczasowy łańcuch labów. Nie rekomenduję ponownego dodania brakujących definicji. Rekomenduję osobną praktykę przed zadaniem wymagającym kilku nowych abstrakcji naraz.
 
@@ -43,14 +45,14 @@ Kurs ma już też poprawkę kolejności pojęć. [Wykład 03](../../lectures/03-
 | [06: pandas](../../labs/06-pandas-cleaning/README.md) | Pierwsza ramka od razu prowadzi do wieloarkuszowego cache, ośmiu reguł danych i rozróżniania duplikatów | Dodać lekcję orientacji w tabeli. Pierwszy cleaning lab mały i samodzielny; pełne Online Retail II po podstawach `groupby`. |
 | [07: panel](../../labs/07-pandas-panel/README.md) | Wydajny odczyt, downcast, fakty i wymiary, merge, tablice godzinowe, lag, rolling i kontrakty | Podzielić na analizę tabel i czas w panelu. Kolumny godzinowe oraz optymalizację pamięci przenieść do rozszerzenia. |
 | [08: pierwszy model uczony](../../labs/08-ml-basics/README.md) | Adapter baseline'u, gradient macierzowy, własny model liniowy, Ridge, scaler, pipeline i selekcja hiperparametru | Najpierw wytrenować gotowy prosty estimator na małych danych. Osobno zrozumieć uczenie od jednej wagi do zapisu macierzowego. |
-| [09: cechy](../../labs/09-features/README.md) | Cechy czasowe, target encoding oraz `resolve_order` i zależności między funkcjami | Zacząć od dwóch jawnych funkcji cech. Target encoding i automatyczne porządkowanie zależności przenieść po pierwszym działającym pipeline. |
+| [09: cechy](../../labs/09-features/README.md) | Cechy czasowe, target encoding oraz `resolve_order` i zależności między funkcjami | Zacząć od dwóch jawnych funkcji cech. Target encoding i automatyczne porządkowanie zależności przenieść do rozszerzenia. |
 | [10–11: modele i walidacja](../../labs/10-trees-boosting/README.md) | Drzewo od zera, boosting, interpretacja, prognoza wielokrokowa, potem backtest i tuning | Podstawowy backtest przed wieloma porównaniami modeli. Odseparować mechanikę prognozy wielokrokowej od rodziny estymatorów. |
 | [12: klasyfikacja](../../labs/12-classification/README.md) | Od razu przyszła etykieta w panelu, krzywa PR, average precision, koszty i kalibracja | Najpierw ręczna confusion matrix i próg na kilku wynikach. Dopiero potem budowa etykiety czasowej i model. |
-| [13: bez nadzoru i sieci](../../labs/13-unsupervised-nn/README.md) | k-means, PCA, ocena segmentów i pierwsza pętla PyTorch | Rozdzielić unsupervised learning od neural networks. Nie uzależniać pierwszego pipeline'u produkcyjnego od obu bloków. |
-| [14: pipeline](../../labs/14-pipeline/README.md) | Jednocześnie CLI, konfiguracja, artefakty, logowanie i przygotowanie w porcjach | Najpierw jeden skrypt i zapis wyniku. Następnie konfiguracja i CLI. Przetwarzanie większych danych jako osobny krok. |
-| [15: cloud i SQL](../../labs/15-cloud-sql/README.md) | S3, serwer lokalny, retry, cache, atomowa publikacja, testy mutacyjne i pierwszy SQL | SQL przenieść po pandas. Storage zostawić po pipeline, retry wprowadzić na małej funkcji przed klientem S3. |
-| [16–17: CI i cudzy kod](../../labs/16-docker-ci/README.md) | Samodzielna konfiguracja narzędzi i nagłe przejście do ticketów | Pierwszy gotowy workflow CI wcześniej. Jeden mały ticket w cudzym pliku po testach; pełny Shelfwise później. |
-| [18–19: finał](../../labs/19-capstone/README.md) | Zaliczenie obejmuje GRU z 18 i porównanie sieci z LightGBM | Rozdzielić capstone główny i rozszerzenie neural. Brak GPU nie zamyka ścieżki głównej. |
+| [13: bez nadzoru i sieci](../../labs/13-unsupervised-nn/README.md) | k-means, PCA, ocena segmentów i pierwsza pętla PyTorch | Rozdzielić na lekcje o reprezentacjach, unsupervised learning i sieciach. Podstawy pojęciowe w rdzeniu, rozbudowany training loop w rozszerzeniu. |
+| [14: pipeline](../../labs/14-pipeline/README.md) | Jednocześnie CLI, konfiguracja, artefakty, logowanie i przygotowanie w porcjach | Przenieść pełny moduł do ścieżki opcjonalnej. W rdzeniu wystarczy eksperyment uruchamiany od początku i zapis wyniku. |
+| [15: cloud i SQL](../../labs/15-cloud-sql/README.md) | S3, serwer lokalny, retry, cache, atomowa publikacja, testy mutacyjne i pierwszy SQL | SQL jako dodatek po pandas. Storage i retry w opcjonalnej ścieżce inżynierskiej. |
+| [16–17: CI i cudzy kod](../../labs/16-docker-ci/README.md) | Samodzielna konfiguracja narzędzi i nagłe przejście do ticketów | Gotowy workflow może wspierać ćwiczenia. Samodzielny Docker, CI i Shelfwise poza rdzeniem. |
+| [18–19: finał](../../labs/19-capstone/README.md) | Zaliczenie obejmuje GRU z 18 i porównanie sieci z LightGBM | Pełny GRU i capstone produkcyjny jako rozszerzenia. Finał rdzenia sprawdza rozumienie na małych eksperymentach. |
 
 Szczególnie ważna jest różnica między "pojęcie zostało opisane" a "uczestnik potrafi go użyć". Wykład 02 mówi, że sygnaturę generycznego dekoratora wystarczy rozpoznać i przepisać. To uczciwa pomoc, ale także sygnał, że narzędzie wyprzedza aktualny poziom rozumienia.
 
@@ -90,7 +92,8 @@ Publiczne programy dają wzorce organizacji, nie dowód, że samo skopiowanie ko
 | Coursera Python for Everybody | Wyraźna ścieżka podstaw Python przed kolejnymi obszarami pracy z danymi | Nie zastępuje docelowego projektu inżynierskiego. |
 | Coursera Machine Learning Specialization | Oddzielenie podstaw supervised learning, bardziej zaawansowanych modeli oraz unsupervised learning | ML bez pełnej ścieżki utrzymania pakietu i CI. |
 | Udemy: 100 Days of Code oraz Complete Python Bootcamp | Małe projekty, wyraźne sekcje i widoczny wynik kolejnych etapów | Publiczny syllabus nie pozwala ocenić jakości całej informacji zwrotnej. |
-| Stanford CS229 i CS230 | Jawne wymagania matematyczne i programistyczne oraz oddzielna ścieżka zaawansowana | To punkt odniesienia dla późniejszych modułów, nie program do skopiowania dla osoby od zera. |
+| Stanford CS229 i CS230 | Związki modeli z optymalizacją, probabilistycznym opisem danych i uczeniem reprezentacji | Wymagania akademickie są wyższe niż poziom wejścia tego kursu. |
+| Stanford CS221 | Szerszy obraz AI: uczenie, search, podejmowanie decyzji, wnioskowanie i logika | W rdzeniu krótka mapa różnic i małe przykłady, bez kopiowania pełnego kursu. |
 
 Odnośniki do konkretnych edycji i stron organizatorów są w [porównaniu źródeł](beginner-course-sources.md). Nie rekomenduję przenoszenia wszystkich tematów z żadnego z tych kursów. Freshcast ma pozostać osią nauki.
 
@@ -102,7 +105,7 @@ Z tego wynika propozycja przejścia od krótkiego omówionego przykładu przez �
 
 ## Proponowana nowa kolejność
 
-Poniższe oznaczenia A–F opisują bloki dydaktyczne, nie nowe numery `course check`. Nie należy od razu renumerować plików. Najpierw trzeba przygotować i sprawdzić ścieżkę nauki.
+Poniższe oznaczenia A–G opisują bloki dydaktyczne, nie nowe numery `course check`. Punkty 18–21 mają nową treść, a dawny punkt o SQL i storage został rozdzielony. Nie należy od razu renumerować plików. Najpierw trzeba przygotować i sprawdzić ścieżkę nauki.
 
 ### A. Wejście i pierwszy samodzielny wynik
 
@@ -140,22 +143,56 @@ Rezultat C: mały projekt od danych do porównania baseline'u z modelem. Pełne 
 
 Rezultat D: uczestnik umie wybrać model i uzasadnić ocenę. Nie musi jeszcze samodzielnie implementować każdej rodziny algorytmów ani używać PyTorch.
 
-### E. Inżynieria na działającym przykładzie
+### E. Domknięcie potrzebnych kompetencji technicznych
 
-17. **Klasy, interfejs i pakiet.** Działający model pokazuje potrzebę przechowywania stanu. Zwykła klasa, konstruktor, metoda, potem dataclass. Kilka modeli daje powód wspólnej umowie. Wybrać najpierw jeden sposób jej opisania; porównanie ABC i Protocol zostawić na później. Tu zaostrzyć typowanie i dokończyć przenoszenie do pakietu.
-18. **Pipeline i odtwarzalność.** Najpierw skrypt, który uruchamia istniejące kroki. Potem CLI, konfiguracja, logi, zapis modelu i metadane eksperymentu. MLflow po prostym dzienniku wyników. Rejestr cech dopiero wtedy, gdy jawna lista kroków zaczyna przeszkadzać.
-19. **SQL i przechowywanie danych.** SQL można przejść już po punkcie 10 jako osobną gałąź. Po pipeline następują lokalne storage i publikacja. Przy retry wracają funkcje jako wartości, prosty wrapper i dopiero fabryka dekoratorów. Lokalny serwer wystarcza do zaliczenia.
-20. **CI, kontener i praca z cudzym kodem.** Uczestnik wcześniej korzystał z gotowego CI, teraz pisze własne. Docker po działającym lokalnie CLI. Jeden ticket Shelfwise z prowadzeniem, kolejne samodzielnie.
-21. **Capstone główny.** Baseline oraz model tabelaryczny, wspólny backtest, zamknięty test, odtwarzalny pipeline, testy, CI i raport. Wniosek o braku poprawy jest dopuszczalny, jeśli badanie jest poprawne i pokazuje ograniczenia.
+17. **Klasy i organizacja eksperymentu.** Działający model pokazuje potrzebę przechowywania stanu. Zwykła klasa, konstruktor i metoda, potem dataclass. Czytanie API estymatora i prosty moduł z testami. ABC, Protocol, zaawansowane generyki oraz pełny pakiet nie są warunkiem dalszej nauki idei ML.
 
-### F. Rozszerzenia po pierwszym ukończonym projekcie
+Rezultat E: uczestnik potrafi samodzielnie uruchomić mały eksperyment, zmienić jeden element i sprawdzić wynik. To wystarczająca baza techniczna dla następnego bloku.
 
-- **Unsupervised learning.** Profile serii, skalowanie, odległość, k-means i interpretacja. PCA w osobnej lekcji. Wynik nie musi być cechą modelu prognozującego.
-- **Neural networks na CPU.** Tensor, autograd, MLP, batch, pętla treningowa i walidacja. Najpierw dane syntetyczne, potem Freshcast.
-- **Sequence models i GPU.** Okna czasowe, Dataset, embeddings, GRU. Następnie urządzenie i pamięć. Mixed precision i Lightning dopiero po działającej zwykłej pętli.
-- **Zaawansowany forecasting i infrastruktura.** Target encoding, korekta popytu ocenzurowanego, przetwarzanie dużych danych, pełny storage oraz dodatkowe porównania modeli.
+### F. Dlaczego ML działa i jak mieści się w AI
 
-Rozszerzenia zachowują ambicję obecnego programu. Ich ukończenie może mieć osobny capstone. Nie są warunkiem zaliczenia głównej ścieżki ML engineering.
+To nowy cel drugiej części kursu. Nie powtarzamy instrukcji wywołania `fit`. Wyjaśniamy, jakie założenia stoją za tym wywołaniem i dlaczego poprawnie wykonany program może dawać złą odpowiedź.
+
+18. **Uczenie i generalizacja.** Od funkcji straty na próbce do błędu na nowych danych. Rozdzielenie modelu, zbioru dopuszczalnych funkcji i algorytmu optymalizacji. Różne modele mają różne inductive biases. Regularizacja, ilość danych, szum oraz zmiana rozkładu wpływają na wynik. To pogłębienie wcześniejszej walidacji, a nie drugi kurs podziału na train i validation.
+19. **Prawdopodobieństwo, niepewność i decyzja.** Wcześniejsze liczenie częstości prowadzi do rozkładu i prawdopodobieństwa warunkowego. Następnie likelihood i powiązanie z loss, generative versus discriminative models, rozróżnienie predykcji od decyzji. Niepewność danych i modelu oraz granice interpretowania confidence. Osobno wyjaśniamy kalibrację i ograniczenia wnioskowania przyczynowego z obserwacji.
+20. **Reprezentacje i uczenie bez ręcznego celu.** Co zmienia wybór cech, odległości i przestrzeni opisu. Osobne krótkie lekcje o k-means, PCA, sieci z nieliniowością i embeddings. Od odtwarzania reprezentacji do self-supervised learning. Dopiero po tym intuicja attention i przewidywania kolejnego tokenu. Uczestnik rozumie, czego model językowy uczy się z takiego zadania, bez trenowania własnego LLM.
+21. **AI poza przewidywaniem etykiety.** Rozdzielenie uczenia, wnioskowania i podejmowania działań. Search znajduje plan, inference odpowiada na pytanie o ukryty stan, a MDP opisuje decyzje rozłożone w czasie. Na małym przykładzie pojawiają się reward, policy oraz exploration versus exploitation. Na koniec porównujemy, do jakiej części problemu pasuje klasyczny model, search, system reguł lub model językowy, i jak oceniać błędy całego rozwiązania.
+
+Każdy punkt F jest blokiem kilku lekcji. Obecny moduł 13 łączy unsupervised learning i pierwszą pętlę PyTorch. Nie powtarzamy tego przeciążenia przez dodanie attention do tej samej lekcji. Prawdopodobieństwo warunkowe i likelihood wymagają własnych ćwiczeń przed modelami probabilistycznymi. Podobnie embeddings i attention wymagają praktyki z wektorami, zanim pojawią się w opisie modelu językowego.
+
+#### Co konkretnie bierzemy ze Stanford
+
+CS229 daje wzorzec łączenia modeli, założeń probabilistycznych i generalizacji. Widać to w blokach GLM, generative learning oraz learning theory w [oficjalnych materiałach CS229](https://see.stanford.edu/Course/CS229). CS230 pomaga przejść do sieci. CS221 pokazuje AI obejmujące także search, decyzje, wnioskowanie probabilistyczne i logikę. Publiczny program CS221 wymaga już programowania, matematyki dyskretnej, prawdopodobieństwa i algebry liniowej. W tym kursie wybieramy ograniczone przykłady i dostarczamy potrzebne przygotowanie. [CS221, Autumn 2025](https://stanford-cs221.github.io/autumn2025/).
+
+Nie jest to kopia semestru Stanford ani jego dokładnej kolejności. To propozycja dla uczestnika, który ma już podstawy kodowania i pierwsze eksperymenty ML. Szczegółowe źródła programu i poziomów wejścia zapisano w [uzupełnieniu porównania kursów](beginner-course-sources.md).
+
+#### Jak uczyć tych idei w praktyce
+
+| Blok | Kolejność krótkich lekcji | Eksperyment uczestnika | Dowód zrozumienia |
+|---|---|---|---|
+| 18: generalizacja | Próbka i populacja → model i optymalizacja → inductive bias i regularizacja → ilość danych oraz shift | Ten sam problem z małą i większą próbką, potem z nowym zakresem wejść. Porównanie prostego modelu z elastycznym | Wyjaśnienie, dlaczego mniejszy training loss nie gwarantuje lepszego działania i kiedy więcej danych nie usunie problemu |
+| 19: niepewność | Prawdopodobieństwo warunkowe → likelihood i loss → modele generative i discriminative → niepewność i koszt decyzji | Dwie grupy z różną częstością zdarzenia. Porównanie modelu opartego na Bayesie i regresji logistycznej, następnie dwóch progów decyzji | Rozróżnienie prawdopodobieństwa zdarzenia, niepewności oszacowania i kosztu błędnej decyzji. Wskazanie założeń modelu |
+| 20: reprezentacje | Cechy i odległość → k-means → PCA → nieliniowość i embeddings → self-supervision i attention | Najpierw zmiana skali i projekcja małych danych. W kolejnych lekcjach porównanie modelu liniowego z małą siecią na CPU oraz inspekcja gotowych wektorów | Wskazanie, co zachowuje reprezentacja, co traci i dlaczego podobieństwo w niej nie jest dowodem prawdziwości odpowiedzi |
+| 21: szersze AI | Predykcja i plan → inference → MDP i reward → mapa metod oraz ograniczenia | Osobno mała trasa z kosztami, proste wnioskowanie z obserwacji i kilkustanowy problem decyzji. Potem wybór metody dla nowego problemu | Wyjaśnienie różnicy między przewidzeniem skutku działania a wyborem dobrego działania, oraz wskazanie brakującej informacji |
+
+Średnia squared loss jako przykład estymacji, likelihood i cross-entropy mogą korzystać z małych danych. Nie wymagamy formalnych dowodów teorii uczenia. Nie utożsamiamy też generative classifier z dzisiejszym generatywnym AI: podobieństwo nazw wymaga osobnego wyjaśnienia. Wprowadzenie nowego pojęcia zawsze kończy się jego użyciem na małym przykładzie.
+
+Freshcast pozostaje głównym projektem, ale nie ilustruje równie dobrze wszystkich idei. Geometria na punktach, krótki tekst i mały problem planowania pozwolą zrozumieć reprezentacje oraz decyzje. Uczestnik następnie sprawdza, które z tych idei przenoszą się na forecasting, a które wymagają innego zadania.
+
+#### Zakończenie bez dodatkowego capstone produkcyjnego
+
+Po każdym bloku uczestnik oddaje krótki wynik eksperymentu oraz własne wyjaśnienie. Finał to kilka nowych przypadków: dobór sposobu opisania problemu, wskazanie założeń, diagnoza błędu modelu i uzasadnienie decyzji. Nie powstaje kolejny duży projekt ani osobne wdrożenie.
+
+Kryterium ukończenia brzmi: uczestnik umie przewidzieć zachowanie modelu, przeprowadzić mały eksperyment i wyjaśnić rozbieżność z oczekiwaniem. Znajomość nazw architektur albo przejście quizu wielokrotnego wyboru tego nie zastępują.
+
+### G. Opcjonalne ścieżki po rdzeniu
+
+- **Inżynieria ML.** Pełny pipeline, CLI, konfiguracja, artefakty, MLflow, lokalny storage, retry, CI, Docker i Shelfwise. Możliwy osobny capstone produkcyjny.
+- **Sequence models i GPU.** Rozbudowany training loop, okna czasowe, Dataset, GRU, urządzenie i pamięć. Mixed precision i Lightning po działającej zwykłej pętli.
+- **Zaawansowany forecasting.** Target encoding, korekta popytu ocenzurowanego, przetwarzanie dużych danych i bardziej wymagające porównania modeli.
+- **Dalsze modele językowe.** Pełna implementacja transformera, pretraining i post-training po opanowaniu sieci, prawdopodobieństwa i reprezentacji. Te tematy wymagają osobnego zakresu i budżetu obliczeń.
+
+Przesunięcie infrastruktury nie oznacza, że jej czas automatycznie wystarczy na cały blok F. Po pilotażu trzeba osobno oszacować rdzeń pojęciowy i rozszerzenia. Nazwa oraz opis kursu powinny odzwierciedlać nowe proporcje: Python i dane jako przygotowanie do rozumienia ML/AI, inżynieria produkcyjna jako dalsza ścieżka.
 
 ## Co zrobić z każdym obecnym modułem
 
@@ -174,13 +211,13 @@ Rozszerzenia zachowują ambicję obecnego programu. Ich ukończenie może mieć 
 | 10 | Drzewa i boosting w rdzeniu. SHAP i forecasting wielokrokowy osobno. |
 | 11 | Podstawowy backtest wcześniej. Optuna i MLflow po ręcznych eksperymentach. |
 | 12 | Zachować jako kolejny rodzaj zadania po regresji i podstawach walidacji. Rozdzielić metryki od budowy etykiety. |
-| 13 | Rozdzielić unsupervised learning, PCA i neural networks. Umieścić w rozszerzeniach. |
-| 14 | Szkic pipeline'u wcześniej; pełny CLI i konfiguracja po klasach i pakiecie. |
-| 15 | SQL po podstawach tabel. Storage po pipeline, niezależnie od SQL. |
-| 16 | Gotowe CI przy pierwszym PR. Własne CI i Docker po działającym CLI. |
-| 17 | Małe czytanie cudzego kodu wcześniej. Pełny Shelfwise blisko końca rdzenia. |
+| 13 | Rozdzielić podstawy unsupervised learning, PCA i neural networks na krótkie lekcje rdzenia. Rozbudowaną implementację zostawić w rozszerzeniach. |
+| 14 | Prosty, powtarzalny eksperyment w rdzeniu. Pełny pipeline, CLI i konfiguracja w opcjonalnej ścieżce inżynierskiej. |
+| 15 | SQL jako dodatek po podstawach tabel. Storage po pipeline w ścieżce opcjonalnej. |
+| 16 | Gotowe CI może wspierać naukę. Własne CI i Docker w ścieżce opcjonalnej. |
+| 17 | Shelfwise jako opcjonalna praktyka dla osób zainteresowanych pracą w cudzym repozytorium. |
 | 18 | Oddzielna ścieżka po podstawach PyTorch. GPU nie jest wymaganiem wejścia do rdzenia. |
-| 19 | Dwa warianty capstone. Ocena metody i dowodów, nie wymuszenie zwycięskiego wyniku. |
+| 19 | Capstone produkcyjny opcjonalny. W rdzeniu małe eksperymenty i wyjaśnienia po każdym bloku pojęciowym. |
 
 ## Jak przepisać treść lekcji i zadań
 
@@ -205,7 +242,7 @@ Przy `rolling` pierwsza próba dotyczy ręcznego wyniku i osi czasu. Druga dotyc
 
 Ta sama zasada dotyczy modelu liniowego. Najpierw przewidywanie z jednej wagi, potem uczenie i ocena, dalej tablice, na końcu interfejs własnego modelu. Uczestnik nie powinien jednocześnie debugować matematyki, mypy i brakującego importu.
 
-Typy i testy nie znikają. Wcześnie dajemy proste sygnatury i pojedynczy test. Wymagania K1, K9 i T1 z [obecnego standardu](../standard.md) włączamy etapami zgodnie z nowym programem. Kryteria końcowego projektu pozostają wymagające. Zmiana wymaga też aktualizacji kolumny "Od", instrukcji review i zakresów uruchamianych sprawdzeń.
+Typy i testy nie znikają. Wcześnie dajemy proste sygnatury i pojedynczy test. Wymagania K1, K9 i T1 z [obecnego standardu](../standard.md) trzeba przypisać do właściwego poziomu i ścieżki, zamiast wymagać pełnego standardu produkcyjnego w każdym eksperymencie pojęciowym. Zmiana wymaga też aktualizacji kolumny "Od", instrukcji review i zakresów uruchamianych sprawdzeń.
 
 ### Dodać matematykę wtedy, gdy ma zastosowanie
 
@@ -219,6 +256,8 @@ Brakuje wydzielonej ścieżki ćwiczeń łączącej deklarowane podstawy szkolne
 | Gradient descent | Strata jako funkcja wagi, nachylenie i wielkość kroku | Wybór kierunku kroku na rysunku, potem wynik liczbowy |
 | Klasyfikacja | Częstość zdarzenia, proporcja i koszt decyzji | Porównanie dwóch progów na małej confusion matrix |
 | PCA i sieci | Rzutowanie lub pochodna złożenia, zależnie od ścieżki | Osobne ćwiczenie przed użyciem biblioteki |
+| Likelihood i niepewność | Rozkład, prawdopodobieństwo warunkowe, niezależność i Bayes na małej tabeli | Wyjaśnienie różnicy między prawdopodobieństwem danych przy modelu a prawdopodobieństwem modelu po obserwacji |
+| Search i MDP | Graf, stan, działanie, koszt i wartość oczekiwana | Ręczne porównanie dwóch tras i dwóch działań z losowym wynikiem |
 
 Nie dodawałbym na początku obowiązkowego wielkiego kursu matematyki. Przygotowanie ma odpowiadać zadaniu i zawierać praktykę, nie sam link do zewnętrznego wykładu.
 
@@ -260,7 +299,7 @@ Dla zależności programistycznych można udostępnić jawny, gotowy komponent k
 
 ### Zaliczenia nie muszą blokować całego kursu
 
-Warunkiem przejścia są umiejętności niezbędne do następnego zadania, nie wszystkie dodatki bieżącego modułu. Słabe rozumienie dat i dostępności informacji wymaga poprawy przed forecastingiem. Brak własnego target encodera nie musi blokować drzew, a nieukończony PyTorch nie musi blokować pipeline'u.
+Warunkiem przejścia są umiejętności niezbędne do następnego zadania, nie wszystkie dodatki bieżącego modułu. Słabe rozumienie dat i dostępności informacji wymaga poprawy przed forecastingiem. Brak własnego target encodera nie musi blokować drzew. Niepewne prawdopodobieństwo warunkowe wymaga ćwiczenia przed likelihood, ale nieukończony Docker nie wpływa na gotowość do tej lekcji.
 
 Przy każdym punkcie kontrolnym potrzebne są dwa krótkie zadania na nowych danych: jedno przewidywanie wyniku i jedno wyjaśnienie błędu. Zachowujemy istniejące review kodu. Dodajemy dowód, że uczestnik potrafi użyć poznanej umiejętności poza konkretnym checkiem.
 
@@ -271,16 +310,16 @@ Przy każdym punkcie kontrolnym potrzebne są dwa krótkie zadania na nowych dan
 1. Uzgodnić opis odbiorcy i dodać diagnozę wejścia wraz z uzupełnieniem podstaw Python.
 2. Dodać miniścieżkę prognoza → MAE → wykres przed klasami. Nie wystarczy kolejna definicja we wstępie 03.
 3. Dodać proste testy funkcji przed dekoratorami i pierwszą lekcję orientacji w pandas przed cleaning pipeline.
-4. Przygotować małe wejścia do etapów 07, 08 i 14 oraz opisać, jak wrócić do własnego pipeline'u.
+4. Przygotować małe wejścia do etapów 07 i 08 oraz nowych eksperymentów pojęciowych. Opisać, jak wrócić do własnego przygotowania danych.
 5. Rozdzielić status notebooka od terminalowego listowania. Uzgodnić raport postępu między CLI, notebookiem i przeglądarką.
-6. Zmienić capstone tak, aby rdzeń dało się ukończyć bez GRU i GPU oraz bez wymuszonego zwycięstwa na teście.
+6. Przenieść pełny pipeline, samodzielne CI, Docker, Shelfwise i capstone produkcyjny do ścieżki opcjonalnej. Przygotować małe zaliczenia pojęciowe bez wymogu GRU, GPU i zwycięstwa na teście.
 7. Usunąć rozbieżność README "gotowe 00, 07 i fragment 01" z faktyczną obecnością materiałów. Zamiast domyślać się kompletności, nadać modułom jawne statusy: szkic, gotowy redakcyjnie, zweryfikowany technicznie, sprawdzony z uczestnikami.
 
 Etap 1 ogranicza tarcie, ale pozostawia przeciążenie modułów 02–03. Nie traktowałbym go jako docelowej przebudowy.
 
 ### Etap 2. Sprawdzić nowy początek na uczestnikach
 
-Przygotować bloki A–C na wydzielonej ścieżce materiałów. Dwie grupy wejścia: osoby od zera oraz osoby umiejące już napisać prostą funkcję i pętlę. Wystarczy zacząć od małego pilotażu jakościowego, na przykład kilku osób o różnym poziomie. Nie będzie to dowód statystyczny skuteczności.
+Przygotować bloki A–C na wydzielonej ścieżce materiałów. Dwie grupy wejścia: osoby od zera oraz osoby umiejące już napisać prostą funkcję i pętlę. Wystarczy zacząć od małego pilotażu jakościowego, na przykład kilku osób o różnym poziomie. Nie będzie to dowód statystyczny skuteczności. Osobno sprawdzić blok F z osobami, które potrafią już przygotować dane i uruchomić prosty model. Ustalić, które podstawy matematyczne trzeba uzupełnić, zanim pełny program dostaną uczestnicy od zera.
 
 Zapisywać, za zgodą uczestników: czas do pierwszego samodzielnego wyniku, miejsce przerwania, rodzaj pomocy, wykonane zadania naprawcze oraz wynik nowego zadania po przerwie. Rozmowa o tym, co uczestnik myślał, jest równie ważna jak czerwony check. Sam licznik `attempts` nie wystarcza.
 
@@ -298,7 +337,7 @@ Nowy ADR powinien zastąpić ograniczenie "lab order stays fixed" z ADR 0001, op
 | Czy uczestnik rozumie? | Nowe dane, ręczne przewidywanie wyniku i krótkie uzasadnienie | Zielony check i odtworzenie przykładu nie wystarczają |
 | Czy wiedza zostaje? | Krótka próba po kilku dniach i po dalszym module | Rozdzielić wynik bez pomocy od wyniku z podpowiedzią |
 | Czy pomoc odblokowuje? | Powrót do samodzielnego zadania po ćwiczeniu naprawczym | Samo przejście dalej przez catchup nie oznacza zrozumienia |
-| Czy standard końcowy się utrzymał? | Porównywalne review capstone, leakage, testy, odtwarzalność i jakość wniosków | Porównywać ten sam rdzeń, osobno rozszerzenia |
+| Czy uczestnik lepiej rozumie ML/AI? | Dobór modelu do nowego problemu, wyjaśnienie generalizacji i niepewności, odróżnienie predykcji od decyzji | Nie zastępować wyjaśnienia listą nazw modeli. Jakość wdrożenia oceniać osobno w ścieżce inżynierskiej |
 
 Nie podaję nowej obietnicy liczby godzin. Obecne około 160 godzin nie zostało tu zweryfikowane z początkującymi. Pełne podstawy Python i utrwalanie zwiększą czas dla części osób. Uczciwe oszacowanie powinno pokazać osobno przygotowanie, rdzeń i rozszerzenia oraz opierać się na pilotażu.
 
@@ -306,4 +345,4 @@ Nie podaję nowej obietnicy liczby godzin. Obecne około 160 godzin nie zostało
 
 Pierwszy konkretny fragment do przebudowy to droga od wejścia do pierwszej małej prognozy i jej testu. Następnie funkcje, proste pytest i tabela pandas. Dopiero po sprawdzeniu tego początku przesuwałbym klasy, zmieniał API pakietu i renumerował resztę kursu.
 
-Największa oczekiwana korzyść to możliwość rozumienia i samodzielnego działania przed opanowaniem całej infrastruktury projektu. Końcowy poziom techniczny można zachować, rozkładając naukę na więcej sprawdzalnych kroków.
+Największa oczekiwana korzyść to samodzielne rozumowanie o modelach po zdobyciu wystarczających umiejętności technicznych. Rdzeń kończy się wyjaśnieniem, kiedy i dlaczego metoda działa oraz czego jej wynik nie uzasadnia. Pełny poziom inżynierii produkcyjnej pozostaje dostępny w osobnej ścieżce.

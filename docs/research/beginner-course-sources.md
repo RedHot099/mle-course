@@ -55,3 +55,42 @@ Powtarzają się rozłożenie podstaw na mniejsze zadania, praktyka przed dużym
 Na podstawie syllabusów nie da się ustalić optymalnej długości lekcji, prawdopodobieństwa ukończenia kursu ani liczby potrzebnych podpowiedzi. Te decyzje trzeba sprawdzić na początkujących uczestnikach, obserwując samodzielne wykonanie zadań i rozumienie wyników.
 
 Przegląd badań i rekomendacji dydaktycznych jest w głównym audycie. Powyższe przykłady kursów stanowią osobną kategorię dowodów.
+
+## Pogłębienie ML i AI według Stanford
+
+Ta część dotyczy dalszej zmiany kierunku programu: czas przewidziany na rozbudowę pipeline'u, CI, pracę w cudzym repozytorium i duży capstone ma służyć lepszemu rozumieniu ML oraz AI. To decyzja o celu kursu. Poniższe programy pomagają dobrać pojęcia, ale nie uzasadniają pomijania ćwiczeń, sprawdzania wyników czy utrwalania wiedzy.
+
+### CS229 łączy algorytmy przez założenia i sposób uczenia
+
+[Archiwalny harmonogram CS229, Autumn 2018](https://cs229.stanford.edu/syllabus-autumn2018.html) zaczyna od supervised learning i linear regression. Potem przechodzi do logistic regression, exponential family i generalized linear models, a następnie do Gaussian discriminant analysis, Naive Bayes, SVM i kernels. Kolejne bloki obejmują bias-variance, regularization i model selection, tree ensembles oraz neural networks. Po nich występują k-means, Gaussian mixtures, EM i redukcja wymiarów, a później MDP i reinforcement learning. Learning theory ma osobne zajęcia uzupełniające. To kolejność tego konkretnego wydania, nie stały plan wszystkich edycji.
+
+[Oficjalny pakiet Stanford Engineering Everywhere CS229](https://see.stanford.edu/Course/CS229) udostępnia notatki o regression, classification, GLM i generative learning oraz wymienia learning theory, w tym bias-variance i VC theory. Wymaga samodzielnego programowania, prawdopodobieństwa i algebry liniowej. Poziom wejścia aktualniejszych wydań CS229 opisano wcześniej w tym dokumencie.
+
+Moja propozycja dla początkującego to trzy powroty do znanych modeli:
+
+1. Najpierw model jako funkcja, loss i uczenie parametrów. Uczestnik oblicza mały przykład i przewiduje skutek zmiany parametru.
+2. Potem model jako założenie probabilistyczne. Gaussian noise i Bernoulli pomagają wrócić do regression oraz classification. Likelihood wyjaśnia, skąd bierze się cel uczenia. GLM jest nazwą wspólnej idei dopiero po tych przykładach, a pełna exponential family może być dodatkiem.
+3. Następnie generalizacja. Learning curves, bias-variance i regularization prowadzą do pytania o wyniki na nowych danych. Learning theory można wprowadzić intuicyjnie jako ograniczenia wnioskowania ze skończonej próby. Dowody VC theory nie są konieczne w rdzeniu dla początkujących.
+
+Osobna lekcja powinna zestawić discriminative i generative learning. W tym zestawieniu generative oznacza modelowanie rozkładu danych, a nie wyłącznie generowanie tekstu przez LLM. Prosty Naive Bayes jest użytecznym kolejnym przykładem po prawdopodobieństwie warunkowym. To moja propozycja zakresu, nie zalecenie przepisane z syllabusa.
+
+### CS221 rozszerza AI poza przewidywanie etykiet
+
+[CS221, Autumn 2025](https://stanford-cs221.github.io/autumn2025/) prowadzi od learning przez search i MDP do games, Bayesian networks oraz logic. Wymaga programowania na poziomie CS106A i CS106B, discrete math, probability i linear algebra. Autorzy wprost ostrzegają przed szybkim tempem i równoczesnym nadrabianiem podstaw. Program obejmuje też language models oraz AI & society.
+
+Na tej podstawie proponuję krótszy blok pokazujący cztery różne pytania:
+
+| Pytanie | Pojęcie | Małe doświadczenie uczestnika |
+|---|---|---|
+| Jak przewidzieć wynik na podstawie przykładów? | Learning | Porównać predictions dwóch znanych modeli |
+| Jak znaleźć sekwencję działań do celu? | Search | Prześledzić wyszukiwanie drogi na małym grafie |
+| Jak wybrać działanie przy niepewnych skutkach? | MDP i RL | Policzyć oczekiwany reward, potem odróżnić znane przejścia od uczenia przez doświadczenie |
+| Jak zmienić przekonanie po nowej obserwacji? | Probabilistic inference | Uaktualnić prawdopodobieństwa w małej tabeli |
+
+To autorskie uproszczenie zakresu CS221. Nie należy obiecywać opanowania całego AI na podstawie tych czterech doświadczeń. Search wymaga wcześniejszego wprowadzenia grafu, a MDP wymaga probability i expected value. Bez tych przygotowań zmiana tematu stworzy kolejne miejsce utknięcia.
+
+### CS336 jest przykładem późniejszej specjalizacji LLM
+
+[CS336, Spring 2025](https://cs336.stanford.edu/spring2025/index.html) obejmuje tokenization, architekturę Transformer, uczenie, scaling, evaluation, przygotowanie danych i alignment. Wymaga biegłego Pythona, doświadczenia w deep learning, PyTorch i optymalizacji systemów oraz matematyki akademickiej. Zadania obejmują samodzielny model językowy i optymalizację GPU. Strona określa kurs jako intensywny implementacyjnie.
+
+Wniosek dla mle-course: przegląd idei tokenów, embeddings, attention i przewidywania następnego tokena może pokazać kierunek dalszej nauki. Implementacja i trenowanie LLM według CS336 powinny pozostać późniejszą gałęzią. Dodanie do rdzenia całego zakresu CS229, CS221 i CS336 ponownie przeciążyłoby początkującego. Lepsza jest mniejsza liczba pojęć, do których uczestnik wraca w kolejnych doświadczeniach.
