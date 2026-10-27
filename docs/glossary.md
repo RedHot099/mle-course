@@ -41,6 +41,7 @@ Kurs używa angielskich terminów, bo takich używa się w pracy i w dokumentacj
 | fact table | tabela faktów | Tabela z jednym wierszem na zdarzenie, np. sprzedaż serii w danym dniu |
 | fail fast | | Podejście, w którym program przerywa działanie przy pierwszym złamanym założeniu |
 | feature | cecha | Kolumna wejściowa modelu |
+| fit | dopasowanie | Krok, w którym model zapamiętuje albo wyznacza to, czego potrzebuje do prognozy: dla modeli naiwnych historię, dla modeli uczonych parametry |
 | fork | | Własna kopia cudzego repozytorium na GitHubie |
 | generator |  | Funkcja z `yield`, która oddaje wartości po jednej, na żądanie |
 | gradient descent | spadek gradientu | Uczenie przez przesuwanie parametrów małymi krokami przeciwnie do gradientu straty |
@@ -61,6 +62,7 @@ Kurs używa angielskich terminów, bo takich używa się w pracy i w dokumentacj
 | merge | złączenie | Połączenie dwóch tabel po kluczu |
 | mixed precision | mieszana precyzja | Liczenie części operacji w 16 bitach zamiast 32, szybciej i przy mniejszej pamięci |
 | mock | atrapa | Obiekt udający zależność w teście i zapamiętujący, jak go wołano |
+| moving average | średnia krocząca | Prognoza równa średniej z ostatnich kilku wartości historii |
 | MSE | średni błąd kwadratowy | Średnia z kwadratów różnic między prognozą a rzeczywistością |
 | mutation testing | testowanie mutacyjne | Sprawdzanie testów przez celowe psucie kodu: dobry test wykrywa zepsutą wersję |
 | NaN | brak wartości | Specjalna wartość zmiennoprzecinkowa oznaczająca brak liczby |

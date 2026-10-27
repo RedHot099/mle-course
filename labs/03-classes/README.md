@@ -39,7 +39,7 @@ Plik `demand.py`, który przechodzi `ruff format --check`, `ruff check` i `mypy 
 
 ## Zanim zaczniesz
 
-- Przeczytałeś wykład 03.
+- Przeczytałeś wykład 03, w tym pierwszą sekcję "Co to jest prognoza". Zadania 03.3-03.6 używają jej słownika: historia, horyzont, holdout, MAE, baseline.
 
 ## Gdy utkniesz
 
