@@ -1,6 +1,6 @@
 # Jak przebudować kurs dla początkującej osoby
 
-Audyt z 27 października 2026, zaktualizowany po uwagach autora o przewadze infrastruktury nad rozumieniem ML/AI. Stan analizowanego repozytorium: `951c88c`, gałąź `main`. Dokument proponuje zmiany. Nie zmienia zadań ani nie zawiera ich rozwiązań.
+Audyt z 27 października 2026, zaktualizowany po zmianie nacisku na rozumienie ML/AI oraz kontroli zależności z `gpt-6-astra`. Stan analizowanego repozytorium: `951c88c`, gałąź `main`. Dokument proponuje zmiany. Nie zmienia zadań ani nie zawiera ich rozwiązań.
 
 ## Najważniejsza decyzja
 
@@ -107,12 +107,14 @@ Z tego wynika propozycja przejścia od krótkiego omówionego przykładu przez �
 
 Poniższe oznaczenia A–G opisują bloki dydaktyczne, nie nowe numery `course check`. Punkty 18–21 mają nową treść, a dawny punkt o SQL i storage został rozdzielony. Nie należy od razu renumerować plików. Najpierw trzeba przygotować i sprawdzić ścieżkę nauki.
 
+Przed punktem 1 uczestnik dostaje działający runner w przeglądarce i krótką instrukcję uruchomienia pierwszego wyrażenia. Diagnoza oraz opcjonalne podstawy Python korzystają z niego. Punkt 3 dotyczy dopiero środowiska lokalnego. Instalacja nie jest ukrytym wymaganiem pierwszych ćwiczeń.
+
 ### A. Wejście i pierwszy samodzielny wynik
 
 1. **Diagnoza podstaw.** Kilka zadań bez nowej biblioteki: prześledzenie pętli, funkcja zwracająca wynik, wybór danych z listy słowników, rozróżnienie zera i braku. Wynik kieruje do konkretnych lekcji, a nie do ogólnej etykiety "za słaby".
 2. **Python od zera, jeśli potrzebny.** Zmienne i wartości, wywołania, warunki, pętle, listy, słowniki, funkcje i `return`. Każdy temat z krótkimi zadaniami. Uczestnik znający podstawy pomija ten blok po diagnozie.
 3. **Minimalne środowisko.** Otworzenie notebooka, uruchomienie komórki, zapis i ponowne uruchomienie od początku. Oddzielnie wyjaśnione terminal, Python, kernel i katalog roboczy. Przed instalacjami dać możliwość pierwszego eksperymentu w istniejącym runnerze przeglądarkowym.
-4. **Dane i mała prognoza.** Jedna seria kilkunastu dni na małym fragmencie danych. Co oznacza obserwacja, braki, historia, data wykonania prognozy i horyzont. Uczestnik oblicza baseline i MAE, potem ogląda prosty wykres historii oraz prognozy.
+4. **Dane i mała prognoza.** Jedna seria kilkunastu dni na małym fragmencie danych. Najpierw suma, udział, średnia, różnica i wartość bezwzględna na kilku liczbach. Potem obserwacja, braki, historia, data wykonania prognozy i horyzont. Uczestnik oblicza baseline i MAE ręcznie oraz zwykłym Pythonem. Wykres historii i prognozy tworzy gotowy helper; własne użycie biblioteki wykresów pojawia się w 8.
 
 Rezultat A: uczestnik potrafi powiedzieć, co przewiduje i jak sprawdzi, czy przewidywanie ma sens. Nie potrzebuje jeszcze ABC, Protocol, pełnego panelu ani konta w usłudze AI.
 
@@ -126,37 +128,37 @@ Rezultat B: mały moduł z testem i odtwarzalnym wynikiem. Pełne `mypy --strict
 
 ### C. Tabele, tablice i pierwszy uczony model
 
-8. **pandas od pojedynczej tabeli.** Jeden wiersz, kolumna, indeks, typ, `.loc`, maska, nowa kolumna. Zanim pojawi się cleaning pipeline, uczestnik odpowiada na kilka pytań o dane i czyta wykres.
+8. **pandas od pojedynczej tabeli.** Najpierw czytanie zapisu `obiekt.metoda(...)`, argumentu, zwróconego wyniku i atrybutu, bez definiowania własnej klasy. Potem wiersz, kolumna, indeks, typ, `.loc`, maska i nowa kolumna. Osobna krótka lekcja statystyki opisowej: rozkład obserwacji, średnia, mediana, wariancja i odchylenie standardowe, najpierw ręcznie, potem na kolumnie. Histogram, wykres punktowy i liniowy przed ich interpretacją. To przygotowanie do skalowania i diagnozowania modeli.
 9. **NumPy potrzebne do obliczeń.** Tablica jednowymiarowa, elementowe operacje, maski, braki, shape. Potem dwie osie, redukcja i broadcasting. Wersja MAE porównana z wcześniejszym liczeniem ręcznym. Macierz wszystkich serii jest zadaniem późniejszym.
-10. **Czyszczenie, agregacje i relacje.** Mała ramka, jawny klucz, proste `groupby().agg`, następnie `transform`, złączenie i sprawdzenie liczby wierszy. Dopiero potem trudne duplikaty z Online Retail II, cache i kontrakt pliku.
+10. **Czyszczenie, agregacje i relacje.** Mała ramka, jawny klucz, proste `groupby().agg`, następnie `transform`, złączenie i sprawdzenie liczby wierszy. Trudne duplikaty z Online Retail II, cache i pełny kontrakt pliku są drugim przebiegiem albo dodatkiem. Nie blokują pierwszego modelu w 12.
 11. **Czas i cechy na małym panelu.** Jedna seria, potem dwie celowo różne. Sortowanie, brakujący dzień, lag i rolling. Na osi czasu zaznaczone, co wiadomo w chwili prognozy. Horyzont jednego dnia przed prognozą całego tygodnia.
-12. **Pierwszy model ze scikit-learn.** Co oznaczają `X`, `y`, `fit`, `predict`; podział po czasie i baseline. Prosty model liniowy lub małe drzewo, gotowy estimator, kilka jawnych cech. Najpierw model i uczciwa ocena, potem scaler z `Pipeline` i porównanie wyników.
+12. **Pierwszy model ze scikit-learn.** Najpierw cecha, target i model liniowy z jedną wagą oraz interceptem: uczestnik ręcznie oblicza prognozę. Rozróżniamy parametr uczony i ustawienie wybrane przez człowieka. Potem `X`, `y`, podział po czasie, baseline oraz gotowy estimator. `fit` zmienia stan estymatora, a `predict` korzysta z tego stanu na nowych danych. Ocena używa znanego MAE; nie trzeba jeszcze wyprowadzać algorytmu uczenia. Dopiero po działającym przykładzie scaler, oparty na statystyce z 8, oraz `Pipeline` dopasowany tylko na treningu. Od pierwszego porównania trening służy dopasowaniu, walidacja wyborowi ustawień, a końcowy test pozostaje zamknięty. Własne dane uczestnika i dostarczony mały zbiór są równorzędnymi wejściami do tej lekcji.
 
 Rezultat C: mały projekt od danych do porównania baseline'u z modelem. Pełne API Freshcast nie jest warunkiem pierwszego uczenia. Dane demonstracyjne są częścią kursu, a kod ocenianego rozwiązania nadal pisze uczestnik.
 
 ### D. Zrozumienie modeli i oceny
 
-13. **Matematyka modelu liniowego.** Średnia, wariancja i skala poznane wcześniej na danych. Teraz prosta z jedną wagą, strata dla kilku wartości wagi, nachylenie i krok uczenia. Potem dwie cechy, iloczyn skalarny, macierz i gradient. Własny gradient descent jako osobny lab po pierwszym estimatorze.
-14. **Walidacja i porównanie.** Underfitting, overfitting, train i validation, kilka przesuwanych okien. MAE, RMSE, WAPE i bias wraz z ograniczeniami. Najpierw tabela wyników ręcznie wybranych ustawień, dopiero później automatyczne strojenie.
+13. **Matematyka modelu liniowego.** Po modelu z 12 wprowadzamy MSE jako funkcję parametrów i porównujemy ją z MAE używanym do oceny. Kolejne krótkie lekcje: strata przy jednej wadze → nachylenie z małej zmiany i pochodna → krok gradient descent → dwie cechy i pochodne cząstkowe → iloczyn skalarny → mnożenie macierzy, transpozycja i shape → zapis gradientu na całej próbce. Własny gradient descent powstaje najpierw w wersji skalarnej. Zapis macierzowy wymaga wcześniejszego uzgodnienia ręcznych wyników i kształtów, zamiast przepisania wzoru.
+14. **Walidacja i porównanie.** Underfitting, overfitting, train, validation i zamknięty test, kilka przesuwanych okien. MAE, RMSE, WAPE i bias wraz z ograniczeniami. Najpierw tabela wyników ręcznie wybranych ustawień. To blok o procedurze uczciwego eksperymentu. Automatyczny tuning jest dodatkiem po 18, gdzie uczestnik wyjaśnia generalizację i wybór z wielu prób.
 15. **Cechy, drzewa i boosting.** Kalendarz, proste kodowanie kategorii, regresyjne drzewo, las, boosting. Jedno porównanie zmienia jedną rzecz. Direct i recursive forecasting jako osobny odcinek z osią dostępności danych. Target encoding, SHAP i graf zależności cech jako rozszerzenia po podstawach.
-16. **Klasyfikacja jako drugi rodzaj celu.** Kilka ręcznie ocenionych alarmów, confusion matrix, precision i recall, próg i koszt. Potem własna etykieta przyszłego dnia i model. Kalibracja po rozróżnieniu rankingu i prawdopodobieństwa.
+16. **Klasyfikacja jako drugi rodzaj celu.** Zdarzenie, częstość bazowa i warunkowanie jako liczenie częstości w wybranej grupie. Prawdopodobieństwo interpretujemy jako przewidywaną częstość w porównywalnych przypadkach. Kilka ręcznie ocenionych alarmów, confusion matrix, precision i recall oraz próg. Potem etykieta przyszłego dnia i regresja logistyczna: wynik liniowy znany z 12, funkcja wykładnicza i sigmoida jako mapowanie wyniku do przedziału od 0 do 1. Odróżniamy ranking, prognozowane prawdopodobieństwo i decyzję progową. Próg sprawdzamy na prostej tabeli kosztów. Wyprowadzenie log-loss, formalny expected cost i kalibracja pojawiają się w 19.
 
 Rezultat D: uczestnik umie wybrać model i uzasadnić ocenę. Nie musi jeszcze samodzielnie implementować każdej rodziny algorytmów ani używać PyTorch.
 
 ### E. Domknięcie potrzebnych kompetencji technicznych
 
-17. **Klasy i organizacja eksperymentu.** Działający model pokazuje potrzebę przechowywania stanu. Zwykła klasa, konstruktor i metoda, potem dataclass. Czytanie API estymatora i prosty moduł z testami. ABC, Protocol, zaawansowane generyki oraz pełny pakiet nie są warunkiem dalszej nauki idei ML.
+17. **Klasy i organizacja eksperymentu.** Powrót do stanu estymatora znanego z 12. Teraz uczestnik definiuje zwykłą klasę, konstruktor i metodę. Dataclass jako opcjonalne uproszczenie. Korzystanie z gotowego obiektu jest już znane z 8 i 12. Ta lekcja przygotowuje samodzielną definicję sieci w 20; nie jest wymaganiem bloków 18 i 19. ABC, Protocol, zaawansowane generyki oraz pełny pakiet należą do rozszerzenia.
 
-Rezultat E: uczestnik potrafi samodzielnie uruchomić mały eksperyment, zmienić jeden element i sprawdzić wynik. To wystarczająca baza techniczna dla następnego bloku.
+Rezultat E: uczestnik rozróżnia użycie obiektu od napisania jego klasy. Może przejść 17 przed 18 albo wrócić do niej bezpośrednio przed własną siecią w 20. Samodzielne uruchomienie eksperymentu i zmiana jednego elementu są ćwiczone już w C i D.
 
 ### F. Dlaczego ML działa i jak mieści się w AI
 
 To nowy cel drugiej części kursu. Nie powtarzamy instrukcji wywołania `fit`. Wyjaśniamy, jakie założenia stoją za tym wywołaniem i dlaczego poprawnie wykonany program może dawać złą odpowiedź.
 
-18. **Uczenie i generalizacja.** Od funkcji straty na próbce do błędu na nowych danych. Rozdzielenie modelu, zbioru dopuszczalnych funkcji i algorytmu optymalizacji. Różne modele mają różne inductive biases. Regularizacja, ilość danych, szum oraz zmiana rozkładu wpływają na wynik. To pogłębienie wcześniejszej walidacji, a nie drugi kurs podziału na train i validation.
-19. **Prawdopodobieństwo, niepewność i decyzja.** Wcześniejsze liczenie częstości prowadzi do rozkładu i prawdopodobieństwa warunkowego. Następnie likelihood i powiązanie z loss, generative versus discriminative models, rozróżnienie predykcji od decyzji. Niepewność danych i modelu oraz granice interpretowania confidence. Osobno wyjaśniamy kalibrację i ograniczenia wnioskowania przyczynowego z obserwacji.
-20. **Reprezentacje i uczenie bez ręcznego celu.** Co zmienia wybór cech, odległości i przestrzeni opisu. Osobne krótkie lekcje o k-means, PCA, sieci z nieliniowością i embeddings. Od odtwarzania reprezentacji do self-supervised learning. Dopiero po tym intuicja attention i przewidywania kolejnego tokenu. Uczestnik rozumie, czego model językowy uczy się z takiego zadania, bez trenowania własnego LLM.
-21. **AI poza przewidywaniem etykiety.** Rozdzielenie uczenia, wnioskowania i podejmowania działań. Search znajduje plan, inference odpowiada na pytanie o ukryty stan, a MDP opisuje decyzje rozłożone w czasie. Na małym przykładzie pojawiają się reward, policy oraz exploration versus exploitation. Na koniec porównujemy, do jakiej części problemu pasuje klasyczny model, search, system reguł lub model językowy, i jak oceniać błędy całego rozwiązania.
+18. **Uczenie i generalizacja.** Od funkcji straty na próbce do błędu na nowych danych. Rozdzielenie modelu, zbioru dopuszczalnych funkcji i algorytmu optymalizacji. Różne modele mają różne inductive biases. Regularizacja, ilość danych, szum oraz zmiana rozkładu wpływają na wynik. Learning curves i wyniki powtarzanych eksperymentów pokazują ograniczenia próbki. To pogłębienie procedury z 14. Intuicja generalizacji nie wymaga wcześniejszego likelihood; formalne ujęcie probabilistyczne może wrócić po 19.
+19. **Prawdopodobieństwo, niepewność i decyzja.** Najpierw rozkład, warunkowanie znane z 16, niezależność i Bayes na tabeli. Potem likelihood jako funkcja parametrów przy ustalonych danych, logarytm i negative log-likelihood. Dopiero stąd przechodzimy do log-loss i cross-entropy oraz probabilistycznej interpretacji znanych modeli. Naive Bayes wprowadzamy przed porównaniem z regresją logistyczną jako przykładem generative versus discriminative learning. Osobne lekcje obejmują niepewność danych i modelu, kalibrację oraz expected cost. Ograniczenia wnioskowania przyczynowego pokazujemy na jednym kontrprzykładzie, bez nowego kursu causal inference.
+20. **Reprezentacje i cele uczenia.** Pięć odcinków ma odrębne zadania: geometria cech i k-means; projekcja i PCA; mała sieć oraz uczenie reprezentacji z etykiet; embeddings i self-supervision; tokeny, cel modelu językowego oraz attention. W każdym odcinku najpierw wprowadzamy potrzebne operacje, potem algorytm. Self-supervision nadal ma zaprojektowany cel uczenia. Podstawy sieci nie wymagają ukończenia PCA, a pełna implementacja transformera pozostaje rozszerzeniem.
+21. **AI poza przewidywaniem etykiety.** Najpierw graf, stan, działanie i koszt, następnie search jako szukanie planu. Probabilistic inference wraca do warunkowania z 19. Część decyzyjna przechodzi od losowego przejścia i expected reward do horyzontu, cumulative return i policy. Dopiero potem porównujemy działania z uwzględnieniem przyszłych stanów oraz rozróżniamy planowanie przy znanym modelu przejść od uczenia przez doświadczenie. Exploration i exploitation pojawiają się na końcu tego ciągu. Blok kończy dobór metody i ocena błędów rozwiązania, bez implementacji zaawansowanego RL.
 
 Każdy punkt F jest blokiem kilku lekcji. Obecny moduł 13 łączy unsupervised learning i pierwszą pętlę PyTorch. Nie powtarzamy tego przeciążenia przez dodanie attention do tej samej lekcji. Prawdopodobieństwo warunkowe i likelihood wymagają własnych ćwiczeń przed modelami probabilistycznymi. Podobnie embeddings i attention wymagają praktyki z wektorami, zanim pojawią się w opisie modelu językowego.
 
@@ -171,9 +173,19 @@ Nie jest to kopia semestru Stanford ani jego dokładnej kolejności. To propozyc
 | Blok | Kolejność krótkich lekcji | Eksperyment uczestnika | Dowód zrozumienia |
 |---|---|---|---|
 | 18: generalizacja | Próbka i populacja → model i optymalizacja → inductive bias i regularizacja → ilość danych oraz shift | Ten sam problem z małą i większą próbką, potem z nowym zakresem wejść. Porównanie prostego modelu z elastycznym | Wyjaśnienie, dlaczego mniejszy training loss nie gwarantuje lepszego działania i kiedy więcej danych nie usunie problemu |
-| 19: niepewność | Prawdopodobieństwo warunkowe → likelihood i loss → modele generative i discriminative → niepewność i koszt decyzji | Dwie grupy z różną częstością zdarzenia. Porównanie modelu opartego na Bayesie i regresji logistycznej, następnie dwóch progów decyzji | Rozróżnienie prawdopodobieństwa zdarzenia, niepewności oszacowania i kosztu błędnej decyzji. Wskazanie założeń modelu |
-| 20: reprezentacje | Cechy i odległość → k-means → PCA → nieliniowość i embeddings → self-supervision i attention | Najpierw zmiana skali i projekcja małych danych. W kolejnych lekcjach porównanie modelu liniowego z małą siecią na CPU oraz inspekcja gotowych wektorów | Wskazanie, co zachowuje reprezentacja, co traci i dlaczego podobieństwo w niej nie jest dowodem prawdziwości odpowiedzi |
-| 21: szersze AI | Predykcja i plan → inference → MDP i reward → mapa metod oraz ograniczenia | Osobno mała trasa z kosztami, proste wnioskowanie z obserwacji i kilkustanowy problem decyzji. Potem wybór metody dla nowego problemu | Wyjaśnienie różnicy między przewidzeniem skutku działania a wyborem dobrego działania, oraz wskazanie brakującej informacji |
+| 19: niepewność | Rozkład i warunkowanie → niezależność i Bayes → likelihood → log i negative log-likelihood → modele generative i discriminative → niepewność, kalibracja i decyzja | Dwie grupy z różną częstością zdarzenia. Po osobnych lekcjach modeli porównanie Naive Bayes i regresji logistycznej, następnie dwóch progów decyzji | Rozróżnienie prawdopodobieństwa zdarzenia, niepewności oszacowania i kosztu błędnej decyzji. Wskazanie założeń modelu |
+| 20: reprezentacje | Geometria i k-means; osobno projekcja i PCA; następnie kompozycja funkcji, sieć, embeddings i cele uczenia; dla tekstu tokeny przed wektorami tokenów i attention | Osobne doświadczenia ze skalą, projekcją, małą siecią na CPU oraz wektorami. Odcinek językowy używa krótkiej sekwencji i kilku tokenów | Wskazanie, co zachowuje reprezentacja, co traci i dlaczego podobieństwo w niej nie jest dowodem prawdziwości odpowiedzi |
+| 21: szersze AI | Graf i koszty → plan; inference po 19; losowe przejście → expected reward → cumulative return → policy → planowanie i RL | Osobno mała trasa, wnioskowanie z obserwacji i kilkustanowy problem, w którym lepszy natychmiastowy reward daje gorszy wynik całej sekwencji | Wyjaśnienie różnicy między predykcją, wnioskowaniem i decyzją, oraz wpływu przyszłych skutków na wybór działania |
+
+Wewnątrz 20 obowiązują następujące przygotowania, każde z małym zadaniem:
+
+- **20a, geometria i k-means.** Skala, odległość euklidesowa i średnia punktów przed przypisywaniem punktów do klastrów.
+- **20b, PCA.** Centrowanie → kierunek i rzut → wariancja po rzucie → wybór reprezentacji. Rozkład własny i SVD nie są wymaganiami rdzenia.
+- **20c, mała sieć.** Kompozycja funkcji → nieliniowość → chain rule na jednym złożeniu → tensor i autograd → mała sieć z etykietami. To używa 13 i, przy własnej klasie sieci, 17. Oczekiwany jest jeden działający eksperyment na CPU, bez rozbudowanego training framework.
+- **20d, embeddings i cele uczenia.** Tablica uczonych wektorów, geometria podobieństwa, supervised i self-supervised learning. Cel oraz pochodzenie etykiet lub par danych są jawne w każdym przykładzie.
+- **20e, model językowy.** Tekst → tokeny i identyfikatory → wektory tokenów → przewidywanie kolejnego tokenu jako cel uczenia → jego cross-entropy z 19. Przed attention powrót do iloczynu skalarnego, softmax i średniej ważonej; potem kolejność pozycji oraz powtarzane przewidywanie podczas generowania. Nie wymagamy trenowania LLM ani dostępu do zewnętrznego API.
+
+20a i 20b są odrębnymi przykładami reprezentacji. Nie tworzą sztucznego wymagania ukończenia PCA przed małą siecią. W proponowanej kolejności pełne 19 poprzedza 20, ale jego kluczową zależnością dla części językowej jest cross-entropy przed 20e.
 
 Średnia squared loss jako przykład estymacji, likelihood i cross-entropy mogą korzystać z małych danych. Nie wymagamy formalnych dowodów teorii uczenia. Nie utożsamiamy też generative classifier z dzisiejszym generatywnym AI: podobieństwo nazw wymaga osobnego wyjaśnienia. Wprowadzenie nowego pojęcia zawsze kończy się jego użyciem na małym przykładzie.
 
@@ -182,6 +194,8 @@ Freshcast pozostaje głównym projektem, ale nie ilustruje równie dobrze wszyst
 #### Zakończenie bez dodatkowego capstone produkcyjnego
 
 Po każdym bloku uczestnik oddaje krótki wynik eksperymentu oraz własne wyjaśnienie. Finał to kilka nowych przypadków: dobór sposobu opisania problemu, wskazanie założeń, diagnoza błędu modelu i uzasadnienie decyzji. Nie powstaje kolejny duży projekt ani osobne wdrożenie.
+
+Końcowy holdout projektu Freshcast istnieje niezależnie od capstone. Odkładamy go już w 12, decyzje o modelu podejmujemy na walidacji, a jednorazowa ocena zamrożonego wariantu jest małym ćwiczeniem na końcu rdzenia. Jeśli uczestnik obejrzy holdout wcześniej, zapisuje ten fakt i nie nazywa późniejszych wyników na tych danych niezależnym testem.
 
 Kryterium ukończenia brzmi: uczestnik umie przewidzieć zachowanie modelu, przeprowadzić mały eksperyment i wyjaśnić rozbieżność z oczekiwaniem. Znajomość nazw architektur albo przejście quizu wielokrotnego wyboru tego nie zastępują.
 
@@ -193,6 +207,29 @@ Kryterium ukończenia brzmi: uczestnik umie przewidzieć zachowanie modelu, prze
 - **Dalsze modele językowe.** Pełna implementacja transformera, pretraining i post-training po opanowaniu sieci, prawdopodobieństwa i reprezentacji. Te tematy wymagają osobnego zakresu i budżetu obliczeń.
 
 Przesunięcie infrastruktury nie oznacza, że jej czas automatycznie wystarczy na cały blok F. Po pilotażu trzeba osobno oszacować rdzeń pojęciowy i rozszerzenia. Nazwa oraz opis kursu powinny odzwierciedlać nowe proporcje: Python i dane jako przygotowanie do rozumienia ML/AI, inżynieria produkcyjna jako dalsza ścieżka.
+
+## Kontrola kolejności z gpt-6-astra
+
+Na prośbę autora niezależny agent `gpt-6-astra` ocenił pełny program A–G w wersji `3c4c589`, przed poniższymi poprawkami. Przeczytał audyt i notatkę źródłową. Jego werdykt: kierunek zachowuje sens, lecz lista tematów nie była jeszcze pełną ścieżką wymagań dla osoby od zera. Większość problemów wymaga małego przygotowania we właściwym miejscu, nie przestawienia całych bloków.
+
+Sprawdziłem wszystkie osiem uwag z treścią dokumentu. Zostały uwzględnione w programie:
+
+| Uwaga Astry | Wprowadzona korekta |
+|---|---|
+| Ćwiczenia Python przed środowiskiem | Runner przeglądarkowy przed 1 i 2. Punkt 3 oznacza środowisko lokalne. |
+| Matematyka potrzebna wcześniej niż deklarowano | Średnia i wartość bezwzględna w 4; wariancja i odchylenie w 8; stopniowy most do gradientu macierzowego w 13. |
+| Metody i stan obiektu przed lekcją klas | Czytanie atrybutów i metod w 8, stan `fit` i `predict` w 12, pisanie własnej klasy w 17. |
+| Cleaning znów może opóźnić model | Tylko małe podstawy 10 przed modelem. Trudne duplikaty i cache jako późniejszy przebieg. Dostarczony zbiór jest zwykłym wejściem do 12. |
+| Zasady wyboru modelu dopiero po pierwszym porównaniu | Podział ról train, validation i test już w 12. Holdout pozostaje częścią rdzenia mimo usunięcia obowiązkowego capstone. |
+| Klasyfikacja przed przygotowaniem probabilistycznym | Częstości i warunkowanie przed sigmoidą w 16. Bayes, likelihood, log-loss i kalibracja w jawnej kolejności w 19. |
+| Reprezentacje ukrywają kilka dużych skoków | Osobne 20a–20e z geometrią, projekcją, chain rule, tokenami i przygotowaniem do attention. Poprawiony tytuł nie sugeruje braku celu uczenia. |
+| MDP bez wyjaśnienia skutków kolejnych działań | Losowe przejście, expected reward, cumulative return i policy przed rozróżnieniem planowania i RL w 21. |
+
+Zachowujemy pierwszy estimator przed pełną algebrą gradientu, podstawową walidację przed rozbudowanymi porównaniami oraz późne pisanie klas. Nie przenosimy całego 19 przed klasyfikację ani przed 18. Do pierwszego klasyfikatora wystarczą lokalne podstawy prawdopodobieństwa. Intuicyjna generalizacja może poprzedzać likelihood. To zgodne z oceną Astry.
+
+Po korektach `gpt-6-astra` ponownie sprawdził punkty 1–21, odcinki 20a–20e i tabelę matematyki. Potwierdził uwzględnienie wszystkich ośmiu uwag i nie znalazł nowej zależności w odwrotnej kolejności. Ocenił program jako spójny na poziomie projektu i gotowy do rozpisania lekcji oraz pilotażu.
+
+Nadal nie jest to dowód, że każdy lab ma odpowiednią trudność: lekcje trzeba dopiero napisać, a wymagania sprawdzić na ich rzeczywistej treści i w pilotażu. Szczególnie 13, 19, 20 i 21 są blokami wielu sesji, nie pojedynczymi wykładami.
 
 ## Co zrobić z każdym obecnym modułem
 
@@ -250,14 +287,19 @@ Brakuje wydzielonej ścieżki ćwiczeń łączącej deklarowane podstawy szkolne
 
 | Przed czym | Krótkie przygotowanie | Dowód gotowości |
 |---|---|---|
-| ADI i CV² | Udział, średnia, wariancja oraz różnica zera i braku | Obliczenie statystyk kilku obserwacji i opis jednostek |
-| NumPy i scaler | Wektor, tabela liczb, shape, osie, odchylenie standardowe | Przewidzenie kształtu wyniku i ręczna standaryzacja jednej wartości |
-| Model liniowy | Wykres prostej, waga, intercept i błąd | Ręczne obliczenie prognozy i wpływu zmiany wagi |
-| Gradient descent | Strata jako funkcja wagi, nachylenie i wielkość kroku | Wybór kierunku kroku na rysunku, potem wynik liczbowy |
-| Klasyfikacja | Częstość zdarzenia, proporcja i koszt decyzji | Porównanie dwóch progów na małej confusion matrix |
-| PCA i sieci | Rzutowanie lub pochodna złożenia, zależnie od ścieżki | Osobne ćwiczenie przed użyciem biblioteki |
-| Likelihood i niepewność | Rozkład, prawdopodobieństwo warunkowe, niezależność i Bayes na małej tabeli | Wyjaśnienie różnicy między prawdopodobieństwem danych przy modelu a prawdopodobieństwem modelu po obserwacji |
-| Search i MDP | Graf, stan, działanie, koszt i wartość oczekiwana | Ręczne porównanie dwóch tras i dwóch działań z losowym wynikiem |
+| MAE w 4 | Średnia i wartość bezwzględna na początku 4 | Ręczne obliczenie błędu kilku prognoz |
+| Scaler w 12 | Średnia, wariancja i odchylenie w 8; osie i operacje NumPy w 9 | Przewidzenie shape i ręczna standaryzacja jednej wartości |
+| Model liniowy w 12 | Wykres punktowy w 8, prosta z jedną wagą na początku 12 | Ręczne obliczenie prognozy i wpływu zmiany wagi |
+| Gradient macierzowy w 13 | Pochodna jednej zmiennej, pochodne cząstkowe i mnożenie macierzy w osobnych krokach 13 | Uzgodnienie gradientu liczonego po elementach i macierzowo |
+| Klasyfikacja w 16 | Częstość bazowa, warunkowanie i score przed sigmoidą w 16 | Odróżnienie rankingu od prawdopodobieństwa oraz porównanie progów |
+| Likelihood w 19 | Rozkład, warunkowanie, niezależność i Bayes na początku 19 | Wyjaśnienie różnicy między prawdopodobieństwem danych przy modelu a prawdopodobieństwem modelu po obserwacji |
+| Log-loss w 19 i cross-entropy w 20e | Logarytm i negative log-likelihood w 19 | Porównanie kary za poprawną i błędną pewną predykcję |
+| PCA w 20b | Centrowanie, kierunek, rzut i wariancja po rzucie na początku 20b | Wyjaśnienie informacji zachowanej i utraconej przy projekcji |
+| Mała sieć w 20c | Pochodne z 13, kompozycja funkcji i chain rule na początku 20c | Prześledzenie jednej małej kompozycji, potem autograd |
+| Attention w 20e | Tokeny, ich wektory, iloczyn skalarny, softmax i średnia ważona we wcześniejszych krokach 20e | Ręczne odczytanie, które elementy wpływają na nową reprezentację |
+| MDP i RL w 21 | Graf, losowe przejście, expected reward, cumulative return i policy w poprzednich lekcjach 21 | Wybór działania z uwzględnieniem późniejszych skutków |
+
+ADI i CV² pozostają dodatkiem po przygotowaniu statystyki w 8. Nie są warunkiem pierwszej prognozy ani modelu.
 
 Nie dodawałbym na początku obowiązkowego wielkiego kursu matematyki. Przygotowanie ma odpowiadać zadaniu i zawierać praktykę, nie sam link do zewnętrznego wykładu.
 

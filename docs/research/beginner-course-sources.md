@@ -74,6 +74,8 @@ Moja propozycja dla początkującego to trzy powroty do znanych modeli:
 
 Osobna lekcja powinna zestawić discriminative i generative learning. W tym zestawieniu generative oznacza modelowanie rozkładu danych, a nie wyłącznie generowanie tekstu przez LLM. Prosty Naive Bayes jest użytecznym kolejnym przykładem po prawdopodobieństwie warunkowym. To moja propozycja zakresu, nie zalecenie przepisane z syllabusa.
 
+Te trzy powroty opisują perspektywy rozumienia znanych modeli, nie obowiązkową kolejność. W głównym programie intuicyjna generalizacja jest przed pełnym likelihood. Weryfikacja z `gpt-6-astra` nie wykazała potrzeby zamiany tych bloków: podstawy prawdopodobieństwa są wprowadzane lokalnie przed ich pierwszym użyciem, a formalny opis wraca później.
+
 ### CS221 rozszerza AI poza przewidywanie etykiet
 
 [CS221, Autumn 2025](https://stanford-cs221.github.io/autumn2025/) prowadzi od learning przez search i MDP do games, Bayesian networks oraz logic. Wymaga programowania na poziomie CS106A i CS106B, discrete math, probability i linear algebra. Autorzy wprost ostrzegają przed szybkim tempem i równoczesnym nadrabianiem podstaw. Program obejmuje też language models oraz AI & society.
