@@ -56,6 +56,10 @@ print(total)</code></pre><ul class="quiz-options"><li>3<span class="why">To licz
 for value in [1, 4]:
     doubled.append(value * 2)
 print(doubled)</code></pre><p>Wynikiem jest lista <code>[2, 8]</code>. Jeśli lista jest pusta, nie można wybrać z niej ostatniego elementu. Można jednak przejść po niej pętlą: kod wewnątrz pętli nie wykona się wtedy ani razu.</p>
+<pre><code class="language-python">values = [1, 5, 4]
+for value in values:
+    if value &gt; 3:
+        print(value)</code></pre><p>Warunek jest tutaj wewnątrz pętli. Python sprawdza go osobno dla każdego elementu. Cztery spacje umieszczają <code>if</code> w pętli, a osiem polecenie <code>print</code> wewnątrz warunku. Zobaczysz 5 i 4, każde w osobnej linii.</p>
 </section>
 <section id="cwiczenia"><h2>Policz znane wartości</h2>
 <h3>Zero też się liczy</h3>

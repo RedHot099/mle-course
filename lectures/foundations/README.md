@@ -1,6 +1,6 @@
 # Utrzymanie ścieżki A–F
 
-Punkt wejścia: [mapa 70 lekcji](index.html). Nowy rdzeń obejmuje wszystkie 21 punktów uzgodnionego planu A–F. [Plan i kontrola kolejności](../../docs/research/beginner-curriculum-audit.md) wyjaśniają zakres. Starsze moduły 00–19 są dostępne przez [wcześniejszą mapę](../legacy.html); ich ukończenie nie jest dodatkowym wymaganiem nowej ścieżki.
+Punkt wejścia: [mapa 70 lekcji](index.html). Nowy rdzeń obejmuje wszystkie 21 punktów uzgodnionego planu A–F. [Plan i kontrola kolejności](../../docs/research/beginner-curriculum-audit.md) wyjaśniają zakres.
 
 ## Pokrycie planu
 
@@ -15,7 +15,7 @@ Punkt wejścia: [mapa 70 lekcji](index.html). Nowy rdzeń obejmuje wszystkie 21 
 
 Źródłem identyfikatorów, kolejności i wymagań jest [curriculum.json](curriculum.json). Treść lekcji znajduje się bezpośrednio w HTML. Weryfikator sprawdza kompletność katalogu, pokrycie punktów 1–21 i to, że wymagania nie wskazują późniejszych lekcji. Ścieżka jest gotowa do przeglądu autora i pilotażu. Sprawdzenia techniczne nie zastępują obserwacji początkujących uczestników.
 
-Zadania na stronach mają dwa rodzaje zakończenia. Edytory z przyciskiem Sprawdź sprawdzają wynik małego ćwiczenia. Zadania notebookowe i wyjaśnienia mają jawne kryteria w sekcji „Sprawdź, co pamiętasz”. Nie pozorujemy ich zaliczenia przez szukanie słów kluczowych. Tutor wymaga wyniku, ręcznego przykładu i wyjaśnienia na nowych danych.
+Zadania na stronach mają dwa rodzaje zakończenia. Edytory z przyciskiem Sprawdź sprawdzają wynik małego ćwiczenia. Zadania notebookowe i wyjaśnienia mają jawne kryteria w rozwijanej części „Sprawdź swoją pracę” przy zadaniu, a pytania kontrolne w sekcji „Sprawdź, co pamiętasz”. Nie pozorujemy ich zaliczenia przez szukanie słów kluczowych. Tutor wymaga wyniku, ręcznego przykładu i wyjaśnienia na nowych danych.
 
 ## Kolejność i źródła
 
@@ -36,7 +36,7 @@ Wyjaśnienia, ćwiczenia i dane syntetyczne są autorskie. Biblioteki służą d
 
 ## Dane i końcowy test
 
-`data/freshcast-sample.csv` zawiera 14 kolejnych obserwacji: sklep 70, produkt 116, 2024-03-28–2024-04-10. Pochodzi z publicznego `src/coursekit/fixtures/frn_sample.parquet`, FreshRetailNet-50K, Dingdong-Inc, CC BY 4.0. Zachowano `sale_amount`; `stock_hour6_22_cnt` nazwano `stockout_hours`. Cały wycinek jest widoczny w A4, więc nie służy jako zamknięty test.
+`data/freshcast-sample.csv` zawiera 14 kolejnych obserwacji: sklep 70, produkt 116, 2024-03-28–2024-04-10. To wycinek publicznego zbioru [FreshRetailNet-50K](https://huggingface.co/datasets/Dingdong-Inc/FreshRetailNet-50K), Dingdong-Inc, CC BY 4.0. Zachowano `sale_amount`; `stock_hour6_22_cnt` nazwano `stockout_hours`. Cały wycinek jest widoczny w A4, więc nie służy jako zamknięty test.
 
 Projekt od C12 korzysta z osobnych, jawnie syntetycznych danych: 56 dni od 2024-01-01. Pierwsze 49 są w `project-development.csv`, ostatnie 7 w `project-holdout.csv`. Trening obejmuje dni 1–42, walidacja 43–49, test 50–56. Wartości wygenerowano z trendu, cyklu tygodniowego i niewielkiego szumu, bez danych klientów. To demonstracja procesu, nie pomiar jakości biznesowej.
 
@@ -48,7 +48,7 @@ Pola kodu używają istniejącego `course.js`, który ładuje Pyodide i potrzebn
 
 B6.2 i dalsze doświadczenia lokalne korzystają z osobnego `~/mle-practice`. Biblioteki do C dodaje uczestnik, a Jupyter można uruchomić przez `uv run --with jupyterlab --with ipykernel jupyter lab`. PyTorch w F20 działa na CPU. Przykłady oznaczone `data-local-only` mają być wykonywane lokalnie; nie próbujemy pobierać PyTorch w Pyodide. Weryfikacja autora wykonuje je w swoim środowisku z CPU-owym PyTorch.
 
-Przykłady pokazują inne małe problemy. Funkcje i testy uczestnika pozostają jego pracą. Katalog nie korzysta z gałęzi `solutions`. Identyfikatory A–F nie są numerami `course check` ani `catchup`.
+Przykłady pokazują inne małe problemy. Funkcje i testy uczestnika pozostają jego pracą. Katalog nie korzysta z gałęzi `solutions`. Identyfikatory A–F określają lekcje i ich wymagania.
 
 ## Diagramy i język
 
@@ -60,24 +60,6 @@ Styl pochodzi z `lectures/assets/course.css`: systemowy font, tło `--plane`, te
 
 ## Sprawdzanie zmian
 
-Instrukcje tutora: [core.md](../../tutor/notes/core.md). Kontrole autora wykonuj z katalogu repozytorium:
+Instrukcje tutora: [core.md](../../tutor/notes/core.md). Polecenia kontroli autora znajdują się w [głównym README](../../README.md#sprawdzenie-materiałów-przez-autora).
 
-```bash
-uv sync
-uv pip install --python .venv/bin/python --index-url https://download.pytorch.org/whl/cpu "torch>=2.9,<2.10"
-uv run --no-sync python tools/verify_foundations.py
-uv run --no-sync ruff format --check tools
-uv run --no-sync ruff check tools
-uv run --no-sync --with playwright mypy tools
-```
-
-Przykłady PyTorch wymagają wersji CPU w środowisku autora. Opcja --no-sync zachowuje dodatkowo zainstalowany pakiet, bez pobierania całej grupy neural z wcześniejszej ścieżki. Nie uruchamiaj pełnych testów nieuzupełnionych zadań uczestnika jako zaliczenia nowych lekcji.
-
-Kontrola przeglądarkowa wymaga opcjonalnego Playwright i Chromium:
-
-```bash
-uv run --with playwright python -m playwright install chromium --only-shell
-uv run --with playwright python tools/verify_foundations_browser.py
-```
-
-Kontrola obejmuje układ na komputerze i telefonie, oba motywy diagramów, inicjalizację edytorów, zapis pracy i rzeczywiste wykonanie nieuzupełnionych sprawdzeń w Pyodide. Weryfikacja przykładów lokalnych obejmuje również małą pętlę sieci na CPU. Żadna z tych kontroli nie jest dowodem skuteczności dydaktycznej całej ścieżki.
+Weryfikator sprawdza katalog, wymagania, linki, diagramy, przykłady i nieuzupełnione startery. Kontrola przeglądarkowa obejmuje komputer i telefon, oba motywy diagramów, zapis pracy i rzeczywiste wykonanie sprawdzeń w Pyodide. Grupa neural zapewnia PyTorch CPU do wykonania przykładów lokalnych. Żadna z tych kontroli nie jest dowodem skuteczności dydaktycznej całej ścieżki.

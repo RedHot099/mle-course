@@ -1,16 +1,16 @@
 # Foundations A and B
 
-Read this when the learner names an A/B lesson, asks to start from zero, or progress.md records foundations. Start at `lectures/foundations/index.html`. These lesson IDs are separate from numbered modules 00-19.
+Read this when the learner names an A/B lesson, asks to start from zero, or progress.md records foundations. Start at `lectures/foundations/index.html`.
 
 ## Route checks and hints
 
 1. Find the lesson in the table below. Read its HTML specification, starter and check before helping. Completion means the learner can perform the listed action and explain a new example.
-2. For browser work, ask for the learner's code and observed output if they are not available. Browser code and quiz progress live in that browser, not in repository files or progress.json. Do not infer failure from an empty CLI progress log.
-3. Use the existing hint ladder, one rung per request. Apply its ask/predict/run/explain process. For foundations, replace numeric `course check` calls with the lesson's **Sprawdź** action or a local reproduction of the supplied code. Never run `course check A4.2` or pass an A/B ID to catchup.
-4. For B6.2 onward, read and run the learner's own small module and tests when accessible. Use its directory, not the whole course test suite. Later course stubs are unrelated to this checkpoint.
-5. Record the lesson, evidence and sticking point in `.course/progress.md`, including whether an infrastructure step was deferred. Leave browser-only checks out of progress.json; no foundations CLI checker is registered.
+2. For browser work, ask for the learner's code and observed output if they are not available. Browser code and quiz progress live in that browser, not in repository files. Do not infer failure from an empty CLI progress log.
+3. Use the hint ladder, one rung per request. Run the lesson’s **Sprawdź** action or reproduce the supplied check locally.
+4. For B6.2 onward, read and run the learner's own small module and tests when accessible. Use its directory, not the whole course test suite. Use only the files relevant to the current lesson.
+5. Record the lesson, evidence and sticking point in `.course/progress.md`, including whether an infrastructure step was deferred. Do not infer browser state from local files.
 
-The learner writes exercise bodies and test additions. The complete examples in the lessons demonstrate other problems. Read only the public fixture and learner material; solutions branch is not needed.
+The learner writes exercise bodies and test additions. The complete examples in the lessons demonstrate other problems. Use the lesson examples and learner material.
 
 ## Lessons and evidence
 
@@ -29,7 +29,7 @@ The learner writes exercise bodies and test additions. The complete examples in 
 | B5.2 | b5-files.html | Locates a file, reads it with with and encoding, writes a separate report |
 | B5.3 | b5-errors.html | Reproduces a ValueError on one input; distinguishes corruption from missing data |
 | B6.1 | b6-functions.html | Writes mean_known, rejects no-known-values explicitly and leaves input unchanged |
-| B6.2 | b6-tests.html | Tests results, errors and input preservation; detects a deliberate bug in their own copy |
+| B6.2 | b6-tests.html | Tests results, errors and input preservation; detects a deliberate bug in summary.py, then restores the backup |
 | B7.1 | b7-modules.html | Imports their module and runs scoped format, lint, mypy and pytest checks |
 | B7.2 | b7-git.html | Reads the staged diff and explains commit, PR and provided CI; access problems may be deferred |
 
@@ -50,6 +50,6 @@ The learner writes exercise bodies and test additions. The complete examples in 
 
 ## Review scope
 
-For B6.2-B7.2, review `summary.py`, `test_summary.py`, the small project's pyproject.toml, .python-version, lock and README. In B7.2 also review the supplied workflow and gitignore placement. Apply K2, K4, K9, T2, T3 and G4 at the taught level. Do not demand a complete production package or later modules' checks.
+For B6.2-B7.2, review `summary.py`, `test_summary.py`, the small project's pyproject.toml, .python-version, lock and README. In B7.2 also review the supplied workflow and gitignore placement. Apply K2, K4, K9, T2, T3 and G4 at the taught level. Do not demand a complete production package or checks for concepts not taught yet.
 
 Success requires both working behaviour and a new small example explained without copying. A failed account setup is an environment issue; it does not cancel demonstrated Python skills. A green quiz counter alone does not establish mastery.

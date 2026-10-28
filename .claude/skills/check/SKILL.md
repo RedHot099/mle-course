@@ -1,26 +1,17 @@
 ---
 name: check
-description: Run the course checks and help the learner understand a failing one.
-argument-hint: "[module or task id, e.g. 07 or 07.3]"
-disable-model-invocation: true
+description: Interpret a failing lesson check with the learner.
 ---
 
 # Check
 
-Run `uv run course check $ARGUMENTS` (no argument: the current module) and read the output with the learner.
+Resolve the lesson ID from `$ARGUMENTS` or `.course/progress.md`. Read the task, starter and supplied test in its HTML. Obtain the learner's code and exact message when browser state is unavailable.
 
-| Line starts with | Meaning | What you do |
-|---|---|---|
-| `✓` | passed | Say so. If the whole module passes, give one remark on their code against `docs/standard.md` and update progress |
-| `·` | not started | Point to the task in the lab notebook |
-| `✗` with a requirement | the code runs, one requirement is unmet | see below |
-| `✗` with "Twój kod zgłosił ..." | their code crashed | Read the traceback bottom-up with them: exception type, their line, the value at that point |
-| `·` with "sprawdzasz w notebooku" | a notebook task: the terminal cannot see the learner's function | Run the `check(...)` cell in the lab notebook instead |
+For browser tasks use **Sprawdź**, or reproduce that task's supplied check locally with the learner's code. For local tasks run only the commands taught in that lesson, in the learner's project directory. Notebook and reasoning tasks use the visible **Sprawdź swoją pracę** criteria; they have no automatic passing counter.
 
-## An unmet requirement
+1. Ask the learner to restate the failed requirement.
+2. Read an exception from its type and the learner's line back to the triggering value. For a wrong result, reproduce one failing input and compare expected with actual.
+3. Ask which operation produces the difference. Continue with the next rung in `.claude/skills/hint/SKILL.md`.
+4. Record evidence and the sticking point in `.course/progress.md`.
 
-1. Have the learner read the message and restate the requirement in their own words.
-2. Reproduce it outside the check: a three-line experiment in the notebook that shows actual next to expected. `src/coursekit/checks/mNN.py` shows the exact input the check uses; the samples it reads are in `src/coursekit/fixtures/`.
-3. Ask which line of their function produces the difference. From here it is a hint: follow `.claude/skills/hint/SKILL.md`.
-
-The constants in the check file are there to verify, not to be copied into the function. If the learner hard-codes one, ask what their function returns for the full data.
+A passing supplied check covers its cases. Ask for a new small case before treating the concept as demonstrated. Hard-coding expected outputs does not satisfy the task.

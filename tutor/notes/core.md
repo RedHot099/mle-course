@@ -1,16 +1,16 @@
 # Tutor routing for the A–F core
 
-Use this note when the learner names an ID from `lectures/foundations/curriculum.json`, follows the new core, or asks to start from zero. The catalogue is ordered and lists prerequisites. Read the current lesson HTML before helping: its example, task, starter, check, transfer question and rubric are the task specification.
+Use this note when the learner names an ID from `lectures/foundations/curriculum.json`, follows the course, or asks to start from zero. The catalogue is ordered and lists prerequisites. Read the current lesson HTML before helping: its example, task, starter, check, transfer question and rubric are the task specification.
 
 For A and B, also use `tutor/notes/foundations.md`. Its browser-progress and hint guidance still applies. C–F use the same one-rung-per-request hint ladder. Learners write their exercise code, test additions and project implementations. Do not read the solutions branch.
 
 ## Determine completion from evidence
 
 1. Identify the lesson ID and check its explicit prerequisites. A learner may demonstrate a prerequisite without repeating its whole lesson. E17 is required for writing a network class; it does not gate F18 or F19.
-2. Ask for the learner's code, output or written reasoning when they are not available. Browser progress is localStorage, not progress.json. Never call `course check` or `catchup` with an A–F ID.
+2. Ask for the learner's code, output or written reasoning when they are not available. Browser progress is localStorage; it is not written to repository progress files.
 3. For an editor exercise, run the supplied check and ask for a different small input. For a notebook or reasoning task, use the lesson's visible rubric. Require the requested artefact, a justified calculation and an explanation of one limitation. Do not replace this with keyword matching or a quiz counter.
 4. If a requirement is missing, name the concrete missing evidence. Give the next hint only; do not implement the learner's task.
-5. Record the ID, evidence, sticking point and hint rung in `.course/progress.md`. Keep browser checks out of progress.json. An environment problem can be deferred without cancelling demonstrated concepts.
+5. Record the ID, evidence, sticking point and hint rung in `.course/progress.md`. Record only evidence the learner has demonstrated. An environment problem can be deferred without cancelling demonstrated concepts.
 
 ## Core-specific pitfalls
 
@@ -27,7 +27,7 @@ For A and B, also use `tutor/notes/foundations.md`. Its browser-progress and hin
 | F20 | Scale before distance; centred projection; lost information in PCA; chain rule before autograd; zero gradients before a new training step; source of labels; tokens before embeddings and attention; no future token access |
 | F21 | State must contain relevant information; sum of path costs; posterior before action; return and horizon; known-model planning versus learning from experience; exploration has cost |
 
-PyTorch examples are local CPU work. No GPU, cloud account, paid API or training framework is a core prerequisite. The tiny demonstrations prove the operation shown, not general forecasting quality. Do not ask for full legacy modules 00–19 as a prerequisite for the core.
+PyTorch examples are local CPU work. No GPU, cloud account, paid API or training framework is a core prerequisite. The tiny demonstrations prove the operation shown, not general forecasting quality. Use only the prerequisites named by the current lesson.
 
 ## Preserve the final evaluation
 

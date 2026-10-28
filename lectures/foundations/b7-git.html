@@ -34,7 +34,7 @@
     <section id="pojecia"><h2>Zapisz konkretną zmianę</h2>
 <p>Git zapisuje historię zmian w plikach. Projekt, dla którego prowadzisz taką historię, nazywamy repozytorium. <em>Commit</em> jest zapisem wybranych zmian.</p><p><em>Branch</em>, czyli gałąź, pozwala pracować nad zmianą osobno od wersji bazowej projektu. Gdy chcesz pokazać swoją pracę do przeglądu, otwierasz <em>pull request</em>. Pokazuje on różnice między Twoją gałęzią a gałęzią, do której zmiana ma trafić.</p>
 <p>Użyj małego projektu z poprzedniej lekcji. Jego pierwsze CI sprawdzi tylko Twoją funkcję i testy. Repozytorium całego kursu zostaw osobno.</p>
-<p>Jeśli git nie jest gotowy albo nie możesz zalogować się do GitHub, skorzystaj z instrukcji <a href="../00-setup/index.html#s-git">konfiguracji git</a> i <a href="../00-setup/index.html#s-gh">logowania</a>. W razie problemów zachowaj projekt i wyniki testów lokalnie. Do ćwiczenia współpracy możesz wrócić po uzyskaniu dostępu.</p>
+<details id="git-setup"><summary>Przygotuj git i dostęp do GitHub</summary><p>W terminalu sprawdź <code>git --version</code>. Jeśli polecenie jest niedostępne, zainstaluj Git na swoim komputerze według <a href="https://docs.github.com/en/get-started/git-basics/set-up-git">instrukcji GitHub: Set up Git</a> dla swojego systemu.</p><p>Przed pierwszym commitem ustaw autora: <code>git config --global user.name "Twoje imię"</code> oraz <code>git config --global user.email "adres przypisany do konta GitHub"</code>. Podstaw własne dane. Adres pojawi się w historii commitów; możesz użyć prywatnego adresu noreply z ustawień GitHub.</p><p>Git przechowuje historię lokalnie. GitHub jest usługą, do której wyślesz wybrane zmiany. Utwórz konto i zaloguj się w przeglądarce. Do pracy przez HTTPS użyj sposobu logowania z podlinkowanej instrukcji. Jeśli korzystasz z zainstalowanego GitHub CLI, polecenie <code>gh auth login</code> prowadzi przez logowanie do GitHub.com i autoryzację przez przeglądarkę. Nie zapisuj tokenów w plikach projektu ani w adresie origin.</p><p>Jeśli dostęp do konta lub instalacja są chwilowo niemożliwe, zachowaj projekt i wyniki testów lokalnie. Do wysyłania zmian wrócisz po rozwiązaniu problemu.</p></details>
 </section>
 <section id="repo"><h2>Najpierw baza repozytorium</h2>
 <ol><li>Na GitHub utwórz własne repozytorium <code>ml-basics</code>. Dodaj README podczas tworzenia, aby powstała baza main.</li>
@@ -59,7 +59,7 @@ git diff --cached
 git commit -m &quot;Add observation summary with tests&quot;</code></pre><p>Polecenie <code>git add</code> wybiera zmiany do zapisania w następnym commicie. Dzięki <code>git diff --cached</code> możesz przeczytać dokładnie to, co zostanie zapisane.</p><p>Sprawdź, czy wśród wybranych plików nie ma danych, haseł, kluczy ani folderu <code>.venv</code>. Komunikat commita powinien krótko mówić, co zmieniasz. Tutaj zapisujesz funkcję podsumowującą pomiary i jej testy.</p>
 </section>
 <section id="ci"><h2>Skorzystaj z gotowego sprawdzania</h2>
-<p>Po otwarciu lub aktualizacji pull requesta GitHub może uruchomić testy i inne sprawdzenia na osobnym komputerze. Takie automatyczne sprawdzanie zmian nazywamy CI.</p><p>Utwórz folder <code>.github/workflows</code> i umieść w nim gotowy plik <code>checks.yml</code>. W tej lekcji nie musisz pisać konfiguracji od początku.</p>
+<p>Po otwarciu lub aktualizacji pull requesta GitHub może uruchomić testy i inne sprawdzenia na osobnym komputerze. Takie automatyczne sprawdzanie zmian nazywamy CI.</p><p>Utwórz folder <code>.github/workflows</code> i umieść w nim <a href="resources/checks.yml">przygotowany plik <code>checks.yml</code></a>. W tej lekcji nie musisz pisać konfiguracji od początku.</p>
 <pre><code class="language-bash">git add .github/workflows/checks.yml
 git diff --cached
 git commit -m &quot;Run checks for pull requests&quot;
@@ -67,7 +67,7 @@ git push -u origin learning/summary</code></pre><p>Na GitHub wybierz <strong>Com
 <p>Jeśli GitHub Actions są niedostępne dla Twojego konta lub repozytorium, zapisz to ograniczenie i zachowaj wyniki lokalnych sprawdzeń. Możesz kontynuować naukę bez zakupu usługi. Gdy CI zadziała, wyjaśnij, jakie sprawdzenia wykonało.</p>
 </section>
 <section id="review"><h2>Przeczytaj zmianę tak, jakby napisał ją ktoś inny</h2>
-<p>Obejrzyj różnice w kodzie. Czy funkcja uwzględnia zera? Co robi, gdy nie ma znanych pomiarów? Czy pozostawia listę bez zmian? Do każdego pytania znajdź test, który wykryłby niepoprawne zachowanie.</p><p>W standardzie kursu odpowiadają temu reguły K2, opis działania, K4, konkretny wyjątek, K9, formatowanie i lint, T2, małe jawne dane, T3, przypadki brzegowe, oraz G4, brak danych i sekretów w repozytorium.</p>
+<p>Obejrzyj różnice w kodzie. Czy funkcja uwzględnia zera? Co robi, gdy nie ma znanych pomiarów? Czy pozostawia listę bez zmian? Do każdego pytania znajdź test, który wykryłby niepoprawne zachowanie.</p><p><a href="../../docs/standard.md">Standard kursu</a> zbiera zasady, do których wracamy przy przeglądzie kodu. Tutaj wykorzystaj K2 (opis działania), K4 (konkretny wyjątek), K9 (formatowanie i lint), T2 (małe, jawne dane), T3 (przypadki brzegowe) oraz G4 (ochrona danych prywatnych i sekretów).</p>
 <p>Masz teraz mały moduł, testy i zapisane polecenia, które pozwalają powtórzyć sprawdzenia. Możesz przejść do dalszej nauki. Kolejne reguły standardu wprowadzimy wraz z narzędziami, do których się odnoszą.</p>
 <div class="quiz" id="commit" data-type="single"><p>Co zapisuje commit?</p>
 <ul class="quiz-options"><li>Wszystko z całego dysku<span class="why">Git nie zapisuje plików spoza repozytorium i nie wybiera automatycznie wszystkich zmian.</span></li>
@@ -79,7 +79,7 @@ git push -u origin learning/summary</code></pre><p>Na GitHub wybierz <strong>Com
 <section id="powrot"><h2>Sprawdź, co pamiętasz</h2>
 <p>Wyjaśnij komuś innemu różnicę między testem, commitem i CI.</p>
 <details><summary>Sprawdź własne wyjaśnienie</summary>
-<p>Test sprawdza zachowanie kodu na określonych danych. Commit zapisuje wybrane zmiany w plikach. CI wykonuje uzgodnione sprawdzenia na innym komputerze. Wyjaśnij na swoim projekcie, co straciłbyś bez każdej z tych czynności.</p>
+<p>Test sprawdza zachowanie kodu na określonych danych. Commit zapisuje wybrane zmiany w plikach. CI wykonuje uzgodnione sprawdzenia na innym komputerze. Wyjaśnij na swoim projekcie, czego zabrakłoby w Twojej pracy bez każdej z tych czynności.</p>
 </details>
 </section>
 

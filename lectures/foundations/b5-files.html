@@ -76,7 +76,7 @@ assert path.read_text(encoding="utf-8") == "2.5\n?\n0\n4\n", "Odczyt nie powinie
 </section>
 <section id="lokalnie"><h2>Przenieś wynik na dysk</h2>
 <p>W notebooku z A3 utwórz <code>my_readings.txt</code> z co najmniej czterema własnymi pomiarami. Odczytaj plik tym samym kodem po zmianie ścieżki. Następnie zapisz krótki raport do <code>my_report.txt</code> za pomocą <code>write_text</code>. Otwórz oba pliki i sprawdź, czy wejście pozostało bez zmian.</p>
-<p>Metoda <code>write_text</code> zapisuje tekst. Liczbę możesz wcześniej zamienić na napis przez <code>str</code>, na przykład <code>str(total)</code>, jeśli obliczyłeś już sumę. Jeśli raport ma kilka nazwanych pól, możesz użyć formatu JSON:</p>
+<p>Metoda <code>write_text</code> zapisuje tekst. Liczbę możesz wcześniej zamienić na napis przez <code>str</code>, na przykład <code>str(total)</code>, jeśli suma jest już policzona. Jeśli raport ma kilka nazwanych pól, możesz użyć formatu JSON:</p>
 <pre><code class="language-python">import json
 from pathlib import Path
 
@@ -92,7 +92,7 @@ Path(&quot;lesson_report.json&quot;).write_text(text, encoding=&quot;utf-8&quot;
 
 items = labels([&quot;red&quot;, &quot;blue&quot;])
 print(list(items))
-print(list(items))</code></pre><p>Pierwsze <code>list(items)</code> pobierze obie etykiety. Drugie zwróci pustą listę, bo z tego generatora pobrano już wszystkie wartości. Aby zacząć ponownie, trzeba jeszcze raz wywołać <code>labels</code>.</p><p>Pobieranie elementów po jednym nazywamy iteracją. Otwarty plik też pozwala pobierać kolejne linie. Dlatego pętla może zacząć odczyt, zanim cały plik znajdzie się w pamięci. Plik jest iteratorem, choć nie jest funkcją z <code>yield</code>.</p>
+print(list(items))</code></pre><p>Pierwsze <code>list(items)</code> pobierze obie etykiety. Drugie zwróci pustą listę, bo z tego generatora pobrano już wszystkie wartości. Aby zacząć ponownie, trzeba jeszcze raz wywołać <code>labels</code>.</p><p>Przechodzenie po kolejnych elementach nazywamy iteracją; pojedynczy krok to jedna iteracja pętli. Otwarty plik też pozwala pobierać kolejne linie. Dlatego pętla może zacząć odczyt, zanim cały plik znajdzie się w pamięci. Plik jest iteratorem, choć nie jest funkcją z <code>yield</code>.</p>
 <p>Przed B6 i B7 wystarczy opanować odczyt pliku z głównej części lekcji. Do generatora możesz wrócić później. Wtedy wyjaśnij, dlaczego utworzenie generatora i pobranie jego elementów to dwie różne czynności.</p>
 </section>
 <section id="powrot"><h2>Sprawdź, co pamiętasz</h2>

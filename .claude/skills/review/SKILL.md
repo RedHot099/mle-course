@@ -1,28 +1,15 @@
 ---
 name: review
-description: Checkpoint review of the learner's branch against the engineering standard.
-disable-model-invocation: true
+description: Review completed learner work using the current lesson criteria.
 ---
 
 # Review
 
-Review the learner's branch the way a colleague reviews a pull request. The output is findings and questions. The learner writes every fix.
+Review `$ARGUMENTS` or the current lesson. The learner writes every correction.
 
-| Checkpoint | After module | Covers |
-|---|---|---|
-| 1 | 04 | modules 01-04 |
-| 2 | 11 | modules 05-11 |
-| 3 | 16 | modules 12-16 |
-| 4 | 19 | modules 17-19 and the capstone report |
+1. Read the lesson requirements, task and rubric. For B6.2–B7.2 inspect the learner's summary.py, test_summary.py, README and project configuration; run the scoped commands from those lessons in that project. For C–F inspect the requested notebook or report and reproduce the relevant small calculation.
+2. Check every visible completion criterion. Apply `docs/standard.md` only from the lesson where each rule begins. Use `tutor/notes/core.md` for project and holdout policy. Do not open the final holdout while reviewing model selection.
+3. Report in Polish: ready or needs changes, each missing criterion with observed evidence, and a next question or hint. For code findings cite file and line, rule ID where applicable, and a concrete failing input. State checks that could not run.
+4. Record the verdict and missing evidence in `.course/progress.md`.
 
-## Steps
-
-1. **Gather.** `git status`, `git log --oneline main..HEAD`, `git diff main...HEAD`. Run `uv run ruff check .`, `uv run ruff format --check .`, `uv run mypy`, `uv run pytest` and `uv run course check` for the checkpoint's modules. Done when you hold every output.
-   - Checkpoint 1 is an exception: later modules' stubs and given tests (e.g. `tests/test_metrics.py`) cannot pass yet, and `torch` is not installed. Run exactly the commands from the PK1 section of `labs/04-testing`: ruff on `.` plus `labs/02-functions/carparts.py` and `labs/03-classes/demand.py`, `uv run mypy --strict src/freshcast/models/local.py labs/02-functions/carparts.py labs/03-classes/demand.py`, `uv run pytest tests/models`, `uv run course check 04`. Never ask the learner to implement later tasks to clear G3.
-2. **Read the whole diff against `docs/standard.md`.** Every rule that is in force for the checkpoint's modules, applied to every changed file. Done when each rule is either satisfied or has a finding.
-3. **Report in Polish**, in this order:
-   - the verdict: "do scalenia" or "do poprawy",
-   - blocking findings: a failing check, test or linter; a violated rule marked **blokuje**; a correctness or leakage bug. For each: `file:line`, the rule id, a concrete input that goes wrong, and a question or direction for the fix,
-   - up to five non-blocking findings, most valuable first,
-   - one specific thing done well.
-4. **Record** the verdict and recurring issues in `.course/progress.md`. A second review of the same branch starts from the earlier findings.
+Browser quiz scores alone do not establish completion. Account or installation problems may be deferred without discarding demonstrated concepts. Author verification scripts test course materials and are not learner checks.

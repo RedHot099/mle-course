@@ -73,10 +73,10 @@
 </figure>
 </section>
 <section id="system"><h2>Przygotuj terminal</h2>
-<p>Na Linuxie otwórz terminal. Na Windowsie korzystamy z Ubuntu w WSL2. Jeśli masz już WSL2, otwórz terminal Ubuntu. Jeśli nie, przejdź przez <a href="../00-setup/index.html#windows">instalację WSL2 z lekcji 00</a> i wróć tutaj. Na tym etapie pomiń sterownik NVIDIA.</p>
+<p>Na Linuxie otwórz terminal. Na Windowsie używamy Ubuntu w WSL2, czyli środowiska Linux działającego w Windows. Jeśli WSL2 jest już zainstalowane, otwórz terminal Ubuntu.</p><details><summary>Windows: przygotuj Ubuntu w WSL2</summary><p>Na swoim komputerze z Windows 11 lub Windows 10 w wersji co najmniej 2004 otwórz PowerShell jako administrator. Wpisz <code>wsl --install</code> i po zakończeniu uruchom ponownie komputer. Otwórz Ubuntu i utwórz wskazane przy pierwszym uruchomieniu konto użytkownika. Dalsze polecenia tej lekcji wykonuj w terminalu Ubuntu.</p><p>Jeśli instalacja przebiega inaczej, skorzystaj z <a href="https://learn.microsoft.com/en-us/windows/wsl/install">instrukcji instalacji WSL firmy Microsoft</a>. Na komputerze zarządzanym przez organizację ustal z administratorem możliwość instalacji.</p></details>
 <p>Jeśli instalacja wymaga pomocy właściciela komputera, możesz najpierw wykonać ćwiczenia przeglądarkowe. Do notebooka i plików lokalnych wrócisz, gdy środowisko będzie dostępne.</p>
 <p>Wpisz w terminalu poniższe polecenie, żeby sprawdzić, czy masz już <code>uv</code>:</p>
-<pre><code class="language-bash">uv --version</code></pre><p>Jeśli widzisz numer wersji, uv jest gotowe. Jeśli terminal nie rozpoznaje polecenia, zainstaluj uv. Poniższe polecenie pochodzi z <a href="https://docs.astral.sh/uv/getting-started/installation/">oficjalnej instrukcji uv</a> i jest przeznaczone dla terminala Linux lub Ubuntu w WSL:</p>
+<pre><code class="language-bash">uv --version</code></pre><p>Jeśli widzisz numer wersji, uv jest gotowe. Jeśli terminal nie rozpoznaje polecenia, zainstaluj uv. Poniższe polecenie przygotowano na podstawie <a href="https://docs.astral.sh/uv/getting-started/installation/">oficjalnej instrukcji uv</a> i jest przeznaczone dla terminala Linux lub Ubuntu w WSL:</p>
 <pre><code class="language-bash">curl --retry 5 --retry-all-errors -LsSf https://astral.sh/uv/install.sh | sh</code></pre><p>Zamknij i otwórz terminal. Ponownie sprawdź <code>uv --version</code>. Nie wpisuj powyższych poleceń do komórki Python.</p>
 </section>
 <section id="katalog"><h2>Utwórz osobne miejsce do nauki</h2>
@@ -94,7 +94,7 @@ uv run --no-project --python 3.12 python -c &quot;print(2 + 3)&quot;</code></pre
 <li>W pierwszej komórce wpisz <code>stock = 6</code> i uruchom ją przez Shift+Enter.</li>
 <li>W drugiej wpisz <code>print(stock + 2)</code>. Oczekiwany wynik to 8.</li>
 <li>Zapisz notebook przez Ctrl+S.</li>
-<li>W menu Kernel wybierz Restart Kernel and Run All Cells. Nazwa może nieznacznie różnić się między wersjami. Ponownie powinieneś zobaczyć 8.</li>
+<li>W menu Kernel wybierz Restart Kernel and Run All Cells. Nazwa może nieznacznie różnić się między wersjami. Ponownie zobaczysz 8.</li>
 </ol>
 <p>Otwórz drugi notebook i uruchom w nim <code>print(stock)</code>, bez wcześniejszego przypisania. Zobaczysz <code>NameError</code>. Nowy notebook ma własny kernel, w którym nazwa <code>stock</code> jeszcze nie istnieje.</p>
 <div class="callout rule"><span class="label">Zakończenie pracy</span><p>Po zakończeniu wybierz <strong>Kernel → Shut Down Kernel</strong>, aby zatrzymać Python wykonujący notebook. Następnie wróć do terminala Jupyter, naciśnij Ctrl+C i potwierdź zatrzymanie serwera.</p>
@@ -107,7 +107,7 @@ uv run --no-project --python 3.12 python -c &quot;print(2 + 3)&quot;</code></pre
 <li>W komórce Python<span class="why">Zwykła komórka oczekuje składni Python, a nie polecenia terminala.</span></li>
 </ul>
 </div>
-<p>Jeśli Jupyter nie startuje, zachowaj polecenie i komunikat błędu. Pomiń token dostępu z wypisanego adresu. Do ćwiczeń Python możesz tymczasowo wrócić w przeglądarce. Jeśli Jupyter działa, ale kod zwraca zły wynik, sprawdź najpierw dane i kolejność wykonania komórek.</p>
+<p>Jeśli Jupyter nie startuje, zachowaj polecenie i komunikat błędu. Gdy prosisz o pomoc, nie wklejaj tokenu dostępu z wypisanego adresu. Do ćwiczeń Python możesz tymczasowo wrócić w przeglądarce. Jeśli Jupyter działa, ale kod zwraca zły wynik, sprawdź najpierw dane i kolejność wykonania komórek.</p>
 </section>
 
     <div class="next"><h2>Następny krok</h2>

@@ -1,9 +1,9 @@
 """Smoke-test foundations in Chromium, including the actual Pyodide runtime.
 
 Install the optional browser first:
-  uv run --with playwright python -m playwright install chromium --only-shell
+  uv run python -m playwright install chromium --only-shell
 Run:
-  uv run --with playwright python tools/verify_foundations_browser.py
+  uv run python tools/verify_foundations_browser.py
 """
 
 from playwright.sync_api import Browser, Page, sync_playwright
@@ -15,7 +15,7 @@ def check_layout(browser: Browser, width: int) -> None:
     page = context.new_page()
     errors: list[str] = []
     page.on("pageerror", lambda error: errors.append(str(error)))
-    for path in sorted(PAGES.rglob("*.html")):
+    for path in [PAGES.parent / "index.html", *sorted(PAGES.rglob("*.html"))]:
         page.goto(path.as_uri())
         assert page.locator("h1").count() == 1, path.name
         editors = page.locator(".pyrun").count()

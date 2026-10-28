@@ -200,8 +200,30 @@ def check_curriculum() -> None:
     print(f"Curriculum: {len(lessons)} lessons; blocks 1–21; prerequisites ordered.")
 
 
+def check_current_materials() -> None:
+    """Check entry points, manual task rubrics and the single course route."""
+    for path in ROOT.joinpath("lectures").iterdir():
+        assert path.name in {"assets", "foundations", "index.html"}, (
+            f"Unexpected course material: {path.name}"
+        )
+    entry = ROOT / "lectures" / "index.html"
+    check_links(entry, Document(entry).root)
+    rubrics = 0
+    for path in PAGES.glob("*.html"):
+        document = Document(path).root
+        if "według kryteriów poniżej" not in document.text():
+            continue
+        task = next(n for n in document.walk() if n.attrs.get("id") == "zadanie")
+        rubric = next(n for n in task.walk() if n.attrs.get("id") == "self-assessment")
+        assert sum(n.tag == "li" for n in rubric.walk()) >= 3, path.name
+        rubrics += 1
+    assert rubrics == 11, f"Expected 11 notebook/reasoning rubrics, found {rubrics}"
+    print("Current entry links and all 11 manual task rubrics are present.")
+
+
 def main() -> None:
     check_curriculum()
+    check_current_materials()
     quizzes = exercises = examples = 0
     pages = sorted(PAGES.rglob("*.html"))
     previous = Path.cwd()

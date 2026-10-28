@@ -64,6 +64,9 @@ else:
 </ul>
 </div>
 <p>Brak pomiaru sprawdzaj warunkiem <code>is None</code>, a jego obecność warunkiem <code>is not None</code>. Skrót <code>if value:</code> nie rozróżnia tych sytuacji: zarówno dla zera, jak i dla <code>None</code> warunek jest fałszywy. Jeśli użyjesz go do wybierania pomiarów, możesz przez przypadek pominąć zera.</p>
+<pre><code class="language-python">has_stock = 4 &gt; 0
+is_open = True
+print(has_stock and is_open)</code></pre><p>Operator <code>and</code> łączy dwa warunki. Wynik jest prawdziwy tylko wtedy, gdy oba są prawdziwe. Ten kod wyświetli <code>True</code>. Zmień <code>is_open</code> na <code>False</code> i przewidź wynik.</p>
 </section>
 <section id="cwiczenia"><h2>Nadaj obserwacji status</h2>
 <h3>Znana liczba</h3>

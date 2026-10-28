@@ -56,7 +56,7 @@
 <p>Wyobraź sobie, że jest wieczór 3 kwietnia. Znasz sprzedaż z pierwszych siedmiu dni tabeli i przygotowujesz prognozę na następny tydzień. Późniejszych wyników nie możesz jeszcze użyć.</p><p>W ćwiczeniu pokazujemy od razu całą tabelę, żeby można było potem ocenić prognozę. Podczas jej tworzenia korzystaj jednak wyłącznie z pierwszych siedmiu dni.</p>
 </section>
 <section id="baseline"><h2>Przygotuj prognozę przed odczytaniem wyników</h2>
-<p>Zastosuj jedną regułę: na każdy z kolejnych siedmiu dni przewiduj wartość z ostatniego dnia historii. Cała prognoza powstaje raz, wieczorem 3 kwietnia. Obserwacje z 4 i 5 kwietnia posłużą później do oceny, nie do poprawiania tej prognozy.</p>
+<p>Zastosuj jedną regułę: na każdy z kolejnych siedmiu dni przewiduj wartość z ostatniego dnia historii. Cała prognoza powstaje raz, wieczorem 3 kwietnia. Obserwacje od 4 do 10 kwietnia posłużą później do oceny, nie do poprawiania tej prognozy.</p>
 <p>W Pythonie możesz powtórzyć element listy przez mnożenie. Na przykład <code>["pending"] * 3</code> tworzy listę <code>["pending", "pending", "pending"]</code>. W swoim zadaniu przygotuj tyle wartości, ile dni obejmuje prognoza. Tę liczbę dni nazywamy horyzontem.</p>
 <h3>Siedem prognoz</h3>
 <p>Najpierw uzupełnij listę <code>forecast</code>, korzystając wyłącznie z <code>history</code> i podanego horyzontu. Powinna zawierać prognozę na każdy z siedmiu dni.</p><p>Dopiero gdy lista jest gotowa, porównaj ją z <code>actual</code>, czyli rzeczywistą sprzedażą. Zapisz wielkości pomyłek w <code>errors</code>, a ich średnią w <code>mae</code>. Nie poprawiaj prognozy po obejrzeniu wyników.</p>
@@ -100,7 +100,7 @@ assert isinstance(mae, (int, float)) and math.isclose(mae, 2.84 / 7), "MAE to ś
 <p>Źródło: Dingdong-Inc, <a href="https://huggingface.co/datasets/Dingdong-Inc/FreshRetailNet-50K">FreshRetailNet-50K</a>, CC BY 4.0. Wycinek pochodzi z kursowego <code>frn_sample.parquet</code>. Zachowano wartości, uporządkowano dni i nazwano kolumnę godzin <code>stockout_hours</code>. To jawny przykład do nauki, a nie końcowy zamknięty test kursu.</p>
 </section>
 <section id="powrot"><h2>Sprawdź, co pamiętasz</h2>
-<p>Czy MAE = 0 oznacza zero sprzedaży? Czy to samo co brak danych?</p>
+<p>Czy MAE = 0 oznacza zero sprzedaży? Czy to to samo co brak danych?</p>
 <details><summary>Sprawdź własne wyjaśnienie</summary>
 <p><code>MAE = 0</code> oznacza, że każda oceniana prognoza zgadza się z obserwacją. Same obserwacje mogą być dodatnie lub zerowe. Brak obserwacji to osobna sytuacja. Jeśli te znaczenia się mieszają, wróć do A2.2 i A4.1.</p>
 </details>
