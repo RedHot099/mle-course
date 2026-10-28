@@ -5,7 +5,7 @@ description: Review completed learner work using the current lesson criteria.
 
 # Review
 
-For lab IDs, resolve labs/manifest.json, read that notebook's task and check cells, and obtain the learner's downloaded copy. Use its visible checks and rubric. A00 is a manual environment experiment. Source starters and tools/verify_labs.py are author materials, not learner grades.
+For lab IDs, resolve labs/manifest.json, read that notebook's task and check cells, and obtain the learner's working copy. Use its visible checks and rubric. A3 is a manual environment experiment. Source starters and tools/verify_labs.py are author materials, not learner grades.
 
 Review `$ARGUMENTS` or the current lesson. The learner writes every correction.
 

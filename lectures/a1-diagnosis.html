@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A1 · Sprawdź, od czego zacząć | ML Engineering from Scratch</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="assets/course.css">
+</head>
+<body data-module="foundations-a1-diagnosis">
+<header class="topbar">
+  <a class="brand" href="index.html">ML Engineering from Scratch</a>
+  <span class="crumb">A1 · Fundamenty</span><span class="spacer"></span>
+  <span class="score"></span>
+  <button class="icon-button" id="theme-toggle" type="button" aria-label="Przełącz motyw jasny i ciemny">◐</button>
+</header>
+<div class="progress-line"></div>
+
+<div class="page with-toc">
+  <nav class="toc" aria-label="W tej lekcji"><p>W tej lekcji</p>
+<ol></ol>
+</nav>
+  <main class="lecture">
+    <p class="kicker">A1 · <a href="index.html">Ścieżka A–F</a></p>
+
+    <h1>Sprawdź, od czego zacząć</h1>
+
+    <p class="lede">Nie musisz niczego instalować ani znać Pythona, żeby zacząć. Najpierw uruchomisz krótki program na tej stronie. Potem kilka pytań pomoże Ci wybrać lekcje, od których warto zacząć naukę.</p>
+
+    <ul class="meta"><li><b>Przed lekcją:</b> Wystarczy przeglądarka z internetem. Nie potrzebujesz konta GitHub ani zainstalowanego Pythona.</li>
+<li><b>Jak pracować:</b> przewiduj wyniki, uruchamiaj kod i wyjaśniaj to, co widzisz</li>
+</ul>
+
+    <section id="runner"><h2>Najpierw uruchom kod</h2>
+<p>Naciśnij <strong>Uruchom</strong> pod kodem. Za pierwszym razem trzeba chwilę poczekać: przeglądarka pobiera interpreter, czyli program, który wykonuje polecenia Pythona.</p>
+<div class="pyrun" id="first-run"><script type="text/x-python" data-role="starter">print("Mogę zacząć")</script></div>
+<p>Pod kodem zobaczysz napis <code>Mogę zacząć</code>. Zmień tekst w cudzysłowach i naciśnij <strong>Uruchom</strong> ponownie. W tym samym polu możesz później sprawdzać przykłady z lekcji, które nie mają własnego przycisku uruchamiania.</p>
+<div class="callout rule"><span class="label">Jeśli kod się nie uruchamia</span><p>Jeśli pobieranie interpretera się nie udało, sprawdź połączenie i ponów próbę. W międzyczasie możesz rozwiązać pytania na papierze. W <a href="a3-environment.html">A3</a> uruchomisz Pythona także na swoim komputerze.</p>
+</div>
+</section>
+<section id="diagnoza"><h2>Przewidź, potem sprawdź</h2>
+<p>Spróbuj przewidzieć wynik każdego programu, zanim go uruchomisz. Błędna odpowiedź jest wskazówką, co warto powtórzyć. Przeczytaj wyjaśnienie i zanotuj temat, który sprawił Ci trudność. Wynik quizu nie blokuje dostępu do żadnej lekcji.</p>
+<div class="predict" id="names" data-type="single" data-expected-output="7"><p>Co wypisze program?</p>
+<pre><code class="language-python">count = 4
+count = count + 3
+print(count)</code></pre><ul class="quiz-options"><li>4<span class="why">Drugie przypisanie zastępuje poprzednią wartość.</span></li>
+<li>Błąd<span class="why">Dodawanie liczb i ponowne przypisanie są poprawne.</span></li>
+<li data-correct>7<span class="why">Przypisanie oblicza prawą stronę, więc 4 + 3 daje 7.</span></li>
+</ul>
+</div>
+<div class="quiz" id="condition" data-type="single"><p>Która wartość oznacza brak obserwacji?</p>
+<ul class="quiz-options"><li>0<span class="why">Zero może oznaczać obserwację bez sprzedaży. To nie brak pomiaru.</span></li>
+<li>False<span class="why">False to wynik logiczny, a nie standardowy zapis brakującej liczby.</span></li>
+<li data-correct>None<span class="why">None oznacza brak wartości; zero jest znaną liczbą.</span></li>
+</ul>
+</div>
+<div class="predict" id="loop" data-type="single" data-expected-output="8"><p>Jaką wartość będzie mieć total po wykonaniu pętli?</p>
+<pre><code class="language-python">total = 0
+for value in [2, 0, 6]:
+    total = total + value
+print(total)</code></pre><ul class="quiz-options"><li>6<span class="why">Ostatnia wartość nie zastępuje sumy. Każdy krok ją powiększa.</span></li>
+<li>3<span class="why">Trzy to liczba elementów, nie ich suma.</span></li>
+<li data-correct>8<span class="why">Pętla dodaje kolejno 2, 0 i 6.</span></li>
+</ul>
+</div>
+<div class="predict" id="records" data-type="single" data-expected-output="0"><p>Co wypisze program?</p>
+<pre><code class="language-python">row = {&quot;product&quot;: &quot;plum&quot;, &quot;sale&quot;: 0}
+print(row[&quot;sale&quot;])</code></pre><ul class="quiz-options"><li>plum<span class="why">To wartość pod kluczem product.</span></li>
+<li>sale<span class="why">Wyrażenie w nawiasach wybiera wartość pod wskazanym kluczem.</span></li>
+<li data-correct>0<span class="why">Klucz sale wskazuje zero, które jest prawidłową obserwacją.</span></li>
+</ul>
+</div>
+<div class="predict" id="return" data-type="single" data-expected-output="8"><p>Co wypisze ostatnia linia?</p>
+<pre><code class="language-python">def double(value):
+    return value * 2
+
+result = double(4)
+print(result)</code></pre><ul class="quiz-options"><li data-correct>8<span class="why">return zwraca wynik, który w tym przykładzie zapisujemy w result.</span></li>
+<li>4<span class="why">Funkcja mnoży argument przez dwa.</span></li>
+<li>None<span class="why">Bez return wynikiem byłoby None, ale tutaj return jest.</span></li>
+</ul>
+</div>
+</section>
+<section id="decyzja"><h2>Wybierz lekcje dla siebie</h2>
+<div class="table-wrap"><table><thead><tr><th>Co było niejasne?</th><th>Dokąd przejść</th></tr>
+</thead>
+<tbody><tr><td>Nazwa, liczba, napis, print</td><td><a href="a2-values.html">A2.1 Wartości i nazwy</a></td></tr>
+<tr><td>Warunek lub None</td><td><a href="a2-conditions.html">A2.2 Warunki i braki</a></td></tr>
+<tr><td>Prześledzenie pętli</td><td><a href="a2-loops.html">A2.3 Listy i pętle</a></td></tr>
+<tr><td>Wybór pola rekordu</td><td><a href="a2-records.html">A2.4 Słowniki i rekordy</a></td></tr>
+<tr><td>Argument, return i wynik funkcji</td><td><a href="a2-functions.html">A2.5 Pierwsza funkcja</a></td></tr>
+</tbody>
+</table>
+</div>
+<p>Same odpowiedzi na pytania nie mówią jeszcze, czy potrafisz napisać kod. Spróbuj więc wykonać ćwiczenia w A2. Jeśli rozwiązujesz je bez podpowiedzi, możesz przejść do A3. Jeśli któreś sprawia trudność, tabela powyżej wskaże lekcję do powtórzenia. Nie musisz przerabiać od nowa tego, co już umiesz.</p>
+</section>
+
+    <section id="laboratorium"><h2>Laboratorium</h2><p><a href="../labs/index.html#lab-a2-1-a2-3">A2.1–A2.3 · osobne laboratorium do tej części kursu</a>. Pracuj w notebooku we własnej kopii repozytorium. Po A3 zacznij od lab A3, potem utrwal podstawy w labach A2.1–A2.3 oraz A2.4–A2.5.</p></section>
+<div class="next"><h2>Następny krok</h2>
+<p><a href="a2-values.html">A2.1 · Wartości, nazwy i wynik programu</a></p>
+<p><a href="index.html">Początek ścieżki</a> · <a href="index.html">Mapa A–F</a></p>
+</div>
+
+  </main>
+</div>
+
+<footer class="footer">ML Engineering from Scratch · Jakub Eichner · treści CC BY 4.0, kod MIT</footer>
+<script src="assets/highlight.min.js"></script>
+<script src="assets/course.js"></script>
+</body>
+</html>

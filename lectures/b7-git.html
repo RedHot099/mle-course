@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>B7.2 · Pierwszy branch, commit i pull request | ML Engineering from Scratch</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="assets/course.css">
+</head>
+<body data-module="foundations-b7-git">
+<header class="topbar">
+  <a class="brand" href="index.html">ML Engineering from Scratch</a>
+  <span class="crumb">B7.2 · Fundamenty</span><span class="spacer"></span>
+  <span class="score"></span>
+  <button class="icon-button" id="theme-toggle" type="button" aria-label="Przełącz motyw jasny i ciemny">◐</button>
+</header>
+<div class="progress-line"></div>
+
+<div class="page with-toc">
+  <nav class="toc" aria-label="W tej lekcji"><p>W tej lekcji</p>
+<ol></ol>
+</nav>
+  <main class="lecture">
+    <p class="kicker">B7.2 · <a href="index.html">Ścieżka A–F</a></p>
+
+    <h1>Pierwszy branch, commit i pull request</h1>
+
+    <p class="lede">Funkcja i testy już działają lokalnie. Teraz zapiszesz ich historię w gicie i pokażesz zmianę w pull requeście. Skorzystasz też z gotowej konfiguracji, która uruchomi sprawdzenia na GitHub.</p>
+
+    <ul class="meta"><li><b>Przed lekcją:</b> B7.1, konto GitHub oraz git. W razie braku konta możesz najpierw wykonać lokalne sprawdzenia.</li>
+<li><b>Jak pracować:</b> przewiduj wyniki, uruchamiaj kod i wyjaśniaj to, co widzisz</li>
+</ul>
+
+    <section id="pojecia"><h2>Zapisz konkretną zmianę</h2>
+<p>Git zapisuje historię zmian w plikach. Projekt, dla którego prowadzisz taką historię, nazywamy repozytorium. <em>Commit</em> jest zapisem wybranych zmian.</p><p><em>Branch</em>, czyli gałąź, pozwala pracować nad zmianą osobno od wersji bazowej projektu. Gdy chcesz pokazać swoją pracę do przeglądu, otwierasz <em>pull request</em>. Pokazuje on różnice między Twoją gałęzią a gałęzią, do której zmiana ma trafić.</p>
+<p>Użyj małego projektu z poprzedniej lekcji. Jego pierwsze CI sprawdzi tylko Twoją funkcję i testy. Repozytorium całego kursu zostaw osobno.</p>
+<details id="git-setup"><summary>Przygotuj git i dostęp do GitHub</summary><p>W terminalu sprawdź <code>git --version</code>. Jeśli polecenie jest niedostępne, zainstaluj Git na swoim komputerze według <a href="https://docs.github.com/en/get-started/git-basics/set-up-git">instrukcji GitHub: Set up Git</a> dla swojego systemu.</p><p>Przed pierwszym commitem ustaw autora: <code>git config --global user.name "Twoje imię"</code> oraz <code>git config --global user.email "adres przypisany do konta GitHub"</code>. Podstaw własne dane. Adres pojawi się w historii commitów; możesz użyć prywatnego adresu noreply z ustawień GitHub.</p><p>Git przechowuje historię lokalnie. GitHub jest usługą, do której wyślesz wybrane zmiany. Utwórz konto i zaloguj się w przeglądarce. Do pracy przez HTTPS użyj sposobu logowania z podlinkowanej instrukcji. Jeśli korzystasz z zainstalowanego GitHub CLI, polecenie <code>gh auth login</code> prowadzi przez logowanie do GitHub.com i autoryzację przez przeglądarkę. Nie zapisuj tokenów w plikach projektu ani w adresie origin.</p><p>Jeśli dostęp do konta lub instalacja są chwilowo niemożliwe, zachowaj projekt i wyniki testów lokalnie. Do wysyłania zmian wrócisz po rozwiązaniu problemu.</p></details>
+</section>
+<section id="repo"><h2>Najpierw baza repozytorium</h2>
+<ol><li>Na GitHub utwórz własne repozytorium <code>ml-basics</code>. Dodaj README podczas tworzenia, aby powstała baza main.</li>
+<li>Na stronie repozytorium skopiuj adres HTTPS z przycisku Code.</li>
+<li>W terminalu sklonuj je do nowego folderu i utwórz gałąź. W adresie poniżej zastąp YOUR_LOGIN własnym loginem.</li>
+</ol>
+<pre><code class="language-bash">git clone https://github.com/YOUR_LOGIN/ml-basics.git ~/mle-practice-review
+cd ~/mle-practice-review
+git switch -c learning/summary
+git status</code></pre><p>Po tych poleceniach <code>git status</code> powinien pokazać gałąź <code>learning/summary</code>. Jeśli nie udało się sklonować repozytorium, sprawdź adres i dostęp do konta, zanim pójdziesz dalej. Twoje pliki nadal są w folderze <code>mle-practice</code>.</p>
+</section>
+<section id="zmiana"><h2>Wybierz pliki przed commitem</h2>
+<p>Z folderu <code>mle-practice</code> skopiuj do <code>mle-practice-review</code> pliki <code>summary.py</code>, <code>test_summary.py</code>, <code>pyproject.toml</code>, <code>.python-version</code> i <code>uv.lock</code>. Uzupełnij README instrukcją testów. Zapisz <a href="resources/practice.gitignore">przygotowany plik wykluczeń</a> jako <code>.gitignore</code>. Środowisko <code>.venv</code> odtworzysz poleceniem <code>uv sync</code>, więc nie kopiuj tego folderu.</p>
+<pre><code class="language-bash">uv sync --locked
+uv run pytest -q
+uv run ruff format --check summary.py test_summary.py
+uv run ruff check summary.py test_summary.py
+uv run mypy --disallow-untyped-defs summary.py
+git diff</code></pre><p><code>git diff</code> pokazuje zmiany w plikach już śledzonych przez git. Nowe pliki zobaczysz w <code>git status</code>. Wybierz pliki do zapisu przez <code>git add</code>, a potem przeczytaj przygotowaną zmianę:</p>
+<pre><code class="language-bash">git add summary.py test_summary.py pyproject.toml .python-version uv.lock README.md .gitignore
+git diff --cached
+git commit -m &quot;Add observation summary with tests&quot;</code></pre><p>Polecenie <code>git add</code> wybiera zmiany do zapisania w następnym commicie. Dzięki <code>git diff --cached</code> możesz przeczytać dokładnie to, co zostanie zapisane.</p><p>Sprawdź, czy wśród wybranych plików nie ma danych, haseł, kluczy ani folderu <code>.venv</code>. Komunikat commita powinien krótko mówić, co zmieniasz. Tutaj zapisujesz funkcję podsumowującą pomiary i jej testy.</p>
+</section>
+<section id="ci"><h2>Skorzystaj z gotowego sprawdzania</h2>
+<p>Po otwarciu lub aktualizacji pull requesta GitHub może uruchomić testy i inne sprawdzenia na osobnym komputerze. Takie automatyczne sprawdzanie zmian nazywamy CI.</p><p>Utwórz folder <code>.github/workflows</code> i umieść w nim <a href="resources/checks.yml">przygotowany plik <code>checks.yml</code></a>. W tej lekcji nie musisz pisać konfiguracji od początku.</p>
+<pre><code class="language-bash">git add .github/workflows/checks.yml
+git diff --cached
+git commit -m &quot;Run checks for pull requests&quot;
+git push -u origin learning/summary</code></pre><p>Na GitHub wybierz <strong>Compare &amp; pull request</strong>. Jako bazę ustaw <code>main</code>, a jako źródło <code>learning/summary</code>. W opisie napisz, co oblicza funkcja i jakie wymagania sprawdzają testy. W zakładce <strong>Checks</strong> znajdziesz wyniki CI. Jeśli krok się nie powiedzie, odczytaj polecenie i komunikat błędu, a potem uruchom to polecenie lokalnie.</p>
+<p>Jeśli GitHub Actions są niedostępne dla Twojego konta lub repozytorium, zapisz to ograniczenie i zachowaj wyniki lokalnych sprawdzeń. Możesz kontynuować naukę bez zakupu usługi. Gdy CI zadziała, wyjaśnij, jakie sprawdzenia wykonało.</p>
+</section>
+<section id="review"><h2>Przeczytaj zmianę tak, jakby napisał ją ktoś inny</h2>
+<p>Obejrzyj różnice w kodzie. Czy funkcja uwzględnia zera? Co robi, gdy nie ma znanych pomiarów? Czy pozostawia listę bez zmian? Do każdego pytania znajdź test, który wykryłby niepoprawne zachowanie.</p><p><a href="../docs/standard.md">Standard kursu</a> zbiera zasady, do których wracamy przy przeglądzie kodu. Tutaj wykorzystaj K2 (opis działania), K4 (konkretny wyjątek), K9 (formatowanie i lint), T2 (małe, jawne dane), T3 (przypadki brzegowe) oraz G4 (ochrona danych prywatnych i sekretów).</p>
+<p>Masz teraz mały moduł, testy i zapisane polecenia, które pozwalają powtórzyć sprawdzenia. Możesz przejść do dalszej nauki. Kolejne reguły standardu wprowadzimy wraz z narzędziami, do których się odnoszą.</p>
+<div class="quiz" id="commit" data-type="single"><p>Co zapisuje commit?</p>
+<ul class="quiz-options"><li>Wszystko z całego dysku<span class="why">Git nie zapisuje plików spoza repozytorium i nie wybiera automatycznie wszystkich zmian.</span></li>
+<li>Wynik ostatniej komórki notebooka z pamięci<span class="why">Pamięć kernela nie jest historią plików w git.</span></li>
+<li data-correct>Wybrane przez git add zmiany<span class="why">Dlatego przed zapisem czytasz git diff --cached.</span></li>
+</ul>
+</div>
+</section>
+<section id="powrot"><h2>Sprawdź, co pamiętasz</h2>
+<p>Wyjaśnij komuś innemu różnicę między testem, commitem i CI.</p>
+<details><summary>Sprawdź własne wyjaśnienie</summary>
+<p>Test sprawdza zachowanie kodu na określonych danych. Commit zapisuje wybrane zmiany w plikach. CI wykonuje uzgodnione sprawdzenia na innym komputerze. Wyjaśnij na swoim projekcie, czego zabrakłoby w Twojej pracy bez każdej z tych czynności.</p>
+</details>
+</section>
+
+    <div class="next"><h2>Następny krok</h2><p><a href="c8-tables.html">C8.1 · Odczytaj i wybierz dane z tabeli</a></p>
+<p>Sekcje A i B są ukończone. Masz własny moduł i testy. Przejdź teraz do C8.1, żeby zacząć pracę z tabelą pandas.</p>
+<p><a href="b7-modules.html">Poprzednia: B7.1</a> · <a href="index.html">Mapa A–F</a></p>
+</div>
+
+  </main>
+</div>
+
+<footer class="footer">ML Engineering from Scratch · Jakub Eichner · treści CC BY 4.0, kod MIT</footer>
+<script src="assets/highlight.min.js"></script>
+<script src="assets/course.js"></script>
+</body>
+</html>

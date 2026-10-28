@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A3 · Przenieś pracę do notebooka | ML Engineering from Scratch</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="assets/course.css">
+</head>
+<body data-module="foundations-a3-environment">
+<header class="topbar">
+  <a class="brand" href="index.html">ML Engineering from Scratch</a>
+  <span class="crumb">A3 · Fundamenty</span><span class="spacer"></span>
+  <span class="score"></span>
+  <button class="icon-button" id="theme-toggle" type="button" aria-label="Przełącz motyw jasny i ciemny">◐</button>
+</header>
+<div class="progress-line"></div>
+
+<div class="page with-toc">
+  <nav class="toc" aria-label="W tej lekcji"><p>W tej lekcji</p>
+<ol></ol>
+</nav>
+  <main class="lecture">
+    <p class="kicker">A3 · <a href="index.html">Ścieżka A–F</a></p>
+
+    <h1>Przenieś pracę do notebooka</h1>
+
+    <p class="lede">Dotąd kod działał na stronie kursu. Teraz uruchomisz go na swoim komputerze i zapiszesz w notebooku. Zobaczysz też, dlaczego zapisany plik i zmienne w pamięci programu to nie to samo.</p>
+
+    <ul class="meta"><li><b>Przed lekcją:</b> Podstawy Pythona z A2. Jeśli już je znasz, wystarczą ćwiczenia sprawdzające z A1.</li>
+<li><b>Jak pracować:</b> przewiduj wyniki, uruchamiaj kod i wyjaśniaj to, co widzisz</li>
+</ul>
+
+    <section id="miejsca"><h2>Terminal, edytor i kernel</h2>
+<div class="table-wrap"><table><thead><tr><th>Miejsce</th><th>Co tam wpisujesz</th><th>Przykład</th></tr>
+</thead>
+<tbody><tr><td>Terminal systemu</td><td>Polecenia uruchamiające programy</td><td><code>uv --version</code></td></tr>
+<tr><td>Komórka notebooka</td><td>Kod Python</td><td><code>print(2 + 3)</code></td></tr>
+<tr><td>Edytor pliku .py</td><td>Kod, który zapisujesz przed uruchomieniem</td><td><code>print("ready")</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>Notebook pozwala wykonywać kod w osobnych komórkach. Wykonuje go kernel, czyli uruchomiony w tle Python. Kernel pamięta utworzone zmienne tak długo, jak działa.</p><p>Plik notebooka przechowuje kod i zapisane wyniki widoczne na ekranie. Nie przechowuje jednak działającego Pythona ani jego zmiennych. Po restarcie kernela trzeba wykonać kod ponownie.</p>
+<div class="callout rule"><span class="label">Dwa środowiska</span><p>To różnica względem pól kodu na stronie kursu, gdzie każde uruchomienie zaczyna się bez zmiennych z poprzedniej próby. W notebooku komórki korzystają ze wspólnej pamięci kernela. Wynik może więc zależeć od komórki wykonanej wcześniej, nawet jeśli później ją zmienisz lub usuniesz.</p>
+</div>
+
+<figure data-diagram-source="diagrams/kernel-state.html">
+<svg id="kernel-state" class="diagram" viewBox="0 0 352 408" role="img" aria-labelledby="kernel-state-title kernel-state-desc" style="display:block;width:100%;max-width:352px;height:auto;margin:0 auto">
+<title id="kernel-state-title">Co zmienia restart kernela</title>
+<desc id="kernel-state-desc">Restart usuwa nazwę stock z pamięci kernela, a ponowne wykonanie przypisania ją odtwarza; zapisany kod pozostaje w pliku.</desc>
+<defs>
+<marker id="kernel-state-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--ink-2, #52514e)"/></marker>
+<marker id="kernel-state-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--accent, #2a78d6)"/></marker>
+<marker id="kernel-state-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--accent-ink, #1c5cab)"/></marker>
+</defs>
+<style>
+#kernel-state text { fill: var(--ink, #0b0b0b); font-family: var(--sans, system-ui, sans-serif); font-size: 12px; }
+#kernel-state .name { font-size: 14px; font-weight: 600; }
+#kernel-state .code { font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace; }
+#kernel-state .muted { fill: var(--ink-2, #52514e); }
+#kernel-state .accent-text { fill: var(--accent-ink, #1c5cab); }
+#kernel-state .paper { fill: var(--plane, #f9f9f7); }
+#kernel-state .node { fill: var(--surface, #fcfcfb); stroke: var(--ink-2, #52514e); stroke-width: 1; }
+#kernel-state .focus { fill: var(--accent-wash, #e8f1fd); stroke: var(--accent, #2a78d6); }
+#kernel-state .edge { fill: none; stroke: var(--ink-2, #52514e); stroke-width: 1.2; }
+#kernel-state .accent-edge { stroke: var(--accent, #2a78d6); }
+#kernel-state .lifeline { stroke: var(--axis, #c3c2b7); stroke-width: 1; stroke-dasharray: 3 5; }
+#kernel-state .rule { stroke: var(--hairline, #e1e0d9); stroke-width: 1; }
+</style>
+<path d="M176 104 V184" class="edge" marker-end="url(#kernel-state-arrow)"/><rect x="192" y="132" width="72" height="16" class="paper"/><text x="228.0" y="144" class="code muted" text-anchor="middle">restart</text><path d="M56 216 H48 Q40 216 40 208 V80 Q40 72 48 72 H56" class="edge" marker-end="url(#kernel-state-arrow)"/><rect x="56" y="136" width="112" height="16" class="paper"/><text x="112.0" y="148" class="code muted" text-anchor="middle">stock = 6</text><rect x="56" y="40" width="240" height="64" rx="6" class="node"/><text x="176.0" y="66" class="name" text-anchor="middle">Po wykonaniu komórki</text><text x="176.0" y="88" class="code muted" text-anchor="middle">stock = 6</text><rect x="56" y="184" width="240" height="64" rx="6" class="node focus"/><text x="176.0" y="210" class="name" text-anchor="middle">Po restarcie kernela</text><text x="176.0" y="232" class="code muted" text-anchor="middle">brak nazwy stock</text><text x="176" y="280" class="muted" text-anchor="middle">Plik notebooka nadal zawiera kod.</text><text x="176" y="304" class="muted" text-anchor="middle">Kod odtwarza zmienną po uruchomieniu.</text><line x1="40" y1="336" x2="312" y2="336" class="rule"/><text x="40" y="360" class="muted" text-anchor="start">Prostokąty: stan pamięci kernela.</text><text x="40" y="384" class="muted" text-anchor="start">Strzałki: czynności zmieniające ten stan.</text>
+</svg>
+<figcaption>Restart czyści pamięć kernela. Zapisany kod zostaje w pliku. Aby zmienne znów były dostępne, wykonaj komórki w potrzebnej kolejności. <a href="diagrams/kernel-state.html">Otwórz diagram osobno</a>.</figcaption>
+</figure>
+</section>
+<section id="system"><h2>Przygotuj terminal</h2>
+<p>Na Linuxie otwórz terminal. Na Windowsie używamy Ubuntu w WSL2, czyli środowiska Linux działającego w Windows. Jeśli WSL2 jest już zainstalowane, otwórz terminal Ubuntu.</p><details><summary>Windows: przygotuj Ubuntu w WSL2</summary><p>Na swoim komputerze z Windows 11 lub Windows 10 w wersji co najmniej 2004 otwórz PowerShell jako administrator. Wpisz <code>wsl --install</code> i po zakończeniu uruchom ponownie komputer. Otwórz Ubuntu i utwórz wskazane przy pierwszym uruchomieniu konto użytkownika. Dalsze polecenia tej lekcji wykonuj w terminalu Ubuntu.</p><p>Jeśli instalacja przebiega inaczej, skorzystaj z <a href="https://learn.microsoft.com/en-us/windows/wsl/install">instrukcji instalacji WSL firmy Microsoft</a>. Na komputerze zarządzanym przez organizację ustal z administratorem możliwość instalacji.</p></details>
+<p>Jeśli instalacja wymaga pomocy właściciela komputera, możesz najpierw wykonać ćwiczenia przeglądarkowe. Do notebooka i plików lokalnych wrócisz, gdy środowisko będzie dostępne.</p>
+<p>Wpisz w terminalu poniższe polecenie, żeby sprawdzić, czy masz już <code>uv</code>:</p>
+<pre><code class="language-bash">uv --version</code></pre><p>Jeśli widzisz numer wersji, uv jest gotowe. Jeśli terminal nie rozpoznaje polecenia, zainstaluj uv. Poniższe polecenie przygotowano na podstawie <a href="https://docs.astral.sh/uv/getting-started/installation/">oficjalnej instrukcji uv</a> i jest przeznaczone dla terminala Linux lub Ubuntu w WSL:</p>
+<pre><code class="language-bash">curl --retry 5 --retry-all-errors -LsSf https://astral.sh/uv/install.sh | sh</code></pre><p>Zamknij i otwórz terminal. Ponownie sprawdź <code>uv --version</code>. Nie wpisuj powyższych poleceń do komórki Python.</p>
+</section>
+<section id="katalog"><h2>Otwórz folder laboratoriów</h2><p>Pracujemy we własnej lokalnej kopii repozytorium kursu. Otwórz terminal w jej głównym folderze, tym z plikiem README.md i katalogami lectures oraz labs. Polecenie <code>pwd</code> pokazuje bieżącą ścieżkę. Następnie przejdź do wspólnego folderu notebooków:</p><pre><code class="language-bash">pwd
+cd labs
+uv run --no-project --python 3.12 python -c "print(2 + 3)"</code></pre><p>Oczekiwany wynik to 5. Opcja --python 3.12 wybiera wersję Pythona; jeśli jej brakuje, uv ją pobierze. Opcja --no-project pozwala wykonać tę próbę bez instalowania bibliotek całego kursu. <a href="../README.md#laboratoria">Główne README</a> zawiera wspólną instrukcję uruchamiania labów.</p></section>
+<section id="notebook"><h2>Uruchom i zapisz notebook</h2>
+<p>Z tego samego terminala uruchom:</p>
+<pre><code class="language-bash">uv run --no-project --python 3.12 --with jupyterlab --with ipykernel jupyter lab</code></pre><p>Uv przygotuje środowisko z JupyterLab i wypisze adres strony działającej na Twoim komputerze. Otwórz ten adres w przeglądarce i zostaw terminal uruchomiony. Jeśli używasz WSL, otwórz adres w przeglądarce Windows.</p>
+<p>W JupyterLab otwórz notebook <a href="../labs/index.html#lab-a3">lab-a3</a>. Główne README repozytorium wskazuje folder uruchomienia. Kod wykonujesz przez Shift+Enter, a plik zapisujesz przez Ctrl+S.</p><p>Przykład działania kernela możesz najpierw prześledzić na dwóch komórkach: w pierwszej <code>stock = 6</code>, w drugiej <code>print(stock + 2)</code>. Po wykonaniu od góry wynik wynosi 8. Po restarcie sama druga komórka da NameError, dopóki nie przywrócisz przypisania.</p>
+<div class="callout rule"><span class="label">Zakończenie pracy</span><p>Po zakończeniu wybierz <strong>Kernel → Shut Down Kernel</strong>, aby zatrzymać Python wykonujący notebook. Następnie wróć do terminala Jupyter, naciśnij Ctrl+C i potwierdź zatrzymanie serwera.</p>
+</div>
+</section>
+<section id="sprawdzenie"><h2>Sprawdź zapis i ponowne uruchomienie</h2>
+<p>Pełne zadanie zapisu, restartu i ponownego uruchomienia wykonaj w <a href="../labs/index.html#lab-a3">lab-a3</a>. Wykład wyjaśnia mechanizm, a notebook przechowuje Twój kod i wyniki.</p>
+<div class="quiz" id="terminal" data-type="single"><p>Gdzie wpiszesz uv --version?</p>
+<ul class="quiz-options"><li data-correct>W terminalu<span class="why">To polecenie uruchamiające program uv.</span></li>
+<li>W komórce Python<span class="why">Zwykła komórka oczekuje składni Python, a nie polecenia terminala.</span></li>
+</ul>
+</div>
+<p>Jeśli Jupyter nie startuje, zachowaj polecenie i komunikat błędu. Gdy prosisz o pomoc, nie wklejaj tokenu dostępu z wypisanego adresu. Do ćwiczeń Python możesz tymczasowo wrócić w przeglądarce. Jeśli Jupyter działa, ale kod zwraca zły wynik, sprawdź najpierw dane i kolejność wykonania komórek.</p>
+</section>
+
+    <section id="laboratorium"><h2>Laboratorium</h2><p><a href="../labs/index.html#lab-a3">A3 · osobne laboratorium do tej części kursu</a>. Pracuj w notebooku we własnej kopii repozytorium. Wymagania, instrukcja uruchomienia i kryteria ukończenia są przy labie.</p></section>
+<div class="next"><h2>Następny krok</h2>
+<p><a href="a4-metrics.html">A4.1 · Policz błąd małej prognozy</a></p>
+<p><a href="a2-functions.html">Poprzednia: A2.5</a> · <a href="index.html">Mapa A–F</a></p>
+</div>
+
+  </main>
+</div>
+
+<footer class="footer">ML Engineering from Scratch · Jakub Eichner · treści CC BY 4.0, kod MIT</footer>
+<script src="assets/highlight.min.js"></script>
+<script src="assets/course.js"></script>
+</body>
+</html>

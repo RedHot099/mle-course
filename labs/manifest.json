@@ -1,34 +1,29 @@
 {
-  "version": 1,
+  "version": 2,
   "scope": "A pilot only",
   "labs": [
     {
-      "id": "lab-a00",
+      "id": "lab-a3",
       "title": "Notebook, który działa po restarcie",
-      "notebook": "lab-a00/lab.ipynb",
+      "notebook": "lab-a3.ipynb",
       "lessons": [
         "A3"
       ],
       "requires_labs": [],
-      "bundle": "downloads/lab-a00.zip",
-      "files": [
-        "README.md",
-        "lab.ipynb",
-        "LICENSE",
-        "LICENSE-CONTENT.md"
-      ],
       "status": "pilot",
       "lesson_prerequisites": {
         "A3": [
           "A2.5"
         ]
       },
-      "tasks": []
+      "tasks": [],
+      "data": [],
+      "number": "A3"
     },
     {
-      "id": "lab-a01",
+      "id": "lab-a2-1-a2-3",
       "title": "Co naprawdę jest pomiarem",
-      "notebook": "lab-a01/lab.ipynb",
+      "notebook": "lab-a2-1-a2-3.ipynb",
       "lessons": [
         "A1",
         "A2.1",
@@ -36,14 +31,7 @@
         "A2.3"
       ],
       "requires_labs": [
-        "lab-a00"
-      ],
-      "bundle": "downloads/lab-a01.zip",
-      "files": [
-        "README.md",
-        "lab.ipynb",
-        "LICENSE",
-        "LICENSE-CONTENT.md"
+        "lab-a3"
       ],
       "status": "pilot",
       "lesson_prerequisites": {
@@ -59,28 +47,23 @@
         ]
       },
       "tasks": [
-        "a01-1",
-        "a01-2",
-        "a01-3"
-      ]
+        "a2-1",
+        "a2-2",
+        "a2-3"
+      ],
+      "data": [],
+      "number": "A2.1–A2.3"
     },
     {
-      "id": "lab-a02",
+      "id": "lab-a2-4-a2-5",
       "title": "Rekordy i funkcja, z której można skorzystać ponownie",
-      "notebook": "lab-a02/lab.ipynb",
+      "notebook": "lab-a2-4-a2-5.ipynb",
       "lessons": [
         "A2.4",
         "A2.5"
       ],
       "requires_labs": [
-        "lab-a00"
-      ],
-      "bundle": "downloads/lab-a02.zip",
-      "files": [
-        "README.md",
-        "lab.ipynb",
-        "LICENSE",
-        "LICENSE-CONTENT.md"
+        "lab-a3"
       ],
       "status": "pilot",
       "lesson_prerequisites": {
@@ -92,29 +75,22 @@
         ]
       },
       "tasks": [
-        "a02-1",
-        "a02-2"
-      ]
+        "a2-4",
+        "a2-5"
+      ],
+      "data": [],
+      "number": "A2.4–A2.5"
     },
     {
-      "id": "lab-a03",
+      "id": "lab-a4-1-a4-2",
       "title": "Prognoza powstaje przed oceną",
-      "notebook": "lab-a03/lab.ipynb",
+      "notebook": "lab-a4-1-a4-2.ipynb",
       "lessons": [
         "A4.1",
         "A4.2"
       ],
       "requires_labs": [
-        "lab-a00"
-      ],
-      "bundle": "downloads/lab-a03.zip",
-      "files": [
-        "README.md",
-        "lab.ipynb",
-        "freshcast-sample.csv",
-        "DATA.md",
-        "LICENSE",
-        "LICENSE-CONTENT.md"
+        "lab-a3"
       ],
       "status": "pilot",
       "lesson_prerequisites": {
@@ -126,10 +102,14 @@
         ]
       },
       "tasks": [
-        "a03-1",
-        "a03-2",
-        "a03-3"
-      ]
+        "a4-1",
+        "a4-2-forecast",
+        "a4-2-evaluation"
+      ],
+      "data": [
+        "data/freshcast-sample.csv"
+      ],
+      "number": "A4.1–A4.2"
     }
   ]
 }

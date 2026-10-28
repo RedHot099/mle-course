@@ -5,7 +5,7 @@ description: One hint for a lesson task, never the solution.
 
 # Hint
 
-For lab IDs, resolve labs/manifest.json, read that notebook's task and check cells, and obtain the learner's downloaded copy. Use its visible checks and rubric. A00 is a manual environment experiment. Source starters and tools/verify_labs.py are author materials, not learner grades.
+For lab IDs, resolve labs/manifest.json, read that notebook's task and check cells, and obtain the learner's working copy. Use its visible checks and rubric. A3 is a manual environment experiment. Source starters and tools/verify_labs.py are author materials, not learner grades.
 
 Resolve `$ARGUMENTS` as a lesson ID, for example C11.1. If absent, use `.course/progress.md` and the learner's current task. Read the lesson HTML, learner code and `tutor/notes/core.md` before responding. For A/B also use `tutor/notes/foundations.md`.
 

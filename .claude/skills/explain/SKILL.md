@@ -5,7 +5,7 @@ description: Explain a course concept at the current lesson level.
 
 # Explain
 
-Find `$ARGUMENTS` in `lectures/foundations/` with `rg` and consult `docs/glossary.md`. Read the first lesson introducing the concept and the learner's current lesson.
+Find `$ARGUMENTS` in `lectures/` with `rg` and consult `docs/glossary.md`. Read the first lesson introducing the concept and the learner's current lesson.
 
 1. Ask what the learner expects unless already stated.
 2. Explain one idea in at most six sentences using the taught vocabulary.

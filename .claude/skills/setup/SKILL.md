@@ -5,7 +5,7 @@ description: Help prepare the notebook or the small project from A3 and B7.2.
 
 # Setup
 
-Read A3 (`lectures/foundations/a3-environment.html`) and the learner's environment notes. For GitHub access read B7.2. Ask which system and exact command are involved if unknown.
+Read A3 (`lectures/a3-environment.html`) and the learner's environment notes. For GitHub access read B7.2. Ask which system and exact command are involved if unknown.
 
 1. Diagnose read-only: current directory, uv version, exact traceback and project files. Explain each command before running it. Never print credentials or notebook access tokens.
 2. Fix dependencies inside the learner's project when authorized; respect machine-level restrictions. System installation, restarts and administrator work belong to the learner or their administrator, not the agent. Follow the official documentation linked by the lesson. Retry transient downloads using the configured retry options.

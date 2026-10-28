@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A2.4 · Słowniki i lista rekordów | ML Engineering from Scratch</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="assets/course.css">
+</head>
+<body data-module="foundations-a2-records">
+<header class="topbar">
+  <a class="brand" href="index.html">ML Engineering from Scratch</a>
+  <span class="crumb">A2.4 · Fundamenty</span><span class="spacer"></span>
+  <span class="score"></span>
+  <button class="icon-button" id="theme-toggle" type="button" aria-label="Przełącz motyw jasny i ciemny">◐</button>
+</header>
+<div class="progress-line"></div>
+
+<div class="page with-toc">
+  <nav class="toc" aria-label="W tej lekcji"><p>W tej lekcji</p>
+<ol></ol>
+</nav>
+  <main class="lecture">
+    <p class="kicker">A2.4 · <a href="index.html">Ścieżka A–F</a></p>
+
+    <h1>Słowniki i lista rekordów</h1>
+
+    <p class="lede">Jeden pomiar może zawierać kilka informacji: dzień, nazwę produktu i sprzedaż. Zobaczysz, jak zapisać je w słowniku. Następnie wybierzesz z listy pomiary jednego produktu i obliczysz jego sprzedaż.</p>
+
+    <ul class="meta"><li><b>Przed lekcją:</b> A2.2 i A2.3.</li>
+<li><b>Jak pracować:</b> przewiduj wyniki, uruchamiaj kod i wyjaśniaj to, co widzisz</li>
+</ul>
+
+    <section id="rekord"><h2>Nazwij pola jednej obserwacji</h2>
+<p>Słownik, czyli <code>dict</code>, przechowuje wartości pod nazwanymi kluczami. W przykładzie poniżej klucz <code>"day"</code> pozwala odczytać dzień, a <code>"sale"</code> sprzedaż. Taki komplet informacji o jednej obserwacji nazywamy tutaj rekordem.</p>
+<pre><code class="language-python">row = {&quot;day&quot;: &quot;Monday&quot;, &quot;sale&quot;: 3}
+print(row[&quot;day&quot;])
+print(row[&quot;sale&quot;])</code></pre><p>Program wypisze <code>Monday</code> i <code>3</code>. Listę odczytujesz po indeksie, a słownik po kluczu. Jeśli podasz klucz, którego nie ma w słowniku, Python zgłosi <code>KeyError</code>.</p>
+<div class="quiz" id="key" data-type="single"><p>Jak odczytasz sprzedaż z row?</p>
+<ul class="quiz-options"><li><code>row["day"]</code><span class="why">To inne pole rekordu.</span></li>
+<li data-correct><code>row["sale"]</code><span class="why">Klucz sale opisuje potrzebne pole.</span></li>
+<li><code>row[0]</code><span class="why">Słownik nie wybiera pierwszej pary po indeksie 0.</span></li>
+</ul>
+</div>
+</section>
+<section id="rekordy"><h2>Przejdź po obserwacjach</h2>
+<pre><code class="language-python">rows = [
+    {&quot;city&quot;: &quot;north&quot;, &quot;sale&quot;: 3},
+    {&quot;city&quot;: &quot;south&quot;, &quot;sale&quot;: 7},
+]
+for row in rows:
+    print(row[&quot;city&quot;], row[&quot;sale&quot;])</code></pre><p>W każdym kroku pętli <code>row</code> oznacza jeden słownik z listy. Program wypisze <code>north 3</code>, a potem <code>south 7</code>. Możesz sprawdzić pole tego rekordu i zdecydować, czy uwzględnić obserwację w obliczeniu.</p>
+<p>Przypisanie <code>row["sale"] = 4</code> zmieniłoby pole w istniejącym rekordzie. W następnym zadaniu tylko odczytuj rekordy. Wyniki zbieraj osobno, aby zachować dane wejściowe.</p>
+</section>
+<section id="cwiczenia"><h2>Wybierz właściwy produkt</h2>
+<h3>Suma dla wybranego produktu</h3>
+<p>Na liście znajdują się dane o sprzedaży różnych produktów. Interesuje nas produkt <code>"pear"</code>. W zmiennej <code>total</code> zapisz sumę jego znanych wartości sprzedaży. Pomiń rekordy z <code>None</code>, ale uwzględnij te ze sprzedażą równą zero.</p><p>W liście <code>selected_days</code> zbierz dni, które uwzględniasz w obliczeniu. Zachowaj ich kolejność z danych i nie zmieniaj samych rekordów.</p>
+<div class="pyrun" id="select"><script type="text/x-python" data-role="starter">
+rows = [
+    {"day": "Mon", "product": "pear", "sale": 0},
+    {"day": "Tue", "product": "apple", "sale": 8},
+    {"day": "Wed", "product": "pear", "sale": None},
+    {"day": "Thu", "product": "pear", "sale": 5},
+]
+total = 0
+selected_days = []
+# Dopisz pętlę i warunki.
+print(total, selected_days)
+</script><script type="text/x-python" data-role="test">
+assert total == 5, "Suma znanych sprzedaży pear to 5, bez sprzedaży apple."
+assert selected_days == ["Mon", "Thu"], "Wybierz dni pear ze znanym sale. Zero zostaje, None odpada."
+assert rows[0]["sale"] == 0 and rows[2]["sale"] is None, "Nie zmieniaj rekordów wejściowych."
+</script></div>
+<details><summary>Podpowiedź 1</summary>
+<p>Przy każdym rekordzie sprawdź dwie rzeczy: czy dotyczy wybranego produktu i czy znamy jego sprzedaż.</p>
+</details>
+<details><summary>Podpowiedź 2</summary>
+<p>Warunki można zagnieździć lub połączyć słowem and. Oba muszą być prawdziwe.</p>
+</details>
+</section>
+<section id="powrot"><h2>Sprawdź, co pamiętasz</h2>
+<p>Czym różni się lista rekordów od jednego rekordu? Co wybiera indeks, a co klucz?</p>
+<details><summary>Sprawdź własne wyjaśnienie</summary>
+<p>Lista zawiera kolejne obserwacje, a każdy słownik opisuje jedną z nich. Indeksem wybierasz element listy. Kluczem wybierasz informację ze słownika, na przykład sprzedaż z wybranego dnia.</p>
+</details>
+</section>
+
+    <section id="laboratorium"><h2>Laboratorium</h2><p><a href="../labs/index.html#lab-a2-4-a2-5">A2.4–A2.5 · osobne laboratorium do tej części kursu</a>. Pracuj w notebooku we własnej kopii repozytorium. Po A3 zacznij od lab A3, potem utrwal podstawy w labach A2.1–A2.3 oraz A2.4–A2.5.</p></section>
+<div class="next"><h2>Następny krok</h2>
+<p><a href="a2-functions.html">A2.5 · Pierwsza własna funkcja</a></p>
+<p><a href="a2-loops.html">Poprzednia: A2.3</a> · <a href="index.html">Mapa A–F</a></p>
+</div>
+
+  </main>
+</div>
+
+<footer class="footer">ML Engineering from Scratch · Jakub Eichner · treści CC BY 4.0, kod MIT</footer>
+<script src="assets/highlight.min.js"></script>
+<script src="assets/course.js"></script>
+</body>
+</html>

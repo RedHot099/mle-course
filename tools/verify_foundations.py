@@ -19,7 +19,7 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = ROOT / "lectures" / "foundations"
+PAGES = ROOT / "lectures"
 VOID = {
     "area",
     "base",
@@ -203,9 +203,10 @@ def check_curriculum() -> None:
 def check_current_materials() -> None:
     """Check entry points, manual task rubrics and the single course route."""
     for path in ROOT.joinpath("lectures").iterdir():
-        assert path.name in {"assets", "foundations", "index.html"}, (
-            f"Unexpected course material: {path.name}"
-        )
+        assert (
+            path.name in {"assets", "diagrams", "resources", "curriculum.json"}
+            or path.suffix == ".html"
+        ), f"Unexpected course material: {path.name}"
     entry = ROOT / "lectures" / "index.html"
     check_links(entry, Document(entry).root)
     lab_index = ROOT / "labs" / "index.html"

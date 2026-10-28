@@ -1,4 +1,4 @@
-"""Validate A pilot starters, bundles and real notebook checker execution.
+"""Validate A pilot starters and real notebook checker execution.
 
 No learner implementations are provided or read. Positive checker tests use
 expected values and Mock outputs for finite fixtures, not a working solution.
@@ -9,14 +9,16 @@ from __future__ import annotations
 
 import copy
 import json
+import shutil
 import tempfile
 from pathlib import Path
-from zipfile import ZipFile
 
 import nbformat
-from build_labs import LABS, ROOT, bundle_bytes
 from nbclient import NotebookClient
 from nbformat import NotebookNode
+
+ROOT = Path(__file__).resolve().parents[1]
+LABS = ROOT / "labs"
 
 
 def assignment(values: dict) -> str:
@@ -102,14 +104,16 @@ def check_notebook(lab: dict, lessons: dict[str, dict], seen: set[str]) -> int:
             checks += 1
     assert tasks == set(lab["tasks"]), lab["id"]
     with tempfile.TemporaryDirectory() as directory:
-        bundle = LABS / lab["bundle"]
-        assert bundle.read_bytes() == bundle_bytes(lab), bundle.name
-        with ZipFile(bundle) as archive:
-            assert set(archive.namelist()) == {
-                f"{lab['id']}/{name}" for name in lab["files"]
-            }
-            archive.extractall(directory)
-        cwd = Path(directory) / lab["id"]
+        cwd = Path(directory) / "labs"
+        cwd.mkdir()
+        shutil.copyfile(path, cwd / path.name)
+        for name in lab["data"]:
+            relative = Path(name)
+            assert relative.parts[0] == "data" and ".." not in relative.parts
+            assert relative.name != "project-holdout.csv"
+            target = cwd / relative
+            target.parent.mkdir(exist_ok=True)
+            shutil.copyfile(LABS / relative, target)
         for mode in ("positive", "starter", "negative"):
             execute(verification_notebook(notebook, mode), cwd)
     if checks:
@@ -144,9 +148,7 @@ def main() -> None:
     manifest = json.loads((LABS / "manifest.json").read_text())
     lessons = {
         lesson["id"]: lesson
-        for lesson in json.loads(
-            (ROOT / "lectures/foundations/curriculum.json").read_text()
-        )
+        for lesson in json.loads((ROOT / "lectures/curriculum.json").read_text())
     }
     seen: set[str] = set()
     coverage: list[str] = []

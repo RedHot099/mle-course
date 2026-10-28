@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A2.1 · Wartości, nazwy i wynik programu | ML Engineering from Scratch</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="assets/course.css">
+</head>
+<body data-module="foundations-a2-values">
+<header class="topbar">
+  <a class="brand" href="index.html">ML Engineering from Scratch</a>
+  <span class="crumb">A2.1 · Fundamenty</span><span class="spacer"></span>
+  <span class="score"></span>
+  <button class="icon-button" id="theme-toggle" type="button" aria-label="Przełącz motyw jasny i ciemny">◐</button>
+</header>
+<div class="progress-line"></div>
+
+<div class="page with-toc">
+  <nav class="toc" aria-label="W tej lekcji"><p>W tej lekcji</p>
+<ol></ol>
+</nav>
+  <main class="lecture">
+    <p class="kicker">A2.1 · <a href="index.html">Ścieżka A–F</a></p>
+
+    <h1>Wartości, nazwy i wynik programu</h1>
+
+    <p class="lede">Wyobraź sobie magazyn, do którego przychodzi dostawa, a część towaru trafia do klientów. Napiszesz krótki program, który obliczy, ile sztuk zostało. Przy okazji poznasz liczby, tekst i zmienne.</p>
+
+    <ul class="meta"><li><b>Przed lekcją:</b> Pierwsze uruchomienie w A1.</li>
+<li><b>Jak pracować:</b> przewiduj wyniki, uruchamiaj kod i wyjaśniaj to, co widzisz</li>
+</ul>
+
+    <section id="wartosci"><h2>Wyświetl wartość</h2>
+<p>Python wykonuje polecenia od góry do dołu. Funkcja <code>print</code> wyświetla wartość podaną w nawiasach. Liczby zapisujesz bez cudzysłowów, a tekst, czyli <em>string</em>, w cudzysłowach.</p>
+<pre><code class="language-python">print(12)
+print(&quot;12&quot;)
+print(2 + 5)</code></pre><p>Zobaczysz kolejno <code>12</code>, <code>12</code> i <code>7</code>, każde w osobnej linii. Pierwsze dwie wartości wyglądają tak samo, ale mają różne typy: pierwsza jest liczbą, druga tekstem. Sprawdź tę różnicę funkcją <code>type</code>:</p>
+<pre><code class="language-python">print(type(12))
+print(type(&quot;12&quot;))</code></pre><p><code>int</code> oznacza liczbę całkowitą, a <code>str</code> tekst. Typ <code>float</code> pozwala zapisywać liczby z częścią ułamkową, na przykład <code>2.5</code>. W kodzie część ułamkową oddzielasz kropką.</p>
+</section>
+<section id="nazwy"><h2>Nazwij wynik rachunku</h2>
+<p>Chcesz wykorzystać wynik także w dalszej części programu? Możesz zapisać go w zmiennej. Znak <code>=</code> przypisuje jej wartość: Python oblicza to, co znajduje się po prawej stronie, i nadaje ten wynik nazwie po lewej. W przykładzie poniżej zmienna <code>stock</code> przechowuje stan magazynu.</p>
+<div class="predict" id="assignment" data-type="single" data-expected-output="9"><p>Ile wynosi stock po ostatnim przypisaniu?</p>
+<pre><code class="language-python">stock = 12
+sold = 3
+stock = stock - sold
+print(stock)</code></pre><ul class="quiz-options"><li>12<span class="why">Drugie przypisanie aktualizuje stock.</span></li>
+<li>3<span class="why">Trzy to wartość sold, nie stock.</span></li>
+<li data-correct>9<span class="why">Najpierw stock to 12, potem odejmujemy 3.</span></li>
+</ul>
+</div>
+<p>Nazwy w kodzie są po angielsku: <code>stock</code> to stan towaru, a <code>sold</code> liczba sprzedanych sztuk. Python rozróżnia wielkie i małe litery. Używaj więc dokładnie tej samej nazwy przy przypisaniu i później w obliczeniach.</p>
+<pre><code class="language-python">print(7 * 3)
+print(7 / 2)
+print(&quot;7&quot; + &quot;2&quot;)</code></pre><p>Operator <code>*</code> mnoży, a <code>/</code> dzieli liczby. Dla dwóch napisów <code>+</code> łączy tekst. Powyższe polecenia wypiszą <code>21</code>, <code>3.5</code> i <code>72</code>. Znak <code>#</code> rozpoczyna komentarz, który Python pomija do końca linii.</p>
+</section>
+<section id="cwiczenia"><h2>Policz samodzielnie</h2>
+<h3>Dostawa i sprzedaż</h3>
+<p>W magazynie jest 18 sztuk towaru. Następnie przychodzi dostawa 7 sztuk, a klienci kupują 9. Ile sztuk zostaje?</p><p>Uzupełnij zmienną <code>remaining</code>. Zapisz obliczenie za pomocą podanych zmiennych, zamiast wpisywać gotowy wynik. Naciśnij <strong>Sprawdź</strong>, aby sprawdzić swoją odpowiedź.</p>
+<div class="pyrun" id="stock"><script type="text/x-python" data-role="starter">
+stock = 18
+delivery = 7
+sold = 9
+remaining = None  # zastąp None swoim rachunkiem
+print(remaining)
+</script><script type="text/x-python" data-role="test">
+assert remaining == 16, "Po dostawie i sprzedaży powinno zostać 16. Zapisz rachunek w remaining."
+</script></div>
+<details><summary>Podpowiedź 1</summary>
+<p>Najpierw ustal, które zdarzenie zwiększa stan, a które go zmniejsza.</p>
+</details>
+<details><summary>Podpowiedź 2</summary>
+<p>W rachunku użyj nazw stock, delivery i sold.</p>
+</details>
+<h3>Udział odczytanych pomiarów</h3>
+<p>Udało się odczytać 15 z 20 pomiarów. Jaką część wszystkich pomiarów odczytano?</p><p>W zmiennej <code>share</code> zapisz wynik jako liczbę od 0 do 1, a w <code>percent</code> ten sam wynik w procentach. Na przykład odczytanie 2 z 5 pomiarów oznacza udział <code>0.4</code>, czyli 40%.</p>
+<div class="pyrun" id="share"><script type="text/x-python" data-role="starter">
+read = 15
+expected = 20
+share = None
+percent = None
+print(share, percent)
+</script><script type="text/x-python" data-role="test">
+assert share == 0.75, "Udział to liczba odczytanych pomiarów podzielona przez wszystkie."
+assert percent == 75, "Procent to udział pomnożony przez 100."
+</script></div>
+<details><summary>Podpowiedź 1</summary>
+<p>Ułamek opisuje część całości.</p>
+</details>
+<details><summary>Podpowiedź 2</summary>
+<p>Do zamiany udziału na procent użyj mnożenia.</p>
+</details>
+</section>
+<section id="powrot"><h2>Sprawdź, co pamiętasz</h2>
+<p>Jaka jest różnica między 8 a "8"? Co robi znak =?</p>
+<details><summary>Sprawdź własne wyjaśnienie</summary>
+<p><code>8</code> jest liczbą, a <code>"8"</code> tekstem zawierającym jeden znak. Znak <code>=</code> przypisuje zmiennej wartość obliczoną po prawej stronie. Jeśli te zapisy nadal Ci się mylą, wróć do <a href="#wartosci">pierwszego przykładu</a> i sprawdź ich typy za pomocą <code>type</code>.</p>
+</details>
+</section>
+
+    <section id="laboratorium"><h2>Laboratorium</h2><p><a href="../labs/index.html#lab-a2-1-a2-3">A2.1–A2.3 · osobne laboratorium do tej części kursu</a>. Pracuj w notebooku we własnej kopii repozytorium. Po A3 zacznij od lab A3, potem utrwal podstawy w labach A2.1–A2.3 oraz A2.4–A2.5.</p></section>
+<div class="next"><h2>Następny krok</h2>
+<p><a href="a2-conditions.html">A2.2 · Warunki, zero i brak obserwacji</a></p>
+<p><a href="a1-diagnosis.html">Poprzednia: A1</a> · <a href="index.html">Mapa A–F</a></p>
+</div>
+
+  </main>
+</div>
+
+<footer class="footer">ML Engineering from Scratch · Jakub Eichner · treści CC BY 4.0, kod MIT</footer>
+<script src="assets/highlight.min.js"></script>
+<script src="assets/course.js"></script>
+</body>
+</html>

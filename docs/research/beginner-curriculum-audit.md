@@ -1,6 +1,6 @@
 # Jak przebudować kurs dla początkującej osoby
 
-Notatka autora: analiza dotyczy wcześniejszego kursu w commicie `951c88c`. Wzmianki o modułach 00–19 opisują ten historyczny stan. Aktualny kurs jest dostępny wyłącznie przez [mapę A–F](../../lectures/foundations/index.html).
+Notatka autora: analiza dotyczy wcześniejszego kursu w commicie `951c88c`. Wzmianki o modułach 00–19 opisują ten historyczny stan. Aktualny kurs jest dostępny wyłącznie przez [mapę A–F](../../lectures/index.html).
 
 Audyt z 27 października 2026, zaktualizowany po zmianie nacisku na rozumienie ML/AI oraz kontroli zależności z `gpt-6-astra`. Stan analizowanego repozytorium: `951c88c`, gałąź `main`. Dokument proponuje zmiany. Nie zmienia zadań ani nie zawiera ich rozwiązań.
 

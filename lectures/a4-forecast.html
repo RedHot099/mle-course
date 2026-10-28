@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A4.2 · Pierwsza prognoza na danych Freshcast | ML Engineering from Scratch</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="assets/course.css">
+</head>
+<body data-module="foundations-a4-forecast">
+<header class="topbar">
+  <a class="brand" href="index.html">ML Engineering from Scratch</a>
+  <span class="crumb">A4.2 · Fundamenty</span><span class="spacer"></span>
+  <span class="score"></span>
+  <button class="icon-button" id="theme-toggle" type="button" aria-label="Przełącz motyw jasny i ciemny">◐</button>
+</header>
+<div class="progress-line"></div>
+
+<div class="page with-toc">
+  <nav class="toc" aria-label="W tej lekcji"><p>W tej lekcji</p>
+<ol></ol>
+</nav>
+  <main class="lecture">
+    <p class="kicker">A4.2 · <a href="index.html">Ścieżka A–F</a></p>
+
+    <h1>Pierwsza prognoza na danych Freshcast</h1>
+
+    <p class="lede">Wykorzystasz to, co już znasz z Pythona, żeby przygotować pierwszą prognozę sprzedaży. Użyjesz prostej reguły: przez kolejny tydzień przewiduj taką samą sprzedaż jak w ostatnim znanym dniu. Potem sprawdzisz, jak duże były pomyłki.</p>
+
+    <ul class="meta"><li><b>Przed lekcją:</b> A4.1 i podstawy Pythona z A2.</li>
+<li><b>Jak pracować:</b> przewiduj wyniki, uruchamiaj kod i wyjaśniaj to, co widzisz</li>
+</ul>
+
+    <section id="dane"><h2>Jedna seria i czternaście dni</h2>
+<p>Prześledź sprzedaż jednego produktu w jednym sklepie przez 14 kolejnych dni. Dane pochodzą z publicznej próbki FreshRetailNet-50K dołączonej do kursu: sklep 70, produkt 116, od 28 marca do 10 kwietnia 2024. <a href="../labs/data/freshcast-sample.csv">Pobierz ten wycinek jako CSV</a>, jeśli chcesz zachować go lokalnie.</p>
+<p>Kolumna <code>sale_amount</code> zawiera sprzedaż w jednostkach użytych w źródle. Zachowujemy te wartości, również ich części ułamkowe. Nie traktuj ich jako całkowitej liczby sprzedanych sztuk.</p><p>Kolumna <code>stockout_hours</code> mówi, przez ile godzin w obserwowanej części dnia towar był niedostępny. To ważne: gdy półka jest pusta, zapis sprzedaży nie mówi, ilu klientów chciało coś kupić. Sprzedaż może więc być mniejsza od popytu.</p>
+<div class="table-wrap"><table><thead><tr><th>Dzień</th><th>sale_amount</th><th>stockout_hours</th><th>Rola</th></tr>
+</thead>
+<tbody><tr><td>2024-03-28</td><td>0.8</td><td>7</td><td>historia</td></tr>
+<tr><td>2024-03-29</td><td>0.6</td><td>0</td><td>historia</td></tr>
+<tr><td>2024-03-30</td><td>0.7</td><td>0</td><td>historia</td></tr>
+<tr><td>2024-03-31</td><td>0.76</td><td>1</td><td>historia</td></tr>
+<tr><td>2024-04-01</td><td>0</td><td>16</td><td>historia</td></tr>
+<tr><td>2024-04-02</td><td>0.7</td><td>0</td><td>historia</td></tr>
+<tr><td>2024-04-03</td><td>0.9</td><td>0</td><td>historia</td></tr>
+<tr><td>2024-04-04</td><td>0.7</td><td>1</td><td>ocena</td></tr>
+<tr><td>2024-04-05</td><td>0.7</td><td>0</td><td>ocena</td></tr>
+<tr><td>2024-04-06</td><td>0.6</td><td>0</td><td>ocena</td></tr>
+<tr><td>2024-04-07</td><td>0.76</td><td>0</td><td>ocena</td></tr>
+<tr><td>2024-04-08</td><td>0.2</td><td>12</td><td>ocena</td></tr>
+<tr><td>2024-04-09</td><td>1.5</td><td>0</td><td>ocena</td></tr>
+<tr><td>2024-04-10</td><td>1.6</td><td>0</td><td>ocena</td></tr>
+</tbody>
+</table>
+</div>
+<p>Wyobraź sobie, że jest wieczór 3 kwietnia. Znasz sprzedaż z pierwszych siedmiu dni tabeli i przygotowujesz prognozę na następny tydzień. Późniejszych wyników nie możesz jeszcze użyć.</p><p>W ćwiczeniu pokazujemy od razu całą tabelę, żeby można było potem ocenić prognozę. Podczas jej tworzenia korzystaj jednak wyłącznie z pierwszych siedmiu dni.</p>
+</section>
+<section id="baseline"><h2>Przygotuj prognozę przed odczytaniem wyników</h2>
+<p>Zastosuj jedną regułę: na każdy z kolejnych siedmiu dni przewiduj wartość z ostatniego dnia historii. Cała prognoza powstaje raz, wieczorem 3 kwietnia. Obserwacje od 4 do 10 kwietnia posłużą później do oceny, nie do poprawiania tej prognozy.</p>
+<p>W Pythonie możesz powtórzyć element listy przez mnożenie. Na przykład <code>["pending"] * 3</code> tworzy listę <code>["pending", "pending", "pending"]</code>. W swoim zadaniu przygotuj tyle wartości, ile dni obejmuje prognoza. Tę liczbę dni nazywamy horyzontem.</p>
+<p>Własną prognozę, ręczny rachunek i ocenę przygotuj w <a href="../labs/index.html#lab-a4-1-a4-2">lab-a4-1-a4-2</a>. Tam zapiszesz prognozę przed odczytem obserwacji i sprawdzisz jej wynik. Poniższy wykres pomaga zrozumieć zachowanie tej reguły.</p>
+</section>
+<section id="wykres"><h2>Obejrzyj, gdzie reguła się myli</h2>
+<p>Na wykresie pozioma oś pokazuje dni, a pionowa wartości <code>sale_amount</code>. Pionowa przerywana linia oznacza chwilę przygotowania prognozy. Pozioma przerywana linia pokazuje baseline. Zwróć uwagę na ostatnie dni: czy ta prosta reguła trafia we wzrost sprzedaży?</p>
+<figure><svg viewBox="0 0 640 250" role="img" aria-labelledby="forecast-title forecast-desc"><title id="forecast-title">Historia i baseline jednej serii</title><desc id="forecast-desc">Siedem dni historii do 3 kwietnia. Baseline na siedem kolejnych dni jest stały, 0.9. Na końcu okresu obserwowana sprzedaż rośnie do 1.5 i 1.6.</desc><g fill="none" stroke="currentColor" opacity="0.4"><path d="M45 20V210H615"/><path d="M45 110H615"/><path stroke-dasharray="5 5" d="M330 20V210"/></g><g fill="currentColor" font-size="13"><text x="15" y="215">0</text><text x="10" y="115">0.9</text><text x="40" y="235">28 III</text><text x="290" y="235">3 IV</text><text x="570" y="235">10 IV</text></g><polyline fill="none" stroke="var(--accent, #8b5cf6)" stroke-width="3" points="50,121 93,143 136,132 179,126 222,210 265,132 308,110"/><polyline fill="none" stroke="var(--accent, #8b5cf6)" stroke-width="3" opacity="0.6" points="351,132 394,132 437,143 480,126 523,188 566,43 609,32"/><path fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="6 4" d="M351 110H609"/></svg><figcaption>Kolorowa linia: obserwacje. Przerywana pozioma: prognoza. Pionowa granica: chwila prognozy.</figcaption>
+</figure>
+</section>
+<section id="wnioski"><h2>Zapisz wynik i ograniczenie</h2>
+<p>Pełne zadanie i pytania do przemyślenia znajdziesz w lab-a4-1-a4-2. Tutaj sprawdź, jakie ograniczenie ma sama interpretacja wyniku.</p><p>W tym ćwiczeniu obliczamy MAE dla sprzedaży ze wszystkich siedmiu dni, także tych z brakami towaru. Pełnego popytu nie znamy, dlatego wynik nie mówi, jak dobrze prognozujemy potrzeby klientów, których nie udało się obsłużyć.</p>
+<details><summary>Sprawdź własną odpowiedź</summary>
+<p>Wyjaśnienie powinno wskazywać, że prognoza korzysta tylko z historii, a ocena obejmuje późniejsze obserwacje. Powinno też rozróżniać sprzedaż od popytu. Jeden tydzień jednej serii nie wystarcza do oceny metody dla wszystkich sklepów. Nawet poprawnie napisany baseline może mieć duży błąd.</p>
+</details>
+<p>Źródło: Dingdong-Inc, <a href="https://huggingface.co/datasets/Dingdong-Inc/FreshRetailNet-50K">FreshRetailNet-50K</a>, CC BY 4.0. Ten sam wycinek CSV jest dołączony do lab-a4-1-a4-2. Zachowano wartości, uporządkowano dni i nazwano kolumnę godzin <code>stockout_hours</code>. To jawny przykład do nauki, a nie końcowy zamknięty test kursu.</p>
+</section>
+<section id="powrot"><h2>Sprawdź, co pamiętasz</h2>
+<p>Czy MAE = 0 oznacza zero sprzedaży? Czy to to samo co brak danych?</p>
+<details><summary>Sprawdź własne wyjaśnienie</summary>
+<p><code>MAE = 0</code> oznacza, że każda oceniana prognoza zgadza się z obserwacją. Same obserwacje mogą być dodatnie lub zerowe. Brak obserwacji to osobna sytuacja. Jeśli te znaczenia się mieszają, wróć do A2.2 i A4.1.</p>
+</details>
+</section>
+
+    <section id="laboratorium"><h2>Laboratorium</h2><p><a href="../labs/index.html#lab-a4-1-a4-2">A4.1–A4.2 · osobne laboratorium do tej części kursu</a>. Pracuj w notebooku we własnej kopii repozytorium. Wymagania, instrukcja uruchomienia i kryteria ukończenia są przy labie.</p></section>
+<div class="next"><h2>Następny krok</h2>
+<p><a href="b5-collections.html">B5.1 · Kolekcje i zmiany danych</a></p>
+<p><a href="a4-metrics.html">Poprzednia: A4.1</a> · <a href="index.html">Mapa A–F</a></p>
+</div>
+
+  </main>
+</div>
+
+<footer class="footer">ML Engineering from Scratch · Jakub Eichner · treści CC BY 4.0, kod MIT</footer>
+<script src="assets/highlight.min.js"></script>
+<script src="assets/course.js"></script>
+</body>
+</html>

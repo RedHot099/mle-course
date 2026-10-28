@@ -16,7 +16,6 @@ def check_layout(browser: Browser, width: int) -> None:
     errors: list[str] = []
     page.on("pageerror", lambda error: errors.append(str(error)))
     for path in [
-        PAGES.parent / "index.html",
         ROOT / "labs" / "index.html",
         *sorted(PAGES.rglob("*.html")),
     ]:

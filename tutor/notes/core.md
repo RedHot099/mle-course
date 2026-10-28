@@ -1,6 +1,6 @@
 # Tutor routing for the A–F core
 
-Use this note when the learner names an ID from `lectures/foundations/curriculum.json`, follows the course, or asks to start from zero. The catalogue is ordered and lists prerequisites. For the A pilot also resolve labs/manifest.json and the learner's notebook copy. Read the current lesson HTML before helping: its example, task, starter, check, transfer question and rubric are the task specification.
+Use this note when the learner names an ID from `lectures/curriculum.json`, follows the course, or asks to start from zero. The catalogue is ordered and lists prerequisites. For the A pilot also resolve labs/manifest.json and the learner's notebook copy. Read the current lesson HTML before helping: its example, task, starter, check, transfer question and rubric are the task specification.
 
 For A and B, also use `tutor/notes/foundations.md`. Its browser-progress and hint guidance still applies. C–F use the same one-rung-per-request hint ladder. Learners write their exercise code, test additions and project implementations. Do not read the solutions branch.
 
