@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "scope": "A pilot only",
+  "labs": [
+    {
+      "id": "lab-a00",
+      "title": "Notebook, który działa po restarcie",
+      "notebook": "lab-a00/lab.ipynb",
+      "lessons": [
+        "A3"
+      ],
+      "requires_labs": [],
+      "bundle": "downloads/lab-a00.zip",
+      "files": [
+        "README.md",
+        "lab.ipynb",
+        "LICENSE",
+        "LICENSE-CONTENT.md"
+      ],
+      "status": "pilot",
+      "lesson_prerequisites": {
+        "A3": [
+          "A2.5"
+        ]
+      },
+      "tasks": []
+    },
+    {
+      "id": "lab-a01",
+      "title": "Co naprawdę jest pomiarem",
+      "notebook": "lab-a01/lab.ipynb",
+      "lessons": [
+        "A1",
+        "A2.1",
+        "A2.2",
+        "A2.3"
+      ],
+      "requires_labs": [
+        "lab-a00"
+      ],
+      "bundle": "downloads/lab-a01.zip",
+      "files": [
+        "README.md",
+        "lab.ipynb",
+        "LICENSE",
+        "LICENSE-CONTENT.md"
+      ],
+      "status": "pilot",
+      "lesson_prerequisites": {
+        "A1": [],
+        "A2.1": [
+          "A1"
+        ],
+        "A2.2": [
+          "A2.1"
+        ],
+        "A2.3": [
+          "A2.2"
+        ]
+      },
+      "tasks": [
+        "a01-1",
+        "a01-2",
+        "a01-3"
+      ]
+    },
+    {
+      "id": "lab-a02",
+      "title": "Rekordy i funkcja, z której można skorzystać ponownie",
+      "notebook": "lab-a02/lab.ipynb",
+      "lessons": [
+        "A2.4",
+        "A2.5"
+      ],
+      "requires_labs": [
+        "lab-a00"
+      ],
+      "bundle": "downloads/lab-a02.zip",
+      "files": [
+        "README.md",
+        "lab.ipynb",
+        "LICENSE",
+        "LICENSE-CONTENT.md"
+      ],
+      "status": "pilot",
+      "lesson_prerequisites": {
+        "A2.4": [
+          "A2.3"
+        ],
+        "A2.5": [
+          "A2.4"
+        ]
+      },
+      "tasks": [
+        "a02-1",
+        "a02-2"
+      ]
+    },
+    {
+      "id": "lab-a03",
+      "title": "Prognoza powstaje przed oceną",
+      "notebook": "lab-a03/lab.ipynb",
+      "lessons": [
+        "A4.1",
+        "A4.2"
+      ],
+      "requires_labs": [
+        "lab-a00"
+      ],
+      "bundle": "downloads/lab-a03.zip",
+      "files": [
+        "README.md",
+        "lab.ipynb",
+        "freshcast-sample.csv",
+        "DATA.md",
+        "LICENSE",
+        "LICENSE-CONTENT.md"
+      ],
+      "status": "pilot",
+      "lesson_prerequisites": {
+        "A4.1": [
+          "A2.5"
+        ],
+        "A4.2": [
+          "A4.1"
+        ]
+      },
+      "tasks": [
+        "a03-1",
+        "a03-2",
+        "a03-3"
+      ]
+    }
+  ]
+}

@@ -7,7 +7,7 @@ Run:
 """
 
 from playwright.sync_api import Browser, Page, sync_playwright
-from verify_foundations import PAGES, Document
+from verify_foundations import PAGES, ROOT, Document
 
 
 def check_layout(browser: Browser, width: int) -> None:
@@ -15,7 +15,11 @@ def check_layout(browser: Browser, width: int) -> None:
     page = context.new_page()
     errors: list[str] = []
     page.on("pageerror", lambda error: errors.append(str(error)))
-    for path in [PAGES.parent / "index.html", *sorted(PAGES.rglob("*.html"))]:
+    for path in [
+        PAGES.parent / "index.html",
+        ROOT / "labs" / "index.html",
+        *sorted(PAGES.rglob("*.html")),
+    ]:
         page.goto(path.as_uri())
         assert page.locator("h1").count() == 1, path.name
         editors = page.locator(".pyrun").count()

@@ -15,6 +15,8 @@ Otwórz [mapę kursu](lectures/index.html). Jeśli zaczynasz od zera, przejdź d
 
 Każda lekcja podaje wymagania, przykład, zadanie i pytanie sprawdzające rozumienie. Zadania kodowe mają sprawdzenia, a zadania notebookowe kryteria samooceny. Diagramy wyjaśniają wybrane relacje. PyTorch działa na CPU; kurs nie wymaga GPU ani płatnych usług.
 
+[Cztery osobne laboratoria sekcji A](labs/index.html) są gotowe do pilotażu. Zadanie prognozy z A4.2 wykonujesz w lab-a03. Sekcje B–F nie mają jeszcze osobnych labów.
+
 Instrukcje dla autora: [utrzymanie kursu](lectures/foundations/README.md). [Podsumowanie przeglądów językowych](docs/reviews/af-language-review.md) opisuje przyjęte uwagi i decyzje redakcyjne. [Standard](docs/standard.md) i [słownik](docs/glossary.md) dotyczą tej samej ścieżki A–F.
 
 ## Sprawdzenie materiałów przez autora
@@ -25,6 +27,8 @@ uv run --group neural python tools/verify_foundations.py
 uv run ruff format --check tools
 uv run ruff check tools
 uv run mypy tools
+uv run python tools/build_labs.py --check
+uv run python tools/verify_labs.py
 uv run python -m playwright install chromium --only-shell
 uv run python tools/verify_foundations_browser.py
 ```

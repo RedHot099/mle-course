@@ -1,6 +1,6 @@
 # Plan laboratoriów do kursu A–F
 
-Status: propozycja po dwóch rundach konsultacji z Opus 5.5, GPT-6.1 Sol i Grok 4.7. Wnioski i rozbieżności opisuje [raport rady](../reviews/af-laboratories-council.md). Ten dokument nie wprowadza laboratoriów ani nie zmienia lekcji. Punktem odniesienia jest kurs z commita 2eceb38. Oryginalne materiały analizujemy w commicie c41404e, przed usunięciem labów. Nie korzystamy z gałęzi solutions.
+Status: propozycja po dwóch rundach konsultacji z Opus 5.5, GPT-6.1 Sol i Grok 4.7. Wnioski i rozbieżności opisuje [raport rady](../reviews/af-laboratories-council.md). Pierwotnie dokument był samym planem. Stan wdrożenia: cztery laby sekcji A są teraz przygotowane technicznie do pilotażu; zobacz [laboratoria A](../../labs/index.html). Laby B–F nadal pozostają planem. Pilotaż z początkującymi uczestnikami nie został jeszcze przeprowadzony. Punktem odniesienia jest kurs z commita 2eceb38. Oryginalne materiały analizujemy w commicie c41404e, przed usunięciem labów. Nie korzystamy z gałęzi solutions.
 
 ## Jak uczestnik ma pracować
 

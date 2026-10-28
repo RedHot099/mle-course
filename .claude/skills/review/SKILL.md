@@ -5,6 +5,8 @@ description: Review completed learner work using the current lesson criteria.
 
 # Review
 
+For lab IDs, resolve labs/manifest.json, read that notebook's task and check cells, and obtain the learner's downloaded copy. Use its visible checks and rubric. A00 is a manual environment experiment. Source starters and tools/verify_labs.py are author materials, not learner grades.
+
 Review `$ARGUMENTS` or the current lesson. The learner writes every correction.
 
 1. Read the lesson requirements, task and rubric. For B6.2–B7.2 inspect the learner's summary.py, test_summary.py, README and project configuration; run the scoped commands from those lessons in that project. For C–F inspect the requested notebook or report and reproduce the relevant small calculation.

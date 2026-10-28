@@ -58,34 +58,7 @@
 <section id="baseline"><h2>Przygotuj prognozę przed odczytaniem wyników</h2>
 <p>Zastosuj jedną regułę: na każdy z kolejnych siedmiu dni przewiduj wartość z ostatniego dnia historii. Cała prognoza powstaje raz, wieczorem 3 kwietnia. Obserwacje od 4 do 10 kwietnia posłużą później do oceny, nie do poprawiania tej prognozy.</p>
 <p>W Pythonie możesz powtórzyć element listy przez mnożenie. Na przykład <code>["pending"] * 3</code> tworzy listę <code>["pending", "pending", "pending"]</code>. W swoim zadaniu przygotuj tyle wartości, ile dni obejmuje prognoza. Tę liczbę dni nazywamy horyzontem.</p>
-<h3>Siedem prognoz</h3>
-<p>Najpierw uzupełnij listę <code>forecast</code>, korzystając wyłącznie z <code>history</code> i podanego horyzontu. Powinna zawierać prognozę na każdy z siedmiu dni.</p><p>Dopiero gdy lista jest gotowa, porównaj ją z <code>actual</code>, czyli rzeczywistą sprzedażą. Zapisz wielkości pomyłek w <code>errors</code>, a ich średnią w <code>mae</code>. Nie poprawiaj prognozy po obejrzeniu wyników.</p>
-<div class="pyrun" id="forecast"><script type="text/x-python" data-role="starter">
-history = [0.8, 0.6, 0.7, 0.76, 0.0, 0.7, 0.9]
-horizon = 7
-forecast = None
-# Najpierw zbuduj prognozę z history i horizon.
-
-actual = [0.7, 0.7, 0.6, 0.76, 0.2, 1.5, 1.6]
-errors = []
-mae = None
-# Dopiero tutaj oceniaj prognozę.
-print(forecast, mae)
-</script><script type="text/x-python" data-role="test">
-import math
-assert isinstance(forecast, list), "Zbuduj forecast jako listę, jedną wartość na przyszły dzień."
-assert len(forecast) == horizon, "Prognoza ma obejmować siedem dni."
-assert forecast == [0.9] * 7, "Każdy dzień używa ostatniej obserwacji historii. Nie używaj actual do budowy forecast."
-assert len(errors) == 7, "Policz jeden błąd na dzień, łącznie z zerowymi błędami."
-assert all(math.isclose(error, abs(p - a)) for error, p, a in zip(errors, forecast, actual)), "Porównaj te same dni i użyj wartości bezwzględnej."
-assert isinstance(mae, (int, float)) and math.isclose(mae, 2.84 / 7), "MAE to średnia siedmiu błędów. Zaokrąglaj dopiero wyświetlany wynik."
-</script></div>
-<details><summary>Podpowiedź 1</summary>
-<p>Wycinek historii kończy się 3 kwietnia. Ostatni element listy wybierasz indeksem -1.</p>
-</details>
-<details><summary>Podpowiedź 2</summary>
-<p>Wszystkie siedem prognoz powstaje z tej samej znanej wartości. Do oceny wróć do par i abs z A4.1.</p>
-</details>
+<p>Własną prognozę, ręczny rachunek i ocenę przygotuj w <a href="../../labs/index.html#lab-a03">lab-a03</a>. Tam zapiszesz prognozę przed odczytem obserwacji i sprawdzisz jej wynik. Poniższy wykres pomaga zrozumieć zachowanie tej reguły.</p>
 </section>
 <section id="wykres"><h2>Obejrzyj, gdzie reguła się myli</h2>
 <p>Na wykresie pozioma oś pokazuje dni, a pionowa wartości <code>sale_amount</code>. Pionowa przerywana linia oznacza chwilę przygotowania prognozy. Pozioma przerywana linia pokazuje baseline. Zwróć uwagę na ostatnie dni: czy ta prosta reguła trafia we wzrost sprzedaży?</p>
@@ -93,11 +66,11 @@ assert isinstance(mae, (int, float)) and math.isclose(mae, 2.84 / 7), "MAE to ś
 </figure>
 </section>
 <section id="wnioski"><h2>Zapisz wynik i ograniczenie</h2>
-<p>W notebooku lub pliku tekstowym zapisz, jak powstała prognoza i dla jakich dni ją oceniasz. Dodaj jedno ograniczenie tej oceny.</p><p>W tym ćwiczeniu obliczamy MAE dla sprzedaży ze wszystkich siedmiu dni, także tych z brakami towaru. Pełnego popytu nie znamy, dlatego wynik nie mówi, jak dobrze prognozujemy potrzeby klientów, których nie udało się obsłużyć.</p>
+<p>Pełny raport i kryteria samooceny znajdziesz w lab-a03. Tutaj sprawdź, jakie ograniczenie ma sama interpretacja wyniku.</p><p>W tym ćwiczeniu obliczamy MAE dla sprzedaży ze wszystkich siedmiu dni, także tych z brakami towaru. Pełnego popytu nie znamy, dlatego wynik nie mówi, jak dobrze prognozujemy potrzeby klientów, których nie udało się obsłużyć.</p>
 <details><summary>Sprawdź własną odpowiedź</summary>
 <p>Wyjaśnienie powinno wskazywać, że prognoza korzysta tylko z historii, a ocena obejmuje późniejsze obserwacje. Powinno też rozróżniać sprzedaż od popytu. Jeden tydzień jednej serii nie wystarcza do oceny metody dla wszystkich sklepów. Nawet poprawnie napisany baseline może mieć duży błąd.</p>
 </details>
-<p>Źródło: Dingdong-Inc, <a href="https://huggingface.co/datasets/Dingdong-Inc/FreshRetailNet-50K">FreshRetailNet-50K</a>, CC BY 4.0. Wycinek pochodzi z kursowego <code>frn_sample.parquet</code>. Zachowano wartości, uporządkowano dni i nazwano kolumnę godzin <code>stockout_hours</code>. To jawny przykład do nauki, a nie końcowy zamknięty test kursu.</p>
+<p>Źródło: Dingdong-Inc, <a href="https://huggingface.co/datasets/Dingdong-Inc/FreshRetailNet-50K">FreshRetailNet-50K</a>, CC BY 4.0. Ten sam wycinek CSV jest dołączony do lab-a03. Zachowano wartości, uporządkowano dni i nazwano kolumnę godzin <code>stockout_hours</code>. To jawny przykład do nauki, a nie końcowy zamknięty test kursu.</p>
 </section>
 <section id="powrot"><h2>Sprawdź, co pamiętasz</h2>
 <p>Czy MAE = 0 oznacza zero sprzedaży? Czy to to samo co brak danych?</p>
@@ -106,7 +79,8 @@ assert isinstance(mae, (int, float)) and math.isclose(mae, 2.84 / 7), "MAE to ś
 </details>
 </section>
 
-    <div class="next"><h2>Następny krok</h2>
+    <section id="laboratorium"><h2>Laboratorium</h2><p><a href="../../labs/index.html#lab-a03">LAB-A03 · osobne laboratorium do tej części kursu</a>. Pobierz paczkę i pracuj we własnym notebooku. Wymagania, instrukcja uruchomienia i kryteria ukończenia są przy labie.</p></section>
+<div class="next"><h2>Następny krok</h2>
 <p><a href="b5-collections.html">B5.1 · Kolekcje i zmiany danych</a></p>
 <p><a href="a4-metrics.html">Poprzednia: A4.1</a> · <a href="index.html">Mapa A–F</a></p>
 </div>

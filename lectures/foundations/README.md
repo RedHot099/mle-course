@@ -2,6 +2,10 @@
 
 Punkt wejścia: [mapa 70 lekcji](index.html). Nowy rdzeń obejmuje wszystkie 21 punktów uzgodnionego planu A–F. [Plan i kontrola kolejności](../../docs/research/beginner-curriculum-audit.md) wyjaśniają zakres.
 
+## Osobne laboratoria
+
+[Cztery laby A](../../labs/index.html) mają notebooki i paczki do pobrania. Ich utrzymanie opisuje [README laboratoriów](../../labs/README.md). Pełne zadanie A3 i projekt prognozy A4.2 wykonuje się w labach. Krótkie ćwiczenia A2 pozostają rozgrzewką wykładu. Laby B–F nie są jeszcze wdrożone; dotychczasowe zadania tych sekcji nadal są w HTML.
+
 ## Pokrycie planu
 
 | Sekcja | Punkty planu | Lekcje | Zakres |

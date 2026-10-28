@@ -208,6 +208,8 @@ def check_current_materials() -> None:
         )
     entry = ROOT / "lectures" / "index.html"
     check_links(entry, Document(entry).root)
+    lab_index = ROOT / "labs" / "index.html"
+    check_links(lab_index, Document(lab_index).root)
     rubrics = 0
     for path in PAGES.glob("*.html"):
         document = Document(path).root

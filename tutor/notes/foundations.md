@@ -2,11 +2,17 @@
 
 Read this when the learner names an A/B lesson, asks to start from zero, or progress.md records foundations. Start at `lectures/foundations/index.html`.
 
+## A pilot laboratories
+
+Read labs/manifest.json for lab-a00 through lab-a03. Each delivered notebook owns its full task, checks, hints and rubric. The learner works in a downloaded copy under ~/mle-practice/labs/. Ask for that copy or its output; source starters do not show learner progress. Record lab and task ID in progress.md. Do not edit the learner's task body.
+
+A00 requires an observed restart and explanation. A01–A03 have eight checked tasks in total plus manual transfer examples. The author verification uses finite expected values and mocks to check checker behavior; it is not evidence that the learner has implemented a general function. For A02 inspect the actual function on a sixth input. For A03 require the freeze note before evaluation and distinguish the fully public example from the final project holdout.
+
 ## Route checks and hints
 
 1. Find the lesson in the table below. Read its HTML specification, starter and check before helping. Completion means the learner can perform the listed action and explain a new example.
 2. For browser work, ask for the learner's code and observed output if they are not available. Browser code and quiz progress live in that browser, not in repository files. Do not infer failure from an empty CLI progress log.
-3. Use the hint ladder, one rung per request. Run the lesson’s **Sprawdź** action or reproduce the supplied check locally.
+3. Use the hint ladder, one rung per request. Run the lesson's **Sprawdź** action or reproduce the supplied check locally.
 4. For B6.2 onward, read and run the learner's own small module and tests when accessible. Use its directory, not the whole course test suite. Use only the files relevant to the current lesson.
 5. Record the lesson, evidence and sticking point in `.course/progress.md`, including whether an infrastructure step was deferred. Do not infer browser state from local files.
 

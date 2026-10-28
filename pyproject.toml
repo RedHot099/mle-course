@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["pytest>=8.3", "ruff>=0.8", "mypy>=1.13", "playwright>=1.55"]
+dev = ["pytest>=8.3", "ruff>=0.8", "mypy>=1.13", "playwright>=1.55", "nbformat>=5.10", "nbclient>=0.10"]
 neural = ["torch>=2.9,<2.10"]
 
 [tool.uv]
