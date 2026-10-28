@@ -27,7 +27,7 @@
 
     <p class="lede">Twoja funkcja i testy staną się małym projektem, który można uruchomić także poza notebookiem. Zapiszesz potrzebne narzędzia, opiszesz typy danych i wykonasz sprawdzenia w terminalu.</p>
 
-    <ul class="meta"><li><b>Przed lekcją:</b> B6.1 i B6.2. Własne summary.py i test_summary.py, oba w mle-practice.</li>
+    <ul class="meta"><li><b>Przed lekcją:</b> B6.1 i B6.2. Własne summary.py i test_summary.py, oba w practice.</li>
 <li><b>Jak pracować:</b> przewiduj wyniki, uruchamiaj kod i wyjaśniaj to, co widzisz</li>
 </ul>
 
@@ -42,12 +42,12 @@
 <p>Kernel zapamiętuje zaimportowany moduł. Dlatego po zmianie <code>summary.py</code> kolejne <code>import</code> może nadal korzystać ze starej wersji.</p><p>Zrestartuj kernel i uruchom notebook od początku, żeby wczytać aktualny plik. Testy uruchamiane przez <code>pytest</code> z terminala zaczynają pracę w nowym procesie i odczytują kod z dysku.</p>
 </section>
 <section id="projekt"><h2>Zapisz narzędzia projektu</h2>
-<p>Otwórz terminal w folderze <code>mle-practice</code>, w którym są Twoja funkcja i testy. To osobny projekt, nie folder <code>mle-course</code>. Jeśli istnieje już w nim <code>pyproject.toml</code>, pomiń pierwsze polecenie <code>uv init</code>.</p>
-<pre><code class="language-bash">cd ~/mle-practice
-uv init --bare --python 3.12
+<p>Otwórz terminal w folderze <code>practice</code>, w którym są Twoja funkcja i testy. To wspólny podprojekt w kopii repozytorium kursu. Notebooki nadal są w labs. Jeśli istnieje już w nim <code>pyproject.toml</code>, pomiń pierwsze polecenie <code>uv init</code>.</p>
+<pre><code class="language-bash">cd practice
+uv init --bare --python 3.12 --no-workspace --vcs none
 uv python pin 3.12
 uv add --dev pytest ruff mypy</code></pre><p>Każdy z utworzonych plików ma inne zadanie:</p><ul><li><code>pyproject.toml</code> opisuje projekt i potrzebne narzędzia.</li><li><code>.python-version</code> wybiera Python 3.12.</li><li><code>uv.lock</code> zapisuje wybrane wersje bibliotek.</li><li>Folder <code>.venv</code> zawiera środowisko utworzone na Twoim komputerze.</li></ul><p>Teraz uruchamiaj narzędzia przez <code>uv run</code>. Ich nazwy i wersje są zapisane w projekcie, więc nie potrzebujesz już opcji <code>--no-project</code> ani <code>--with</code>.</p>
-<pre><code class="language-bash">uv run pytest -q
+<pre><code class="language-bash">uv run python -m pytest -q test_summary.py
 uv run ruff format summary.py test_summary.py
 uv run ruff check summary.py test_summary.py</code></pre><p><code>ruff format</code> porządkuje układ kodu. <code>ruff check</code> szuka między innymi nieznanych nazw i nieużytych importów. Żadne z tych poleceń nie sprawdza, czy średnia ma poprawną wartość. To zadanie Twoich testów.</p>
 </section>
@@ -60,19 +60,14 @@ print(triple(2.0))</code></pre><p><code>list[float | None]</code> oznacza listę
 <pre><code class="language-bash">uv run mypy --disallow-untyped-defs summary.py
 uv run ruff format --check summary.py test_summary.py
 uv run ruff check summary.py test_summary.py
-uv run pytest -q</code></pre><p>Jeśli mypy wskazuje możliwe <code>None</code> w obliczeniu, sprawdź, gdzie odrzucasz brakujące wartości. Narzędzie musi widzieć ten warunek przed użyciem liczby. Popraw przyczynę komunikatu zamiast go wyciszać. Na tym etapie wystarczą poznane podstawowe typy.</p>
+uv run python -m pytest -q test_summary.py</code></pre><p>Jeśli mypy wskazuje możliwe <code>None</code> w obliczeniu, sprawdź, gdzie odrzucasz brakujące wartości. Narzędzie musi widzieć ten warunek przed użyciem liczby. Popraw przyczynę komunikatu zamiast go wyciszać. Na tym etapie wystarczą poznane podstawowe typy.</p>
 <div class="quiz" id="annotation" data-type="single"><p>Czy adnotacja -> float automatycznie zamienia wynik na float?</p>
 <ul class="quiz-options"><li>Tak<span class="why">Python sam nie wykonuje konwersji na podstawie tej adnotacji.</span></li>
 <li data-correct>Nie<span class="why">Typ opisuje umowę. Konwersję musi wykonać kod, jeśli jest potrzebna.</span></li>
 </ul>
 </div>
 </section>
-<section id="zadanie"><h2>Uruchom od czystego startu</h2>
-<p>Uruchom w terminalu cztery sprawdzenia pokazane wyżej. Zapisz własnymi słowami, które sprawdza wynik obliczenia, które typy, a które zapis kodu.</p><p>Utwórz w folderze <code>mle-practice</code> plik <code>README.md</code> i zapisz w nim polecenie uruchomienia testów. Wyobraź sobie, że ktoś otwiera projekt pierwszy raz: powinien wiedzieć, co wpisać, żeby je powtórzyć.</p>
-<details><summary>Sprawdź własną odpowiedź</summary>
-<p>Osoba czytająca projekt powinna znaleźć funkcję, jej docstring i polecenie uruchomienia testów. Format, lint, mypy oraz pytest mają przechodzić dla Twojego małego projektu. Nie wymagamy ukończenia późniejszych zadań z repozytorium kursu.</p>
-</details>
-</section>
+<section id="zadanie"><h2>Sprawdzenia w laboratorium</h2><p>Typy, formatowanie, lint i testy wykonaj na tej samej funkcji w <a href="../labs/lab-b7-1-b7-2.ipynb">labie B7.1–B7.2</a>. Nie twórz osobnego README do ćwiczenia ani pisemnego opisu poleceń. Sprawdź, który komunikat dotyczy zapisu, który typu, a który wyniku obliczenia.</p></section>
 <section id="powrot"><h2>Sprawdź, co pamiętasz</h2>
 <p>Dlaczego po zmianie pliku notebook może nadal używać starej funkcji?</p>
 <details><summary>Sprawdź własne wyjaśnienie</summary>
@@ -80,7 +75,8 @@ uv run pytest -q</code></pre><p>Jeśli mypy wskazuje możliwe <code>None</code> 
 </details>
 </section>
 
-    <div class="next"><h2>Następny krok</h2>
+    <section id="laboratorium"><h2>Laboratorium B7.1–B7.2</h2><p><a href="../labs/lab-b7-1-b7-2.ipynb">Otwórz notebook labu B7.1–B7.2</a>. Zadania wykonuj po odpowiednich wykładach. Wszystkie notebooki uruchamiaj ze wspólnego folderu labs, według głównego README.</p></section>
+<div class="next"><h2>Następny krok</h2>
 <p><a href="b7-git.html">B7.2 · Pierwszy branch, commit i pull request</a></p>
 <p><a href="b6-tests.html">Poprzednia: B6.2</a> · <a href="index.html">Mapa A–F</a></p>
 </div>

@@ -1,4 +1,4 @@
-"""Validate A pilot starters and real notebook checker execution.
+"""Validate A and B pilot starters and real notebook checker execution.
 
 No learner implementations are provided or read. Positive checker tests use
 expected values and Mock outputs for finite fixtures, not a working solution.
@@ -10,6 +10,8 @@ from __future__ import annotations
 import copy
 import json
 import shutil
+import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
@@ -25,12 +27,29 @@ def assignment(values: dict) -> str:
     return "\n".join(f"{key} = {value!r}" for key, value in values.items())
 
 
+def fixture_files(files: dict) -> str:
+    lines = []
+    for name, contents in files.items():
+        relative = Path(name)
+        assert relative.parts[0] == "results" and ".." not in relative.parts
+        lines.append(f"Path({name!r}).write_text({contents!r}, encoding='utf-8')")
+    return "\n".join(lines) + "\n"
+
+
 def positive_fixture(meta: dict) -> str:
-    lines = assignment(meta["positive"])
+    lines = assignment(meta["positive"]) + "\n" + str(meta.get("positive_code", ""))
+    lines += "\n" + fixture_files(meta.get("positive_files", {}))
     if fixture := meta.get("callable_fixture"):
+        returns = []
+        for value in fixture["returns"]:
+            if isinstance(value, dict) and "error" in value:
+                assert value["error"] == "ValueError"
+                returns.append(f"ValueError({value['message']!r})")
+            else:
+                returns.append(repr(value))
         lines += (
             "\nfrom unittest.mock import Mock\n"
-            f"{fixture['name']} = Mock(side_effect={fixture['returns']!r})"
+            f"{fixture['name']} = Mock(side_effect=[{', '.join(returns)}])"
         )
     return lines + "\n"
 
@@ -57,7 +76,8 @@ def verification_notebook(notebook: NotebookNode, mode: str) -> NotebookNode:
         elif mode == "starter":
             cell.source = require_failure(original) + correct + original
         else:
-            wrong = assignment(meta["negative"])
+            wrong = assignment(meta["negative"]) + "\n" + meta.get("negative_code", "")
+            wrong += "\n" + fixture_files(meta.get("negative_files", {}))
             if fixture := meta.get("callable_fixture"):
                 wrong = (
                     "from unittest.mock import Mock\n"
@@ -76,6 +96,25 @@ def execute(notebook: NotebookNode, cwd: Path) -> NotebookNode:
         kernel_name="python3",
         resources={"metadata": {"path": str(cwd)}},
     ).execute()
+
+
+def prepare_workspace(lab: dict, path: Path, directory: Path) -> Path:
+    cwd = directory / "labs"
+    cwd.mkdir(parents=True)
+    shutil.copyfile(path, cwd / path.name)
+    for name in lab["data"]:
+        relative = Path(name)
+        assert relative.parts[0] == "data" and ".." not in relative.parts
+        assert relative.name != "project-holdout.csv"
+        target = cwd / relative
+        target.parent.mkdir(exist_ok=True)
+        shutil.copyfile(LABS / relative, target)
+    for name in lab.get("support", []):
+        assert name in {"practice/summary.py", "practice/test_summary.py"}
+        target = directory / name
+        target.parent.mkdir(exist_ok=True)
+        shutil.copyfile(ROOT / name, target)
+    return cwd
 
 
 def check_notebook(lab: dict, lessons: dict[str, dict], seen: set[str]) -> int:
@@ -103,18 +142,9 @@ def check_notebook(lab: dict, lessons: dict[str, dict], seen: set[str]) -> int:
             assert {"positive", "negative"} <= meta.keys(), cell.id
             checks += 1
     assert tasks == set(lab["tasks"]), lab["id"]
-    with tempfile.TemporaryDirectory() as directory:
-        cwd = Path(directory) / "labs"
-        cwd.mkdir()
-        shutil.copyfile(path, cwd / path.name)
-        for name in lab["data"]:
-            relative = Path(name)
-            assert relative.parts[0] == "data" and ".." not in relative.parts
-            assert relative.name != "project-holdout.csv"
-            target = cwd / relative
-            target.parent.mkdir(exist_ok=True)
-            shutil.copyfile(LABS / relative, target)
+    with tempfile.TemporaryDirectory(dir=ROOT) as directory:
         for mode in ("positive", "starter", "negative"):
+            cwd = prepare_workspace(lab, path, Path(directory) / mode)
             execute(verification_notebook(notebook, mode), cwd)
     if checks:
         print(f"{lab['id']}: {checks} checkers verified in three modes.")
@@ -127,7 +157,7 @@ def check_restart() -> None:
     first = nbformat.v4.new_notebook(
         cells=[nbformat.v4.new_code_cell("stock = 6\nprint(stock + 2)")]
     )
-    with tempfile.TemporaryDirectory() as directory:
+    with tempfile.TemporaryDirectory(dir=ROOT) as directory:
         executed = execute(first, Path(directory))
         assert executed.cells[0].outputs[0]["text"].strip() == "8"
         fresh = nbformat.v4.new_notebook(
@@ -142,6 +172,24 @@ def check_restart() -> None:
         result = client.execute()
         assert result.cells[0].outputs[0]["ename"] == "NameError"
     print("Fresh-kernel experiment: saved code runs; memory is not shared.")
+
+
+def check_test_starter() -> None:
+    """Prove the unfinished learner tests are discovered and fail clearly."""
+    with tempfile.TemporaryDirectory(dir=ROOT) as directory:
+        cwd = Path(directory)
+        for name in ("summary.py", "test_summary.py"):
+            shutil.copyfile(ROOT / "practice" / name, cwd / name)
+        result = subprocess.run(
+            [sys.executable, "-m", "pytest", "-q", "test_summary.py"],
+            cwd=cwd,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        assert result.returncode == 1 and "5 failed" in result.stdout, result.stdout
+        assert "Write a test" in result.stdout, result.stdout
+    print("B6: all five unfinished learner tests are discovered and fail clearly.")
 
 
 def main() -> None:
@@ -159,9 +207,12 @@ def main() -> None:
         coverage.extend(lab["lessons"])
         seen.add(lab["id"])
     assert len(coverage) == len(set(coverage))
-    assert set(coverage) == {key for key in lessons if key.startswith("A")}
+    assert set(coverage) == {key for key in lessons if key[0] in {"A", "B"}}
     check_restart()
-    print(f"A pilot: {len(seen)} labs, all 9 lessons mapped, {checks} checked tasks.")
+    check_test_starter()
+    print(
+        f"A/B pilot: {len(seen)} labs, all 16 lessons mapped, {checks} checked tasks."
+    )
     print("Human explanations and learner-authored implementations require a pilot.")
 
 

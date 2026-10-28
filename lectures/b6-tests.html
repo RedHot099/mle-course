@@ -42,16 +42,7 @@ print(&quot;check passed&quot;)</code></pre><p>Program wypisze <code>check passe
 </ul>
 </div>
 </section>
-<section id="plik"><h2>Zapisz funkcję i pierwszy test</h2>
-<p>W JupyterLab utwórz plik tekstowy <code>summary.py</code> w folderze <code>mle-practice</code>. Wklej do niego własną funkcję <code>mean_known</code> z B6.1. Pomiń wywołanie <code>print</code> spod definicji. Plik z rozszerzeniem <code>.py</code> jest modułem, z którego możesz importować funkcje.</p>
-<p>W tym samym folderze utwórz <code>test_summary.py</code>. Zapisz w nim poniższy pierwszy test. Sprawdza wynik funkcji na małym wejściu, nie opisuje sposobu obliczenia średniej.</p>
-<pre><code class="language-python" data-needs-learner="true">from summary import mean_known
-
-def test_mean_includes_zero():
-    assert mean_known([0, None, 6]) == 3.0</code></pre><p>Instrukcja <code>from summary import mean_known</code> udostępnia funkcję z pliku <code>summary.py</code>. Narzędzie <strong>pytest</strong> znajduje pliki i funkcje, których nazwy zaczynają się od <code>test_</code>, i wykonuje ich sprawdzenia. Uruchom je w terminalu z folderu zawierającego oba pliki:</p>
-<pre><code class="language-bash">cd ~/mle-practice
-uv run --no-project --python 3.12 --with pytest pytest -q</code></pre><p>Gdy funkcja zwraca oczekiwany wynik, zobaczysz <code>1 passed</code>. W przeciwnym razie pytest pokaże różnicę. Jeśli nie może zaimportować <code>summary</code>, sprawdź nazwę pliku i bieżący folder przed instalowaniem dodatkowych bibliotek.</p>
-</section>
+<section id="plik"><h2>Moduł i testy w jednym miejscu</h2><p>W labie B6.1–B6.2 uzupełniasz pliki <code>practice/summary.py</code> i <code>practice/test_summary.py</code>. Notebook pozostaje w labs, a pliki Python są we wspólnym małym projekcie practice. Polecenie uruchomienia testów znajdziesz w labie.</p><p>Import <code>from summary import mean_known</code> pobiera funkcję z sąsiedniego pliku summary.py. Pytest znajduje funkcje zaczynające się od test_ w pliku test_summary.py. Każda z nich porównuje zachowanie z niezależnie ustaloną odpowiedzią.</p></section>
 <section id="pytest"><h2>Liczby przybliżone i oczekiwane błędy</h2>
 <p>Liczby typu <code>float</code> mają ograniczoną precyzję. Dlatego wynik poprawnego obliczenia może nieznacznie różnić się od liczby zapisanej w teście. Do takiego porównania użyj <code>pytest.approx</code>, które dopuszcza niewielką różnicę.</p><p>Test może też sprawdzać, czy funkcja zgłasza oczekiwany wyjątek. Służy do tego <code>pytest.raises</code>:</p>
 <pre><code class="language-python">import pytest
@@ -68,18 +59,7 @@ def test_half_rejects_negative():
     with pytest.raises(ValueError, match=&quot;non-negative&quot;):
         half(-1)</code></pre><p>W tym przykładzie <code>match</code> sprawdza fragment komunikatu wyjątku. Jeśli wyjątek nie wystąpi, test zakończy się niepowodzeniem. W testach własnej funkcji dobierz wejścia i komunikaty do jej umowy.</p>
 </section>
-<section id="zadanie"><h2>Dopisz testy własnej funkcji</h2>
-<p>W pliku <code>test_summary.py</code> dopisz cztery testy swojej funkcji. Sprawdź pustą listę, listę samych braków, wynik z częścią ułamkową oraz to, czy funkcja nie zmienia przekazanej listy.</p><p>Przed napisaniem każdego testu ustal, czego oczekujesz. Policz wynik ręcznie albo wskaż, jaki błąd powinien wystąpić. W teście sprawdzasz rezultat działania funkcji, więc nie przepisuj do niego sposobu obliczania średniej.</p>
-<ol><li>Uruchom testy na swojej funkcji.</li>
-<li>Zrób kopię zapasową pliku jako <code>summary_backup.py</code>. Następnie w samym <code>summary.py</code>, z którego importują testy, wprowadź jeden kontrolowany błąd, na przykład pomijanie zer.</li>
-<li>Sprawdź, czy testy przestają przechodzić i czy komunikat dotyczy tego błędu.</li>
-<li>Przywróć poprawną treść <code>summary.py</code> z kopii zapasowej i uruchom komplet testów ponownie.</li>
-</ol>
-<p>Wszystkie próby wykonuj na swoim małym module. Nie potrzebujesz dodatkowych narzędzi: wprowadzisz jedną zmianę w kodzie i zobaczysz, jak zareagują testy.</p>
-<details><summary>Sprawdź swoje testy</summary>
-<p>Przed celową zmianą wszystkie testy powinny przechodzić. Po wprowadzeniu błędu przynajmniej jeden powinien się nie udać, a po naprawie znów przejść.</p><p>Przeczytaj każdy test osobno. Czy widzisz w nim małe dane i konkretny oczekiwany wynik? Jeśli sprawdzasz wyjątek, upewnij się też, że test nie przechodzi wtedy, gdy funkcja tego wyjątku nie zgłasza.</p>
-</details>
-</section>
+<section id="zadanie"><h2>Własne testy w laboratorium</h2><p>Pięć przypadków i próbę kontrolowanego błędu wykonaj w <a href="../labs/lab-b6-1-b6-2.ipynb">labie B6.1–B6.2</a>. Tam jest jedna specyfikacja zadania. Testy mają przechodzić przed zmianą funkcji, wykryć celowy błąd obliczenia i znów przechodzić po przywróceniu poprawnego kodu.</p></section>
 <section id="powrot"><h2>Sprawdź, co pamiętasz</h2>
 <p>Czy zielony test dowodzi, że funkcja działa na wszystkich danych?</p>
 <details><summary>Sprawdź własne wyjaśnienie</summary>
@@ -87,7 +67,8 @@ def test_half_rejects_negative():
 </details>
 </section>
 
-    <div class="next"><h2>Następny krok</h2>
+    <section id="laboratorium"><h2>Laboratorium B6.1–B6.2</h2><p><a href="../labs/lab-b6-1-b6-2.ipynb">Otwórz notebook labu B6.1–B6.2</a>. Zadania wykonuj po odpowiednich wykładach. Wszystkie notebooki uruchamiaj ze wspólnego folderu labs, według głównego README.</p></section>
+<div class="next"><h2>Następny krok</h2>
 <p><a href="b7-modules.html">B7.1 · Moduł, podstawowe typy i jakość kodu</a></p>
 <p><a href="b6-functions.html">Poprzednia: B6.1</a> · <a href="index.html">Mapa A–F</a></p>
 </div>

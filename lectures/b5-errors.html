@@ -55,38 +55,11 @@ print(require_positive_step(2))</code></pre><p>Wywołanie z argumentem 2 zwróci
 except ValueError:
     print(&quot;This text is not a number&quot;)</code></pre><p>Zapis <code>except ValueError</code> obsługuje wskazany typ błędu. W tym przykładzie chodzi o tekst, którego nie można zamienić na liczbę. Samo <code>except: pass</code> ukryłoby również inne wyjątki, pozostawiając Cię bez informacji o przyczynie problemu.</p><p>Nie traktuj każdego błędu jako braku danych. Znak oznaczający brak pomiaru i uszkodzony zapis liczby wymagają różnych odpowiedzi.</p>
 </section>
-<section id="cwiczenie"><h2>Zamień pojedynczy pomiar na liczbę</h2>
-<h3>Brak albo poprawna liczba</h3>
-<p>Uzupełnij funkcję <code>parse_reading(text)</code>. Ma zamieniać tekst odczytany z pliku na liczbę typu <code>float</code>. Na przykład <code>"0"</code> oznacza <code>0.0</code>. Znak <code>"?"</code> jest wyjątkiem od tej reguły: oznacza brak pomiaru, więc funkcja ma zwrócić <code>None</code>.</p><p>Spacje i inne białe znaki na początku i końcu tekstu nie powinny wpływać na wynik. Jeśli tekst nie przedstawia liczby albo przedstawia liczbę ujemną, zgłoś <code>ValueError</code>. Dla liczby ujemnej umieść w komunikacie słowo <code>negative</code>.</p>
-<div class="pyrun" id="parse-reading"><script type="text/x-python" data-role="starter">
-def parse_reading(text):
-    ...
-
-print(parse_reading(" 2.5 "))
-</script><script type="text/x-python" data-role="test">
-assert parse_reading(" 2.5 ") == 2.5, "Usuń białe znaki i odczytaj liczbę."
-assert parse_reading(" ? ") is None, "Znak braku po strip oznacza None."
-assert parse_reading("0") == 0.0, "Zero jest znaną wartością."
-for _text in ["blue", "-1"]:
-    try:
-        parse_reading(_text)
-    except ValueError as _error:
-        if _text == "-1":
-            assert "negative" in str(_error), "Komunikat dla ujemnej liczby ma zawierać negative."
-    else:
-        raise AssertionError("Nie zamieniaj błędnego wejścia na brak ani zero. Zgłoś ValueError.")
-</script></div>
-<details><summary>Podpowiedź 1</summary>
-<p>Najpierw rozpoznaj znak braku pomiaru. Funkcja <code>float</code> sama zgłasza błąd, gdy nie może odczytać liczby.</p>
-</details>
-<details><summary>Podpowiedź 2</summary>
-<p>Po zamianie tekstu na liczbę sprawdź, czy wynik jest ujemny. Nie zamieniaj <code>ValueError</code> na <code>None</code>: ukryłoby to błąd w danych.</p>
-</details>
-</section>
+<section id="cwiczenie"><h2>Wypróbuj pojęcie w laboratorium</h2><p>Pełne zadanie funkcji i sprawdzenia znajdziesz w <a href="../labs/lab-b5-2-b5-3.ipynb">labie B5.2–B5.3</a>. Pracuj w jednym miejscu, zamiast przepisywać tę samą implementację do wykładu i notebooka.</p></section>
 <section id="naprawa"><h2>Odtwórz jeden problem</h2>
-<p>W notebooku wywołaj osobno błędy nieznanej nazwy, brakującego pliku i złego zapisu liczby. Przy każdym zapisz nazwę wyjątku, linię kodu i problematyczną wartość. Następnie napraw przyczynę i uruchom przykład od początku.</p>
+<p>W notebooku wywołaj osobno błędy nieznanej nazwy, brakującego pliku i złego zapisu liczby. Przy każdym sprawdź nazwę wyjątku, linię kodu i problematyczną wartość; nie musisz sporządzać notatki. Następnie napraw przyczynę i uruchom przykład od początku.</p>
 <details><summary>Sprawdź własną odpowiedź</summary>
-<p>Z notatki powinno wynikać, jak odtworzyć błąd. Na przykład: funkcja <code>float</code> otrzymała napis <code>"blue"</code> i zgłosiła <code>ValueError</code>. Taki opis pozwala sprawdzić jedną konwersję bez uruchamiania reszty programu.</p>
+<p>Powinno być jasne, jak odtworzyć błąd. Na przykład: funkcja <code>float</code> otrzymała napis <code>"blue"</code> i zgłosiła <code>ValueError</code>. Taki opis pozwala sprawdzić jedną konwersję bez uruchamiania reszty programu.</p>
 </details>
 </section>
 <section id="powrot"><h2>Sprawdź, co pamiętasz</h2>
@@ -96,7 +69,8 @@ for _text in ["blue", "-1"]:
 </details>
 </section>
 
-    <div class="next"><h2>Następny krok</h2>
+    <section id="laboratorium"><h2>Laboratorium B5.2–B5.3</h2><p><a href="../labs/lab-b5-2-b5-3.ipynb">Otwórz notebook labu B5.2–B5.3</a>. Zadania wykonuj po odpowiednich wykładach. Wszystkie notebooki uruchamiaj ze wspólnego folderu labs, według głównego README.</p></section>
+<div class="next"><h2>Następny krok</h2>
 <p><a href="b6-functions.html">B6.1 · Napisz funkcję o jasno opisanym działaniu</a></p>
 <p><a href="b5-files.html">Poprzednia: B5.2</a> · <a href="index.html">Mapa A–F</a></p>
 </div>

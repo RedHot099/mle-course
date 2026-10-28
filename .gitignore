@@ -24,3 +24,7 @@ __pycache__/
 .DS_Store
 CLAUDE.local.md
 !AGENTS.md
+
+# Learner-generated results and controlled bug backup
+/labs/results/
+/practice/*_backup.py

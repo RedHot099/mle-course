@@ -4,7 +4,7 @@ Punkt wejścia: [mapa 70 lekcji](../lectures/index.html). Nowy rdzeń obejmuje w
 
 ## Osobne laboratoria
 
-[Cztery laby A](../labs/index.html) znajdują się bezpośrednio w labs/. Wspólne dane są w labs/data/. Uruchamianie i kontrole autora opisuje [główne README](../README.md). Pełne zadania A3 i A4.2 wykonuje się w labach; krótkie ćwiczenia A2 pozostają w wykładach. Laby B–F nie są jeszcze wdrożone.
+[Osiem labów A i B](../labs/index.html) znajduje się bezpośrednio w labs/. Wspólne dane są w labs/data/. Uruchamianie i kontrole autora opisuje [główne README](../README.md). Pełne zadania A3 i A4.2 wykonuje się w labach; krótkie ćwiczenia A2 pozostają w wykładach. B6 i B7 rozwijają wspólny podprojekt practice z własną funkcją i testami. Laby C–F nie są jeszcze wdrożone.
 
 ## Pokrycie planu
 
@@ -50,7 +50,7 @@ Projekt zaczyna od codziennie aktualizowanej prognozy jednodniowej: rzeczywisty 
 
 Pola kodu używają istniejącego `course.js`, który ładuje Pyodide i potrzebne biblioteki przy pierwszym imporcie. Każde wykonanie zaczyna w osobnej przestrzeni nazw. Pliki w przeglądarce są tymczasowe. Kod i postęp są zapisywane w localStorage według `foundations-*`, bez zapisu do `.course/progress.json`.
 
-B6.2 i dalsze doświadczenia lokalne korzystają z osobnego `~/mle-practice`. Biblioteki do C dodaje uczestnik, a Jupyter można uruchomić przez `uv run --with jupyterlab --with ipykernel jupyter lab`. PyTorch w F20 działa na CPU. Przykłady oznaczone `data-local-only` mają być wykonywane lokalnie; nie próbujemy pobierać PyTorch w Pyodide. Weryfikacja autora wykonuje je w swoim środowisku z CPU-owym PyTorch.
+B6 i B7 używają wspólnego podprojektu practice w kopii repozytorium kursu. Biblioteki do C dodaje uczestnik w practice; Jupyter uruchamia z labs przez `uv run --project ../practice --with jupyterlab --with ipykernel jupyter lab`. PyTorch w F20 działa na CPU. Przykłady oznaczone `data-local-only` mają być wykonywane lokalnie; nie próbujemy pobierać PyTorch w Pyodide. Weryfikacja autora wykonuje je w swoim środowisku z CPU-owym PyTorch.
 
 Przykłady pokazują inne małe problemy. Funkcje i testy uczestnika pozostają jego pracą. Katalog nie korzysta z gałęzi `solutions`. Identyfikatory A–F określają lekcje i ich wymagania.
 

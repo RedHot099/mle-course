@@ -1,6 +1,6 @@
 # Plan laboratoriów do kursu A–F
 
-Stan: cztery laboratoria A są przygotowane do pilotażu. B–F pozostają planem. [Raport dwóch rund rady](../reviews/af-laboratories-council.md) opisuje pierwotne uzasadnienia dydaktyczne. Poniższa wersja uwzględnia późniejsze decyzje o uproszczeniu struktury i numeracji.
+Stan: osiem laboratoriów A i B jest przygotowanych do pilotażu. C–F pozostają planem. [Raport dwóch rund rady](../reviews/af-laboratories-council.md) opisuje pierwotne uzasadnienia dydaktyczne. Poniższa wersja uwzględnia późniejsze decyzje o uproszczeniu struktury i numeracji.
 
 ## Forma kursu
 
@@ -62,7 +62,7 @@ A4 wykorzystuje osobny, w pełni widoczny przykład FreshRetailNet. Kopia progno
 
 Uczestnik pracuje we własnej kopii repozytorium. Wszystkie notebooki otwiera ze wspólnego folderu labs, według instrukcji w głównym README. A korzysta z tymczasowego środowiska uv z Pythonem 3.12, JupyterLab i ipykernel. Kolejne biblioteki dodajemy przed lekcjami, które ich używają. PyTorch działa na CPU. Każdy notebook sprawdza katalog roboczy; dane odczytuje z data/ względem tego folderu.
 
-W B6 i B7 uczestnik pisze także własny moduł i testy. Przy ich wdrażaniu trzeba wskazać jeden wspólny zestaw plików, dopasować importy oraz zawęzić polecenia pytest, mypy i Ruff do bieżącej pracy. Gotowy workflow z B7 pozostaje ćwiczeniem interpretacji CI, bez Dockera. Nie uruchamiamy wszystkich nierozwiązanych labów jako jednego zestawu testów.
+W B6 i B7 uczestnik pisze także własny moduł i testy. Wdrożone laby używają wspólnego practice/summary.py i practice/test_summary.py, z własnym projektem uv od B7. Importy i zakres poleceń pytest, mypy i Ruff dotyczą tych samych plików. Gotowy workflow z B7 pozostaje ćwiczeniem interpretacji CI, bez Dockera. Nie uruchamiamy wszystkich nierozwiązanych labów jako jednego zestawu testów.
 
 ## Odzyskanie starych materiałów
 
@@ -73,7 +73,7 @@ Nie przywracamy coursekit, catchup, pełnego panelu, cache, ABC, Protocol, infra
 ## Kolejność wdrożenia i odbiór
 
 1. Pilot A: gotowe notebooki A2.1–A2.3, A2.4–A2.5, A3 oraz A4.1–A4.2, z ośmioma sprawdzanymi zadaniami i doświadczeniem z kernelem. Kontrole techniczne są wykonane; pilotaż z początkującymi osobami pozostaje do przeprowadzenia.
-2. B: pliki, funkcje i własne testy oraz jeden projekt Git. Brak dostępu do konta nie blokuje sprawdzania kodu lokalnie.
+2. Pilot B: gotowe cztery laby B5.1, B5.2–B5.3, B6.1–B6.2 i B7.1–B7.2. Pliki, funkcje i własne testy oraz jedna historia Git kopii repozytorium. Brak dostępu do konta nie blokuje sprawdzania kodu lokalnie.
 3. C: tabele i pierwszy projekt. Pilot C12 sprawdza rzeczywiste przejście od danych do walidacji.
 4. D–E: rachunek, rzeczywisty backtest, modele i odtwarzanie eksperymentów. W backteście trzy podziały, świeży fit i rzeczywiste prognozy zamiast samych gotowych metryk.
 5. F: małe eksperymenty i zadania pojęciowe. Pilot F19.6–F19.7 wykonuje osoba po odpowiednich wykładach, nie osoba rozpoczynająca programowanie.

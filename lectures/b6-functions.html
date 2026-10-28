@@ -62,41 +62,7 @@ print(value)</code></pre><ul class="quiz-options"><li data-correct>9<span class=
 </div>
 <p>Przypisanie wewnątrz funkcji zmienia jej lokalną zmienną <code>value</code>. Nie zmienia zmiennej o tej samej nazwie poza funkcją. Inaczej działa <code>append</code>: zmienia samą listę, co widzieliśmy w B5.1.</p><p>Funkcję, która oblicza wynik tylko z przekazanych argumentów i nie zmienia danych ani niczego poza sobą, nazywamy czystą. W zadaniu poniżej funkcja ma tylko liczyć średnią. Odczyt i zapis plików pozostaw poza nią.</p>
 </section>
-<section id="cwiczenie"><h2>Średnia znanych wartości</h2>
-<h3>Zgłoś brak danych do średniej</h3>
-<p>Uzupełnij funkcję <code>mean_known(values)</code>. Otrzyma listę nieujemnych liczb oraz wartości <code>None</code>. Ma zwrócić średnią znanych liczb jako <code>float</code>. Uwzględnij zera i nie zmieniaj przekazanej listy.</p><p>Co zrobić, jeśli lista jest pusta albo zawiera wyłącznie <code>None</code>? W obu przypadkach nie ma z czego policzyć średniej. Funkcja ma wtedy zgłosić <code>ValueError</code> z komunikatem <code>no known values</code>.</p><p>W tym zadaniu możesz założyć, że inne typy danych i liczby ujemne nie wystąpią. Nie musisz dopisywać ich sprawdzania.</p>
-<div class="pyrun" id="mean-known"><script type="text/x-python" data-role="starter">
-def mean_known(values):
-    """Return the mean of known values, including zeros.
-
-    Raises:
-        ValueError: There are no known values.
-    """
-    ...
-
-print(mean_known([0, None, 6]))
-</script><script type="text/x-python" data-role="test">
-import math
-_input = [0, None, 6]
-assert mean_known(_input) == 3.0, "Zero ma być liczone. Średnia [0, 6] to 3."
-assert _input == [0, None, 6], "Nie zmieniaj listy wejściowej."
-assert isinstance(mean_known([2, 4]), float), "Wynikiem ma być float, także przy całkowitych wejściach."
-assert math.isclose(mean_known([1, 1, 2]), 4 / 3), "Nie zaokrąglaj wyniku wewnątrz funkcji."
-for _values in [[], [None, None]]:
-    try:
-        mean_known(_values)
-    except ValueError as _error:
-        assert "no known values" in str(_error), "Wiadomość powinna wyjaśnić brak znanych wartości."
-    else:
-        raise AssertionError("Bez znanych wartości zgłoś ValueError, zamiast zwracać zero.")
-</script></div>
-<details><summary>Podpowiedź 1</summary>
-<p>Najpierw ustal, ile jest znanych wartości i jaka jest ich suma.</p>
-</details>
-<details><summary>Podpowiedź 2</summary>
-<p>Zanim podzielisz sumę przez liczbę pomiarów, sprawdź, czy masz choć jeden znany pomiar. Wynik zwróć po zakończeniu pętli.</p>
-</details>
-</section>
+<section id="cwiczenie"><h2>Wypróbuj pojęcie w laboratorium</h2><p>Pełne zadanie funkcji i sprawdzenia znajdziesz w <a href="../labs/lab-b6-1-b6-2.ipynb">labie B6.1–B6.2</a>. Pracuj w jednym miejscu, zamiast przepisywać tę samą implementację do wykładu i notebooka.</p></section>
 <section id="transfer"><h2>Wypróbuj funkcję na innych danych</h2>
 <p>Bez zaglądania do kodu oblicz ręcznie wynik dla <code>[None, 0, 8, 4]</code>, a potem wywołaj swoją funkcję. Własnymi słowami wyjaśnij, dlaczego [] nie powinno zwracać zera.</p>
 <details><summary>Sprawdź uzasadnienie</summary>
@@ -110,7 +76,8 @@ for _values in [[], [None, None]]:
 </details>
 </section>
 
-    <div class="next"><h2>Następny krok</h2>
+    <section id="laboratorium"><h2>Laboratorium B6.1–B6.2</h2><p><a href="../labs/lab-b6-1-b6-2.ipynb">Otwórz notebook labu B6.1–B6.2</a>. Zadania wykonuj po odpowiednich wykładach. Wszystkie notebooki uruchamiaj ze wspólnego folderu labs, według głównego README.</p></section>
+<div class="next"><h2>Następny krok</h2>
 <p><a href="b6-tests.html">B6.2 · Pierwsze własne testy</a></p>
 <p><a href="b5-errors.html">Poprzednia: B5.3</a> · <a href="index.html">Mapa A–F</a></p>
 </div>

@@ -230,7 +230,7 @@ def main() -> None:
     quizzes = exercises = examples = 0
     pages = sorted(PAGES.rglob("*.html"))
     previous = Path.cwd()
-    with tempfile.TemporaryDirectory() as directory:
+    with tempfile.TemporaryDirectory(dir=ROOT) as directory:
         os.chdir(directory)
         try:
             for path in pages:

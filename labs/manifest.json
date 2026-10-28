@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "scope": "A pilot only",
+  "scope": "A and B pilot",
   "labs": [
     {
       "id": "lab-a3",
@@ -110,6 +110,131 @@
         "data/freshcast-sample.csv"
       ],
       "number": "A4.1–A4.2"
+    },
+    {
+      "id": "lab-b5-1",
+      "number": "B5.1",
+      "title": "Kopia i kolekcja to dwie różne decyzje",
+      "notebook": "lab-b5-1.ipynb",
+      "lessons": [
+        "B5.1"
+      ],
+      "requires_labs": [
+        "lab-a3"
+      ],
+      "lesson_prerequisites": {
+        "B5.1": [
+          "A4.2"
+        ]
+      },
+      "tasks": [
+        "b5-1-collections",
+        "b5-1-copy"
+      ],
+      "manual_tasks": [],
+      "data": [],
+      "support": [],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-b5-2-b5-3",
+      "number": "B5.2–B5.3",
+      "title": "Odczyt, zapis i błędne dane",
+      "notebook": "lab-b5-2-b5-3.ipynb",
+      "lessons": [
+        "B5.2",
+        "B5.3"
+      ],
+      "requires_labs": [
+        "lab-b5-1"
+      ],
+      "lesson_prerequisites": {
+        "B5.2": [
+          "B5.1"
+        ],
+        "B5.3": [
+          "B5.2"
+        ]
+      },
+      "tasks": [
+        "b5-2-read",
+        "b5-2-write",
+        "b5-3-parse"
+      ],
+      "manual_tasks": [],
+      "data": [
+        "data/b5-readings.txt"
+      ],
+      "support": [],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-b6-1-b6-2",
+      "number": "B6.1–B6.2",
+      "title": "Funkcja i testy wykrywające błąd",
+      "notebook": "lab-b6-1-b6-2.ipynb",
+      "lessons": [
+        "B6.1",
+        "B6.2"
+      ],
+      "requires_labs": [
+        "lab-b5-2-b5-3"
+      ],
+      "lesson_prerequisites": {
+        "B6.1": [
+          "B5.3"
+        ],
+        "B6.2": [
+          "B6.1",
+          "A3"
+        ]
+      },
+      "tasks": [
+        "b6-1-mean"
+      ],
+      "manual_tasks": [
+        "b6-2-tests",
+        "b6-2-mutation"
+      ],
+      "data": [],
+      "support": [
+        "practice/summary.py",
+        "practice/test_summary.py"
+      ],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-b7-1-b7-2",
+      "number": "B7.1–B7.2",
+      "title": "Moduł, narzędzia i historia zmiany",
+      "notebook": "lab-b7-1-b7-2.ipynb",
+      "lessons": [
+        "B7.1",
+        "B7.2"
+      ],
+      "requires_labs": [
+        "lab-b6-1-b6-2"
+      ],
+      "lesson_prerequisites": {
+        "B7.1": [
+          "B6.2"
+        ],
+        "B7.2": [
+          "B7.1"
+        ]
+      },
+      "tasks": [],
+      "manual_tasks": [
+        "b7-1-tools",
+        "b7-2-git",
+        "b7-2-ci"
+      ],
+      "data": [],
+      "support": [
+        "practice/summary.py",
+        "practice/test_summary.py"
+      ],
+      "status": "pilot"
     }
   ]
 }

@@ -2,11 +2,13 @@
 
 Read this when the learner names an A/B lesson, asks to start from zero, or progress.md records foundations. Start at `lectures/index.html`.
 
-## A pilot laboratories
+## A and B pilot laboratories
 
-Read labs/manifest.json for lab-a3 through lab-a4-1-a4-2. Each notebook owns its full task, checks, hints and rubric. The learner works in their own repository copy; A notebooks are directly under labs/ and data under labs/data/. Ask for that copy or its output; source starters do not show learner progress. Record lab and task ID in progress.md. Do not edit the learner's task body.
+Resolve all A/B lab IDs through labs/manifest.json. Each notebook owns its full task, checks, hints and rubric. The learner works in their own repository copy; all notebooks are directly under labs/ and data under labs/data/. Ask for that copy or its output; source starters do not show learner progress. Record lab and task ID in progress.md. Do not edit the learner's task body.
 
-A3 requires performing the restart experiment, without a written report. A2.1–A2.3–A4.1–A4.2 have eight checked tasks in total plus manual transfer examples. The author verification uses finite expected values and mocks to check checker behavior; it is not evidence that the learner has implemented a general function. For A2.4–A2.5 inspect the actual function on a sixth input. Do not request written explanations or prediction notes. For A4.1–A4.2 use the frozen_forecast copy created before evaluation and distinguish the fully public example from the final project holdout.
+A3 requires performing the restart experiment, without a written report. The three computational A labs have eight checked tasks in total plus manual transfer examples. The author verification uses finite expected values and mocks to check checker behavior; it is not evidence that the learner has implemented a general function. For A2.4–A2.5 inspect the actual function on a sixth input. Do not request written explanations or prediction notes. For A4.1–A4.2 use the frozen_forecast copy created before evaluation and distinguish the fully public example from the final project holdout.
+
+B5 works on synthetic input under labs/data and writes results only under labs/results. The parser must distinguish ?, corrupt text and negative numbers. B6 introduces practice/summary.py and practice/test_summary.py, not separate folders for each notebook. Run the learner's pytest only on that file. The provided starter deliberately raises five AssertionErrors; it must not be treated as a regression of the authored course. The learner writes the function and all tests. B7 adds basic types and a uv project in practice; the prepared CI uses working-directory: practice. Git is the existing learner-owned repository, with a learning branch. Never push or open a PR without explicit instructions. Do not require a README per lab or written learning reflections.
 
 ## Route checks and hints
 
@@ -52,10 +54,10 @@ The learner writes exercise bodies and test additions. The complete examples in 
 - **Tests.** Ask for a concrete broken behaviour the test would detect. A self-comparison does not provide an independent expectation.
 - **Imports.** For stale code, restart the notebook kernel. Terminal pytest uses a fresh process. Do not reinstall Python to refresh an imported file.
 - **Types.** Basic signatures are enough here. ParamSpec, ABC, Protocol, decorator factories and strict typing of higher-order functions belong later.
-- **Git and CI.** The small exercise repo starts with a GitHub README on main and a separate learning branch. The provided workflow is copied, not implemented as a graded task. Keep private data and credentials out of the diff.
+- **Git and CI.** The small exercise uses the learner's course repository and a separate learning branch. The provided workflow is copied, not implemented as a graded task. Keep private data and credentials out of the diff.
 
 ## Review scope
 
-For B6.2-B7.2, review `summary.py`, `test_summary.py`, the small project's pyproject.toml, .python-version, lock and README. In B7.2 also review the supplied workflow and gitignore placement. Apply K2, K4, K9, T2, T3 and G4 at the taught level. Do not demand a complete production package or checks for concepts not taught yet.
+For B6.2-B7.2, review `summary.py`, `test_summary.py`, the practice project's pyproject.toml, .python-version and lock. In B7.2 also review the supplied workflow and repository ignore patterns. Apply K2, K4, K9, T2, T3 and G4 at the taught level. Do not demand a complete production package or checks for concepts not taught yet.
 
 Success requires both working behaviour and a new small example explained without copying. A failed account setup is an environment issue; it does not cancel demonstrated Python skills. A green quiz counter alone does not establish mastery.

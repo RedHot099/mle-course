@@ -15,7 +15,7 @@ Otwórz [mapę kursu](lectures/index.html). Jeśli zaczynasz od zera, przejdź d
 
 Każda lekcja podaje wymagania, przykład, zadanie i pytanie sprawdzające rozumienie. Zadania kodowe mają sprawdzenia, a zadania notebookowe kryteria samooceny. Diagramy wyjaśniają wybrane relacje. PyTorch działa na CPU; kurs nie wymaga GPU ani płatnych usług.
 
-[Cztery osobne laboratoria sekcji A](labs/index.html) są gotowe do pilotażu. Zadanie prognozy z A4.2 wykonujesz w lab-a4-1-a4-2. Sekcje B–F nie mają jeszcze osobnych labów.
+[Osiem osobnych laboratoriów sekcji A i B](labs/index.html) są gotowe do pilotażu. Zadanie prognozy z A4.2 wykonujesz w lab-a4-1-a4-2. Sekcje C–F nie mają jeszcze osobnych labów.
 
 Instrukcje dla autora: [utrzymanie kursu](docs/course-maintenance.md). [Podsumowanie przeglądów językowych](docs/reviews/af-language-review.md) opisuje przyjęte uwagi i decyzje redakcyjne. [Standard](docs/standard.md) i [słownik](docs/glossary.md) dotyczą tej samej ścieżki A–F.
 
@@ -27,6 +27,10 @@ Notebooki są bezpośrednio w folderze `labs`, a wszystkie dane kursu w `labs/da
 - [A2.1–A2.3: wartości, warunki i pętle](labs/lab-a2-1-a2-3.ipynb), utrwalenie A2.1–A2.3 po A3.
 - [A2.4–A2.5: rekordy i funkcja](labs/lab-a2-4-a2-5.ipynb), po A2.4–A2.5 i A3.
 - [A4.1–A4.2: prognoza i MAE](labs/lab-a4-1-a4-2.ipynb), po A4.1–A4.2 i A3.
+- [B5.1: kopia i kolekcje](labs/lab-b5-1.ipynb).
+- [B5.2–B5.3: pliki i błędy](labs/lab-b5-2-b5-3.ipynb).
+- [B6.1–B6.2: funkcja i własne testy](labs/lab-b6-1-b6-2.ipynb).
+- [B7.1–B7.2: moduł, narzędzia i git](labs/lab-b7-1-b7-2.ipynb).
 
 Pracuj we własnej kopii repozytorium. W terminalu przejdź do jej folderu `labs` i uruchom JupyterLab:
 
@@ -39,19 +43,23 @@ Otwórz wybrany notebook z kernelem Python 3.12. Kod wykonujesz przez Shift+Ente
 
 Nie potrzeba oddzielnych paczek, pobierania danych ani bibliotek ML do sekcji A. Wszystkie notebooki uruchamiaj z tego samego folderu `labs`. Po pracy zatrzymaj kernel, a serwer Jupyter przez Ctrl+C w terminalu. Pytania do przemyślenia nie wymagają pisemnych odpowiedzi. Pilotaż z początkującymi uczestnikami jest jeszcze przed nami.
 
+W B6 i B7 używasz tych samych plików `practice/summary.py` i `practice/test_summary.py`. To jeden wspólny mały projekt, nie folder na każdy notebook. Funkcja i testy są starterami do samodzielnego uzupełnienia; początkowe niepowodzenia są oczekiwane. Testy uruchamiaj ze wskazaniem `test_summary.py`, a nie wszystkich nieukończonych ćwiczeń.
+
+B7 dodaje zależności do podprojektu `practice`. Kolejne notebooki korzystające z tych bibliotek uruchamiaj z `labs` przez `uv run --project ../practice --with jupyterlab --with ipykernel jupyter lab`. Wcześniejsze notebooki A i B działają z poleceniem tymczasowym pokazanym wyżej. W części Git pracujesz na własnej gałęzi kopii repozytorium; nie tworzysz drugiego repozytorium wewnątrz practice. GitHub i zdalne CI są opcjonalne.
+
 ## Sprawdzenie materiałów przez autora
 
 ```bash
 UV_HTTP_TIMEOUT=300 UV_HTTP_RETRIES=10 UV_CONCURRENT_DOWNLOADS=2 uv sync --locked --group neural
 uv run --group neural python tools/verify_foundations.py
-uv run ruff format --check tools
-uv run ruff check tools
+uv run ruff format --check tools practice
+uv run ruff check tools practice
 uv run mypy tools
 uv run python tools/verify_labs.py
 uv run python -m playwright install chromium --only-shell
 uv run python tools/verify_foundations_browser.py
 ```
 
-Grupa neural instaluje PyTorch z indeksu CPU. Kontrola przykładów wykonuje również małą sieć; kontrola przeglądarkowa sprawdza strony i rzeczywiste działanie Pyodide. Sprawdzenia nie uzupełniają rozwiązań uczestnika. Nie zastępują pilotażu z osobami początkującymi.
+Grupa neural instaluje PyTorch z indeksu CPU. Kontrola przykładów wykonuje również małą sieć; kontrola przeglądarkowa sprawdza strony i rzeczywiste działanie Pyodide. Weryfikator notebooków obejmuje również starter testów B: pięć niepowodzeń jest w nim celowe. Nie jest to wynik testów ukończonego rozwiązania uczestnika. Sprawdzenia nie uzupełniają jego kodu. Nie zastępują pilotażu z osobami początkującymi.
 
 Treści: [CC BY 4.0](LICENSE-CONTENT.md). Kod: [MIT](LICENSE). Pochodzenie publicznego wycinka danych i opis danych syntetycznych: [materiały A–F](docs/course-maintenance.md#dane-i-końcowy-test).
