@@ -4,9 +4,9 @@ Status: propozycja po dwóch rundach konsultacji z Opus 5.5, GPT-6.1 Sol i Grok 
 
 ## Jak uczestnik ma pracować
 
-Każdy blok ma wykład i osobne laboratorium. Krótkie ćwiczenia w HTML pozostają częścią wykładu: służą przewidywaniu wyniku i sprawdzaniu pojedynczej operacji. Laboratorium łączy poznane kroki na innych danych i kończy się własnym wynikiem oraz wyjaśnieniem. Zadanie rozbudowane przenosimy z wykładu do jednego laboratorium, a w wykładzie pozostawiamy odnośnik. Nie utrzymujemy dwóch kopii tej samej specyfikacji.
+Każdy blok ma wykład i osobne laboratorium. Krótkie ćwiczenia w HTML pozostają częścią wykładu: służą przewidywaniu wyniku i sprawdzaniu pojedynczej operacji. Laboratorium łączy poznane kroki na innych danych i kończy się działającym kodem, wynikiem lub decyzją w zadaniu pojęciowym. Pytania o rozumienie służą do przemyślenia, bez obowiązku zapisywania własnych wyjaśnień, przewidywań i notatek z nauki. Zadanie rozbudowane przenosimy z wykładu do jednego laboratorium, a w wykładzie pozostawiamy odnośnik. Nie utrzymujemy dwóch kopii tej samej specyfikacji.
 
-Proponuję 33 laboratoria, zwykle po 1–3 lekcje, z dłuższymi blokami podzielonymi na krótkie etapy. Każda z 70 lekcji ma przypisany lab lub jawnie wskazaną rolę przygotowawczą. A1 jest diagnozą, nie nowym obowiązkiem do zaliczenia. A3 jest warsztatem środowiska. B7 wymaga rzeczywistych plików i terminala; laboratoria pojęciowe w F mogą kończyć się rachunkiem lub notatką, bez sztucznego obowiązku trenowania modelu.
+Proponuję 33 laboratoria, zwykle po 1–3 lekcje, z dłuższymi blokami podzielonymi na krótkie etapy. Każda z 70 lekcji ma przypisany lab lub jawnie wskazaną rolę przygotowawczą. A1 jest diagnozą, nie nowym obowiązkiem do zaliczenia. A3 jest warsztatem środowiska. B7 wymaga rzeczywistych plików i terminala; laboratoria pojęciowe w F mogą kończyć się rachunkiem lub wyborem odpowiedzi, bez sztucznego obowiązku trenowania modelu.
 
 Pierwszy lokalny lab otwieramy dopiero po A3. Do tego momentu uczestnik korzysta z ćwiczeń A2 w przeglądarce. Po A3 wykonuje krótkie utrwalenie A2 w notebooku, z możliwością pominięcia części już wykazanych w diagnozie. Nie wymagamy instalacji notebooka przed lekcją wyjaśniającą, czym jest kernel.
 
@@ -40,7 +40,7 @@ Identyfikatory są propozycją nazw folderów pod labs/. Każdy wiersz określa 
 | F01 Generalizacja | F18.1–F18.3 | Dwie funkcje zgodne na treningu, wpływ kary, krzywe uczenia i kontrprzykład dla „więcej danych zawsze pomaga” | Nowy; wybrane porównania starego 11 |
 | F02 Prawdopodobieństwo i Bayes | F19.1–F19.2 | Rozkład sumujący się do 1, wartość oczekiwana niebędąca pojedynczym wynikiem, sprawdzenie niezależności przez P(A∩B) i P(A)P(B), częstości warunkowe i Bayes, przypadek warunku o prawdopodobieństwie 0 | Nowy |
 | F03 Likelihood i klasyfikatory | F19.3–F19.5 | Porównanie parametrów przy tych samych danych, log-loss dla obserwowanej klasy, mały Naive Bayes i porównanie z logistycznym | Nowy, dane wzorowane na starym 12 |
-| F04 Niepewność i przyczynowość | F19.6–F19.7 | Tabela kalibracji z licznością grup, dwa przypadki odróżniające zmienność danych od niepewności modelu, decyzja przy kosztach i notatka rozróżniająca prognozę od interwencji | Nowy; bez wymogu SHAP lub formalnego causal inference |
+| F04 Niepewność i przyczynowość | F19.6–F19.7 | Tabela kalibracji z licznością grup, dwa przypadki odróżniające zmienność danych od niepewności modelu, decyzja przy kosztach i rozróżnienie prognozy i interwencji na konkretnych scenariuszach | Nowy; bez wymogu SHAP lub formalnego causal inference |
 | F05 Geometria i reprezentacja | F20.1–F20.2 | Wpływ skali na odległość i k-means; projekcja PCA i utrata informacji | Stare 13, bez profili wszystkich serii i kosztownych backtestów |
 | F06 Chain rule i autograd | F20.3–F20.4 | Ręczna pochodna złożenia, autograd CPU, kumulowanie i zerowanie gradientu, zapis urządzenia | Nowy; mały fragment idei starego 13 |
 | F07 Pierwsza sieć | F20.5 | Mała sieć i model liniowy na tych samych punktach; krzywe oraz jedna kontrolowana zmiana ustawienia | Stare 13, bez globalnego forecast wrappera, GPU, GRU i Lightning |
@@ -54,7 +54,7 @@ Nie wszystkie zadania muszą być programistyczne. F04 i część F11 wymagają 
 
 ## Format oddzielnego laboratorium
 
-Każdy folder labs/lab-<id>/ zawiera README.md. Lab programistyczny ma notebook lab.ipynb, a od B6 także potrzebne pliki .py. Lab czysto pojęciowy może mieć szablon odpowiedzi w Markdown, ręczny rachunek i rubrykę zamiast pustego notebooka. README podaje wymagane lekcje, dane, polecenie uruchomienia i konkretny wynik do oddania. Notebook zawiera kolejno problem, mały przykład na innych danych, przewidywanie, miejsca na kod, lokalne sprawdzenia, dwie podpowiedzi i rubrykę wyjaśnienia. W B03 i B04 notebook porządkuje pracę, natomiast moduł i testy pozostają w plikach. Nie każemy wykonywać git w komórkach Pythona.
+Każdy folder labs/lab-<id>/ zawiera README.md. Lab programistyczny ma notebook lab.ipynb, a od B6 także potrzebne pliki .py. Lab czysto pojęciowy może mieć pytania do przemyślenia, ręczny rachunek i kryteria samooceny zamiast pustego notebooka. README podaje wymagane lekcje, dane, polecenie uruchomienia i konkretny wynik do oddania. Notebook zawiera kolejno problem, mały przykład na innych danych, przewidywanie, miejsca na kod, lokalne sprawdzenia, dwie podpowiedzi i pytania do przemyślenia. W B03 i B04 notebook porządkuje pracę, natomiast moduł i testy pozostają w plikach. Nie każemy wykonywać git w komórkach Pythona.
 
 Nie wpisujemy gotowych implementacji zadań do starterów. Każde zadanie kodowe ma stabilny identyfikator, sygnaturę lub nazwy wyników oraz opis wejścia, wyniku i błędów. Nierozwiązany notebook otwiera się bez instalowania niepotrzebnych bibliotek; check zgłasza czytelną informację o nieuzupełnionym zadaniu. Testy sprawdzają zachowanie i nowe małe przypadki, nie tekst kodu. Nie dziedziczymy starego CLI course ani struktury całego src/freshcast.
 

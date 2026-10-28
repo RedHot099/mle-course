@@ -6,7 +6,7 @@ Read this when the learner names an A/B lesson, asks to start from zero, or prog
 
 Read labs/manifest.json for lab-a00 through lab-a03. Each delivered notebook owns its full task, checks, hints and rubric. The learner works in a downloaded copy under ~/mle-practice/labs/. Ask for that copy or its output; source starters do not show learner progress. Record lab and task ID in progress.md. Do not edit the learner's task body.
 
-A00 requires an observed restart and explanation. A01–A03 have eight checked tasks in total plus manual transfer examples. The author verification uses finite expected values and mocks to check checker behavior; it is not evidence that the learner has implemented a general function. For A02 inspect the actual function on a sixth input. For A03 require the freeze note before evaluation and distinguish the fully public example from the final project holdout.
+A00 requires performing the restart experiment, without a written report. A01–A03 have eight checked tasks in total plus manual transfer examples. The author verification uses finite expected values and mocks to check checker behavior; it is not evidence that the learner has implemented a general function. For A02 inspect the actual function on a sixth input. Do not request written explanations or prediction notes. For A03 use the frozen_forecast copy created before evaluation and distinguish the fully public example from the final project holdout.
 
 ## Route checks and hints
 

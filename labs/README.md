@@ -26,6 +26,6 @@ Pierwsze polecenie porównuje paczki do pobrania z materiałami źródłowymi. P
 
 Drugie polecenie sprawdza manifest, notebooki bez zapisanych wyjść, składnię, przygotowanie danych i wykonanie w świeżych kernelach. Dla każdego sprawdzenia wykonuje trzy próby: wartości oczekiwane z fixtures, pusty starter i błędne wyniki. Dla funkcji używa Mock zwracającego skończony zestaw wartości z jawnej tabeli przypadków. To sprawdza checker i jego wywołanie, nie stanowi implementacji zadania ani dowodu poprawności przyszłego kodu uczestnika. Nie ma referencyjnych funkcji rozwiązujących laby.
 
-A00 ma rubrykę doświadczenia, bez automatycznego zaliczenia. Weryfikator osobno wykonuje próbę pamięci w dwóch świeżych kernelach. Wyjaśnienia, własne dodatkowe przypadki oraz pełne rozwiązania wymagają review pracy uczestnika.
+A00 ma rubrykę doświadczenia, bez automatycznego zaliczenia. Weryfikator osobno wykonuje próbę pamięci w dwóch świeżych kernelach. Pytania do przemyślenia nie wymagają zapisywania odpowiedzi. Własny dodatkowy przypadek możesz sprawdzić kodem. Weryfikator autora nie zastępuje review kodu uczestnika.
 
 Manifest obejmuje wszystkie 9 lekcji A, w tym A1 jako diagnozę. Sekcje B–F mają [plan laboratoriów](../docs/plans/af-laboratories.md), ale nie są jeszcze wdrożone. Gotowość techniczna pilotażu nie oznacza zakończonego pilotażu z osobami początkującymi.

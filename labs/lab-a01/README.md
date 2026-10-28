@@ -21,8 +21,8 @@ Ważne wyniki zapisuj przez Ctrl+S. Po uzupełnieniu zadań wybierz w menu Kerne
 
 ## Co oddajesz
 
-Własny notebook z uzupełnionym kodem, wynikami sprawdzeń i wyjaśnieniami z końcowej rubryki. W sekcji A nie potrzebujesz modułu .py, pytest, gita, pandas ani dodatkowych pobrań danych.
+Własny notebook z uzupełnionym kodem i wynikami sprawdzeń. Końcowe pytania możesz przemyśleć bez zapisywania odpowiedzi. W sekcji A nie potrzebujesz modułu .py, pytest, gita, pandas ani dodatkowych pobrań danych.
 
-Ten lab jest gotowy do pilotażu, ale nie został jeszcze sprawdzony przez grupę początkujących uczestników. Zapisz miejsce, w którym instrukcja była niejasna, i przybliżony czas pracy. Czerwone sprawdzenie pustego startera oznacza zadanie do uzupełnienia, nie zepsutą instalację.
+Ten lab jest gotowy do pilotażu, ale nie został jeszcze sprawdzony przez grupę początkujących uczestników. Czerwone sprawdzenie pustego startera oznacza zadanie do uzupełnienia, nie zepsutą instalację.
 
 Treść: Jakub Eichner, CC BY 4.0. Kod: MIT. Pełne licencje są w paczce. Dane, jeśli są dołączone, opisuje DATA.md.
