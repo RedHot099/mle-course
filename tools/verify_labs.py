@@ -1,4 +1,4 @@
-"""Validate A–C pilot starters and real notebook checker execution.
+"""Validate A–D pilot starters and real notebook checker execution.
 
 No learner implementations are provided or read. Positive checker tests use
 expected values and Mock outputs for finite fixtures, not a working solution.
@@ -26,10 +26,13 @@ SUPPORT_FILES = {
     "practice/test_summary.py",
     "practice/features.py",
     "practice/test_features.py",
+    "practice/metrics.py",
+    "practice/test_metrics.py",
 }
 TEST_STARTERS = {
     "test_summary.py": ("summary.py", 5),
     "test_features.py": ("features.py", 3),
+    "test_metrics.py": ("metrics.py", 3),
 }
 
 
@@ -218,12 +221,12 @@ def main() -> None:
         coverage.extend(lab["lessons"])
         seen.add(lab["id"])
     assert len(coverage) == len(set(coverage))
-    assert set(coverage) == {key for key in lessons if key[0] in {"A", "B", "C"}}
+    assert set(coverage) == {key for key in lessons if key[0] in {"A", "B", "C", "D"}}
     check_restart()
     for test_name, (module_name, failures) in TEST_STARTERS.items():
         check_test_starter(test_name, module_name, failures)
     print(
-        f"A–C pilot: {len(seen)} labs, all {len(coverage)} lessons mapped, "
+        f"A–D pilot: {len(seen)} labs, all {len(coverage)} lessons mapped, "
         f"{checks} checked tasks."
     )
     print("Human explanations and learner-authored implementations require a pilot.")

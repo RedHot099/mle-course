@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "scope": "A, B and C pilot",
+  "scope": "A–D pilot",
   "labs": [
     {
       "id": "lab-a3",
@@ -440,6 +440,230 @@
       "manual_tasks": [],
       "data": [
         "data/project-development.csv"
+      ],
+      "support": [],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-d13-1-d13-4",
+      "number": "D13.1–D13.4",
+      "title": "Strata i uczenie",
+      "notebook": "lab-d13-1-d13-4.ipynb",
+      "lessons": [
+        "D13.1",
+        "D13.2",
+        "D13.3",
+        "D13.4"
+      ],
+      "requires_labs": [
+        "lab-c12-1-c12-3"
+      ],
+      "lesson_prerequisites": {
+        "D13.1": [
+          "C12.3"
+        ],
+        "D13.2": [
+          "D13.1"
+        ],
+        "D13.3": [
+          "D13.2"
+        ],
+        "D13.4": [
+          "D13.3"
+        ]
+      },
+      "tasks": [
+        "d13-1-losses",
+        "d13-2-slope",
+        "d13-3-steps",
+        "d13-4-gradient"
+      ],
+      "manual_tasks": [],
+      "data": [],
+      "support": [],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-d13-5-d13-6",
+      "number": "D13.5–D13.6",
+      "title": "Wektory i macierze",
+      "notebook": "lab-d13-5-d13-6.ipynb",
+      "lessons": [
+        "D13.5",
+        "D13.6"
+      ],
+      "requires_labs": [
+        "lab-d13-1-d13-4"
+      ],
+      "lesson_prerequisites": {
+        "D13.5": [
+          "D13.4",
+          "C9.2"
+        ],
+        "D13.6": [
+          "D13.5"
+        ]
+      },
+      "tasks": [
+        "d13-5-dot",
+        "d13-6-predict",
+        "d13-6-gradient",
+        "d13-6-descent"
+      ],
+      "manual_tasks": [],
+      "data": [],
+      "support": [],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-d14-1-d14-3",
+      "number": "D14.1–D14.3",
+      "title": "Uczciwe porównanie",
+      "notebook": "lab-d14-1-d14-3.ipynb",
+      "lessons": [
+        "D14.1",
+        "D14.2",
+        "D14.3"
+      ],
+      "requires_labs": [
+        "lab-d13-5-d13-6"
+      ],
+      "lesson_prerequisites": {
+        "D14.1": [
+          "D13.1"
+        ],
+        "D14.2": [
+          "D14.1",
+          "C12.3"
+        ],
+        "D14.3": [
+          "D14.2",
+          "C11.2"
+        ]
+      },
+      "tasks": [
+        "d14-1-metrics",
+        "d14-2-overfit",
+        "d14-3-folds",
+        "d14-3-backtest"
+      ],
+      "manual_tasks": [
+        "d14-1-tests"
+      ],
+      "data": [
+        "data/project-development.csv"
+      ],
+      "support": [
+        "practice/metrics.py",
+        "practice/test_metrics.py"
+      ],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-d15-1-d15-3",
+      "number": "D15.1–D15.3",
+      "title": "Cechy i drzewa",
+      "notebook": "lab-d15-1-d15-3.ipynb",
+      "lessons": [
+        "D15.1",
+        "D15.2",
+        "D15.3"
+      ],
+      "requires_labs": [
+        "lab-d14-1-d14-3"
+      ],
+      "lesson_prerequisites": {
+        "D15.1": [
+          "D14.3",
+          "C8.1"
+        ],
+        "D15.2": [
+          "D15.1",
+          "D13.1"
+        ],
+        "D15.3": [
+          "D15.2",
+          "D13.3"
+        ]
+      },
+      "tasks": [
+        "d15-1-calendar",
+        "d15-1-model",
+        "d15-2-tree",
+        "d15-2-sklearn",
+        "d15-3-ensembles",
+        "d15-3-boost-step"
+      ],
+      "manual_tasks": [],
+      "data": [
+        "data/project-development.csv"
+      ],
+      "support": [],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-d15-4",
+      "number": "D15.4",
+      "title": "Prognoza wielodniowa",
+      "notebook": "lab-d15-4.ipynb",
+      "lessons": [
+        "D15.4"
+      ],
+      "requires_labs": [
+        "lab-d15-1-d15-3"
+      ],
+      "lesson_prerequisites": {
+        "D15.4": [
+          "D15.3",
+          "C11.2"
+        ]
+      },
+      "tasks": [
+        "d15-4-recursive",
+        "d15-4-direct",
+        "d15-4-errors"
+      ],
+      "manual_tasks": [],
+      "data": [
+        "data/project-development.csv"
+      ],
+      "support": [],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-d16-1-d16-3",
+      "number": "D16.1–D16.3",
+      "title": "Prawdopodobieństwo i alarm",
+      "notebook": "lab-d16-1-d16-3.ipynb",
+      "lessons": [
+        "D16.1",
+        "D16.2",
+        "D16.3"
+      ],
+      "requires_labs": [
+        "lab-d15-4"
+      ],
+      "lesson_prerequisites": {
+        "D16.1": [
+          "D14.1"
+        ],
+        "D16.2": [
+          "D16.1"
+        ],
+        "D16.3": [
+          "D16.2",
+          "C12.2"
+        ]
+      },
+      "tasks": [
+        "d16-1-frequency",
+        "d16-2-alarms",
+        "d16-3-labels",
+        "d16-3-logistic"
+      ],
+      "manual_tasks": [],
+      "data": [
+        "data/d16-stock-events.csv"
       ],
       "support": [],
       "status": "pilot"

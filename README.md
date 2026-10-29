@@ -15,7 +15,7 @@ Otwórz [mapę kursu](lectures/index.html). Jeśli zaczynasz od zera, przejdź d
 
 Każda lekcja podaje wymagania, przykład, zadanie i pytanie sprawdzające rozumienie. Zadania kodowe mają sprawdzenia, a zadania notebookowe kryteria samooceny. Diagramy wyjaśniają wybrane relacje. PyTorch działa na CPU; kurs nie wymaga GPU ani płatnych usług.
 
-[Czternaście osobnych laboratoriów sekcji A, B i C](labs/index.html) jest gotowych do pilotażu. Zadania notebookowe A4.2, C8.3 i C12.2–C12.3 wykonujesz w labach. Sekcje D–F nie mają jeszcze osobnych labów.
+[Dwadzieścia osobnych laboratoriów sekcji A–D](labs/index.html) jest gotowych do pilotażu. Zadania notebookowe A4.2, C8.3 i C12.2–C12.3 wykonujesz w labach. Sekcje E–F nie mają jeszcze osobnych labów.
 
 Instrukcje dla autora: [utrzymanie kursu](docs/course-maintenance.md). [Podsumowanie przeglądów językowych](docs/reviews/af-language-review.md) opisuje przyjęte uwagi i decyzje redakcyjne. [Standard](docs/standard.md) i [słownik](docs/glossary.md) dotyczą tej samej ścieżki A–F.
 
@@ -37,6 +37,12 @@ Notebooki są bezpośrednio w folderze `labs`, a wszystkie dane kursu w `labs/da
 - [C10.1–C10.3: klucze, grupy i złączenia](labs/lab-c10-1-c10-3.ipynb).
 - [C11.1–C11.2: czas i dostępność cech](labs/lab-c11-1-c11-2.ipynb).
 - [C12.1–C12.3: pierwszy model na danych projektu](labs/lab-c12-1-c12-3.ipynb).
+- [D13.1–D13.4: strata i uczenie](labs/lab-d13-1-d13-4.ipynb).
+- [D13.5–D13.6: wektory i macierze](labs/lab-d13-5-d13-6.ipynb).
+- [D14.1–D14.3: uczciwe porównanie](labs/lab-d14-1-d14-3.ipynb).
+- [D15.1–D15.3: cechy i drzewa](labs/lab-d15-1-d15-3.ipynb).
+- [D15.4: prognoza wielodniowa](labs/lab-d15-4.ipynb).
+- [D16.1–D16.3: prawdopodobieństwo i alarm](labs/lab-d16-1-d16-3.ipynb).
 
 Pracuj we własnej kopii repozytorium. W terminalu przejdź do jej folderu `labs` i uruchom JupyterLab:
 
@@ -53,7 +59,7 @@ W B6 i B7 używasz tych samych plików `practice/summary.py` i `practice/test_su
 
 B7 dodaje zależności do podprojektu `practice`. Kolejne notebooki korzystające z tych bibliotek uruchamiaj z `labs` przez `uv run --project ../practice --with jupyterlab --with ipykernel jupyter lab`. Wcześniejsze notebooki A i B działają z poleceniem tymczasowym pokazanym wyżej. W części Git pracujesz na własnej gałęzi kopii repozytorium; nie tworzysz drugiego repozytorium wewnątrz practice. GitHub i zdalne CI są opcjonalne.
 
-Od C8.1 dodajesz w `practice` biblioteki sekcji C: `uv add numpy pandas matplotlib scikit-learn`, a notebooki C uruchamiasz z `labs` poleceniem z `--project ../practice` pokazanym wyżej. Lab C8.1–C8.2 podaje te polecenia. W C11 piszesz `practice/features.py` i `practice/test_features.py`; mypy potrzebuje tam `uv add --dev pandas-stubs`. Wyniki labów (B5, C12) trafiają do `labs/results`, poza Gitem. Plik `labs/data/project-holdout.csv` pozostaje nieotwarty do F21.5.
+Od C8.1 dodajesz w `practice` biblioteki sekcji C: `uv add numpy pandas matplotlib scikit-learn`, a notebooki C uruchamiasz z `labs` poleceniem z `--project ../practice` pokazanym wyżej. Lab C8.1–C8.2 podaje te polecenia. W C11 piszesz `practice/features.py` i `practice/test_features.py`; mypy potrzebuje tam `uv add --dev pandas-stubs`. W D14 dochodzi `practice/metrics.py` z `practice/test_metrics.py`. Laby D używają tych samych bibliotek co C i danych projektu. Wyniki labów (B5, C12) trafiają do `labs/results`, poza Gitem. Plik `labs/data/project-holdout.csv` pozostaje nieotwarty do F21.5.
 
 ## Sprawdzenie materiałów przez autora
 
@@ -68,6 +74,6 @@ uv run python -m playwright install chromium --only-shell
 uv run python tools/verify_foundations_browser.py
 ```
 
-Grupa neural instaluje PyTorch z indeksu CPU. Kontrola przykładów wykonuje również małą sieć; kontrola przeglądarkowa sprawdza strony i rzeczywiste działanie Pyodide. Weryfikator notebooków obejmuje również startery testów B i C: pięć i trzy niepowodzenia są w nich celowe. Nie jest to wynik testów ukończonego rozwiązania uczestnika. Sprawdzenia nie uzupełniają jego kodu. Nie zastępują pilotażu z osobami początkującymi.
+Grupa neural instaluje PyTorch z indeksu CPU. Kontrola przykładów wykonuje również małą sieć; kontrola przeglądarkowa sprawdza strony i rzeczywiste działanie Pyodide. Weryfikator notebooków obejmuje również startery testów B, C i D: pięć, trzy i trzy niepowodzenia są w nich celowe. Nie jest to wynik testów ukończonego rozwiązania uczestnika. Sprawdzenia nie uzupełniają jego kodu. Nie zastępują pilotażu z osobami początkującymi.
 
 Treści: [CC BY 4.0](LICENSE-CONTENT.md). Kod: [MIT](LICENSE). Pochodzenie publicznego wycinka danych i opis danych syntetycznych: [materiały A–F](docs/course-maintenance.md#dane-i-końcowy-test).

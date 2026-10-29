@@ -4,7 +4,7 @@ Punkt wejścia: [mapa 70 lekcji](../lectures/index.html). Nowy rdzeń obejmuje w
 
 ## Osobne laboratoria
 
-[Czternaście labów A, B i C](../labs/index.html) znajduje się bezpośrednio w labs/. Wspólne dane są w labs/data/. Uruchamianie i kontrole autora opisuje [główne README](../README.md). Pełne zadania A3, A4.2, C8.3 i C12.2–C12.3 wykonuje się w labach; krótkie ćwiczenia w wykładach pozostają rozgrzewką. B6 i B7 rozwijają wspólny podprojekt practice z własną funkcją i testami; C11 dodaje tam features.py z testem izolacji serii. C12 zapisuje przebieg projektu w labs/results/c12-project.json. Laby D–F nie są jeszcze wdrożone.
+[Dwadzieścia labów A–D](../labs/index.html) znajduje się bezpośrednio w labs/. Wspólne dane są w labs/data/. Uruchamianie i kontrole autora opisuje [główne README](../README.md). Pełne zadania A3, A4.2, C8.3 i C12.2–C12.3 wykonuje się w labach; krótkie ćwiczenia w wykładach pozostają rozgrzewką. B6 i B7 rozwijają wspólny podprojekt practice z własną funkcją i testami; C11 dodaje tam features.py z testem izolacji serii. C12 zapisuje przebieg projektu w labs/results/c12-project.json. D14 dodaje practice/metrics.py z testami i backtest na trzech foldach do dnia 42; D15 i D16 porównują drzewa, prognozę wielodniową i alarmy na danych projektu oraz małym szeregu zdarzeń. Laby E–F nie są jeszcze wdrożone.
 
 ## Pokrycie planu
 
@@ -44,7 +44,9 @@ Wyjaśnienia, ćwiczenia i dane syntetyczne są autorskie. Biblioteki służą d
 
 `labs/data/c-panel-sales.csv` i `labs/data/c-items.csv` to syntetyczny panel trzech produktów z dni 1–6 dla C10 i C11: wiersze celowo nieuporządkowane, jedna kopia wiersza pear dnia 3, brak sprzedaży plum dnia 4 i brak dnia 5 u apple, a w opisach brak produktu plum. Laby zapisują decyzję: kopię usuwamy, brak sprzedaży zostaje.
 
-Projekt od C12 korzysta z osobnych, jawnie syntetycznych danych: 56 dni od 2024-01-01. Pierwsze 49 są w `project-development.csv`, ostatnie 7 w `project-holdout.csv`. Trening obejmuje dni 1–42, walidacja 43–49, test 50–56. Wartości wygenerowano z trendu, cyklu tygodniowego i niewielkiego szumu, bez danych klientów. To demonstracja procesu, nie pomiar jakości biznesowej. Na tych danych baseline „tak samo jak wczoraj” ma na walidacji niższe MAE niż regresja z lag 1; lab C12 wymaga zapisania tego wyniku, nie ukrycia go.
+`labs/data/d16-stock-events.csv` to 30 syntetycznych dni zdarzeń dla D16: niski zapas wieczorem, planowana promocja i brak towaru, wygenerowane z ustalonym ziarnem tak, że brak towaru zależy od wczorajszego niskiego zapasu i dzisiejszej promocji.
+
+Projekt od C12 korzysta z osobnych, jawnie syntetycznych danych: 56 dni od 2024-01-01. Pierwsze 49 są w `project-development.csv`, ostatnie 7 w `project-holdout.csv`. Trening obejmuje dni 1–42, walidacja 43–49, test 50–56. Wartości wygenerowano z trendu, cyklu tygodniowego i niewielkiego szumu, bez danych klientów. To demonstracja procesu, nie pomiar jakości biznesowej. Na tych danych baseline „tak samo jak wczoraj” ma na walidacji niższe MAE niż regresja z lag 1; lab C12 wymaga zapisania tego wyniku, nie ukrycia go. W backteście D14 na trzech wcześniejszych tygodniach regresja wygrywa z baseline we wszystkich foldach; oba wyniki pokazują ograniczoną próbkę.
 
 Projekt zaczyna od codziennie aktualizowanej prognozy jednodniowej: rzeczywisty poprzedni dzień może być cechą kolejnego. Zamrożony horyzont wielodniowy jest osobnym doświadczeniem D15.4. Finał F21.5 nie zmienia po fakcie protokołu C12. Plik holdoutu jest dostępny w repozytorium; ograniczenie jest dydaktyczne. Jeśli uczestnik obejrzy go wcześniej, odnotowuje to i nie nazywa późniejszego wyniku niezależnym testem.
 

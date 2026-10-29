@@ -1,6 +1,6 @@
 # Plan laboratoriów do kursu A–F
 
-Stan: czternaście laboratoriów A, B i C jest przygotowanych do pilotażu. D–F pozostają planem. [Raport dwóch rund rady](../reviews/af-laboratories-council.md) opisuje pierwotne uzasadnienia dydaktyczne. Poniższa wersja uwzględnia późniejsze decyzje o uproszczeniu struktury i numeracji.
+Stan: dwadzieścia laboratoriów A–D jest przygotowanych do pilotażu. E–F pozostają planem. [Raport dwóch rund rady](../reviews/af-laboratories-council.md) opisuje pierwotne uzasadnienia dydaktyczne. Poniższa wersja uwzględnia późniejsze decyzje o uproszczeniu struktury i numeracji.
 
 ## Forma kursu
 
@@ -62,7 +62,7 @@ A4 wykorzystuje osobny, w pełni widoczny przykład FreshRetailNet. Kopia progno
 
 Uczestnik pracuje we własnej kopii repozytorium. Wszystkie notebooki otwiera ze wspólnego folderu labs, według instrukcji w głównym README. A korzysta z tymczasowego środowiska uv z Pythonem 3.12, JupyterLab i ipykernel. Kolejne biblioteki dodajemy przed lekcjami, które ich używają. PyTorch działa na CPU. Każdy notebook sprawdza katalog roboczy; dane odczytuje z data/ względem tego folderu.
 
-W B6 i B7 uczestnik pisze także własny moduł i testy. Wdrożone laby używają wspólnego practice/summary.py i practice/test_summary.py, z własnym projektem uv od B7. C8.1 dodaje do tego projektu biblioteki sekcji C, a C11 plik practice/features.py z practice/test_features.py; mypy wymaga tam pandas-stubs. Importy i zakres poleceń pytest, mypy i Ruff dotyczą tych samych plików. Gotowy workflow z B7 pozostaje ćwiczeniem interpretacji CI, bez Dockera. Nie uruchamiamy wszystkich nierozwiązanych labów jako jednego zestawu testów.
+W B6 i B7 uczestnik pisze także własny moduł i testy. Wdrożone laby używają wspólnego practice/summary.py i practice/test_summary.py, z własnym projektem uv od B7. C8.1 dodaje do tego projektu biblioteki sekcji C, a C11 plik practice/features.py z practice/test_features.py; mypy wymaga tam pandas-stubs. D14 dodaje practice/metrics.py z practice/test_metrics.py. Importy i zakres poleceń pytest, mypy i Ruff dotyczą tych samych plików. Gotowy workflow z B7 pozostaje ćwiczeniem interpretacji CI, bez Dockera. Nie uruchamiamy wszystkich nierozwiązanych labów jako jednego zestawu testów.
 
 ## Odzyskanie starych materiałów
 
@@ -75,10 +75,10 @@ Nie przywracamy coursekit, catchup, pełnego panelu, cache, ABC, Protocol, infra
 1. Pilot A: gotowe notebooki A2.1–A2.3, A2.4–A2.5, A3 oraz A4.1–A4.2, z ośmioma sprawdzanymi zadaniami i doświadczeniem z kernelem. Kontrole techniczne są wykonane; pilotaż z początkującymi osobami pozostaje do przeprowadzenia.
 2. Pilot B: gotowe cztery laby B5.1, B5.2–B5.3, B6.1–B6.2 i B7.1–B7.2. Pliki, funkcje i własne testy oraz jedna historia Git kopii repozytorium. Brak dostępu do konta nie blokuje sprawdzania kodu lokalnie.
 3. C: gotowe sześć labów C8.1–C8.2, C8.3, C9.1–C9.2, C10.1–C10.3, C11.1–C11.2 i C12.1–C12.3, na wspólnym panelu trzech produktów i danych projektu. Pilot C12 sprawdza rzeczywiste przejście od danych do walidacji; na dostarczonych danych baseline wygrywa z regresją i tak ma zostać zapisane.
-4. D–E: rachunek, rzeczywisty backtest, modele i odtwarzanie eksperymentów. W backteście trzy podziały, świeży fit i rzeczywiste prognozy zamiast samych gotowych metryk.
+4. D: gotowe sześć labów D13.1–D13.4, D13.5–D13.6, D14.1–D14.3, D15.1–D15.3, D15.4 i D16.1–D16.3. Backtest ma trzy datowane podziały do dnia 42, świeży fit i rzeczywiste prognozy; D15.4 ma zamrożoną chwilę prognozy; D16 używa małego syntetycznego szeregu zdarzeń. E: odtwarzanie eksperymentów pozostaje planem.
 5. F: małe eksperymenty i zadania pojęciowe. Pilot F19.6–F19.7 wykonuje osoba po odpowiednich wykładach, nie osoba rozpoczynająca programowanie.
 
-Przy każdym wdrożonym bloku od razu aktualizujemy wykład, manifest i kontrole. Pełne zadania A3, A4.2, C8.3 i C12.2–C12.3 są już w labach. Pozostałe zadania notebookowe przenosimy z odpowiednich lekcji E17.2, F18.3, F19.7, F20.4–F20.6, F21.4–F21.5. Tak samo rozwinięcie projektu D15.1 oraz pełne zadania B6.2 i B7.1–B7.2. Nie utrzymujemy dwóch kopii specyfikacji.
+Przy każdym wdrożonym bloku od razu aktualizujemy wykład, manifest i kontrole. Pełne zadania A3, A4.2, C8.3 i C12.2–C12.3 są już w labach. Pozostałe zadania notebookowe przenosimy z odpowiednich lekcji E17.2, F18.3, F19.7, F20.4–F20.6, F21.4–F21.5. Rozwinięcie projektu D15.1 oraz pełne zadania B6.2 i B7.1–B7.2 są już w labach. Nie utrzymujemy dwóch kopii specyfikacji.
 
 ## Weryfikacja autora
 

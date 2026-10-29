@@ -35,6 +35,10 @@ Resolve C lab IDs through labs/manifest.json: lab-c8-1-c8-2, lab-c8-3, lab-c9-1-
 
 The shared panel labs/data/c-panel-sales.csv has one duplicated pear row, one missing plum sale and no apple day 5; the labs state the decision (drop one copy, keep the missing sale). C11 adds learner-owned practice/features.py with lag_within_series and three tests in practice/test_features.py; run pytest only on that file and mypy with pandas-stubs. C12 records the run in labs/results/c12-project.json. On the supplied data the baseline has the lowest validation MAE, so `chosen` is baseline; treat that as a correct experiment outcome.
 
+## D pilot laboratories
+
+Resolve D lab IDs through labs/manifest.json: lab-d13-1-d13-4, lab-d13-5-d13-6, lab-d14-1-d14-3, lab-d15-1-d15-3, lab-d15-4 and lab-d16-1-d16-3. D13 works on tiny fixed arrays with hand calculations before NumPy; checks require gradients computed from the same old parameters and division by the number of observations. D14 adds learner-owned practice/metrics.py with error_summary and three tests; the backtest uses three dated folds ending 2024-02-11 with a fresh fit per fold. On the supplied data the model wins all three folds while the C12 validation week favoured the baseline; treat both as evidence of a small sample. D15 fixes model settings and random_state so results are checkable; D15.4 freezes the origin at 2024-02-11 and traces recursive versus direct inputs. D16 uses labs/data/d16-stock-events.csv; the training rows are days 1–19 for a model prepared on the evening of day 20, and the promo plan for tomorrow is an allowed feature. The holdout stays closed.
+
 ## Preserve the final evaluation
 
 C12 starts a small, separate project with synthetic `data/project-development.csv`: days 1–42 training, 43–49 validation. `project-holdout.csv` contains days 50–56 and is introduced only in F21.5. Do not inspect or suggest its outcomes while coaching model selection. The fully visible Freshcast series in A4 is a different teaching example.

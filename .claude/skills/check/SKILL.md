@@ -5,7 +5,7 @@ description: Interpret a failing lesson check with the learner.
 
 # Check
 
-For lab IDs, resolve labs/manifest.json, read that notebook's task and check cells, and obtain the learner's working copy. Use its visible checks and rubric. A3 is a manual environment experiment. B6/B7 use the learner-owned practice/summary.py and practice/test_summary.py; C11 adds practice/features.py and practice/test_features.py. B7 and C11 include manual tool/Git checks. Source starters and tools/verify_labs.py are author materials, not learner grades.
+For lab IDs, resolve labs/manifest.json, read that notebook's task and check cells, and obtain the learner's working copy. Use its visible checks and rubric. A3 is a manual environment experiment. B6/B7 use the learner-owned practice/summary.py and practice/test_summary.py; C11 adds practice/features.py and practice/test_features.py, D14 adds practice/metrics.py and practice/test_metrics.py. B7, C11 and D14 include manual tool/Git checks. Source starters and tools/verify_labs.py are author materials, not learner grades.
 
 Resolve the lesson ID from `$ARGUMENTS` or `.course/progress.md`. Read the task, starter and supplied test in its HTML. Obtain the learner's code and exact message when browser state is unavailable.
 
