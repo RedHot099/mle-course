@@ -1,4 +1,4 @@
-"""Validate A and B pilot starters and real notebook checker execution.
+"""Validate A–C pilot starters and real notebook checker execution.
 
 No learner implementations are provided or read. Positive checker tests use
 expected values and Mock outputs for finite fixtures, not a working solution.
@@ -21,6 +21,16 @@ from nbformat import NotebookNode
 
 ROOT = Path(__file__).resolve().parents[1]
 LABS = ROOT / "labs"
+SUPPORT_FILES = {
+    "practice/summary.py",
+    "practice/test_summary.py",
+    "practice/features.py",
+    "practice/test_features.py",
+}
+TEST_STARTERS = {
+    "test_summary.py": ("summary.py", 5),
+    "test_features.py": ("features.py", 3),
+}
 
 
 def assignment(values: dict) -> str:
@@ -110,7 +120,7 @@ def prepare_workspace(lab: dict, path: Path, directory: Path) -> Path:
         target.parent.mkdir(exist_ok=True)
         shutil.copyfile(LABS / relative, target)
     for name in lab.get("support", []):
-        assert name in {"practice/summary.py", "practice/test_summary.py"}
+        assert name in SUPPORT_FILES
         target = directory / name
         target.parent.mkdir(exist_ok=True)
         shutil.copyfile(ROOT / name, target)
@@ -174,22 +184,23 @@ def check_restart() -> None:
     print("Fresh-kernel experiment: saved code runs; memory is not shared.")
 
 
-def check_test_starter() -> None:
+def check_test_starter(test_name: str, module_name: str, failures: int) -> None:
     """Prove the unfinished learner tests are discovered and fail clearly."""
     with tempfile.TemporaryDirectory(dir=ROOT) as directory:
         cwd = Path(directory)
-        for name in ("summary.py", "test_summary.py"):
+        for name in (module_name, test_name):
             shutil.copyfile(ROOT / "practice" / name, cwd / name)
         result = subprocess.run(
-            [sys.executable, "-m", "pytest", "-q", "test_summary.py"],
+            [sys.executable, "-m", "pytest", "-q", test_name],
             cwd=cwd,
             capture_output=True,
             text=True,
             check=False,
         )
-        assert result.returncode == 1 and "5 failed" in result.stdout, result.stdout
+        assert result.returncode == 1, result.stdout
+        assert f"{failures} failed" in result.stdout, result.stdout
         assert "Write a test" in result.stdout, result.stdout
-    print("B6: all five unfinished learner tests are discovered and fail clearly.")
+    print(f"{test_name}: all {failures} unfinished learner tests fail clearly.")
 
 
 def main() -> None:
@@ -207,11 +218,13 @@ def main() -> None:
         coverage.extend(lab["lessons"])
         seen.add(lab["id"])
     assert len(coverage) == len(set(coverage))
-    assert set(coverage) == {key for key in lessons if key[0] in {"A", "B"}}
+    assert set(coverage) == {key for key in lessons if key[0] in {"A", "B", "C"}}
     check_restart()
-    check_test_starter()
+    for test_name, (module_name, failures) in TEST_STARTERS.items():
+        check_test_starter(test_name, module_name, failures)
     print(
-        f"A/B pilot: {len(seen)} labs, all 16 lessons mapped, {checks} checked tasks."
+        f"A–C pilot: {len(seen)} labs, all {len(coverage)} lessons mapped, "
+        f"{checks} checked tasks."
     )
     print("Human explanations and learner-authored implementations require a pilot.")
 

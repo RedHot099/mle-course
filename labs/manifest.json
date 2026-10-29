@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "scope": "A and B pilot",
+  "scope": "A, B and C pilot",
   "labs": [
     {
       "id": "lab-a3",
@@ -234,6 +234,214 @@
         "practice/summary.py",
         "practice/test_summary.py"
       ],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-c8-1-c8-2",
+      "number": "C8.1–C8.2",
+      "title": "Tabela i opis liczb",
+      "notebook": "lab-c8-1-c8-2.ipynb",
+      "lessons": [
+        "C8.1",
+        "C8.2"
+      ],
+      "requires_labs": [
+        "lab-b7-1-b7-2"
+      ],
+      "lesson_prerequisites": {
+        "C8.1": [
+          "B7.1"
+        ],
+        "C8.2": [
+          "C8.1"
+        ]
+      },
+      "tasks": [
+        "c8-1-select",
+        "c8-1-label",
+        "c8-2-hand",
+        "c8-2-pandas"
+      ],
+      "manual_tasks": [],
+      "data": [],
+      "support": [],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-c8-3",
+      "number": "C8.3",
+      "title": "Wykres odpowiada na pytanie",
+      "notebook": "lab-c8-3.ipynb",
+      "lessons": [
+        "C8.3"
+      ],
+      "requires_labs": [
+        "lab-c8-1-c8-2"
+      ],
+      "lesson_prerequisites": {
+        "C8.3": [
+          "C8.2"
+        ]
+      },
+      "tasks": [
+        "c8-3-line",
+        "c8-3-hist",
+        "c8-3-scatter",
+        "c8-3-gap"
+      ],
+      "manual_tasks": [],
+      "data": [],
+      "support": [],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-c9-1-c9-2",
+      "number": "C9.1–C9.2",
+      "title": "Tablice i osie",
+      "notebook": "lab-c9-1-c9-2.ipynb",
+      "lessons": [
+        "C9.1",
+        "C9.2"
+      ],
+      "requires_labs": [
+        "lab-c8-1-c8-2"
+      ],
+      "lesson_prerequisites": {
+        "C9.1": [
+          "C8.2"
+        ],
+        "C9.2": [
+          "C9.1"
+        ]
+      },
+      "tasks": [
+        "c9-1-mae",
+        "c9-1-mask",
+        "c9-2-rows",
+        "c9-2-share"
+      ],
+      "manual_tasks": [],
+      "data": [],
+      "support": [],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-c10-1-c10-3",
+      "number": "C10.1–C10.3",
+      "title": "Klucze, grupy i złączenia",
+      "notebook": "lab-c10-1-c10-3.ipynb",
+      "lessons": [
+        "C10.1",
+        "C10.2",
+        "C10.3"
+      ],
+      "requires_labs": [
+        "lab-c8-1-c8-2"
+      ],
+      "lesson_prerequisites": {
+        "C10.1": [
+          "C8.1"
+        ],
+        "C10.2": [
+          "C10.1"
+        ],
+        "C10.3": [
+          "C10.2"
+        ]
+      },
+      "tasks": [
+        "c10-1-report",
+        "c10-2-groups",
+        "c10-3-join"
+      ],
+      "manual_tasks": [],
+      "data": [
+        "data/c-panel-sales.csv",
+        "data/c-items.csv"
+      ],
+      "support": [],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-c11-1-c11-2",
+      "number": "C11.1–C11.2",
+      "title": "Czas i dostępność cech",
+      "notebook": "lab-c11-1-c11-2.ipynb",
+      "lessons": [
+        "C11.1",
+        "C11.2"
+      ],
+      "requires_labs": [
+        "lab-c10-1-c10-3"
+      ],
+      "lesson_prerequisites": {
+        "C11.1": [
+          "C10.3",
+          "C9.1"
+        ],
+        "C11.2": [
+          "C11.1",
+          "A4.2"
+        ]
+      },
+      "tasks": [
+        "c11-1-order",
+        "c11-1-lag",
+        "c11-1-window",
+        "c11-2-available"
+      ],
+      "manual_tasks": [
+        "c11-1-tests",
+        "c11-1-ci"
+      ],
+      "data": [
+        "data/c-panel-sales.csv"
+      ],
+      "support": [
+        "practice/features.py",
+        "practice/test_features.py"
+      ],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-c12-1-c12-3",
+      "number": "C12.1–C12.3",
+      "title": "Pierwszy model na danych projektu",
+      "notebook": "lab-c12-1-c12-3.ipynb",
+      "lessons": [
+        "C12.1",
+        "C12.2",
+        "C12.3"
+      ],
+      "requires_labs": [
+        "lab-c11-1-c11-2"
+      ],
+      "lesson_prerequisites": {
+        "C12.1": [
+          "C11.2"
+        ],
+        "C12.2": [
+          "C12.1",
+          "C9.2"
+        ],
+        "C12.3": [
+          "C12.2",
+          "C8.2"
+        ]
+      },
+      "tasks": [
+        "c12-1-manual",
+        "c12-2-split",
+        "c12-2-baseline",
+        "c12-2-model",
+        "c12-3-pipeline",
+        "c12-3-record"
+      ],
+      "manual_tasks": [],
+      "data": [
+        "data/project-development.csv"
+      ],
+      "support": [],
       "status": "pilot"
     }
   ]

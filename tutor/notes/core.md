@@ -29,6 +29,12 @@ For A and B, also use `tutor/notes/foundations.md`. Its browser-progress and hin
 
 PyTorch examples are local CPU work. No GPU, cloud account, paid API or training framework is a core prerequisite. The tiny demonstrations prove the operation shown, not general forecasting quality. Use only the prerequisites named by the current lesson.
 
+## C pilot laboratories
+
+Resolve C lab IDs through labs/manifest.json: lab-c8-1-c8-2, lab-c8-3, lab-c9-1-c9-2, lab-c10-1-c10-3, lab-c11-1-c11-2 and lab-c12-1-c12-3. Each notebook owns its full task, checks, hints and closing questions; the lectures keep the browser warm-ups. C labs need the learner's practice project with pandas, NumPy, Matplotlib and scikit-learn, started from labs with `uv run --project ../practice --with jupyterlab --with ipykernel jupyter lab`. Axis labels with units are part of the C8.3 task, not style.
+
+The shared panel labs/data/c-panel-sales.csv has one duplicated pear row, one missing plum sale and no apple day 5; the labs state the decision (drop one copy, keep the missing sale). C11 adds learner-owned practice/features.py with lag_within_series and three tests in practice/test_features.py; run pytest only on that file and mypy with pandas-stubs. C12 records the run in labs/results/c12-project.json. On the supplied data the baseline has the lowest validation MAE, so `chosen` is baseline; treat that as a correct experiment outcome.
+
 ## Preserve the final evaluation
 
 C12 starts a small, separate project with synthetic `data/project-development.csv`: days 1–42 training, 43–49 validation. `project-holdout.csv` contains days 50–56 and is introduced only in F21.5. Do not inspect or suggest its outcomes while coaching model selection. The fully visible Freshcast series in A4 is a different teaching example.

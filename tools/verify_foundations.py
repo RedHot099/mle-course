@@ -220,8 +220,8 @@ def check_current_materials() -> None:
         rubric = next(n for n in task.walk() if n.attrs.get("id") == "self-assessment")
         assert sum(n.tag == "li" for n in rubric.walk()) >= 3, path.name
         rubrics += 1
-    assert rubrics == 11, f"Expected 11 notebook/reasoning rubrics, found {rubrics}"
-    print("Current entry links and all 11 manual task rubrics are present.")
+    assert rubrics == 8, f"Expected 8 notebook/reasoning rubrics, found {rubrics}"
+    print("Current entry links and all 8 manual task rubrics are present.")
 
 
 def main() -> None:
