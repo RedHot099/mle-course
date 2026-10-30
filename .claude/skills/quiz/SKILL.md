@@ -1,16 +1,12 @@
 ---
 name: quiz
-description: Five oral-exam style questions on a module.
-argument-hint: "[module, e.g. 07]"
-disable-model-invocation: true
+description: Ask five questions about the current lesson or section.
 ---
 
 # Quiz
 
-Module: `$ARGUMENTS` (default: the current one).
+Resolve `$ARGUMENTS` as a lesson or section; otherwise use `.course/progress.md`. Read the relevant lessons and `tutor/notes/core.md`.
 
-Sources: the lecture's sections and rules, the quiz bank in `tutor/notes/NN.md`, the weak spots in `.course/progress.md`.
+Ask five new questions, one at a time, waiting for each answer. Mix predictions, a small hand calculation, finding a mistake and explaining a limitation. Use only concepts introduced by that point. After each answer give a short reason; for a misconception ask a follow-up isolating it. Do not reuse the lesson's completed quiz verbatim.
 
-1. Ask five questions, one at a time, and wait for each answer. Mix the kinds: predict the output of tiny code, find the bug, explain why a rule exists, say what you would check first. Write new questions; the lecture's own quizzes are already done.
-2. After each answer: right or wrong, and why in one sentence. After a wrong one, ask a follow-up that isolates the misconception.
-3. Close with the score, the one topic to revisit with its lecture section, and a note in `.course/progress.md`.
+At the end report the evidence, one topic to revisit and the relevant lesson. Record that in progress.md. A quiz result complements the lesson task and does not replace its rubric.

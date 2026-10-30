@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A2.3 · Listy i pętle krok po kroku | ML Engineering from Scratch</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="assets/course.css">
+</head>
+<body data-module="foundations-a2-loops">
+<header class="topbar">
+  <a class="brand" href="index.html">ML Engineering from Scratch</a>
+  <span class="crumb">A2.3 · Fundamenty</span><span class="spacer"></span>
+  <span class="score"></span>
+  <button class="icon-button" id="theme-toggle" type="button" aria-label="Przełącz motyw jasny i ciemny">◐</button>
+</header>
+<div class="progress-line"></div>
+
+<div class="page with-toc">
+  <nav class="toc" aria-label="W tej lekcji"><p>W tej lekcji</p>
+<ol></ol>
+</nav>
+  <main class="lecture">
+    <p class="kicker">A2.3 · <a href="index.html">Ścieżka A–F</a></p>
+
+    <h1>Listy i pętle krok po kroku</h1>
+
+    <p class="lede">Gdy pomiarów jest kilka, nie trzeba pisać osobnego polecenia dla każdego z nich. Zapiszesz je w liście, a potem użyjesz pętli, żeby policzyć ich sumę i liczbę znanych wartości.</p>
+
+    <ul class="meta"><li><b>Przed lekcją:</b> A2.1 i A2.2.</li>
+<li><b>Jak pracować:</b> przewiduj wyniki, uruchamiaj kod i wyjaśniaj to, co widzisz</li>
+</ul>
+
+    <section id="lista"><h2>Przechowaj kolejne obserwacje</h2>
+<p>Lista przechowuje elementy w określonej kolejności. Tworzysz ją za pomocą nawiasów kwadratowych. Pozycję elementu wskazuje indeks, a liczbę elementów podaje <code>len</code>. Indeksy zaczynają się od zera:</p>
+<pre><code class="language-python">values = [3, 0, 5]
+print(values[0])
+print(values[2])
+print(len(values))</code></pre><p>Program wypisze <code>3</code>, <code>5</code> i <code>3</code>. Zapis <code>values[-1]</code> wybiera ostatni element. Wycinek <code>values[:2]</code> wybiera elementy przed indeksem 2, czyli dwa pierwsze. Z kolei <code>values[2:]</code> wybiera elementy od indeksu 2 do końca:</p>
+<pre><code class="language-python">print([3, 0, 5, 8][:2])
+print([3, 0, 5, 8][2:])</code></pre><p>Otrzymasz <code>[3, 0]</code> i <code>[5, 8]</code>. Taki podział przyda się do oddzielenia historii od przyszłości.</p>
+</section>
+<section id="petla"><h2>Prześledź każdą iterację</h2>
+<p>Zapis <code>for value in values</code> rozpoczyna pętlę po liście. W pierwszym kroku zmienna <code>value</code> przyjmuje pierwszy element, w drugim drugi i tak dalej. Za każdym razem Python wykonuje kod zapisany z wcięciem pod pętlą. Jeden taki krok nazywamy iteracją.</p>
+<div class="predict" id="accumulator" data-type="single" data-expected-output="7"><p>Jaki jest wynik?</p>
+<pre><code class="language-python">total = 0
+for value in [2, 5, 0]:
+    total = total + value
+print(total)</code></pre><ul class="quiz-options"><li>3<span class="why">To liczba elementów, nie suma.</span></li>
+<li data-correct>7<span class="why">Suma rośnie kolejno z 0 do 2, 7 i 7.</span></li>
+<li>0<span class="why">Zero na końcu jest dodawane, a nie przypisywane zamiast sumy.</span></li>
+</ul>
+</div>
+<p>W powyższym kodzie <code>print</code> stoi za pętlą, więc wypisuje końcową sumę tylko raz. Możesz też zbudować nową listę. Zacznij od <code>[]</code> i dodawaj do niej elementy przez <code>append</code>. To metoda listy, czyli operacja wywoływana po kropce:</p>
+<pre><code class="language-python">doubled = []
+for value in [1, 4]:
+    doubled.append(value * 2)
+print(doubled)</code></pre><p>Wynikiem jest lista <code>[2, 8]</code>. Jeśli lista jest pusta, nie można wybrać z niej ostatniego elementu. Można jednak przejść po niej pętlą: kod wewnątrz pętli nie wykona się wtedy ani razu.</p>
+<pre><code class="language-python">values = [1, 5, 4]
+for value in values:
+    if value &gt; 3:
+        print(value)</code></pre><p>Warunek jest tutaj wewnątrz pętli. Python sprawdza go osobno dla każdego elementu. Cztery spacje umieszczają <code>if</code> w pętli, a osiem polecenie <code>print</code> wewnątrz warunku. Zobaczysz 5 i 4, każde w osobnej linii.</p>
+</section>
+<section id="cwiczenia"><h2>Policz znane wartości</h2>
+<h3>Zero też się liczy</h3>
+<p>Na liście są pomiary oraz wartości <code>None</code>, oznaczające brak pomiaru. Policz znane wartości i zapisz ich liczbę w <code>known_count</code>. W zmiennej <code>total</code> zapisz ich sumę.</p><p>Uwzględnij zera, bo są poprawnymi pomiarami. Użyj pętli i zmiennych z przykładu, żeby program działał również po zmianie listy.</p>
+<div class="pyrun" id="known-total"><script type="text/x-python" data-role="starter">
+values = [0, 4, None, 2, None]
+known_count = 0
+total = 0
+# Dopisz pętlę.
+print(known_count, total)
+</script><script type="text/x-python" data-role="test">
+assert known_count == 3, "Są trzy znane wartości: 0, 4 i 2. Czy warunek nie usuwa zera?"
+assert total == 6, "Suma znanych wartości powinna wynosić 6."
+</script></div>
+<details><summary>Podpowiedź 1</summary>
+<p>Zastanów się, które elementy chcesz pominąć. Czy zero jest jednym z nich?</p>
+</details>
+<details><summary>Podpowiedź 2</summary>
+<p>Licznik i sumę aktualizuj wewnątrz warunku value is not None.</p>
+</details>
+</section>
+<section id="powrot"><h2>Sprawdź, co pamiętasz</h2>
+<p>Co da pętla po pustej liście? Jak wybierzesz pierwsze trzy elementy?</p>
+<details><summary>Sprawdź własne wyjaśnienie</summary>
+<p>Dla pustej listy blok pętli nie wykona się ani razu. Wycinek <code>[:3]</code> zawiera elementy o indeksach 0, 1 i 2. Uruchom też swój kod dla <code>[]</code> oraz <code>[0, None]</code> i wyjaśnij wyniki.</p>
+</details>
+</section>
+
+    <section id="laboratorium"><h2>Laboratorium</h2><p><a href="../labs/index.html#lab-02-pomiary">Lab 2 · Co naprawdę jest pomiarem</a>. Pracuj w notebooku we własnej kopii repozytorium. Po A3 zacznij od labu 1, potem utrwal podstawy w labach 2 i 3.</p></section>
+<div class="next"><h2>Następny krok</h2>
+<p><a href="a2-records.html">A2.4 · Słowniki i lista rekordów</a></p>
+<p><a href="a2-conditions.html">Poprzednia: A2.2</a> · <a href="index.html">Mapa A–F</a></p>
+</div>
+
+  </main>
+</div>
+
+<footer class="footer">ML Engineering from Scratch · Jakub Eichner · treści CC BY 4.0, kod MIT</footer>
+<script src="assets/highlight.min.js"></script>
+<script src="assets/course.js"></script>
+</body>
+</html>

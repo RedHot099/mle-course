@@ -1,0 +1,672 @@
+{
+  "version": 2,
+  "scope": "A–D pilot",
+  "labs": [
+    {
+      "id": "lab-01-notebook",
+      "title": "Notebook, który działa po restarcie",
+      "notebook": "lab-01-notebook.ipynb",
+      "lessons": [
+        "A3"
+      ],
+      "requires_labs": [],
+      "status": "pilot",
+      "lesson_prerequisites": {
+        "A3": [
+          "A2.5"
+        ]
+      },
+      "tasks": [],
+      "data": [],
+      "number": "1"
+    },
+    {
+      "id": "lab-02-pomiary",
+      "title": "Co naprawdę jest pomiarem",
+      "notebook": "lab-02-pomiary.ipynb",
+      "lessons": [
+        "A1",
+        "A2.1",
+        "A2.2",
+        "A2.3"
+      ],
+      "requires_labs": [
+        "lab-01-notebook"
+      ],
+      "status": "pilot",
+      "lesson_prerequisites": {
+        "A1": [],
+        "A2.1": [
+          "A1"
+        ],
+        "A2.2": [
+          "A2.1"
+        ],
+        "A2.3": [
+          "A2.2"
+        ]
+      },
+      "tasks": [
+        "a2-1",
+        "a2-2",
+        "a2-3"
+      ],
+      "data": [],
+      "number": "2"
+    },
+    {
+      "id": "lab-03-rekordy-i-funkcja",
+      "title": "Rekordy i funkcja, z której można skorzystać ponownie",
+      "notebook": "lab-03-rekordy-i-funkcja.ipynb",
+      "lessons": [
+        "A2.4",
+        "A2.5"
+      ],
+      "requires_labs": [
+        "lab-01-notebook"
+      ],
+      "status": "pilot",
+      "lesson_prerequisites": {
+        "A2.4": [
+          "A2.3"
+        ],
+        "A2.5": [
+          "A2.4"
+        ]
+      },
+      "tasks": [
+        "a2-4",
+        "a2-5"
+      ],
+      "data": [],
+      "number": "3"
+    },
+    {
+      "id": "lab-04-prognoza-i-ocena",
+      "title": "Prognoza powstaje przed oceną",
+      "notebook": "lab-04-prognoza-i-ocena.ipynb",
+      "lessons": [
+        "A4.1",
+        "A4.2"
+      ],
+      "requires_labs": [
+        "lab-01-notebook"
+      ],
+      "status": "pilot",
+      "lesson_prerequisites": {
+        "A4.1": [
+          "A2.5"
+        ],
+        "A4.2": [
+          "A4.1"
+        ]
+      },
+      "tasks": [
+        "a4-1",
+        "a4-2-forecast",
+        "a4-2-evaluation"
+      ],
+      "data": [
+        "data/freshcast-sample.csv"
+      ],
+      "number": "4"
+    },
+    {
+      "id": "lab-05-kopie-i-kolekcje",
+      "number": "5",
+      "title": "Kopia i kolekcja to dwie różne decyzje",
+      "notebook": "lab-05-kopie-i-kolekcje.ipynb",
+      "lessons": [
+        "B5.1"
+      ],
+      "requires_labs": [
+        "lab-01-notebook"
+      ],
+      "lesson_prerequisites": {
+        "B5.1": [
+          "A4.2"
+        ]
+      },
+      "tasks": [
+        "b5-1-collections",
+        "b5-1-copy"
+      ],
+      "manual_tasks": [],
+      "data": [],
+      "support": [],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-06-pliki-i-bledy",
+      "number": "6",
+      "title": "Odczyt, zapis i błędne dane",
+      "notebook": "lab-06-pliki-i-bledy.ipynb",
+      "lessons": [
+        "B5.2",
+        "B5.3"
+      ],
+      "requires_labs": [
+        "lab-05-kopie-i-kolekcje"
+      ],
+      "lesson_prerequisites": {
+        "B5.2": [
+          "B5.1"
+        ],
+        "B5.3": [
+          "B5.2"
+        ]
+      },
+      "tasks": [
+        "b5-2-read",
+        "b5-2-write",
+        "b5-3-parse"
+      ],
+      "manual_tasks": [],
+      "data": [
+        "data/b5-readings.txt"
+      ],
+      "support": [],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-07-funkcja-i-testy",
+      "number": "7",
+      "title": "Funkcja i testy wykrywające błąd",
+      "notebook": "lab-07-funkcja-i-testy.ipynb",
+      "lessons": [
+        "B6.1",
+        "B6.2"
+      ],
+      "requires_labs": [
+        "lab-06-pliki-i-bledy"
+      ],
+      "lesson_prerequisites": {
+        "B6.1": [
+          "B5.3"
+        ],
+        "B6.2": [
+          "B6.1",
+          "A3"
+        ]
+      },
+      "tasks": [
+        "b6-1-mean"
+      ],
+      "manual_tasks": [
+        "b6-2-tests",
+        "b6-2-mutation"
+      ],
+      "data": [],
+      "support": [
+        "practice/summary.py",
+        "practice/test_summary.py"
+      ],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-08-modul-i-git",
+      "number": "8",
+      "title": "Moduł, narzędzia i historia zmiany",
+      "notebook": "lab-08-modul-i-git.ipynb",
+      "lessons": [
+        "B7.1",
+        "B7.2"
+      ],
+      "requires_labs": [
+        "lab-07-funkcja-i-testy"
+      ],
+      "lesson_prerequisites": {
+        "B7.1": [
+          "B6.2"
+        ],
+        "B7.2": [
+          "B7.1"
+        ]
+      },
+      "tasks": [],
+      "manual_tasks": [
+        "b7-1-tools",
+        "b7-2-git",
+        "b7-2-ci"
+      ],
+      "data": [],
+      "support": [
+        "practice/summary.py",
+        "practice/test_summary.py"
+      ],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-09-tabela-i-opis",
+      "number": "9",
+      "title": "Tabela i opis liczb",
+      "notebook": "lab-09-tabela-i-opis.ipynb",
+      "lessons": [
+        "C8.1",
+        "C8.2"
+      ],
+      "requires_labs": [
+        "lab-08-modul-i-git"
+      ],
+      "lesson_prerequisites": {
+        "C8.1": [
+          "B7.1"
+        ],
+        "C8.2": [
+          "C8.1"
+        ]
+      },
+      "tasks": [
+        "c8-1-select",
+        "c8-1-label",
+        "c8-2-hand",
+        "c8-2-pandas"
+      ],
+      "manual_tasks": [],
+      "data": [],
+      "support": [],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-10-wykres",
+      "number": "10",
+      "title": "Wykres odpowiada na pytanie",
+      "notebook": "lab-10-wykres.ipynb",
+      "lessons": [
+        "C8.3"
+      ],
+      "requires_labs": [
+        "lab-09-tabela-i-opis"
+      ],
+      "lesson_prerequisites": {
+        "C8.3": [
+          "C8.2"
+        ]
+      },
+      "tasks": [
+        "c8-3-line",
+        "c8-3-hist",
+        "c8-3-scatter",
+        "c8-3-gap"
+      ],
+      "manual_tasks": [],
+      "data": [],
+      "support": [],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-11-tablice-i-osie",
+      "number": "11",
+      "title": "Tablice i osie",
+      "notebook": "lab-11-tablice-i-osie.ipynb",
+      "lessons": [
+        "C9.1",
+        "C9.2"
+      ],
+      "requires_labs": [
+        "lab-09-tabela-i-opis"
+      ],
+      "lesson_prerequisites": {
+        "C9.1": [
+          "C8.2"
+        ],
+        "C9.2": [
+          "C9.1"
+        ]
+      },
+      "tasks": [
+        "c9-1-mae",
+        "c9-1-mask",
+        "c9-2-rows",
+        "c9-2-share"
+      ],
+      "manual_tasks": [],
+      "data": [],
+      "support": [],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-12-klucze-grupy-zlaczenia",
+      "number": "12",
+      "title": "Klucze, grupy i złączenia",
+      "notebook": "lab-12-klucze-grupy-zlaczenia.ipynb",
+      "lessons": [
+        "C10.1",
+        "C10.2",
+        "C10.3"
+      ],
+      "requires_labs": [
+        "lab-09-tabela-i-opis"
+      ],
+      "lesson_prerequisites": {
+        "C10.1": [
+          "C8.1"
+        ],
+        "C10.2": [
+          "C10.1"
+        ],
+        "C10.3": [
+          "C10.2"
+        ]
+      },
+      "tasks": [
+        "c10-1-report",
+        "c10-2-groups",
+        "c10-3-join"
+      ],
+      "manual_tasks": [],
+      "data": [
+        "data/c-panel-sales.csv",
+        "data/c-items.csv"
+      ],
+      "support": [],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-13-czas-i-cechy",
+      "number": "13",
+      "title": "Czas i dostępność cech",
+      "notebook": "lab-13-czas-i-cechy.ipynb",
+      "lessons": [
+        "C11.1",
+        "C11.2"
+      ],
+      "requires_labs": [
+        "lab-12-klucze-grupy-zlaczenia"
+      ],
+      "lesson_prerequisites": {
+        "C11.1": [
+          "C10.3",
+          "C9.1"
+        ],
+        "C11.2": [
+          "C11.1",
+          "A4.2"
+        ]
+      },
+      "tasks": [
+        "c11-1-order",
+        "c11-1-lag",
+        "c11-1-window",
+        "c11-2-available"
+      ],
+      "manual_tasks": [
+        "c11-1-tests",
+        "c11-1-ci"
+      ],
+      "data": [
+        "data/c-panel-sales.csv"
+      ],
+      "support": [
+        "practice/features.py",
+        "practice/test_features.py"
+      ],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-14-pierwszy-model",
+      "number": "14",
+      "title": "Pierwszy model na danych projektu",
+      "notebook": "lab-14-pierwszy-model.ipynb",
+      "lessons": [
+        "C12.1",
+        "C12.2",
+        "C12.3"
+      ],
+      "requires_labs": [
+        "lab-13-czas-i-cechy"
+      ],
+      "lesson_prerequisites": {
+        "C12.1": [
+          "C11.2"
+        ],
+        "C12.2": [
+          "C12.1",
+          "C9.2"
+        ],
+        "C12.3": [
+          "C12.2",
+          "C8.2"
+        ]
+      },
+      "tasks": [
+        "c12-1-manual",
+        "c12-2-split",
+        "c12-2-baseline",
+        "c12-2-model",
+        "c12-3-pipeline",
+        "c12-3-record"
+      ],
+      "manual_tasks": [],
+      "data": [
+        "data/project-development.csv"
+      ],
+      "support": [],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-15-strata-i-uczenie",
+      "number": "15",
+      "title": "Strata i uczenie",
+      "notebook": "lab-15-strata-i-uczenie.ipynb",
+      "lessons": [
+        "D13.1",
+        "D13.2",
+        "D13.3",
+        "D13.4"
+      ],
+      "requires_labs": [
+        "lab-14-pierwszy-model"
+      ],
+      "lesson_prerequisites": {
+        "D13.1": [
+          "C12.3"
+        ],
+        "D13.2": [
+          "D13.1"
+        ],
+        "D13.3": [
+          "D13.2"
+        ],
+        "D13.4": [
+          "D13.3"
+        ]
+      },
+      "tasks": [
+        "d13-1-losses",
+        "d13-2-slope",
+        "d13-3-steps",
+        "d13-4-gradient"
+      ],
+      "manual_tasks": [],
+      "data": [],
+      "support": [],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-16-wektory-i-macierze",
+      "number": "16",
+      "title": "Wektory i macierze",
+      "notebook": "lab-16-wektory-i-macierze.ipynb",
+      "lessons": [
+        "D13.5",
+        "D13.6"
+      ],
+      "requires_labs": [
+        "lab-15-strata-i-uczenie"
+      ],
+      "lesson_prerequisites": {
+        "D13.5": [
+          "D13.4",
+          "C9.2"
+        ],
+        "D13.6": [
+          "D13.5"
+        ]
+      },
+      "tasks": [
+        "d13-5-dot",
+        "d13-6-predict",
+        "d13-6-gradient",
+        "d13-6-descent"
+      ],
+      "manual_tasks": [],
+      "data": [],
+      "support": [],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-17-uczciwe-porownanie",
+      "number": "17",
+      "title": "Uczciwe porównanie",
+      "notebook": "lab-17-uczciwe-porownanie.ipynb",
+      "lessons": [
+        "D14.1",
+        "D14.2",
+        "D14.3"
+      ],
+      "requires_labs": [
+        "lab-16-wektory-i-macierze"
+      ],
+      "lesson_prerequisites": {
+        "D14.1": [
+          "D13.1"
+        ],
+        "D14.2": [
+          "D14.1",
+          "C12.3"
+        ],
+        "D14.3": [
+          "D14.2",
+          "C11.2"
+        ]
+      },
+      "tasks": [
+        "d14-1-metrics",
+        "d14-2-overfit",
+        "d14-3-folds",
+        "d14-3-backtest"
+      ],
+      "manual_tasks": [
+        "d14-1-tests"
+      ],
+      "data": [
+        "data/project-development.csv"
+      ],
+      "support": [
+        "practice/metrics.py",
+        "practice/test_metrics.py"
+      ],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-18-cechy-i-drzewa",
+      "number": "18",
+      "title": "Cechy i drzewa",
+      "notebook": "lab-18-cechy-i-drzewa.ipynb",
+      "lessons": [
+        "D15.1",
+        "D15.2",
+        "D15.3"
+      ],
+      "requires_labs": [
+        "lab-17-uczciwe-porownanie"
+      ],
+      "lesson_prerequisites": {
+        "D15.1": [
+          "D14.3",
+          "C8.1"
+        ],
+        "D15.2": [
+          "D15.1",
+          "D13.1"
+        ],
+        "D15.3": [
+          "D15.2",
+          "D13.3"
+        ]
+      },
+      "tasks": [
+        "d15-1-calendar",
+        "d15-1-model",
+        "d15-2-tree",
+        "d15-2-sklearn",
+        "d15-3-ensembles",
+        "d15-3-boost-step"
+      ],
+      "manual_tasks": [],
+      "data": [
+        "data/project-development.csv"
+      ],
+      "support": [],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-19-prognoza-wielodniowa",
+      "number": "19",
+      "title": "Prognoza wielodniowa",
+      "notebook": "lab-19-prognoza-wielodniowa.ipynb",
+      "lessons": [
+        "D15.4"
+      ],
+      "requires_labs": [
+        "lab-18-cechy-i-drzewa"
+      ],
+      "lesson_prerequisites": {
+        "D15.4": [
+          "D15.3",
+          "C11.2"
+        ]
+      },
+      "tasks": [
+        "d15-4-recursive",
+        "d15-4-direct",
+        "d15-4-errors"
+      ],
+      "manual_tasks": [],
+      "data": [
+        "data/project-development.csv"
+      ],
+      "support": [],
+      "status": "pilot"
+    },
+    {
+      "id": "lab-20-prawdopodobienstwo-i-alarm",
+      "number": "20",
+      "title": "Prawdopodobieństwo i alarm",
+      "notebook": "lab-20-prawdopodobienstwo-i-alarm.ipynb",
+      "lessons": [
+        "D16.1",
+        "D16.2",
+        "D16.3"
+      ],
+      "requires_labs": [
+        "lab-19-prognoza-wielodniowa"
+      ],
+      "lesson_prerequisites": {
+        "D16.1": [
+          "D14.1"
+        ],
+        "D16.2": [
+          "D16.1"
+        ],
+        "D16.3": [
+          "D16.2",
+          "C12.2"
+        ]
+      },
+      "tasks": [
+        "d16-1-frequency",
+        "d16-2-alarms",
+        "d16-3-labels",
+        "d16-3-logistic"
+      ],
+      "manual_tasks": [],
+      "data": [
+        "data/d16-stock-events.csv"
+      ],
+      "support": [],
+      "status": "pilot"
+    }
+  ]
+}

@@ -1,23 +1,22 @@
 # Learner progress
 
-Tutor's notes between sessions. Local file, never committed.
+Local tutor notes, not committed. Keep under 80 lines.
 
-## Machine
+## Environment
 
-- System:
-- RAM seen by Linux:
-- Data profile:
-- GPU:
+- System and working directory:
+- Browser or local notebook:
+- Environment issue, if any:
 
-## Where we are
+## Current work
 
-- Current module:
-- Last session (date, what was done):
-- Next step:
+- Lesson ID:
+- Last session and evidence:
+- Next action:
 
 ## Tasks
 
-| Task | Status | Hint rung used | Sticking point |
+| Lesson | Status and evidence | Hint rung | Sticking point |
 |---|---|---|---|
 
 ## Concepts to revisit
@@ -26,5 +25,5 @@ Tutor's notes between sessions. Local file, never committed.
 
 ## Reviews
 
-| Checkpoint | Date | Verdict | Recurring issues |
+| Lesson or section | Date | Verdict | Missing evidence |
 |---|---|---|---|

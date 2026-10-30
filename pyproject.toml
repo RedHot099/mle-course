@@ -1,7 +1,7 @@
 [project]
 name = "mle-course"
 version = "0.1.0"
-description = "ML Engineering from Scratch: kurs od podstaw Pythona do ML engineera"
+description = "Python, data and ML/AI foundations: a self-paced course"
 readme = "README.md"
 license = "MIT"
 authors = [{ name = "Jakub Eichner" }]
@@ -9,101 +9,40 @@ requires-python = ">=3.12,<3.13"
 dependencies = [
     "numpy>=2.1",
     "pandas>=3.0,<4",
-    "pyarrow>=18",
     "matplotlib>=3.9",
-    "pydantic>=2.9",
-    "holidays>=0.60",
     "jupyterlab>=4.2",
     "ipykernel>=6.29",
     "scikit-learn>=1.6",
-    "lightgbm>=4.5",
-    "optuna>=4.1",
-    "mlflow>=3.0",
-    "pydantic-settings>=2.6",
-    "pyyaml>=6.0",
-    "boto3>=1.35",
-    "duckdb>=1.1",
-    "openpyxl>=3.1",
 ]
-
-[project.scripts]
-course = "coursekit.cli:main"
-freshcast = "freshcast.cli:main"
 
 [dependency-groups]
-dev = [
-    "pytest>=8.3",
-    "ruff>=0.8",
-    "mypy>=1.13",
-    "pandas-stubs>=2.2",
-    "pre-commit>=4.0",
-    "moto[s3,server]>=5.0",
-    "freezegun>=1.5",
-    "types-pyyaml>=6.0.12.20260906",
-    "boto3-stubs[s3]>=1.43.105",
-]
-# Only for building the learner view and verifying the course (solutions branch).
-authoring = [
-    "jupytext>=1.16",
-    "nbclient>=0.10",
-]
-neural = [
-    "lightning>=2.5",
-    "torch>=2.9",
-]
+dev = ["pytest>=8.3", "ruff>=0.8", "mypy>=1.13", "playwright>=1.55", "nbformat>=5.10", "nbclient>=0.10"]
+neural = ["torch>=2.9,<2.10"]
 
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+[tool.uv]
+package = false
 
-[tool.hatch.build.targets.wheel]
-packages = ["src/freshcast", "src/coursekit"]
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
 
 [tool.ruff]
 line-length = 88
 target-version = "py312"
-# shelfwise is a separate, deliberately imperfect codebase with its own rules.
-extend-exclude = ["_main", "labs", "shelfwise"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "SIM", "PD", "C90"]
-[tool.ruff.lint.per-file-ignores]
-# Check messages are full Polish sentences with the values seen; splitting
-# them at 88 characters makes them harder to read, not easier.
-"src/coursekit/checks/*" = ["E501"]
-# Reference solutions of lecture exercises: code inside strings, kept as the
-# learner would type it in the browser.
-"tools/lecture_solutions/*" = ["E501"]
 
 [tool.ruff.lint.mccabe]
 max-complexity = 10
 
-[tool.ruff.lint.isort]
-known-first-party = ["freshcast", "coursekit"]
-
 [tool.mypy]
 python_version = "3.12"
-plugins = ["pydantic.mypy"]
-files = ["src"]
+files = ["tools"]
 warn_return_any = true
 show_error_codes = true
 disallow_untyped_defs = true
-exclude = ["_main/", "shelfwise/"]
-
-[[tool.mypy.overrides]]
-module = [
-    "pyarrow.*",
-    "holidays.*",
-    "jupytext.*",
-    "sklearn.*",
-    "lightgbm.*",
-    "optuna.*",
-    "mlflow.*",
-    "duckdb.*",
-    "joblib.*",
-]
-ignore_missing_imports = true
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-addopts = "-q"

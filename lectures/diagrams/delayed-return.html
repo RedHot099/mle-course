@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Nagroda teraz i konsekwencja jutro</title><style>
+:root { color-scheme:light; --plane:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b; --ink-2:#52514e; --axis:#c3c2b7; --hairline:#e1e0d9; --accent:#2a78d6; --accent-ink:#1c5cab; --accent-wash:#e8f1fd; --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+@media(prefers-color-scheme:dark) { :root { color-scheme:dark; --plane:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink-2:#c3c2b7; --axis:#383835; --hairline:#2c2c2a; --accent:#3987e5; --accent-ink:#86b6ef; --accent-wash:#13263f; } }
+body { margin:0; padding:16px; background:var(--plane); color:var(--ink); font-family:var(--sans); }
+main { max-width:480px; margin:auto; }
+h1 { font-size:1.25rem; line-height:1.3; font-weight:700; }
+p { font-size:.9rem; line-height:1.55; }
+a { color:var(--accent-ink); }
+</style></head>
+<body><main><h1>Nagroda teraz i konsekwencja jutro</h1><svg id="delayed-return" class="diagram" viewBox="0 0 352 352" role="img" aria-labelledby="delayed-return-title delayed-return-desc" style="display:block;width:100%;max-width:352px;height:auto;margin:0 auto"><title id="delayed-return-title">Nagroda teraz i konsekwencja jutro</title><desc id="delayed-return-desc">Działanie z nagrodą 5 prowadzi do straty 4, a działanie z nagrodą 1 do późniejszej nagrody 3, więc drugi return jest większy.</desc><defs>
+<marker id="delayed-return-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--ink-2, #52514e)"/></marker>
+<marker id="delayed-return-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--accent, #2a78d6)"/></marker>
+<marker id="delayed-return-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--accent-ink, #1c5cab)"/></marker>
+</defs><style>
+#delayed-return text { fill: var(--ink, #0b0b0b); font-family: var(--sans, system-ui, sans-serif); font-size: 12px; }
+#delayed-return .name { font-size: 14px; font-weight: 600; }
+#delayed-return .code { font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace; }
+#delayed-return .muted { fill: var(--ink-2, #52514e); }
+#delayed-return .accent-text { fill: var(--accent-ink, #1c5cab); }
+#delayed-return .paper { fill: var(--plane, #f9f9f7); }
+#delayed-return .node { fill: var(--surface, #fcfcfb); stroke: var(--ink-2, #52514e); stroke-width: 1; }
+#delayed-return .focus { fill: var(--accent-wash, #e8f1fd); stroke: var(--accent, #2a78d6); }
+#delayed-return .edge { fill: none; stroke: var(--ink-2, #52514e); stroke-width: 1.2; }
+#delayed-return .accent-edge { stroke: var(--accent, #2a78d6); }
+#delayed-return .lifeline { stroke: var(--axis, #c3c2b7); stroke-width: 1; stroke-dasharray: 3 5; }
+#delayed-return .rule { stroke: var(--hairline, #e1e0d9); stroke-width: 1; }
+</style><path d="M136 88 V112 Q136 120 128 120 H80 Q72 120 72 128 V176" class="edge" marker-end="url(#delayed-return-arrow)"/><path d="M216 88 V112 Q216 120 224 120 H272 Q280 120 280 128 V176" class="edge" marker-end="url(#delayed-return-arrow)"/><rect x="76" y="24" width="200" height="64" rx="6" class="node"/><text x="176.0" y="50" class="name" text-anchor="middle">Wybór dzisiaj</text><rect x="12" y="176" width="120" height="64" rx="6" class="node"/><text x="72.0" y="202" class="name" text-anchor="middle">Bez zapasu</text><text x="72.0" y="224" class="muted" text-anchor="middle">Jutro −4</text><rect x="220" y="176" width="120" height="64" rx="6" class="node focus"/><text x="280.0" y="202" class="name" text-anchor="middle">Zapas</text><text x="280.0" y="224" class="muted" text-anchor="middle">Jutro +3</text><rect x="80" y="138" width="72" height="20" class="paper"/><text x="116" y="152" class="muted" text-anchor="middle">Teraz +5</text><rect x="200" y="138" width="72" height="20" class="paper"/><text x="236" y="152" class="muted" text-anchor="middle">Teraz +1</text><text x="72" y="280" class="muted" text-anchor="middle">Return: 1</text><text x="280" y="280" class="muted" text-anchor="middle">Return: 4</text><text x="176" y="324" class="muted" text-anchor="middle">Dwa kroki, gamma = 1.</text></svg><p>Działanie zmienia następny stan. Wynik całej sekwencji może prowadzić do innego wyboru niż sama dzisiejsza nagroda.</p><p><a href="../f21-return.html">Wróć do lekcji</a></p></main></body></html>

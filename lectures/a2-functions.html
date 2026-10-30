@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A2.5 · Pierwsza własna funkcja | ML Engineering from Scratch</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="assets/course.css">
+</head>
+<body data-module="foundations-a2-functions">
+<header class="topbar">
+  <a class="brand" href="index.html">ML Engineering from Scratch</a>
+  <span class="crumb">A2.5 · Fundamenty</span><span class="spacer"></span>
+  <span class="score"></span>
+  <button class="icon-button" id="theme-toggle" type="button" aria-label="Przełącz motyw jasny i ciemny">◐</button>
+</header>
+<div class="progress-line"></div>
+
+<div class="page with-toc">
+  <nav class="toc" aria-label="W tej lekcji"><p>W tej lekcji</p>
+<ol></ol>
+</nav>
+  <main class="lecture">
+    <p class="kicker">A2.5 · <a href="index.html">Ścieżka A–F</a></p>
+
+    <h1>Pierwsza własna funkcja</h1>
+
+    <p class="lede">Znasz już kilka obliczeń, które można wykonać na liście. Teraz zapiszesz takie obliczenie jako własną funkcję, żeby używać go z różnymi danymi. Sprawdzisz też, dlaczego wyświetlenie wyniku i zwrócenie go to dwie różne rzeczy.</p>
+
+    <ul class="meta"><li><b>Przed lekcją:</b> A2.1–A2.4.</li>
+<li><b>Jak pracować:</b> przewiduj wyniki, uruchamiaj kod i wyjaśniaj to, co widzisz</li>
+</ul>
+
+    <section id="def"><h2>Nadaj operacji nazwę</h2>
+<p>Funkcja pozwala nadać nazwę fragmentowi kodu i wykonać go wtedy, gdy jest potrzebny. Po <code>def</code> zapisujesz nazwę funkcji i jej parametry. Parametr jest nazwą, pod którą funkcja otrzyma dane przy wywołaniu.</p><p>W przykładzie poniżej <code>number</code> to parametr. Wywołanie <code>triple(2)</code> przekazuje mu wartość <code>2</code>. Polecenie <code>return</code> kończy obliczenie i zwraca wynik, który można zapisać w zmiennej.</p>
+<pre><code class="language-python">def triple(number):
+    return number * 3
+
+first = triple(2)
+second = triple(5)
+print(first, second)</code></pre><p>Program wypisze <code>6 15</code>. Samo <code>def</code> definiuje funkcję. Obliczenie zaczyna się przy <code>triple(2)</code>: parametr <code>number</code> otrzymuje 2, a zwrócone 6 trafia do <code>first</code>. Drugie wywołanie wykonuje ten sam kod z wartością 5.</p>
+<div class="predict" id="print-return" data-type="single" data-expected-output="6
+None"><p>Co wypisze ostatnia linia?</p>
+<pre><code class="language-python">def show_double(number):
+    print(number * 2)
+
+result = show_double(3)
+print(result)</code></pre><ul class="quiz-options"><li data-correct>None<span class="why">Funkcja wyświetla 6, ale nie zwraca tej liczby. Bez return jej wynikiem jest None.</span></li>
+<li>6<span class="why">To wypisze sama funkcja, ale zmienna result otrzyma None.</span></li>
+</ul>
+</div>
+
+<figure data-diagram-source="diagrams/function-result.html">
+<svg id="function-result" class="diagram" viewBox="0 0 368 512" role="img" aria-labelledby="function-result-title function-result-desc" style="display:block;width:100%;max-width:368px;height:auto;margin:0 auto">
+<title id="function-result-title">Wyświetlenie a zwrócenie wyniku</title>
+<desc id="function-result-desc">Funkcja triple zwraca 6 do zmiennej result; show_double wyświetla 6, lecz bez return zwraca None.</desc>
+<defs>
+<marker id="function-result-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--ink-2, #52514e)"/></marker>
+<marker id="function-result-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--accent, #2a78d6)"/></marker>
+<marker id="function-result-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--accent-ink, #1c5cab)"/></marker>
+</defs>
+<style>
+#function-result text { fill: var(--ink, #0b0b0b); font-family: var(--sans, system-ui, sans-serif); font-size: 12px; }
+#function-result .name { font-size: 14px; font-weight: 600; }
+#function-result .code { font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace; }
+#function-result .muted { fill: var(--ink-2, #52514e); }
+#function-result .accent-text { fill: var(--accent-ink, #1c5cab); }
+#function-result .paper { fill: var(--plane, #f9f9f7); }
+#function-result .node { fill: var(--surface, #fcfcfb); stroke: var(--ink-2, #52514e); stroke-width: 1; }
+#function-result .focus { fill: var(--accent-wash, #e8f1fd); stroke: var(--accent, #2a78d6); }
+#function-result .edge { fill: none; stroke: var(--ink-2, #52514e); stroke-width: 1.2; }
+#function-result .accent-edge { stroke: var(--accent, #2a78d6); }
+#function-result .lifeline { stroke: var(--axis, #c3c2b7); stroke-width: 1; stroke-dasharray: 3 5; }
+#function-result .rule { stroke: var(--hairline, #e1e0d9); stroke-width: 1; }
+</style>
+<line x1="80" y1="88" x2="80" y2="408" class="lifeline"/><line x1="184" y1="88" x2="184" y2="408" class="lifeline"/><line x1="288" y1="88" x2="288" y2="408" class="lifeline"/><text x="40" y="116" class="name" text-anchor="start">1. Funkcja z return</text><text x="40" y="264" class="name" text-anchor="start">2. Funkcja z print</text><path d="M80 152 H180" class="edge" marker-end="url(#function-result-arrow)"/><rect x="92" y="128" width="80" height="16" class="paper"/><text x="132.0" y="140" class="code muted" text-anchor="middle">triple(2)</text><path d="M180 208 H80" class="edge accent-edge" marker-end="url(#function-result-arrow-accent)" stroke-dasharray="5 4"/><rect x="112" y="184" width="40" height="16" class="paper"/><text x="132.0" y="196" class="code muted" text-anchor="middle">6</text><path d="M80 300 H180" class="edge" marker-end="url(#function-result-arrow)"/><rect x="80" y="276" width="104" height="16" class="paper"/><text x="132.0" y="288" class="code muted" text-anchor="middle">show_double(3)</text><path d="M188 344 H288" class="edge" marker-end="url(#function-result-arrow)"/><rect x="204" y="320" width="68" height="16" class="paper"/><text x="238.0" y="332" class="code muted" text-anchor="middle">print(6)</text><path d="M180 392 H80" class="edge" marker-end="url(#function-result-arrow)" stroke-dasharray="5 4"/><rect x="108" y="368" width="48" height="16" class="paper"/><text x="132.0" y="380" class="code muted" text-anchor="middle">None</text><rect x="180" y="152" width="8" height="56" class="node"/><rect x="180" y="300" width="8" height="92" class="node"/><rect x="40" y="40" width="80" height="48" rx="6" class="node"/><text x="80.0" y="69.0" class="name" text-anchor="middle">Twój kod</text><rect x="144" y="40" width="80" height="48" rx="6" class="node"/><text x="184.0" y="69.0" class="name" text-anchor="middle">Funkcja</text><rect x="248" y="40" width="80" height="48" rx="6" class="node"/><text x="288.0" y="69.0" class="name" text-anchor="middle">Ekran</text><text x="40" y="236" class="code accent-text" text-anchor="start">result = 6</text><text x="40" y="420" class="code" text-anchor="start">result = None</text><line x1="40" y1="444" x2="328" y2="444" class="rule"/><text x="40" y="464" class="muted" text-anchor="start">Czytaj od góry. Linia ciągła: wywołanie.</text><text x="40" y="488" class="muted" text-anchor="start">Linia przerywana: zwrócony wynik.</text>
+</svg>
+<figcaption>Prześledź dwa wywołania z przykładów. Po return wartość trafia do zmiennej result. Print wypisuje wartość na ekranie, ale bez return funkcja zwraca None. <a href="diagrams/function-result.html">Otwórz diagram osobno</a>.</figcaption>
+</figure>
+</section>
+<section id="argument"><h2>Przekaż inne dane</h2>
+<p>Do funkcji możesz przekazać również listę. Poniższa funkcja zwraca ostatni element podanej listy. Jeśli lista jest pusta, zwraca <code>None</code>, ponieważ nie ma elementu do odczytania:</p>
+<pre><code class="language-python">def last_value(values):
+    if len(values) == 0:
+        return None
+    return values[-1]
+
+print(last_value([2, 7]))
+print(last_value([]))</code></pre><p>Program wypisze <code>7</code> i <code>None</code>. W pustej liście nie ma ostatniego elementu, więc pierwszy <code>return</code> kończy wywołanie wcześniej. Zwróć uwagę na położenie tego polecenia. Jeśli umieścisz <code>return</code> wewnątrz pętli, może zakończyć funkcję przed sprawdzeniem pozostałych elementów.</p>
+</section>
+<section id="cwiczenia"><h2>Napisz funkcję od początku</h2>
+<h3>Liczba znanych obserwacji</h3>
+<p>Uzupełnij funkcję <code>count_known(values)</code>. Ma policzyć, ile elementów listy jest różnych od <code>None</code>, i zwrócić tę liczbę. Zero również się liczy.</p><p>Funkcja powinna działać także dla pustej listy i pozostawiać przekazaną listę bez zmian. Nazwa i parametr są już gotowe. Twój kod wpisz w ciele funkcji.</p>
+<div class="pyrun" id="known-count"><script type="text/x-python" data-role="starter">
+def count_known(values):
+    # Tutaj napisz ciało funkcji.
+    ...
+
+print(count_known([None, 0, 4]))
+</script><script type="text/x-python" data-role="test">
+_data = [None, 0, 4]
+assert count_known(_data) == 2, "Dla [None, 0, 4] wynik to 2. Czy return oddaje licznik?"
+assert count_known([]) == 0, "Pusta lista ma zero znanych obserwacji."
+assert count_known([None, None]) == 0, "Same braki nie są znanymi obserwacjami."
+assert count_known([0, 0]) == 2, "Zera to znane obserwacje."
+assert _data == [None, 0, 4], "Funkcja nie może zmieniać listy wejściowej."
+</script></div>
+<details><summary>Podpowiedź 1</summary>
+<p>Zastanów się, kiedy zacząć liczenie, co robić dla każdego elementu i kiedy zwrócić końcowy wynik.</p>
+</details>
+<details><summary>Podpowiedź 2</summary>
+<p>Utwórz licznik przed pętlą. W pętli rozpoznawaj elementy inne niż <code>None</code>. Zwróć wynik dopiero po sprawdzeniu całej listy.</p>
+</details>
+</section>
+<section id="powrot"><h2>Sprawdź, co pamiętasz</h2>
+<p>Czy print i return robią to samo? Dlaczego licznik powstaje przed pętlą?</p>
+<details><summary>Sprawdź własne wyjaśnienie</summary>
+<p><code>print</code> wyświetla wartość, a <code>return</code> pozwala zapisać ją w zmiennej lub użyć w innym obliczeniu. Licznik utworzony przed pętlą zachowuje sumę z poprzednich kroków. Gdyby licznik zerował się w każdym kroku, wcześniejszy wynik by przepadał.</p>
+</details>
+</section>
+
+    <section id="laboratorium"><h2>Laboratorium</h2><p><a href="../labs/index.html#lab-03-rekordy-i-funkcja">Lab 3 · Rekordy i funkcja, z której można skorzystać ponownie</a>. Pracuj w notebooku we własnej kopii repozytorium. Po A3 zacznij od labu 1, potem utrwal podstawy w labach 2 i 3.</p></section>
+<div class="next"><h2>Następny krok</h2>
+<p><a href="a3-environment.html">A3 · Przenieś pracę do notebooka</a></p>
+<p><a href="a2-records.html">Poprzednia: A2.4</a> · <a href="index.html">Mapa A–F</a></p>
+</div>
+
+  </main>
+</div>
+
+<footer class="footer">ML Engineering from Scratch · Jakub Eichner · treści CC BY 4.0, kod MIT</footer>
+<script src="assets/highlight.min.js"></script>
+<script src="assets/course.js"></script>
+</body>
+</html>

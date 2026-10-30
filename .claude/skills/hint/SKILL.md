@@ -1,34 +1,21 @@
 ---
 name: hint
-description: One hint for the task the learner is stuck on, never the solution.
-argument-hint: "[task id, e.g. 07.3]"
-disable-model-invocation: true
+description: One hint for a lesson task, never the solution.
 ---
 
 # Hint
 
-Task: `$ARGUMENTS`. If empty, take the task of the file they are working on or the last failing entry in `.course/progress.json`, and confirm it with them.
+For lab IDs, resolve labs/manifest.json, read that notebook's task and check cells, and obtain the learner's working copy. Use its visible checks and rubric. A3 is a manual environment experiment. B6/B7 use the learner-owned practice/summary.py and practice/test_summary.py; C11 adds practice/features.py and practice/test_features.py, D14 adds practice/metrics.py and practice/test_metrics.py. B7, C11 and D14 include manual tool/Git checks. Source starters and tools/verify_labs.py are author materials, not learner grades.
 
-## The hint ladder
+Resolve `$ARGUMENTS` as a lesson ID, for example C11.1. If absent, use `.course/progress.md` and the learner's current task. Read the lesson HTML, learner code and `tutor/notes/core.md` before responding. For A/B also use `tutor/notes/foundations.md`.
 
-| Rung | Gives | Example for "lag within a series" |
-|---|---|---|
-| 1. Direction | which concept or lecture section applies | "Which operations keep one row per input row?" |
-| 2. Approach | the steps in words, the function names, the pitfall | "Group by the series key, then shift inside each group. What happens on the first days?" |
-| 3. Near-code | the shape of the code with the key line left open, or a pointed question about the exact wrong line | "`df.groupby(...)[column].___(lag)`: what goes in the gap?" |
+Ask what they tried and expected unless already supplied. Establish whether the obstacle is a missing concept, a wrong mental model or a local code detail. Give one rung per request and record it in progress.md:
 
-One rung per request, the lowest one that can unblock them. The same task again gets the next rung.
+| Rung | Help |
+|---|---|
+| 1 | Point to the relevant concept or lesson section and ask a leading question. |
+| 2 | Describe the steps in words, name a relevant operation and identify the pitfall. |
+| 3 | Show the shape of the operation with its decisive part left open, or ask about the exact wrong line. |
+| 4 | Work through the technique on different toy data and a different problem, then return to the learner's task. |
 
-## Steps
-
-1. **Look before you speak.** Read the task's specification (the docstring in the package, the task text in the lab notebook for labs 01-03, or the ticket in the lab README from module 14 on and in `shelfwise/tickets/` for module 17), the learner's current code for it and the task's entry in `tutor/notes/NN.md`. Run `uv run course check <task>`. Done when you can say in one sentence where they are stuck: not started, wrong idea, right idea with a wrong detail, or working code that fails one requirement.
-2. **Ask** what they tried and what they expected, unless they already said.
-3. **Give one rung.** Record the rung and the sticking point in `.course/progress.md`.
-4. **After rung 3**, build a worked example of the same technique on a different toy table with different column names, run it and show the output. Then tell them the reference is on the `solutions` branch and `uv run course catchup` exists. Whether to look is their call.
-5. **End** with a question or a concrete next action for them.
-
-## Branches
-
-- They ask for the solution outright: say in one sentence that you will not write it and what they gain from that, then offer the next rung.
-- Their code already passes: say so, and offer one remark on it against `docs/standard.md`.
-- They are stuck on a concept, not on the task: switch to `.claude/skills/explain/SKILL.md`.
+A repeated request advances one rung. The learner still writes the solution. If the concept itself is unclear, use `.claude/skills/explain/SKILL.md`. If code already passes, ask for one new input and one explanation against the task criteria. End with one concrete action or question.

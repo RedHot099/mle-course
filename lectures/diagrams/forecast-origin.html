@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Dostępność cechy zależy od dnia</title><style>
+:root { color-scheme:light; --plane:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b; --ink-2:#52514e; --axis:#c3c2b7; --hairline:#e1e0d9; --accent:#2a78d6; --accent-ink:#1c5cab; --accent-wash:#e8f1fd; --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+@media(prefers-color-scheme:dark) { :root { color-scheme:dark; --plane:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink-2:#c3c2b7; --axis:#383835; --hairline:#2c2c2a; --accent:#3987e5; --accent-ink:#86b6ef; --accent-wash:#13263f; } }
+body { margin:0; padding:16px; background:var(--plane); color:var(--ink); font-family:var(--sans); }
+main { max-width:480px; margin:auto; }
+h1 { font-size:1.25rem; line-height:1.3; font-weight:700; }
+p { font-size:.9rem; line-height:1.55; }
+a { color:var(--accent-ink); }
+</style></head>
+<body><main><h1>Dostępność cechy zależy od dnia</h1><svg id="forecast-origin" class="diagram" viewBox="0 0 352 320" role="img" aria-labelledby="forecast-origin-title forecast-origin-desc" style="display:block;width:100%;max-width:352px;height:auto;margin:0 auto"><title id="forecast-origin-title">Dostępność cechy zależy od dnia</title><desc id="forecast-origin-desc">Wieczorem dnia 10 lag 3 jest dostępny dla dnia 11, lecz dla dnia 14 wymaga nieznanej sprzedaży dnia 11.</desc><defs>
+<marker id="forecast-origin-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--ink-2, #52514e)"/></marker>
+<marker id="forecast-origin-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--ink-2, #52514e)"/></marker>
+<marker id="forecast-origin-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--accent-ink, #1c5cab)"/></marker>
+</defs><style>
+#forecast-origin text { fill: var(--ink, #0b0b0b); font-family: var(--sans, system-ui, sans-serif); font-size: 12px; }
+#forecast-origin .name { font-size: 14px; font-weight: 600; }
+#forecast-origin .code { font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace; }
+#forecast-origin .muted { fill: var(--ink-2, #52514e); }
+#forecast-origin .accent-text { fill: var(--accent-ink, #1c5cab); }
+#forecast-origin .paper { fill: var(--plane, #f9f9f7); }
+#forecast-origin .node { fill: var(--surface, #fcfcfb); stroke: var(--ink-2, #52514e); stroke-width: 1; }
+#forecast-origin .focus { fill: var(--accent-wash, #e8f1fd); stroke: var(--accent, #2a78d6); }
+#forecast-origin .edge { fill: none; stroke: var(--ink-2, #52514e); stroke-width: 1.2; }
+#forecast-origin .accent-edge { stroke: var(--accent, #2a78d6); }
+#forecast-origin .lifeline { stroke: var(--axis, #c3c2b7); stroke-width: 1; stroke-dasharray: 3 5; }
+#forecast-origin .rule { stroke: var(--hairline, #e1e0d9); stroke-width: 1; }
+</style><line x1="36" y1="168" x2="316" y2="168" class="rule"/><circle cx="36" cy="168" r="4" fill="var(--ink-2, #52514e)"/><text x="36" y="192" class="muted" text-anchor="middle">7</text><circle cx="76" cy="168" r="4" fill="var(--ink-2, #52514e)"/><text x="76" y="192" class="muted" text-anchor="middle">8</text><circle cx="116" cy="168" r="4" fill="var(--ink-2, #52514e)"/><text x="116" y="192" class="muted" text-anchor="middle">9</text><circle cx="156" cy="168" r="4" fill="var(--accent, #2a78d6)"/><text x="156" y="192" class="muted" text-anchor="middle">10</text><circle cx="196" cy="168" r="4" fill="var(--ink-2, #52514e)"/><text x="196" y="192" class="muted" text-anchor="middle">11</text><circle cx="236" cy="168" r="4" fill="var(--ink-2, #52514e)"/><text x="236" y="192" class="muted" text-anchor="middle">12</text><circle cx="276" cy="168" r="4" fill="var(--ink-2, #52514e)"/><text x="276" y="192" class="muted" text-anchor="middle">13</text><circle cx="316" cy="168" r="4" fill="var(--ink-2, #52514e)"/><text x="316" y="192" class="muted" text-anchor="middle">14</text><line x1="156" y1="40" x2="156" y2="216" class="lifeline"/><path d="M190 160 V112 Q190 104 182 104 H84 Q76 104 76 112 V160" class="edge" marker-end="url(#forecast-origin-arrow)"/><path d="M316 160 V64 Q316 56 308 56 H210 Q202 56 202 64 V160" class="edge" marker-end="url(#forecast-origin-arrow)"/><rect x="88" y="74" width="48" height="22" class="paper"/><text x="112" y="88" class="muted" text-anchor="middle">lag 3: dostępny</text><rect x="204" y="26" width="104" height="22" class="paper"/><text x="256" y="40" class="muted" text-anchor="middle">lag 3: przyszłość</text><text x="156" y="240" class="muted" text-anchor="middle">Prognoza po dniu 10</text><text x="176" y="272" class="muted" text-anchor="middle">Dla dnia 11 źródłem jest dzień 8.</text><text x="176" y="296" class="muted" text-anchor="middle">Dla dnia 14 źródłem byłby dzień 11.</text></svg><p>Strzałki prowadzą od prognozowanego dnia do dnia źródłowego. Przerywana granica wyznacza chwilę przygotowania prognozy.</p><p><a href="../c11-horizon.html">Wróć do lekcji</a></p></main></body></html>

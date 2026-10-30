@@ -1,68 +1,31 @@
-# Standard inżynierski
+# Standard pracy w kursie A–F
 
-Reguły, według których piszesz kod w tym kursie i według których tutor robi review. Każda ma identyfikator. Review powołuje się na identyfikatory, więc warto je kojarzyć.
+Reguły pomagają oceniać własny kod. Kolumna „Od” wskazuje lekcję, która wprowadza daną umiejętność. Wcześniej nie wymagamy narzędzi ani konstrukcji z późniejszych lekcji. Podczas review tutor podaje identyfikator reguły i konkretny przykład.
 
-Reguła zaczyna obowiązywać od modułu, który ją wprowadza. Kolumna "Od" mówi, od którego. Reguły oznaczone **blokuje** zatrzymują scalenie pull requesta na punkcie kontrolnym.
+## Kod i testy
 
-## Zasada nadrzędna
+| ID | Reguła | Od |
+|---|---|---|
+| K2 | Opis funkcji podaje wejście, wynik, zachowanie przy brakujących danych i możliwe błędy. Opisuje działanie z perspektywy wywołującego. | B6.1 |
+| K4 | Błędne dane powodują konkretny wyjątek z pomocnym komunikatem. Obsługa błędów rozróżnia typy wyjątków. | B5.3 |
+| K9 | Formatowanie i lint przechodzą dla plików małego projektu; podstawowe adnotacje typów odpowiadają działaniu funkcji. | B7.1 |
+| T2 | Test używa małych, jawnych danych i niezależnie ustalonego oczekiwanego wyniku. | B6.2 |
+| T3 | Testy obejmują zera, brakujące obserwacje, pusty wynik, błędy i zachowanie wejścia, jeśli specyfikacja tego wymaga. | B6.2 |
+| G4 | Sekrety i prywatne dane pozostają poza repozytorium. Przed commitem czytasz zmiany. Publiczne wycinki danych z licencją oraz dane syntetyczne dostarczone w kursie można wersjonować. | B7.2 |
 
-**Cicha zła prognoza jest gorsza niż błąd.** Kod ma się wywrócić głośno i wcześnie, zamiast policzyć coś na danych, których nie rozumie.
+## Dane i czas
 
-## D. Dane
+| ID | Reguła | Od |
+|---|---|---|
+| D1 | Przed zmianą danych ustalasz klucz, typy i znaczenie brakujących wartości. Zero jest obserwacją, nie brakiem pomiaru. | C10.1 |
+| D2 | Usuwanie i uzupełnianie danych ma uzasadnienie; zapisujesz, ilu wierszy dotyczy. Funkcja zachowuje wejście, jeśli tak podaje jej opis. | C10.1 |
+| D3 | Złączenie ma jawne klucze i oczekiwaną liczność dopasowań. Sprawdzasz wiersze bez pary. | C10.3 |
+| C1 | Przesunięcia i okna liczysz w uporządkowanej serii; sprawdzasz luki dni. | C11.1 |
+| C2 | Każda cecha jest dostępna w zadeklarowanej chwili prognozy. Rozróżniasz zamrożony horyzont wielodniowy i codziennie aktualizowaną prognozę jednodniową. | C11.2 |
+| C3 | Trening poprzedza walidację. Wiersz treningowy nie może mieć etykiety z późniejszego okresu oceny. | C12.2; etykiety jutra w D16.3 |
+| C4 | Skalowanie i model dopasowujesz tylko na treningu. | C12.3 |
+| C5 | Ustawienia wybierasz na walidacji. Holdout służy do jednej końcowej oceny zamrożonego wyboru; wcześniejsze obejrzenie zapisujesz jako ograniczenie. | C12.2, finał F21.5 |
+| C6 | Baseline i model oceniasz na tych samych wierszach, w tych samych jednostkach i według tego samego protokołu. | C12.2 |
+| E1 | Zapis eksperymentu pozwala odtworzyć dane, cechy, ustawienia, protokół i wynik po restarcie środowiska. | E17.2 |
 
-| Id | Reguła | Od | |
-|---|---|---|---|
-| D1 | Kolumny i wiersze wybierasz przy czytaniu pliku, nie po nim. | 07 | |
-| D2 | Założenie o danych to kod, który rzuca wyjątek. Komunikat mówi, która reguła jest złamana i ile wierszy ją łamie. | 06 | **blokuje** |
-| D3 | `fillna`, `errors="coerce"`, `drop_duplicates` i `dropna` tylko po sprawdzeniu, ilu wierszy dotyczą, i z uzasadnieniem w komentarzu albo docstringu. | 06 | **blokuje** |
-| D4 | Funkcja nie zmienia ramki, którą dostała. Zwraca nową. Bez `inplace=True`. | 06 | **blokuje** |
-| D5 | Każdy `merge` ma jawne `on`, `how` i `validate`. Po złączeniu z wymiarem sprawdzasz klucze bez pary. | 07 | **blokuje** |
-| D6 | Operacja zależna od kolejności wierszy (`shift`, `rolling`, `cumsum`, `head`) stoi za jawnym sortowaniem albo sprawdzeniem posortowania. | 07 | |
-| D7 | Nazwy kolumn bierzesz ze stałych w `schema.py`, nie wpisujesz napisów z ręki. | 07 | |
-| D8 | Zbiór zapisywany dla innych modułów ma kontrakt kolumn sprawdzany przy zapisie i przy odczycie. | 07 | |
-| D9 | Wiersze wybierasz przez `.loc` z maską albo etykietą. Bez łańcuchowego indeksowania (`df[a][b] = ...`). | 06 | |
-
-## C. Czas i leakage
-
-| Id | Reguła | Od | |
-|---|---|---|---|
-| C1 | Lagi i okna liczysz wewnątrz serii, na panelu posortowanym i kompletnym. | 07 | **blokuje** |
-| C2 | Cecha używa tylko informacji dostępnej w chwili prognozy. Okno kończy się najpóźniej wczoraj, a lag jest nie krótszy niż horyzont. | 07 | **blokuje** |
-| C3 | Dane dzielisz po czasie. Zbiór walidacyjny leży w całości po treningowym. | 08 | **blokuje** |
-| C4 | Wszystko, co się dopasowuje do danych (skalery, kodowania, imputacja, selekcja cech), dopasowujesz tylko na zbiorze treningowym. | 08 | **blokuje** |
-| C5 | Zbiór testowy oglądasz raz, na końcu. Decyzje podejmujesz na walidacji. | 08 | **blokuje** |
-| C6 | Każdy wynik modelu stoi obok wyniku baseline'u liczonego na tych samych wierszach. | 08 | |
-
-## K. Kod
-
-| Id | Reguła | Od | |
-|---|---|---|---|
-| K1 | Każda funkcja ma adnotacje typów argumentów i wyniku. `mypy` przechodzi bez błędów. | 02 | **blokuje** |
-| K2 | Funkcja publiczna ma docstring w stylu Google: co robi, co przyjmuje, co zwraca, co rzuca. Opisuje zachowanie, nie implementację. | 02 | |
-| K3 | Funkcja robi jedną rzecz. Jeśli opis wymaga słowa "oraz", to są dwie funkcje. | 02 | |
-| K4 | Rzucasz wbudowane wyjątki z konkretnym komunikatem. `except` łapie konkretny typ. Bez gołego `except` i bez `except Exception`, poza jawną granicą błędów. | 01 | **blokuje** |
-| K5 | Wartości o znaczeniu mają nazwę: stała albo `StrEnum`. Bez magicznych liczb i napisów w środku funkcji. | 03 | |
-| K6 | Importy absolutne, na górze pliku. | 02 | |
-| K7 | Na tablicach i ramkach liczysz operacjami wektorowymi. Pętla po wierszach wymaga uzasadnienia. | 05 | |
-| K8 | W pakiecie nie ma `print`. Komunikaty idą przez `logging`. | 14 | |
-| K9 | `ruff check` i `ruff format --check` przechodzą. | 02 | **blokuje** |
-| K10 | Komentarz mówi, dlaczego. Co robi kod, mówi sam kod. | 02 | |
-
-## T. Testy
-
-| Id | Reguła | Od | |
-|---|---|---|---|
-| T1 | Każda funkcja publiczna pakietu ma test. | 04 | **blokuje** |
-| T2 | Test buduje małe, jawne dane w miejscu i sprawdza konkretną wartość. | 04 | |
-| T3 | Testujesz też przypadki brzegowe i błędy: `pytest.raises` z `match`. | 04 | |
-| T4 | Test nie zależy od sieci, bieżącej daty, losowości bez ziarna ani od kolejności testów. | 04 | **blokuje** |
-| T5 | Ramki porównujesz przez `pd.testing.assert_frame_equal`, liczby zmiennoprzecinkowe przez `pytest.approx`. | 06 | |
-
-## G. Git i pull requesty
-
-| Id | Reguła | Od | |
-|---|---|---|---|
-| G1 | Jeden pull request to jedna sprawa. | 00 | |
-| G2 | Komunikat commita mówi, co się zmienia i po co, w trybie rozkazującym: "Add panel validation". | 00 | |
-| G3 | Przed prośbą o review sprawdzenia przechodzą lokalnie: `ruff`, `mypy`, `pytest`, `course check`. | 04 | **blokuje** |
-| G4 | W repozytorium nie ma danych, modeli, sekretów ani wyjść notebooków z danymi. | 00 | **blokuje** |
+Przed review wykonaj sprawdzenia z bieżącej lekcji. Wyniki sprawdzeń dołącz do wyjaśnienia. Jeśli czegoś nie da się uruchomić, podaj ograniczenie. Poprawny rachunek na małej próbce nie dowodzi jakości modelu na przyszłych danych.

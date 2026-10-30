@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>B6.1 · Napisz funkcję o jasno opisanym działaniu | ML Engineering from Scratch</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="assets/course.css">
+</head>
+<body data-module="foundations-b6-functions">
+<header class="topbar">
+  <a class="brand" href="index.html">ML Engineering from Scratch</a>
+  <span class="crumb">B6.1 · Fundamenty</span><span class="spacer"></span>
+  <span class="score"></span>
+  <button class="icon-button" id="theme-toggle" type="button" aria-label="Przełącz motyw jasny i ciemny">◐</button>
+</header>
+<div class="progress-line"></div>
+
+<div class="page with-toc">
+  <nav class="toc" aria-label="W tej lekcji"><p>W tej lekcji</p>
+<ol></ol>
+</nav>
+  <main class="lecture">
+    <p class="kicker">B6.1 · <a href="index.html">Ścieżka A–F</a></p>
+
+    <h1>Napisz funkcję o jasno opisanym działaniu</h1>
+
+    <p class="lede">Napiszesz funkcję, która oblicza średnią znanych pomiarów. Najpierw ustalisz, co ma zwracać i co zrobić, gdy nie ma ani jednego pomiaru. Ten opis będzie podstawą kodu i późniejszych testów.</p>
+
+    <ul class="meta"><li><b>Przed lekcją:</b> A2.5 oraz B5.1–B5.3.</li>
+<li><b>Jak pracować:</b> przewiduj wyniki, uruchamiaj kod i wyjaśniaj to, co widzisz</li>
+</ul>
+
+    <section id="umowa"><h2>Zacznij od opisu działania</h2>
+<p>Pierwsza linia definicji podaje nazwę i parametry funkcji. Nazywamy ją sygnaturą. Pod nią możesz umieścić <em>docstring</em>, czyli opis w potrójnym cudzysłowie.</p><p>Dobry opis odpowiada na pytania: jakie dane przekazać, jaki wynik otrzymamy i kiedy wystąpi błąd. To właśnie mamy na myśli, mówiąc o umowie funkcji. Kod i testy powinny być zgodne z tym opisem.</p>
+<pre><code class="language-python">def label_count(name, count=0):
+    &quot;&quot;&quot;Return a label for a non-negative count.
+
+    Raises:
+        ValueError: The count is negative.
+    &quot;&quot;&quot;
+    if count &lt; 0:
+        raise ValueError(&quot;count must be non-negative&quot;)
+    return name + &quot;: &quot; + str(count)
+
+print(label_count(&quot;rows&quot;))
+print(label_count(&quot;rows&quot;, count=3))</code></pre><p>Program wypisze <code>rows: 0</code> i <code>rows: 3</code>. Gdy pomijasz <code>count</code>, funkcja używa domyślnego zera. W drugim wywołaniu zapis <code>count=3</code> przekazuje argument po nazwie. Nie tworzy zmiennej <code>count</code> poza funkcją.</p>
+</section>
+<section id="lokalnie"><h2>Oddziel obliczenie od wypisywania</h2>
+<p>Funkcja może obliczyć wynik i zwrócić go przez <code>return</code>. Nie musi od razu go wyświetlać ani zapisywać w pliku. To kod, który ją wywołuje, zdecyduje, co zrobić z wynikiem.</p><p>Taki podział ułatwia testowanie. Możesz przekazać kilka małych list i za każdym razem porównać zwróconą wartość z własnym rachunkiem.</p>
+<div class="predict" id="scope" data-type="single" data-expected-output="9"><p>Co wypisze ostatnia linia?</p>
+<pre><code class="language-python">value = 9
+
+def increase(value):
+    value = value + 1
+    return value
+
+increase(value)
+print(value)</code></pre><ul class="quiz-options"><li data-correct>9<span class="why">value wewnątrz funkcji jest lokalnym parametrem. Przypisanie go nie zmienia zewnętrznej nazwy.</span></li>
+<li>10<span class="why">Funkcja zwraca 10, ale poza nią nie przypisujemy wyniku do value. Ta zmienna zachowuje poprzednią wartość.</span></li>
+</ul>
+</div>
+<p>Przypisanie wewnątrz funkcji zmienia jej lokalną zmienną <code>value</code>. Nie zmienia zmiennej o tej samej nazwie poza funkcją. Inaczej działa <code>append</code>: zmienia samą listę, co widzieliśmy w B5.1.</p><p>Funkcję, która oblicza wynik tylko z przekazanych argumentów i nie zmienia danych ani niczego poza sobą, nazywamy czystą. W zadaniu poniżej funkcja ma tylko liczyć średnią. Odczyt i zapis plików pozostaw poza nią.</p>
+</section>
+<section id="cwiczenie"><h2>Wypróbuj pojęcie w laboratorium</h2><p>Pełne zadanie funkcji i sprawdzenia znajdziesz w <a href="../labs/lab-07-funkcja-i-testy.ipynb">labie 7</a>. Pracuj w jednym miejscu, zamiast przepisywać tę samą implementację do wykładu i notebooka.</p></section>
+<section id="transfer"><h2>Wypróbuj funkcję na innych danych</h2>
+<p>Bez zaglądania do kodu oblicz ręcznie wynik dla <code>[None, 0, 8, 4]</code>, a potem wywołaj swoją funkcję. Własnymi słowami wyjaśnij, dlaczego [] nie powinno zwracać zera.</p>
+<details><summary>Sprawdź uzasadnienie</summary>
+<p>Wyjaśnij różnicę między wynikiem równym zero a brakiem danych do obliczenia wyniku. Zero może być średnią istniejących pomiarów. Dla pustej listy nie ma pomiarów, które można uśrednić. Porównaj też ręczny rachunek z wynikiem swojej funkcji.</p>
+</details>
+</section>
+<section id="powrot"><h2>Sprawdź, co pamiętasz</h2>
+<p>Co kończy wykonanie funkcji? Jak przekazujesz obliczony wynik do innego fragmentu programu?</p>
+<details><summary>Sprawdź własne wyjaśnienie</summary>
+<p><code>return</code> kończy wywołanie i zwraca wynik. <code>print</code> wyświetla informację na ekranie. Jeśli nadal mylisz te czynności, wróć do przykładu w <a href="a2-functions.html">A2.5</a> i sprawdź wartość zmiennej <code>result</code>.</p>
+</details>
+</section>
+
+    <section id="laboratorium"><h2>Laboratorium</h2><p><a href="../labs/lab-07-funkcja-i-testy.ipynb">Otwórz lab 7 · Funkcja i testy wykrywające błąd</a>.</p></section>
+<div class="next"><h2>Następny krok</h2>
+<p><a href="b6-tests.html">B6.2 · Pierwsze własne testy</a></p>
+<p><a href="b5-errors.html">Poprzednia: B5.3</a> · <a href="index.html">Mapa A–F</a></p>
+</div>
+
+  </main>
+</div>
+
+<footer class="footer">ML Engineering from Scratch · Jakub Eichner · treści CC BY 4.0, kod MIT</footer>
+<script src="assets/highlight.min.js"></script>
+<script src="assets/course.js"></script>
+</body>
+</html>

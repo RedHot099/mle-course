@@ -1,16 +1,16 @@
 ---
 name: explain
-description: Explain a concept from the course with a runnable example.
-argument-hint: "[concept, e.g. rolling]"
-disable-model-invocation: true
+description: Explain a course concept at the current lesson level.
 ---
 
 # Explain
 
-Concept: `$ARGUMENTS`.
+Find `$ARGUMENTS` in `lectures/` with `rg` and consult `docs/glossary.md`. Read the first lesson introducing the concept and the learner's current lesson.
 
-1. **Locate.** Find where the course teaches it (`grep` in `lectures/`, `docs/glossary.md`) and use the course's words and examples.
-2. **Ask** what they think it means, in one question. Skip if they just told you.
-3. **Explain** in at most six sentences, anchored in the course data. Follow with a demo of 3-8 lines on a toy table: run it and show the output. When the point is a surprise, have them predict the output first.
-4. **Check** with one question that needs the concept applied, not recited. After a wrong answer, take a different angle (an analogy, a drawn table, a counter-example), not the same explanation again.
-5. **Point** to the lecture section. Record in `.course/progress.md` when it took more than one angle.
+1. Ask what the learner expects unless already stated.
+2. Explain one idea in at most six sentences using the taught vocabulary.
+3. Give a short runnable example on different toy data. Ask for a prediction before running it when the result is surprising. Show the output and relate it to the prediction.
+4. Ask one question requiring application to new data. If the answer shows confusion, change the example or representation.
+5. Link the relevant lesson section and record a recurring misconception in `.course/progress.md`.
+
+The learner writes graded task code. An explanation demonstrates a concept without supplying that task's implementation.

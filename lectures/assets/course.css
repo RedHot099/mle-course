@@ -168,10 +168,13 @@ button {
 }
 
 .topbar .brand {
+  min-width: 0;
   font-weight: 650;
   color: var(--ink);
   text-decoration: none;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .topbar .crumb {
