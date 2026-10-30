@@ -1,0 +1,22 @@
+name: Check small Python project
+on:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: practice
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+        with:
+          version: "0.13.0"
+          python-version: "3.12"
+      - run: uv sync --locked
+      - run: uv run ruff format --check summary.py test_summary.py
+      - run: uv run ruff check summary.py test_summary.py
+      - run: uv run mypy --disallow-untyped-defs summary.py
+      - run: uv run python -m pytest -q test_summary.py
