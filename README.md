@@ -21,28 +21,28 @@ Instrukcje dla autora: [utrzymanie kursu](docs/course-maintenance.md). [Podsumow
 
 ## Laboratoria
 
-Notebooki są bezpośrednio w folderze `labs`, a wszystkie dane kursu w `labs/data`:
+Notebooki są bezpośrednio w folderze `labs`, ponumerowane w kolejności wykonywania, a wszystkie dane kursu w `labs/data`:
 
-- [A3: środowisko i restart kernela](labs/lab-a3.ipynb), po A3.
-- [A2.1–A2.3: wartości, warunki i pętle](labs/lab-a2-1-a2-3.ipynb), utrwalenie A2.1–A2.3 po A3.
-- [A2.4–A2.5: rekordy i funkcja](labs/lab-a2-4-a2-5.ipynb), po A2.4–A2.5 i A3.
-- [A4.1–A4.2: prognoza i MAE](labs/lab-a4-1-a4-2.ipynb), po A4.1–A4.2 i A3.
-- [B5.1: kopia i kolekcje](labs/lab-b5-1.ipynb).
-- [B5.2–B5.3: pliki i błędy](labs/lab-b5-2-b5-3.ipynb).
-- [B6.1–B6.2: funkcja i własne testy](labs/lab-b6-1-b6-2.ipynb).
-- [B7.1–B7.2: moduł, narzędzia i git](labs/lab-b7-1-b7-2.ipynb).
-- [C8.1–C8.2: tabela i opis liczb](labs/lab-c8-1-c8-2.ipynb).
-- [C8.3: wykres odpowiada na pytanie](labs/lab-c8-3.ipynb).
-- [C9.1–C9.2: tablice i osie](labs/lab-c9-1-c9-2.ipynb).
-- [C10.1–C10.3: klucze, grupy i złączenia](labs/lab-c10-1-c10-3.ipynb).
-- [C11.1–C11.2: czas i dostępność cech](labs/lab-c11-1-c11-2.ipynb).
-- [C12.1–C12.3: pierwszy model na danych projektu](labs/lab-c12-1-c12-3.ipynb).
-- [D13.1–D13.4: strata i uczenie](labs/lab-d13-1-d13-4.ipynb).
-- [D13.5–D13.6: wektory i macierze](labs/lab-d13-5-d13-6.ipynb).
-- [D14.1–D14.3: uczciwe porównanie](labs/lab-d14-1-d14-3.ipynb).
-- [D15.1–D15.3: cechy i drzewa](labs/lab-d15-1-d15-3.ipynb).
-- [D15.4: prognoza wielodniowa](labs/lab-d15-4.ipynb).
-- [D16.1–D16.3: prawdopodobieństwo i alarm](labs/lab-d16-1-d16-3.ipynb).
+- [Lab 1 · Notebook, który działa po restarcie](labs/lab-01-notebook.ipynb), wykład A3.
+- [Lab 2 · Co naprawdę jest pomiarem](labs/lab-02-pomiary.ipynb), wykłady A2.1, A2.2, A2.3.
+- [Lab 3 · Rekordy i funkcja, z której można skorzystać ponownie](labs/lab-03-rekordy-i-funkcja.ipynb), wykłady A2.4, A2.5.
+- [Lab 4 · Prognoza powstaje przed oceną](labs/lab-04-prognoza-i-ocena.ipynb), wykłady A4.1, A4.2.
+- [Lab 5 · Kopia i kolekcja to dwie różne decyzje](labs/lab-05-kopie-i-kolekcje.ipynb), wykład B5.1.
+- [Lab 6 · Odczyt, zapis i błędne dane](labs/lab-06-pliki-i-bledy.ipynb), wykłady B5.2, B5.3.
+- [Lab 7 · Funkcja i testy wykrywające błąd](labs/lab-07-funkcja-i-testy.ipynb), wykłady B6.1, B6.2.
+- [Lab 8 · Moduł, narzędzia i historia zmiany](labs/lab-08-modul-i-git.ipynb), wykłady B7.1, B7.2.
+- [Lab 9 · Tabela i opis liczb](labs/lab-09-tabela-i-opis.ipynb), wykłady C8.1, C8.2.
+- [Lab 10 · Wykres odpowiada na pytanie](labs/lab-10-wykres.ipynb), wykład C8.3.
+- [Lab 11 · Tablice i osie](labs/lab-11-tablice-i-osie.ipynb), wykłady C9.1, C9.2.
+- [Lab 12 · Klucze, grupy i złączenia](labs/lab-12-klucze-grupy-zlaczenia.ipynb), wykłady C10.1, C10.2, C10.3.
+- [Lab 13 · Czas i dostępność cech](labs/lab-13-czas-i-cechy.ipynb), wykłady C11.1, C11.2.
+- [Lab 14 · Pierwszy model na danych projektu](labs/lab-14-pierwszy-model.ipynb), wykłady C12.1, C12.2, C12.3.
+- [Lab 15 · Strata i uczenie](labs/lab-15-strata-i-uczenie.ipynb), wykłady D13.1, D13.2, D13.3, D13.4.
+- [Lab 16 · Wektory i macierze](labs/lab-16-wektory-i-macierze.ipynb), wykłady D13.5, D13.6.
+- [Lab 17 · Uczciwe porównanie](labs/lab-17-uczciwe-porownanie.ipynb), wykłady D14.1, D14.2, D14.3.
+- [Lab 18 · Cechy i drzewa](labs/lab-18-cechy-i-drzewa.ipynb), wykłady D15.1, D15.2, D15.3.
+- [Lab 19 · Prognoza wielodniowa](labs/lab-19-prognoza-wielodniowa.ipynb), wykład D15.4.
+- [Lab 20 · Prawdopodobieństwo i alarm](labs/lab-20-prawdopodobienstwo-i-alarm.ipynb), wykłady D16.1, D16.2, D16.3.
 
 Pracuj we własnej kopii repozytorium. W terminalu przejdź do jej folderu `labs` i uruchom JupyterLab:
 
@@ -59,7 +59,7 @@ W B6 i B7 używasz tych samych plików `practice/summary.py` i `practice/test_su
 
 B7 dodaje zależności do podprojektu `practice`. Kolejne notebooki korzystające z tych bibliotek uruchamiaj z `labs` przez `uv run --project ../practice --with jupyterlab --with ipykernel jupyter lab`. Wcześniejsze notebooki A i B działają z poleceniem tymczasowym pokazanym wyżej. W części Git pracujesz na własnej gałęzi kopii repozytorium; nie tworzysz drugiego repozytorium wewnątrz practice. GitHub i zdalne CI są opcjonalne.
 
-Od C8.1 dodajesz w `practice` biblioteki sekcji C: `uv add numpy pandas matplotlib scikit-learn`, a notebooki C uruchamiasz z `labs` poleceniem z `--project ../practice` pokazanym wyżej. Lab C8.1–C8.2 podaje te polecenia. W C11 piszesz `practice/features.py` i `practice/test_features.py`; mypy potrzebuje tam `uv add --dev pandas-stubs`. W D14 dochodzi `practice/metrics.py` z `practice/test_metrics.py`. Laby D używają tych samych bibliotek co C i danych projektu. Wyniki labów (B5, C12) trafiają do `labs/results`, poza Gitem. Plik `labs/data/project-holdout.csv` pozostaje nieotwarty do F21.5.
+Od C8.1 dodajesz w `practice` biblioteki sekcji C: `uv add numpy pandas matplotlib scikit-learn`, a notebooki C uruchamiasz z `labs` poleceniem z `--project ../practice` pokazanym wyżej. Lab 9 podaje te polecenia. W C11 piszesz `practice/features.py` i `practice/test_features.py`; mypy potrzebuje tam `uv add --dev pandas-stubs`. W D14 dochodzi `practice/metrics.py` z `practice/test_metrics.py`. Laby D używają tych samych bibliotek co C i danych projektu. Wyniki labów (B5, C12) trafiają do `labs/results`, poza Gitem. Plik `labs/data/project-holdout.csv` pozostaje nieotwarty do F21.5.
 
 ## Sprawdzenie materiałów przez autora
 

@@ -58,7 +58,7 @@
 <section id="baseline"><h2>Przygotuj prognozę przed odczytaniem wyników</h2>
 <p>Zastosuj jedną regułę: na każdy z kolejnych siedmiu dni przewiduj wartość z ostatniego dnia historii. Cała prognoza powstaje raz, wieczorem 3 kwietnia. Obserwacje od 4 do 10 kwietnia posłużą później do oceny, nie do poprawiania tej prognozy.</p>
 <p>W Pythonie możesz powtórzyć element listy przez mnożenie. Na przykład <code>["pending"] * 3</code> tworzy listę <code>["pending", "pending", "pending"]</code>. W swoim zadaniu przygotuj tyle wartości, ile dni obejmuje prognoza. Tę liczbę dni nazywamy horyzontem.</p>
-<p>Własną prognozę, ręczny rachunek i ocenę przygotuj w <a href="../labs/index.html#lab-a4-1-a4-2">lab-a4-1-a4-2</a>. Tam zapiszesz prognozę przed odczytem obserwacji i sprawdzisz jej wynik. Poniższy wykres pomaga zrozumieć zachowanie tej reguły.</p>
+<p>Własną prognozę, ręczny rachunek i ocenę przygotuj w <a href="../labs/index.html#lab-04-prognoza-i-ocena">lab 4</a>. Tam zapiszesz prognozę przed odczytem obserwacji i sprawdzisz jej wynik. Poniższy wykres pomaga zrozumieć zachowanie tej reguły.</p>
 </section>
 <section id="wykres"><h2>Obejrzyj, gdzie reguła się myli</h2>
 <p>Na wykresie pozioma oś pokazuje dni, a pionowa wartości <code>sale_amount</code>. Pionowa przerywana linia oznacza chwilę przygotowania prognozy. Pozioma przerywana linia pokazuje baseline. Zwróć uwagę na ostatnie dni: czy ta prosta reguła trafia we wzrost sprzedaży?</p>
@@ -66,11 +66,11 @@
 </figure>
 </section>
 <section id="wnioski"><h2>Zapisz wynik i ograniczenie</h2>
-<p>Pełne zadanie i pytania do przemyślenia znajdziesz w lab-a4-1-a4-2. Tutaj sprawdź, jakie ograniczenie ma sama interpretacja wyniku.</p><p>W tym ćwiczeniu obliczamy MAE dla sprzedaży ze wszystkich siedmiu dni, także tych z brakami towaru. Pełnego popytu nie znamy, dlatego wynik nie mówi, jak dobrze prognozujemy potrzeby klientów, których nie udało się obsłużyć.</p>
+<p>Pełne zadanie i pytania do przemyślenia znajdziesz w lab-04-prognoza-i-ocena. Tutaj sprawdź, jakie ograniczenie ma sama interpretacja wyniku.</p><p>W tym ćwiczeniu obliczamy MAE dla sprzedaży ze wszystkich siedmiu dni, także tych z brakami towaru. Pełnego popytu nie znamy, dlatego wynik nie mówi, jak dobrze prognozujemy potrzeby klientów, których nie udało się obsłużyć.</p>
 <details><summary>Sprawdź własną odpowiedź</summary>
 <p>Wyjaśnienie powinno wskazywać, że prognoza korzysta tylko z historii, a ocena obejmuje późniejsze obserwacje. Powinno też rozróżniać sprzedaż od popytu. Jeden tydzień jednej serii nie wystarcza do oceny metody dla wszystkich sklepów. Nawet poprawnie napisany baseline może mieć duży błąd.</p>
 </details>
-<p>Źródło: Dingdong-Inc, <a href="https://huggingface.co/datasets/Dingdong-Inc/FreshRetailNet-50K">FreshRetailNet-50K</a>, CC BY 4.0. Ten sam wycinek CSV jest dołączony do lab-a4-1-a4-2. Zachowano wartości, uporządkowano dni i nazwano kolumnę godzin <code>stockout_hours</code>. To jawny przykład do nauki, a nie końcowy zamknięty test kursu.</p>
+<p>Źródło: Dingdong-Inc, <a href="https://huggingface.co/datasets/Dingdong-Inc/FreshRetailNet-50K">FreshRetailNet-50K</a>, CC BY 4.0. Ten sam wycinek CSV jest dołączony do labu 4. Zachowano wartości, uporządkowano dni i nazwano kolumnę godzin <code>stockout_hours</code>. To jawny przykład do nauki, a nie końcowy zamknięty test kursu.</p>
 </section>
 <section id="powrot"><h2>Sprawdź, co pamiętasz</h2>
 <p>Czy MAE = 0 oznacza zero sprzedaży? Czy to to samo co brak danych?</p>
@@ -79,7 +79,7 @@
 </details>
 </section>
 
-    <section id="laboratorium"><h2>Laboratorium</h2><p><a href="../labs/index.html#lab-a4-1-a4-2">A4.1–A4.2 · osobne laboratorium do tej części kursu</a>. Pracuj w notebooku we własnej kopii repozytorium. Wymagania, instrukcja uruchomienia i kryteria ukończenia są przy labie.</p></section>
+    <section id="laboratorium"><h2>Laboratorium</h2><p><a href="../labs/index.html#lab-04-prognoza-i-ocena">Lab 4 · Prognoza powstaje przed oceną</a>. Pracuj w notebooku we własnej kopii repozytorium. Wymagania, instrukcja uruchomienia i kryteria ukończenia są przy labie.</p></section>
 <div class="next"><h2>Następny krok</h2>
 <p><a href="b5-collections.html">B5.1 · Kolekcje i zmiany danych</a></p>
 <p><a href="a4-metrics.html">Poprzednia: A4.1</a> · <a href="index.html">Mapa A–F</a></p>

@@ -85,12 +85,12 @@ uv run --no-project --python 3.12 python -c "print(2 + 3)"</code></pre><p>Oczeki
 <section id="notebook"><h2>Uruchom i zapisz notebook</h2>
 <p>Z tego samego terminala uruchom:</p>
 <pre><code class="language-bash">uv run --no-project --python 3.12 --with jupyterlab --with ipykernel jupyter lab</code></pre><p>Uv przygotuje środowisko z JupyterLab i wypisze adres strony działającej na Twoim komputerze. Otwórz ten adres w przeglądarce i zostaw terminal uruchomiony. Jeśli używasz WSL, otwórz adres w przeglądarce Windows.</p>
-<p>W JupyterLab otwórz notebook <a href="../labs/index.html#lab-a3">lab-a3</a>. Główne README repozytorium wskazuje folder uruchomienia. Kod wykonujesz przez Shift+Enter, a plik zapisujesz przez Ctrl+S.</p><p>Przykład działania kernela możesz najpierw prześledzić na dwóch komórkach: w pierwszej <code>stock = 6</code>, w drugiej <code>print(stock + 2)</code>. Po wykonaniu od góry wynik wynosi 8. Po restarcie sama druga komórka da NameError, dopóki nie przywrócisz przypisania.</p>
+<p>W JupyterLab otwórz notebook <a href="../labs/index.html#lab-01-notebook">lab 1</a>. Główne README repozytorium wskazuje folder uruchomienia. Kod wykonujesz przez Shift+Enter, a plik zapisujesz przez Ctrl+S.</p><p>Przykład działania kernela możesz najpierw prześledzić na dwóch komórkach: w pierwszej <code>stock = 6</code>, w drugiej <code>print(stock + 2)</code>. Po wykonaniu od góry wynik wynosi 8. Po restarcie sama druga komórka da NameError, dopóki nie przywrócisz przypisania.</p>
 <div class="callout rule"><span class="label">Zakończenie pracy</span><p>Po zakończeniu wybierz <strong>Kernel → Shut Down Kernel</strong>, aby zatrzymać Python wykonujący notebook. Następnie wróć do terminala Jupyter, naciśnij Ctrl+C i potwierdź zatrzymanie serwera.</p>
 </div>
 </section>
 <section id="sprawdzenie"><h2>Sprawdź zapis i ponowne uruchomienie</h2>
-<p>Pełne zadanie zapisu, restartu i ponownego uruchomienia wykonaj w <a href="../labs/index.html#lab-a3">lab-a3</a>. Wykład wyjaśnia mechanizm, a notebook przechowuje Twój kod i wyniki.</p>
+<p>Pełne zadanie zapisu, restartu i ponownego uruchomienia wykonaj w <a href="../labs/index.html#lab-01-notebook">lab 1</a>. Wykład wyjaśnia mechanizm, a notebook przechowuje Twój kod i wyniki.</p>
 <div class="quiz" id="terminal" data-type="single"><p>Gdzie wpiszesz uv --version?</p>
 <ul class="quiz-options"><li data-correct>W terminalu<span class="why">To polecenie uruchamiające program uv.</span></li>
 <li>W komórce Python<span class="why">Zwykła komórka oczekuje składni Python, a nie polecenia terminala.</span></li>
@@ -99,7 +99,7 @@ uv run --no-project --python 3.12 python -c "print(2 + 3)"</code></pre><p>Oczeki
 <p>Jeśli Jupyter nie startuje, zachowaj polecenie i komunikat błędu. Gdy prosisz o pomoc, nie wklejaj tokenu dostępu z wypisanego adresu. Do ćwiczeń Python możesz tymczasowo wrócić w przeglądarce. Jeśli Jupyter działa, ale kod zwraca zły wynik, sprawdź najpierw dane i kolejność wykonania komórek.</p>
 </section>
 
-    <section id="laboratorium"><h2>Laboratorium</h2><p><a href="../labs/index.html#lab-a3">A3 · osobne laboratorium do tej części kursu</a>. Pracuj w notebooku we własnej kopii repozytorium. Wymagania, instrukcja uruchomienia i kryteria ukończenia są przy labie.</p></section>
+    <section id="laboratorium"><h2>Laboratorium</h2><p><a href="../labs/index.html#lab-01-notebook">Lab 1 · Notebook, który działa po restarcie</a>. Pracuj w notebooku we własnej kopii repozytorium. Wymagania, instrukcja uruchomienia i kryteria ukończenia są przy labie.</p></section>
 <div class="next"><h2>Następny krok</h2>
 <p><a href="a4-metrics.html">A4.1 · Policz błąd małej prognozy</a></p>
 <p><a href="a2-functions.html">Poprzednia: A2.5</a> · <a href="index.html">Mapa A–F</a></p>

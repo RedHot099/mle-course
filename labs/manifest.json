@@ -3,9 +3,9 @@
   "scope": "A–D pilot",
   "labs": [
     {
-      "id": "lab-a3",
+      "id": "lab-01-notebook",
       "title": "Notebook, który działa po restarcie",
-      "notebook": "lab-a3.ipynb",
+      "notebook": "lab-01-notebook.ipynb",
       "lessons": [
         "A3"
       ],
@@ -18,12 +18,12 @@
       },
       "tasks": [],
       "data": [],
-      "number": "A3"
+      "number": "1"
     },
     {
-      "id": "lab-a2-1-a2-3",
+      "id": "lab-02-pomiary",
       "title": "Co naprawdę jest pomiarem",
-      "notebook": "lab-a2-1-a2-3.ipynb",
+      "notebook": "lab-02-pomiary.ipynb",
       "lessons": [
         "A1",
         "A2.1",
@@ -31,7 +31,7 @@
         "A2.3"
       ],
       "requires_labs": [
-        "lab-a3"
+        "lab-01-notebook"
       ],
       "status": "pilot",
       "lesson_prerequisites": {
@@ -52,18 +52,18 @@
         "a2-3"
       ],
       "data": [],
-      "number": "A2.1–A2.3"
+      "number": "2"
     },
     {
-      "id": "lab-a2-4-a2-5",
+      "id": "lab-03-rekordy-i-funkcja",
       "title": "Rekordy i funkcja, z której można skorzystać ponownie",
-      "notebook": "lab-a2-4-a2-5.ipynb",
+      "notebook": "lab-03-rekordy-i-funkcja.ipynb",
       "lessons": [
         "A2.4",
         "A2.5"
       ],
       "requires_labs": [
-        "lab-a3"
+        "lab-01-notebook"
       ],
       "status": "pilot",
       "lesson_prerequisites": {
@@ -79,18 +79,18 @@
         "a2-5"
       ],
       "data": [],
-      "number": "A2.4–A2.5"
+      "number": "3"
     },
     {
-      "id": "lab-a4-1-a4-2",
+      "id": "lab-04-prognoza-i-ocena",
       "title": "Prognoza powstaje przed oceną",
-      "notebook": "lab-a4-1-a4-2.ipynb",
+      "notebook": "lab-04-prognoza-i-ocena.ipynb",
       "lessons": [
         "A4.1",
         "A4.2"
       ],
       "requires_labs": [
-        "lab-a3"
+        "lab-01-notebook"
       ],
       "status": "pilot",
       "lesson_prerequisites": {
@@ -109,18 +109,18 @@
       "data": [
         "data/freshcast-sample.csv"
       ],
-      "number": "A4.1–A4.2"
+      "number": "4"
     },
     {
-      "id": "lab-b5-1",
-      "number": "B5.1",
+      "id": "lab-05-kopie-i-kolekcje",
+      "number": "5",
       "title": "Kopia i kolekcja to dwie różne decyzje",
-      "notebook": "lab-b5-1.ipynb",
+      "notebook": "lab-05-kopie-i-kolekcje.ipynb",
       "lessons": [
         "B5.1"
       ],
       "requires_labs": [
-        "lab-a3"
+        "lab-01-notebook"
       ],
       "lesson_prerequisites": {
         "B5.1": [
@@ -137,16 +137,16 @@
       "status": "pilot"
     },
     {
-      "id": "lab-b5-2-b5-3",
-      "number": "B5.2–B5.3",
+      "id": "lab-06-pliki-i-bledy",
+      "number": "6",
       "title": "Odczyt, zapis i błędne dane",
-      "notebook": "lab-b5-2-b5-3.ipynb",
+      "notebook": "lab-06-pliki-i-bledy.ipynb",
       "lessons": [
         "B5.2",
         "B5.3"
       ],
       "requires_labs": [
-        "lab-b5-1"
+        "lab-05-kopie-i-kolekcje"
       ],
       "lesson_prerequisites": {
         "B5.2": [
@@ -169,16 +169,16 @@
       "status": "pilot"
     },
     {
-      "id": "lab-b6-1-b6-2",
-      "number": "B6.1–B6.2",
+      "id": "lab-07-funkcja-i-testy",
+      "number": "7",
       "title": "Funkcja i testy wykrywające błąd",
-      "notebook": "lab-b6-1-b6-2.ipynb",
+      "notebook": "lab-07-funkcja-i-testy.ipynb",
       "lessons": [
         "B6.1",
         "B6.2"
       ],
       "requires_labs": [
-        "lab-b5-2-b5-3"
+        "lab-06-pliki-i-bledy"
       ],
       "lesson_prerequisites": {
         "B6.1": [
@@ -204,16 +204,16 @@
       "status": "pilot"
     },
     {
-      "id": "lab-b7-1-b7-2",
-      "number": "B7.1–B7.2",
+      "id": "lab-08-modul-i-git",
+      "number": "8",
       "title": "Moduł, narzędzia i historia zmiany",
-      "notebook": "lab-b7-1-b7-2.ipynb",
+      "notebook": "lab-08-modul-i-git.ipynb",
       "lessons": [
         "B7.1",
         "B7.2"
       ],
       "requires_labs": [
-        "lab-b6-1-b6-2"
+        "lab-07-funkcja-i-testy"
       ],
       "lesson_prerequisites": {
         "B7.1": [
@@ -237,16 +237,16 @@
       "status": "pilot"
     },
     {
-      "id": "lab-c8-1-c8-2",
-      "number": "C8.1–C8.2",
+      "id": "lab-09-tabela-i-opis",
+      "number": "9",
       "title": "Tabela i opis liczb",
-      "notebook": "lab-c8-1-c8-2.ipynb",
+      "notebook": "lab-09-tabela-i-opis.ipynb",
       "lessons": [
         "C8.1",
         "C8.2"
       ],
       "requires_labs": [
-        "lab-b7-1-b7-2"
+        "lab-08-modul-i-git"
       ],
       "lesson_prerequisites": {
         "C8.1": [
@@ -268,15 +268,15 @@
       "status": "pilot"
     },
     {
-      "id": "lab-c8-3",
-      "number": "C8.3",
+      "id": "lab-10-wykres",
+      "number": "10",
       "title": "Wykres odpowiada na pytanie",
-      "notebook": "lab-c8-3.ipynb",
+      "notebook": "lab-10-wykres.ipynb",
       "lessons": [
         "C8.3"
       ],
       "requires_labs": [
-        "lab-c8-1-c8-2"
+        "lab-09-tabela-i-opis"
       ],
       "lesson_prerequisites": {
         "C8.3": [
@@ -295,16 +295,16 @@
       "status": "pilot"
     },
     {
-      "id": "lab-c9-1-c9-2",
-      "number": "C9.1–C9.2",
+      "id": "lab-11-tablice-i-osie",
+      "number": "11",
       "title": "Tablice i osie",
-      "notebook": "lab-c9-1-c9-2.ipynb",
+      "notebook": "lab-11-tablice-i-osie.ipynb",
       "lessons": [
         "C9.1",
         "C9.2"
       ],
       "requires_labs": [
-        "lab-c8-1-c8-2"
+        "lab-09-tabela-i-opis"
       ],
       "lesson_prerequisites": {
         "C9.1": [
@@ -326,17 +326,17 @@
       "status": "pilot"
     },
     {
-      "id": "lab-c10-1-c10-3",
-      "number": "C10.1–C10.3",
+      "id": "lab-12-klucze-grupy-zlaczenia",
+      "number": "12",
       "title": "Klucze, grupy i złączenia",
-      "notebook": "lab-c10-1-c10-3.ipynb",
+      "notebook": "lab-12-klucze-grupy-zlaczenia.ipynb",
       "lessons": [
         "C10.1",
         "C10.2",
         "C10.3"
       ],
       "requires_labs": [
-        "lab-c8-1-c8-2"
+        "lab-09-tabela-i-opis"
       ],
       "lesson_prerequisites": {
         "C10.1": [
@@ -363,16 +363,16 @@
       "status": "pilot"
     },
     {
-      "id": "lab-c11-1-c11-2",
-      "number": "C11.1–C11.2",
+      "id": "lab-13-czas-i-cechy",
+      "number": "13",
       "title": "Czas i dostępność cech",
-      "notebook": "lab-c11-1-c11-2.ipynb",
+      "notebook": "lab-13-czas-i-cechy.ipynb",
       "lessons": [
         "C11.1",
         "C11.2"
       ],
       "requires_labs": [
-        "lab-c10-1-c10-3"
+        "lab-12-klucze-grupy-zlaczenia"
       ],
       "lesson_prerequisites": {
         "C11.1": [
@@ -404,17 +404,17 @@
       "status": "pilot"
     },
     {
-      "id": "lab-c12-1-c12-3",
-      "number": "C12.1–C12.3",
+      "id": "lab-14-pierwszy-model",
+      "number": "14",
       "title": "Pierwszy model na danych projektu",
-      "notebook": "lab-c12-1-c12-3.ipynb",
+      "notebook": "lab-14-pierwszy-model.ipynb",
       "lessons": [
         "C12.1",
         "C12.2",
         "C12.3"
       ],
       "requires_labs": [
-        "lab-c11-1-c11-2"
+        "lab-13-czas-i-cechy"
       ],
       "lesson_prerequisites": {
         "C12.1": [
@@ -445,10 +445,10 @@
       "status": "pilot"
     },
     {
-      "id": "lab-d13-1-d13-4",
-      "number": "D13.1–D13.4",
+      "id": "lab-15-strata-i-uczenie",
+      "number": "15",
       "title": "Strata i uczenie",
-      "notebook": "lab-d13-1-d13-4.ipynb",
+      "notebook": "lab-15-strata-i-uczenie.ipynb",
       "lessons": [
         "D13.1",
         "D13.2",
@@ -456,7 +456,7 @@
         "D13.4"
       ],
       "requires_labs": [
-        "lab-c12-1-c12-3"
+        "lab-14-pierwszy-model"
       ],
       "lesson_prerequisites": {
         "D13.1": [
@@ -484,16 +484,16 @@
       "status": "pilot"
     },
     {
-      "id": "lab-d13-5-d13-6",
-      "number": "D13.5–D13.6",
+      "id": "lab-16-wektory-i-macierze",
+      "number": "16",
       "title": "Wektory i macierze",
-      "notebook": "lab-d13-5-d13-6.ipynb",
+      "notebook": "lab-16-wektory-i-macierze.ipynb",
       "lessons": [
         "D13.5",
         "D13.6"
       ],
       "requires_labs": [
-        "lab-d13-1-d13-4"
+        "lab-15-strata-i-uczenie"
       ],
       "lesson_prerequisites": {
         "D13.5": [
@@ -516,17 +516,17 @@
       "status": "pilot"
     },
     {
-      "id": "lab-d14-1-d14-3",
-      "number": "D14.1–D14.3",
+      "id": "lab-17-uczciwe-porownanie",
+      "number": "17",
       "title": "Uczciwe porównanie",
-      "notebook": "lab-d14-1-d14-3.ipynb",
+      "notebook": "lab-17-uczciwe-porownanie.ipynb",
       "lessons": [
         "D14.1",
         "D14.2",
         "D14.3"
       ],
       "requires_labs": [
-        "lab-d13-5-d13-6"
+        "lab-16-wektory-i-macierze"
       ],
       "lesson_prerequisites": {
         "D14.1": [
@@ -560,17 +560,17 @@
       "status": "pilot"
     },
     {
-      "id": "lab-d15-1-d15-3",
-      "number": "D15.1–D15.3",
+      "id": "lab-18-cechy-i-drzewa",
+      "number": "18",
       "title": "Cechy i drzewa",
-      "notebook": "lab-d15-1-d15-3.ipynb",
+      "notebook": "lab-18-cechy-i-drzewa.ipynb",
       "lessons": [
         "D15.1",
         "D15.2",
         "D15.3"
       ],
       "requires_labs": [
-        "lab-d14-1-d14-3"
+        "lab-17-uczciwe-porownanie"
       ],
       "lesson_prerequisites": {
         "D15.1": [
@@ -602,15 +602,15 @@
       "status": "pilot"
     },
     {
-      "id": "lab-d15-4",
-      "number": "D15.4",
+      "id": "lab-19-prognoza-wielodniowa",
+      "number": "19",
       "title": "Prognoza wielodniowa",
-      "notebook": "lab-d15-4.ipynb",
+      "notebook": "lab-19-prognoza-wielodniowa.ipynb",
       "lessons": [
         "D15.4"
       ],
       "requires_labs": [
-        "lab-d15-1-d15-3"
+        "lab-18-cechy-i-drzewa"
       ],
       "lesson_prerequisites": {
         "D15.4": [
@@ -631,17 +631,17 @@
       "status": "pilot"
     },
     {
-      "id": "lab-d16-1-d16-3",
-      "number": "D16.1–D16.3",
+      "id": "lab-20-prawdopodobienstwo-i-alarm",
+      "number": "20",
       "title": "Prawdopodobieństwo i alarm",
-      "notebook": "lab-d16-1-d16-3.ipynb",
+      "notebook": "lab-20-prawdopodobienstwo-i-alarm.ipynb",
       "lessons": [
         "D16.1",
         "D16.2",
         "D16.3"
       ],
       "requires_labs": [
-        "lab-d15-4"
+        "lab-19-prognoza-wielodniowa"
       ],
       "lesson_prerequisites": {
         "D16.1": [

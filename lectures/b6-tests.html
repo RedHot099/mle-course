@@ -42,7 +42,7 @@ print(&quot;check passed&quot;)</code></pre><p>Program wypisze <code>check passe
 </ul>
 </div>
 </section>
-<section id="plik"><h2>Moduł i testy w jednym miejscu</h2><p>W labie B6.1–B6.2 uzupełniasz pliki <code>practice/summary.py</code> i <code>practice/test_summary.py</code>. Notebook pozostaje w labs, a pliki Python są we wspólnym małym projekcie practice. Polecenie uruchomienia testów znajdziesz w labie.</p><p>Import <code>from summary import mean_known</code> pobiera funkcję z sąsiedniego pliku summary.py. Pytest znajduje funkcje zaczynające się od test_ w pliku test_summary.py. Każda z nich porównuje zachowanie z niezależnie ustaloną odpowiedzią.</p></section>
+<section id="plik"><h2>Moduł i testy w jednym miejscu</h2><p>W labie 7 uzupełniasz pliki <code>practice/summary.py</code> i <code>practice/test_summary.py</code>. Notebook pozostaje w labs, a pliki Python są we wspólnym małym projekcie practice. Polecenie uruchomienia testów znajdziesz w labie.</p><p>Import <code>from summary import mean_known</code> pobiera funkcję z sąsiedniego pliku summary.py. Pytest znajduje funkcje zaczynające się od test_ w pliku test_summary.py. Każda z nich porównuje zachowanie z niezależnie ustaloną odpowiedzią.</p></section>
 <section id="pytest"><h2>Liczby przybliżone i oczekiwane błędy</h2>
 <p>Liczby typu <code>float</code> mają ograniczoną precyzję. Dlatego wynik poprawnego obliczenia może nieznacznie różnić się od liczby zapisanej w teście. Do takiego porównania użyj <code>pytest.approx</code>, które dopuszcza niewielką różnicę.</p><p>Test może też sprawdzać, czy funkcja zgłasza oczekiwany wyjątek. Służy do tego <code>pytest.raises</code>:</p>
 <pre><code class="language-python">import pytest
@@ -59,7 +59,7 @@ def test_half_rejects_negative():
     with pytest.raises(ValueError, match=&quot;non-negative&quot;):
         half(-1)</code></pre><p>W tym przykładzie <code>match</code> sprawdza fragment komunikatu wyjątku. Jeśli wyjątek nie wystąpi, test zakończy się niepowodzeniem. W testach własnej funkcji dobierz wejścia i komunikaty do jej umowy.</p>
 </section>
-<section id="zadanie"><h2>Własne testy w laboratorium</h2><p>Pięć przypadków i próbę kontrolowanego błędu wykonaj w <a href="../labs/lab-b6-1-b6-2.ipynb">labie B6.1–B6.2</a>. Tam jest jedna specyfikacja zadania. Testy mają przechodzić przed zmianą funkcji, wykryć celowy błąd obliczenia i znów przechodzić po przywróceniu poprawnego kodu.</p></section>
+<section id="zadanie"><h2>Własne testy w laboratorium</h2><p>Pięć przypadków i próbę kontrolowanego błędu wykonaj w <a href="../labs/lab-07-funkcja-i-testy.ipynb">labie 7</a>. Tam jest jedna specyfikacja zadania. Testy mają przechodzić przed zmianą funkcji, wykryć celowy błąd obliczenia i znów przechodzić po przywróceniu poprawnego kodu.</p></section>
 <section id="powrot"><h2>Sprawdź, co pamiętasz</h2>
 <p>Czy zielony test dowodzi, że funkcja działa na wszystkich danych?</p>
 <details><summary>Sprawdź własne wyjaśnienie</summary>
@@ -67,7 +67,7 @@ def test_half_rejects_negative():
 </details>
 </section>
 
-    <section id="laboratorium"><h2>Laboratorium B6.1–B6.2</h2><p><a href="../labs/lab-b6-1-b6-2.ipynb">Otwórz notebook labu B6.1–B6.2</a>. Zadania wykonuj po odpowiednich wykładach. Wszystkie notebooki uruchamiaj ze wspólnego folderu labs, według głównego README.</p></section>
+    <section id="laboratorium"><h2>Laboratorium</h2><p><a href="../labs/lab-07-funkcja-i-testy.ipynb">Otwórz lab 7 · Funkcja i testy wykrywające błąd</a>.</p></section>
 <div class="next"><h2>Następny krok</h2>
 <p><a href="b7-modules.html">B7.1 · Moduł, podstawowe typy i jakość kodu</a></p>
 <p><a href="b6-functions.html">Poprzednia: B6.1</a> · <a href="index.html">Mapa A–F</a></p>
